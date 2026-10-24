@@ -24,6 +24,17 @@ test('download directory page localizes and resolves packages without HTML/direc
   assert.equal(document.querySelector('a[href$="-source.zip"]'), null);
   assert.ok([...document.querySelectorAll('a')].some((anchor) => anchor.href === buildInfo.source));
   assert.match(document.body.textContent, /Production code stays readable/);
+  for (const [code, title] of [
+    ['de', 'Downloads und Quellcode'],
+    ['ja', 'ダウンロードとソースコード'],
+    ['es', 'Descargas y código fuente'],
+  ]) {
+    const language = document.querySelector('select');
+    language.value = code;
+    language.onchange({ target: language });
+    assert.equal(document.querySelector('h1').textContent, title);
+    assert.equal(document.querySelectorAll('select option').length, 5);
+  }
   const picker = document.querySelector('select');
   picker.value = 'zh-CN';
   picker.onchange({ target: picker });

@@ -1,12 +1,18 @@
 import en from './locales/en.js';
 import zhCN from './locales/zh-CN.js';
+import de from './locales/de.js';
+import ja from './locales/ja.js';
+import es from './locales/es.js';
 
 export const supportedLocales = [
   { code: 'zh-CN', name: '简体中文' },
   { code: 'en', name: 'English' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'ja', name: '日本語' },
+  { code: 'es', name: 'Español' },
 ];
 export const LANGUAGE_KEY = 'clearvault.language';
-const catalogs = { 'zh-CN': zhCN, en };
+const catalogs = { 'zh-CN': zhCN, en, de, ja, es };
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const sourcePhrases = new RegExp(
   Object.keys(en)
@@ -21,6 +27,9 @@ export function detectLanguage(languages = []) {
   for (const locale of languages) {
     if (/^zh(?:-|$)/i.test(locale)) return 'zh-CN';
     if (/^en(?:-|$)/i.test(locale)) return 'en';
+    for (const code of ['de', 'ja', 'es']) {
+      if (new RegExp(`^${code}(?:-|$)`, 'i').test(locale)) return code;
+    }
   }
   return 'en';
 }
@@ -31,8 +40,8 @@ export function t(source, parameters = {}) {
   const catalog = catalogs[language];
   const translated =
     catalog[source] ??
-    (language === 'en'
-      ? source.replace(sourcePhrases, (phrase) => catalog[phrase] ?? phrase)
+    (language !== 'zh-CN'
+      ? source.replace(sourcePhrases, (phrase) => catalog[phrase] ?? en[phrase] ?? phrase)
       : source);
   return translated.replace(/\{(\w+)\}/g, (match, key) =>
     Object.hasOwn(parameters, key) ? String(parameters[key]) : match,
@@ -52,7 +61,7 @@ function updateMetadata() {
     .querySelector('link[rel=manifest]')
     ?.setAttribute(
       'href',
-      language === 'en' ? './manifest.en.webmanifest' : './manifest.webmanifest',
+      language === 'zh-CN' ? './manifest.webmanifest' : `./manifest.${language}.webmanifest`,
     );
   document.title = t('ClearVault · SafeInCloud 兼容密码管理器与双重验证器');
   document

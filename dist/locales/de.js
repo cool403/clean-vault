@@ -1,0 +1,507 @@
+export default {
+  解锁当前会话: 'Aktuelle Sitzung entsperren',
+  解锁并继续未保存的修改: 'Entsperren und ungespeicherte Änderungen fortsetzen',
+  '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
+    'Diese Sitzung enthält ungespeicherte Änderungen. Entsperren und speichern Sie diese, bevor Sie die Seite neu laden oder schließen.',
+  '上次确认的目录：{folder}': 'Zuletzt bestätigter Ordner: {folder}',
+  所在目录尚未确认: 'Ordner noch nicht bestätigt',
+  确认所在目录: 'Übergeordneten Ordner bestätigen',
+  所选文件夹: 'Ausgewählter Ordner',
+  '记录已失效，请重新打开密码库':
+    'Dieser Verlaufseintrag ist nicht mehr verfügbar. Öffnen Sie den Tresor erneut.',
+  '所选文件夹不包含此密码库，请重新选择':
+    'Der ausgewählte Ordner enthält diesen Tresor nicht. Wählen Sie den richtigen Ordner.',
+  已确认密码库所在目录: 'Tresorordner bestätigt.',
+  '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。':
+    'Browser geben den vollständigen lokalen Pfad nicht frei. Wählen Sie über das Ordnersymbol den übergeordneten Ordner aus, um Namen und relativen Pfad zu prüfen und zu merken.',
+  '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。':
+    'Browser geben den vollständigen lokalen Pfad nicht frei. Prüfen Sie den Ordner im Dateiauswahldialog, wenn Sie die Datei erneut auswählen.',
+  '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Gespeichert werden nur Dateinamen, Dateizugriffe und bestätigte Ordnerangaben, niemals Hauptpasswörter oder Tresorinhalte. App und Erweiterung führen getrennte Verläufe.',
+  从当前网页读取新密码: 'Neues Passwort von dieser Website lesen',
+  '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
+    'Neue Passwortfelder dieser Website werden erst nach Ihrem Klick gelesen. Der Eintrag wird erst nach Ihrer Bestätigung geändert.',
+  '无法识别唯一的新密码，请手动输入':
+    'Das neue Passwort konnte nicht eindeutig erkannt werden. Geben Sie es manuell ein.',
+  '新密码已读取，请确认更新': 'Neues Passwort gelesen. Bestätigen Sie die Aktualisierung.',
+  最近密码库: 'Zuletzt verwendete Tresore',
+  清空记录: 'Verlauf löschen',
+  移除记录: 'Aus Verlauf entfernen',
+  重新打开并解锁: 'Erneut öffnen und entsperren',
+  需要重新选择文件: 'Datei erneut auswählen',
+  '仅记住文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Gespeichert werden nur Dateinamen und Dateizugriffe, niemals Hauptpasswörter oder Tresorinhalte. App und Erweiterung führen getrennte Verläufe.',
+  '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。':
+    'Dieser Browser kann den Dateiverlauf nicht dauerhaft speichern. Er ist nur für diese Sitzung verfügbar.',
+  '打开或保存密码库后，会在这里显示。': 'Geöffnete oder gespeicherte Tresore erscheinen hier.',
+  '文件授权未完成，请重新授权或重新选择文件':
+    'Dateizugriff nicht erteilt. Erteilen Sie ihn erneut oder wählen Sie die Datei erneut aus.',
+  '文件已移动或删除，请重新选择文件':
+    'Die Datei wurde verschoben oder gelöscht. Wählen Sie sie erneut aus.',
+  操作已取消: 'Aktion abgebrochen.',
+  导入密码: 'Passwörter importieren',
+  导入来源: 'Importquelle',
+  选择导出文件: 'Exportdatei auswählen',
+  预览导入: 'Importvorschau',
+  确认导入: 'Import bestätigen',
+  重新选择: 'Erneut auswählen',
+  '文件仅在本地处理，确认前不会修改密码库。':
+    'Dateien werden lokal verarbeitet. Der Tresor wird erst nach Ihrer Bestätigung geändert.',
+  '支持 Chrome 密码 CSV、Bitwarden 未加密 CSV / JSON 的登录和安全笔记。':
+    'Unterstützt Chrome-Passwort-CSV sowie Anmeldungen und sichere Notizen aus unverschlüsselten Bitwarden-CSV-/JSON-Dateien.',
+  '导出文件可能含明文密码，请在完成导入并验证加密保存后妥善清理。':
+    'Exportdateien können Klartextpasswörter enthalten. Behandeln Sie sie sorgfältig und entfernen Sie sie nach dem Import und der Prüfung der verschlüsselten Speicherung.',
+  '新增 {added} · 重复 {duplicates} · 不支持 {skipped}':
+    'Neu {added} · Duplikate {duplicates} · Nicht unterstützt {skipped}',
+  '完全相同的条目会跳过；密码或内容不同的条目将分别保留，不覆盖已有数据。':
+    'Identische Einträge werden übersprungen. Einträge mit anderen Passwörtern oder Inhalten bleiben separat erhalten; vorhandene Daten werden nicht überschrieben.',
+  '字段对应：名称 → 条目名称，用户名 → 账号，密码 → 密码，网址 → 网站，文件夹 → 标签。':
+    'Zuordnung: Name → Eintragstitel, Benutzername → Konto, Passwort → Passwort, URL → Website, Ordner → Tag.',
+  '不支持的条目已跳过，请保留源文件并核对。':
+    'Nicht unterstützte Einträge wurden übersprungen. Bewahren Sie die Quelldatei auf und prüfen Sie das Ergebnis.',
+  '仅展示前 10 个条目，确认后导入全部新增条目。':
+    'Die ersten 10 Einträge werden angezeigt. Nach Bestätigung werden alle neuen Einträge importiert.',
+  'CSV 格式无效，请使用原始导出文件':
+    'Ungültiges CSV-Format. Verwenden Sie die ursprüngliche Exportdatei.',
+  'CSV 列数不一致，请使用原始导出文件':
+    'Die CSV-Spaltenanzahl stimmt nicht überein. Verwenden Sie die ursprüngliche Exportdatei.',
+  '一次最多导入 10000 个条目，请拆分文件':
+    'Maximal 10.000 Einträge pro Import. Teilen Sie die Datei auf.',
+  '导入文件不能超过 20 MB': 'Importdateien dürfen höchstens 20 MB groß sein.',
+  'JSON 格式无效，请选择未加密的 Bitwarden JSON 导出':
+    'Ungültiges JSON. Wählen Sie einen unverschlüsselten Bitwarden-JSON-Export.',
+  '文件列与所选来源不匹配，请检查导入格式':
+    'Die Dateispalten passen nicht zur gewählten Quelle. Prüfen Sie das Importformat.',
+  导入文件中没有条目: 'Die Importdatei enthält keine Einträge.',
+  '部分验证密钥不受支持，已原样保留为私密字段':
+    'Einige Authentifizierungsschlüssel werden nicht unterstützt und bleiben unverändert als geheime Felder erhalten.',
+  '附件、通行密钥和关联字段未导入，请保留源数据':
+    'Anhänge, Passkeys und verknüpfte Felder wurden nicht importiert. Bewahren Sie die Quelldaten auf.',
+  导入的自定义字段: 'Importierte benutzerdefinierte Felder',
+  '已导入 {count} 个条目，请保存数据库': '{count} Einträge importiert. Speichern Sie Ihren Tresor.',
+  最近文件记录已清空: 'Dateiverlauf gelöscht.',
+  '保存的文件授权可能过期，点击最近密码库可重新授权。':
+    'Gespeicherte Dateiberechtigungen können ablaufen. Wählen Sie einen zuletzt verwendeten Tresor, um den Zugriff erneut zu erlauben.',
+  重新加载文件: 'Datei neu laden',
+  '原文件已变化，请重新加载后再填充；当前编辑可另存为副本':
+    'Die Originaldatei wurde geändert. Laden Sie sie vor dem Ausfüllen neu. Speichern Sie aktuelle Änderungen bei Bedarf als Kopie.',
+  '已填充账号，请在网站继续下一步，再点击填充密码':
+    'Benutzername ausgefüllt. Fahren Sie auf der Website fort und klicken Sie erneut auf Ausfüllen für das Passwort.',
+  添加网站地址: 'Website-Adresse hinzufügen',
+  '将当前 HTTPS 网站添加到此条目，保存后即可在这里匹配。':
+    'Fügen Sie die aktuelle HTTPS-Website zu diesem Eintrag hinzu und speichern Sie, um ihn hier zuzuordnen.',
+  选择条目: 'Eintrag auswählen',
+  '已添加网站地址，请保存数据库': 'Website-Adresse hinzugefügt. Speichern Sie Ihren Tresor.',
+  更新密码: 'Passwort aktualisieren',
+  输入新密码: 'Neues Passwort eingeben',
+  确认新密码: 'Neues Passwort bestätigen',
+  '确认后更新此条目，再保存到加密文件。':
+    'Bestätigen Sie die Aktualisierung und speichern Sie anschließend die verschlüsselte Datei.',
+  '密码已更新，请保存数据库': 'Passwort aktualisiert. Speichern Sie Ihren Tresor.',
+  查看所有条目: 'Alle Einträge anzeigen',
+  '重新加载会放弃当前未保存修改，是否继续？':
+    'Beim Neuladen gehen ungespeicherte Änderungen verloren. Fortfahren?',
+  确认重新加载: 'Neuladen bestätigen',
+  '已重新加载文件，请输入主密码': 'Datei neu geladen. Geben Sie Ihr Hauptpasswort ein.',
+  '请先保存当前修改，再导入或重新加载文件':
+    'Speichern Sie Ihre Änderungen, bevor Sie importieren oder eine Datei neu laden.',
+  '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。':
+    'Tresore werden nur im Arbeitsspeicher entschlüsselt. Im Verlauf stehen nur Namen, Dateizugriffe und bestätigte Ordnerangaben. Er lässt sich jederzeit löschen. Zum erneuten Öffnen ist weiterhin Ihr Hauptpasswort nötig.',
+  '在 GitHub 查看源码': 'Quellcode auf GitHub ansehen',
+  查看构建记录: 'Build-Verlauf ansehen',
+  核对线上版本: 'Diese Bereitstellung prüfen',
+  '线上代码保持可读，测试通过后由 GitHub Actions 部署到 Cloudflare。':
+    'Der Produktionscode bleibt lesbar. GitHub Actions testet ihn vor der Bereitstellung auf Cloudflare.',
+  本地构建: 'Lokaler Build',
+  版本与提交信息: 'Version und Commit',
+  'ClearVault · SafeInCloud 兼容密码管理器与双重验证器':
+    'ClearVault · SafeInCloud-Passwortmanager und Authentifikator',
+  复制密码: 'Passwort kopieren',
+  查看详情: 'Details anzeigen',
+  快速查找: 'Schnellzugriff',
+  '搜索、复制、锁定，双手不离键盘。': 'Suchen, kopieren und sperren – alles per Tastatur.',
+  搜索所有条目: 'Alle Einträge durchsuchen',
+  '所有未归档条目 · 仅在本地搜索': 'Alle nicht archivierten Einträge · Nur lokale Suche',
+  搜索结果: 'Suchergebnisse',
+  '找到 {count} 个条目': '{count} Einträge gefunden',
+  回车查看: 'Eingabetaste zum Anzeigen',
+  未设置密码: 'Kein Passwort',
+  '↑ ↓ 选择': '↑ ↓ Auswählen',
+  '首次写回需要选择加密备份目录，之后保存会自动备份':
+    'Wählen Sie vor dem ersten Überschreiben einen Ordner für verschlüsselte Backups. Weitere Sicherungen erfolgen automatisch.',
+  '未选择备份目录，更改尚未写入数据库':
+    'Kein Backup-Ordner gewählt. Änderungen wurden nicht in die Datenbank geschrieben.',
+  '保存已取消，更改尚未写入数据库':
+    'Speichern abgebrochen. Änderungen wurden nicht in die Datenbank geschrieben.',
+  当前会话保留备份数量: 'Aufbewahrte Backups pro Sitzung',
+  '仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。':
+    'Entfernt werden nur überzählige Backups dieser Quelldatei aus dieser Seite. Andere Quellen und frühere Sitzungen bleiben erhalten. Kopieren Sie Backups auf ein separates Gerät und prüfen Sie Downloads.',
+  下载与源代码: 'Downloads und Quellcode',
+  '版本 {version} · 本地优先，自由保管。':
+    'Version {version} · Lokal gespeichert, selbst verwaltet.',
+  浏览器扩展: 'Browser-Erweiterung',
+  '本地解锁，支持分步填充、导入、密码更新确认与验证保存。':
+    'Lokal entsperren, mehrstufig ausfüllen, importieren, Passwortänderungen bestätigen und Speichervorgänge prüfen.',
+  下载扩展: 'Erweiterung herunterladen',
+  'MIT 开源代码': 'Open Source unter MIT',
+  '包含应用、扩展、测试、安全说明和自托管配置。':
+    'Enthält App, Erweiterung, Tests, Sicherheitsdokumentation und Konfiguration zum Selbsthosten.',
+  下载源代码: 'Quellcode herunterladen',
+  安装扩展: 'Erweiterung installieren',
+  '解压扩展包，在 Chrome 或 Edge 的扩展管理页面启用开发者模式，然后选择“加载已解压的扩展程序”。点击目标网站的工具栏扩展图标，再打开密码库。':
+    'Entpacken Sie das ZIP. Aktivieren Sie den Entwicklermodus in Chrome oder Edge und wählen Sie „Entpackte Erweiterung laden“. Klicken Sie auf der gewünschten Website auf das Erweiterungssymbol und öffnen Sie Ihren Tresor.',
+  '此版本未在浏览器商店上架。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
+    'Diese Version ist nicht in Browser-Stores verfügbar. Lokales Speichern mit Backups wird unterstützt; Firefox, Passkeys und das Ausfüllen in iframes werden nicht unterstützt.',
+  自行部署: 'Selbst hosten',
+  '先执行 npm ci 和 npm run release，再将 release/web 目录部署到 HTTPS 静态托管，或按 docs/SELF-HOSTING.md 使用 Docker。开发扩展执行 npm run build:extension，验证正式产物执行 npm run test:release。':
+    'Führen Sie npm ci und npm run release aus. Hosten Sie release/web per HTTPS oder verwenden Sie Docker gemäß docs/SELF-HOSTING.en.md. Für die Entwicklung: npm run build:extension. Zur Prüfung der Produktionspakete: npm run test:release.',
+  '校验值用于比对文件，不能代替签名或安全审计。独立审计和浏览器实际安装验证尚未完成。请先使用合成数据验证，保留独立加密备份。':
+    'Prüfsummen vergleichen Dateien und ersetzen keine Signaturen oder Sicherheitsprüfungen. Unabhängige Prüfung und echte Browser-Installationstests stehen noch aus. Testen Sie zuerst mit synthetischen Daten und bewahren Sie separate verschlüsselte Backups auf.',
+  '保存未完成，当前编辑仍在页面内，请重试或另存副本':
+    'Speichern nicht abgeschlossen. Lassen Sie die Seite geöffnet und versuchen Sie es erneut oder speichern Sie eine Kopie.',
+  '已验证保存于 {time}': 'Gespeichert und geprüft um {time}',
+  '已发起加密导出于 {time}，请确认下载文件':
+    'Verschlüsselter Export um {time} angefordert. Prüfen Sie den Download.',
+  '写入后验证失败，请保留当前页面并另存副本':
+    'Prüfung nach dem Schreiben fehlgeschlagen. Lassen Sie die Seite geöffnet und speichern Sie eine Kopie.',
+  备份文件不能与保存目标相同: 'Backup und Zieldatei müssen unterschiedlich sein.',
+  '覆盖前请先在设置中选择加密备份目录，或另存到一个新文件':
+    'Wählen Sie vor dem Überschreiben in den Einstellungen einen Ordner für verschlüsselte Backups oder speichern Sie in eine neue Datei.',
+  '保存已验证，但旧备份清理失败':
+    'Speichern geprüft, aber alte Backups konnten nicht entfernt werden.',
+  已加密保存并验证数据库文件: 'Verschlüsselter Tresor gespeichert und geprüft.',
+  '已发起加密导出，请确认下载成功；原文件未被写回':
+    'Verschlüsselter Export angefordert. Prüfen Sie den Download; die Originaldatei wurde nicht aktualisiert.',
+  '当前浏览器不支持目录备份，请下载加密副本并独立保管':
+    'Ordner-Backups sind in diesem Browser nicht verfügbar. Laden Sie verschlüsselte Kopien herunter und bewahren Sie diese separat auf.',
+  请选择与原密码库不同的备份目录:
+    'Wählen Sie einen Backup-Ordner getrennt vom ursprünglichen Tresor.',
+  请先选择加密备份目录: 'Wählen Sie zuerst einen Ordner für verschlüsselte Backups.',
+  加密备份: 'Verschlüsselte Backups',
+  '备份使用创建时的主密码；更改主密码不会更新旧备份。':
+    'Backups verwenden das ursprüngliche Hauptpasswort. Eine Passwortänderung aktualisiert alte Backups nicht.',
+  此密码库暂无备份: 'Noch keine Backups für diesen Tresor.',
+  从文件恢复: 'Aus Datei wiederherstellen',
+  解锁备份预览: 'Backup-Vorschau entsperren',
+  '输入这份备份创建时的主密码。当前文件不会被覆盖。':
+    'Geben Sie das Passwort ein, das beim Erstellen des Backups verwendet wurde. Die aktuelle Datei wird nicht überschrieben.',
+  预览恢复: 'Wiederherstellung voranzeigen',
+  恢复预览: 'Wiederherstellungsvorschau',
+  '条目 {total} · 新增 {added} · 变化 {changed} · 移除 {removed}':
+    'Einträge {total} · Neu {added} · Geändert {changed} · Entfernt {removed}',
+  '比较包含回收站条目。附件与其他 XML 内容会随整库恢复。恢复后请保存为新文件，不覆盖原文件。':
+    'Der Vergleich enthält gelöschte Einträge. Anhänge und weitere XML-Daten werden mit dem gesamten Tresor wiederhergestellt. Speichern Sie die Wiederherstellung als neue Datei.',
+  恢复为新密码库: 'Als neuen Tresor wiederherstellen',
+  保存与恢复: 'Speichern und Wiederherstellen',
+  '覆盖前自动保留原始加密文件。目录授权仅在当前页面保留，刷新后需重新选择。':
+    'Die verschlüsselte Originaldatei wird vor dem Überschreiben gesichert. Der Ordnerzugriff gilt nur für diese Seite; wählen Sie ihn nach dem Neuladen erneut.',
+  尚未选择备份目录: 'Kein Backup-Ordner gewählt',
+  保留备份数量: 'Anzahl aufzubewahrender Backups',
+  选择加密备份目录: 'Ordner für verschlüsselte Backups wählen',
+  查看加密备份: 'Verschlüsselte Backups ansehen',
+  '备份目录请另行复制到独立设备。浏览器缓存不是备份；下载导出需自行确认文件已保存。':
+    'Kopieren Sie Backups auf ein separates Gerät. Browser-Caches sind keine Backups. Prüfen Sie, ob exportierte Downloads gespeichert wurden.',
+  '操作未完成，请重试': 'Ein Fehler ist aufgetreten. Versuchen Sie es erneut.',
+  暂无账号: 'Kein Konto',
+  所有条目: 'Alle Einträge',
+  '生活里的重要信息，在这里井井有条。': 'Ordnung für das Wichtige in Ihrem digitalen Leben.',
+  双重验证: 'Zwei-Faktor-Authentifizierung',
+  '每一次登录，多一份安心。': 'Ein gutes Gefühl bei jeder Anmeldung.',
+  我的收藏: 'Favoriten',
+  '常用的账号，随时触手可及。': 'Ihre häufig genutzten Konten, immer griffbereit.',
+  归档: 'Archiv',
+  '暂时不用，依然妥善保管。': 'Sicher aufbewahrt, bis Sie sie wieder brauchen.',
+  回收站: 'Papierkorb',
+  '已删除的条目，随时可以恢复。': 'Gelöschte Einträge lassen sich jederzeit wiederherstellen.',
+  标签: 'Tags',
+  '用标签整理你的数字生活。': 'Organisieren Sie Ihr digitales Leben mit Tags.',
+  体验密码库: 'Demo-Tresor',
+  我的密码库: 'Mein Tresor',
+  新建标签: 'Neuer Tag',
+  未命名标签: 'Unbenannter Tag',
+  设置: 'Einstellungen',
+  锁定: 'Sperren',
+  演示: 'Demo',
+  打开其他密码库: 'Anderen Tresor öffnen',
+  偏好设置: 'Einstellungen',
+  锁定密码库: 'Tresor sperren',
+  安装应用: 'App installieren',
+  '处理中…': 'Verarbeitung…',
+  保存更改: 'Änderungen speichern',
+  保存数据库: 'Datenbank speichern',
+  添加验证器: 'Authentifikator hinzufügen',
+  新建条目: 'Neuer Eintrag',
+  '有未保存的更改，记得保存到 .db 文件':
+    'Sie haben ungespeicherte Änderungen. Speichern Sie sie in Ihrer .db-Datei.',
+  '演示数据 · 随心探索，不会影响真实密码库':
+    'Demodaten · Frei ausprobieren, ohne Ihren echten Tresor zu ändern',
+  '密码库已解锁 · 修改后可保存为兼容的 .db 文件':
+    'Tresor entsperrt · Änderungen als kompatible .db-Datei speichern',
+  你的验证器: 'Ihre Authentifikatoren',
+  名称: 'Name',
+  动态验证码: 'Bestätigungscode',
+  按名称排列: 'Nach Name sortiert',
+  没有找到相关条目: 'Keine passenden Einträge',
+  这里还是空的: 'Hier ist noch nichts',
+  试试其他关键词: 'Anderen Suchbegriff versuchen',
+  '添加一个账号，开始整理你的数字生活。':
+    'Fügen Sie ein Konto hinzu und ordnen Sie Ihr digitales Leben.',
+  清除搜索: 'Suche löschen',
+  添加第一个条目: 'Ersten Eintrag hinzufügen',
+  '留一点空间，给安心': 'Ein wenig Platz für ein gutes Gefühl',
+  选择一个条目查看详情: 'Eintrag auswählen, um Details anzusehen',
+  'ClearVault 首页': 'ClearVault-Startseite',
+  本地密码库: 'Lokaler Tresor',
+  工作空间: 'Arbeitsbereich',
+  密码库导航: 'Tresornavigation',
+  我的标签: 'Meine Tags',
+  '你的数据，只属于你': 'Ihre Daten gehören Ihnen',
+  '本地解密 · 离线可用': 'Lokal entschlüsselt · Offline nutzbar',
+  个人空间: 'Persönlicher Bereich',
+  本地加密: 'Lokal verschlüsselt',
+  我: 'Ich',
+  分钟无操作自动锁定: 'Minuten Inaktivität bis zur automatischen Sperre',
+  '搜索条目、账号或标签…': 'Einträge, Konten oder Tags suchen…',
+  搜索条目: 'Einträge suchen',
+  '数据在此设备上解密，不上传密码库':
+    'Auf diesem Gerät entschlüsselt. Ihr Tresor wird nicht hochgeladen.',
+  'SafeInCloud 兼容': 'SafeInCloud-kompatibel',
+  点击验证码复制: 'Code zum Kopieren anklicken',
+  复制动态验证码: 'Bestätigungscode kopieren',
+  验证码剩余时间: 'Zeit bis zum nächsten Code',
+  查看: 'Ansehen',
+  返回列表: 'Zurück zur Liste',
+  取消收藏: 'Aus Favoriten entfernen',
+  收藏: 'Zu Favoriten hinzufügen',
+  编辑条目: 'Eintrag bearbeiten',
+  个人账号: 'Persönliches Konto',
+  '二进制字段（原样保留）': 'Binärfeld (unverändert erhalten)',
+  显示或隐藏: 'Anzeigen oder ausblenden',
+  复制: 'Kopieren',
+  暂未添加字段: 'Noch keine Felder',
+  一次性验证码: 'Einmalcode',
+  实时更新: 'Live-Aktualisierung',
+  '验证码仅在本地生成，请确保设备时间准确。':
+    'Codes werden lokal erzeugt. Achten Sie auf eine genaue Gerätezeit.',
+  备注: 'Notizen',
+  '此条目含附件或图片。保存时会原样保留。':
+    'Dieser Eintrag enthält Anhänge oder Bilder. Sie bleiben beim Speichern unverändert erhalten.',
+  恢复条目: 'Eintrag wiederherstellen',
+  取消归档: 'Aus Archiv holen',
+  归档条目: 'Eintrag archivieren',
+  移至回收站: 'In den Papierkorb verschieben',
+  条目详情: 'Eintragsdetails',
+  账号信息: 'Kontoinformationen',
+  更新于: 'Aktualisiert am',
+  未知日期: 'Unbekanntes Datum',
+  '打开 .db 密码库': '.db-Tresor öffnen',
+  创建新密码库: 'Tresor erstellen',
+  重新解锁: 'Erneut entsperren',
+  先体验一下: 'Demo ausprobieren',
+  '你的设备，你的密码库': 'Ihr Gerät. Ihr Tresor.',
+  '重要的，': 'Was Ihnen wichtig ist,',
+  安心放在这里: 'hier sicher verwahrt',
+  '密码、账号和两步验证码，井井有条。': 'Passwörter, Konten und Bestätigungscodes, alles geordnet.',
+  '打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。':
+    'Öffnen Sie Ihren SafeInCloud-Tresor für ein entspannteres digitales Leben.',
+  '无需注册 · 无需上传文件': 'Keine Registrierung · Keine Datei-Uploads',
+  '双重验证 · Google': 'Zwei-Faktor-Authentifizierung · Google',
+  '只在本地，安心解锁': 'Lokal und sicher entsperren',
+  '主密码解密，文件始终由你掌握。':
+    'Ihr Hauptpasswort entschlüsselt eine Datei, die Sie selbst verwalten.',
+  '两步验证，一眼即得': 'Bestätigungscodes auf einen Blick',
+  '实时动态验证码，轻点即可复制。': 'Aktuelle Bestätigungscodes. Ein Klick zum Kopieren.',
+  '随时保存，自由带走': 'Jederzeit speichern. Überall mitnehmen.',
+  '读写兼容 .db 格式，离线也能使用。': 'Kompatible .db-Dateien lesen und schreiben, auch offline.',
+  秒后更新: 'Sekunden bis zur Aktualisierung',
+  密钥无效: 'Ungültiger Schlüssel',
+  关闭: 'Schließen',
+  为密码库设置主密码: 'Hauptpasswort festlegen',
+  欢迎回来: 'Willkommen zurück',
+  '请牢记主密码，它是解开这个密码库的钥匙。':
+    'Merken Sie sich dieses Passwort. Es ist der Schlüssel zu Ihrem Tresor.',
+  '输入主密码，在此设备上解锁你的密码库。':
+    'Geben Sie Ihr Hauptpasswort ein, um den Tresor auf diesem Gerät zu entsperren.',
+  新密码库: 'Neuer Tresor',
+  密码库名称: 'Tresorname',
+  显示或隐藏主密码: 'Hauptpasswort anzeigen oder ausblenden',
+  确认主密码: 'Hauptpasswort bestätigen',
+  '至少 8 个字符。新密码库使用支持完整 Unicode 的版本 2 格式。':
+    'Mindestens 8 Zeichen. Neue Tresore verwenden Version 2 mit vollständiger Unicode-Unterstützung.',
+  取消: 'Abbrechen',
+  确认并继续: 'Bestätigen und fortfahren',
+  解锁密码库: 'Tresor entsperren',
+  'SafeInCloud 兼容数据库': 'SafeInCloud-kompatible Datenbank',
+  主密码: 'Hauptpasswort',
+  'SafeInCloud 数据库': 'SafeInCloud-Datenbank',
+  '文件超过 64 MB，请使用桌面客户端处理':
+    'Diese Datei ist größer als 64 MB. Verwenden Sie den Desktop-Client.',
+  '请选择 SafeInCloud 格式的 .db 文件': 'Wählen Sie eine SafeInCloud-.db-Datei.',
+  两次输入的密码不一致: 'Die Passwörter stimmen nicht überein.',
+  '正在处理…': 'Wird verarbeitet…',
+  重试: 'Erneut versuchen',
+  账号: 'Konto',
+  密码: 'Passwort',
+  网站: 'Website',
+  两步验证码: 'Zweistufiger Bestätigungscode',
+  '把重要的信息，妥善收在一起。': 'Wichtige Informationen gut zusammen aufbewahren.',
+  生成密码: 'Passwort erzeugen',
+  添加字段: 'Feld hinzufügen',
+  添加双重验证: 'Zwei-Faktor-Authentifizierung hinzufügen',
+  条目名称: 'Eintragsname',
+  '例如 GitHub、Google': 'Zum Beispiel GitHub oder Google',
+  字段: 'Felder',
+  '添加一些备注…': 'Notizen hinzufügen…',
+  保存条目: 'Eintrag speichern',
+  导入二维码图片: 'QR-Bild importieren',
+  邮箱: 'E-Mail',
+  文本: 'Text',
+  私密文本: 'Geheimer Text',
+  电话: 'Telefon',
+  数字: 'Ziffern',
+  日期: 'Datum',
+  有效期: 'Ablaufdatum',
+  应用: 'Anwendung',
+  二进制: 'Binär',
+  删除字段: 'Feld entfernen',
+  验证密钥: 'Authentifizierungsschlüssel',
+  'Base32 密钥或 otpauth://totp/…': 'Base32-Schlüssel oder otpauth://totp/…',
+  '支持 SHA1 / SHA256 / SHA512、6 / 8 位及自定义周期。与 SafeInCloud 共用时请使用 30 秒周期。':
+    'Unterstützt SHA1 / SHA256 / SHA512, 6 oder 8 Ziffern und eigene Zeitintervalle. Bei gemeinsamer Nutzung mit SafeInCloud bitte 30 Sekunden wählen.',
+  显示或隐藏内容: 'Inhalt anzeigen oder ausblenden',
+  字段内容: 'Feldinhalt',
+  字段名称: 'Feldname',
+  字段类型: 'Feldtyp',
+  未命名条目: 'Unbenannter Eintrag',
+  '原文件已被其他应用修改，请在设置中另存为副本，避免覆盖':
+    'Die Originaldatei wurde von einer anderen App geändert. Speichern Sie in den Einstellungen eine Kopie, um sie nicht zu überschreiben.',
+  已加密保存到数据库文件: 'Verschlüsselte Datenbank gespeichert.',
+  '已下载加密数据库，请保留下载文件':
+    'Verschlüsselte Datenbank heruntergeladen. Bewahren Sie die Datei auf.',
+  '保存失败：': 'Speichern fehlgeschlagen: ',
+  '已锁定；未保存更改已加密保留在当前页面内，关闭页面会丢失':
+    'Gesperrt. Ungespeicherte Änderungen bleiben verschlüsselt im Arbeitsspeicher dieser Seite und gehen beim Schließen verloren.',
+  密码库已锁定: 'Tresor gesperrt',
+  '锁定失败：': 'Sperren fehlgeschlagen: ',
+  还有未保存的更改: 'Sie haben ungespeicherte Änderungen',
+  '继续将丢弃当前页面里尚未写入文件的更改。':
+    'Beim Fortfahren werden Änderungen verworfen, die noch nicht in eine Datei geschrieben wurden.',
+  返回保存: 'Zurück und speichern',
+  丢弃并继续: 'Verwerfen und fortfahren',
+  已复制到剪贴板: 'In die Zwischenablage kopiert',
+  '复制失败，请检查浏览器剪贴板权限':
+    'Kopieren fehlgeschlagen. Prüfen Sie die Zwischenablageberechtigung des Browsers.',
+  请先添加密码类型的字段: 'Fügen Sie zuerst ein Passwortfeld hinzu.',
+  关闭密码生成器: 'Passwortgenerator schließen',
+  重新生成: 'Neu erzeugen',
+  复制预览: 'Vorschau kopieren',
+  大写字母: 'Großbuchstaben',
+  小写字母: 'Kleinbuchstaben',
+  特殊符号: 'Sonderzeichen',
+  填入字段: 'Feld ausfüllen',
+  密码生成器: 'Passwortgenerator',
+  '先选择规则，满意后再填入密码。':
+    'Wählen Sie die Regeln und übernehmen Sie das Passwort, wenn es Ihnen gefällt.',
+  生成预览: 'Vorschau',
+  生成的密码: 'Erzeugtes Passwort',
+  密码长度: 'Passwortlänge',
+  调整密码长度: 'Passwortlänge anpassen',
+  位: 'Zeichen',
+  排除易混淆字符: 'Ähnliche Zeichen ausschließen',
+  额外排除字符: 'Weitere ausgeschlossene Zeichen',
+  输入不希望出现在密码中的字符: 'Zeichen, die nicht im Passwort vorkommen sollen',
+  '每个已选字符类型至少包含 1 个字符。规则调整只影响预览。':
+    'Jeder gewählte Zeichentyp ist mindestens einmal enthalten. Regeländerungen wirken sich nur auf die Vorschau aus.',
+  确定并填入: 'Bestätigen und ausfüllen',
+  '简单一点，安心一点。': 'Einfacher. Entspannter.',
+  分钟: 'Minuten',
+  '另存为 .db 文件': 'Als .db-Datei speichern',
+  更改主密码: 'Hauptpasswort ändern',
+  安装到设备: 'Auf Gerät installieren',
+  完成: 'Fertig',
+  无操作自动锁定: 'Automatisch sperren bei Inaktivität',
+  '密码库只在内存中解密，不写入浏览器存储。离线缓存只包含应用文件。请将更改保存到 .db，关闭页面后需要重新打开文件。':
+    'Der Tresor wird nur im Arbeitsspeicher entschlüsselt, nicht im Browser gespeichert. Der Offline-Cache enthält nur App-Dateien. Speichern Sie Änderungen in .db; nach dem Schließen müssen Sie die Datei erneut öffnen.',
+  '体验密码库.db': 'Demo-Tresor.db',
+  '已移至回收站，可随时恢复': 'In den Papierkorb verschoben. Jederzeit wiederherstellbar.',
+  已恢复条目: 'Eintrag wiederhergestellt',
+  演示模式: 'Demomodus',
+  本地解密: 'Lokale Entschlüsselung',
+  '· 格式版本': '· Formatversion',
+  标签名称: 'Tag-Name',
+  '例如 工作、生活': 'Zum Beispiel Arbeit oder Privat',
+  创建标签: 'Tag erstellen',
+  '在浏览器菜单中选择“安装应用”或“添加到主屏幕”':
+    'Wählen Sie im Browsermenü „App installieren“ oder „Zum Startbildschirm hinzufügen“.',
+  '条目已更新，请保存数据库': 'Eintrag aktualisiert. Speichern Sie die Datenbank.',
+  '请使用小于 20 MB 的二维码图片': 'Verwenden Sie ein QR-Bild unter 20 MB.',
+  '没有识别到 TOTP 二维码，请尝试更清晰的图片或手动粘贴密钥':
+    'Kein TOTP-QR-Code erkannt. Versuchen Sie ein schärferes Bild oder fügen Sie den Schlüssel manuell ein.',
+  验证器: 'Authentifikator',
+  '已识别验证密钥，保存条目即可生成验证码':
+    'Authentifizierungsschlüssel erkannt. Speichern Sie den Eintrag, um Codes zu erzeugen.',
+  '离线缓存未启用，仍可在线使用': 'Offline-Cache nicht verfügbar. Die App bleibt online nutzbar.',
+  '请使用支持 Web Crypto 和 CompressionStream 的现代浏览器，并通过 HTTPS 或 localhost 打开':
+    'Verwenden Sie einen modernen Browser mit Web Crypto und CompressionStream über HTTPS oder localhost.',
+  不支持此数据库版本: 'Nicht unterstützte Datenbankversion',
+  文件不完整: 'Unvollständige Datei',
+  '数据库解压后超过 128 MB 限制': 'Die entpackte Datenbank überschreitet das Limit von 128 MB.',
+  '这不是兼容的 SafeInCloud .db 文件': 'Dies ist keine kompatible SafeInCloud-.db-Datei.',
+  '主密码不正确，或数据库文件已损坏': 'Falsches Hauptpasswort oder beschädigte Datenbankdatei.',
+  '请输入有效的 Base32 密钥或 otpauth:// 链接':
+    'Geben Sie einen gültigen Base32-Schlüssel oder otpauth://-Link ein.',
+  'Base32 密钥末尾无效': 'Ungültiges Ende des Base32-Schlüssels',
+  '仅支持基于时间的 TOTP 链接': 'Nur zeitbasierte TOTP-Links werden unterstützt.',
+  '仅支持 SHA1、SHA256 和 SHA512': 'Nur SHA1, SHA256 und SHA512 werden unterstützt.',
+  '验证码位数应为 6 或 8': 'Bestätigungscodes müssen 6 oder 8 Ziffern haben.',
+  '验证码周期应为 1–300 秒': 'Das Zeitintervall muss 1–300 Sekunden betragen.',
+  '不支持包含 DTD 的数据库': 'Datenbanken mit DTD werden nicht unterstützt.',
+  '数据库 XML 无效': 'Ungültiges Datenbank-XML',
+  开发与协作: 'Entwicklung und Zusammenarbeit',
+  日常生活: 'Alltag',
+  '这是演示条目，可以自由编辑。真实密码库仅在你的设备上解密。':
+    'Dies ist ein frei bearbeitbarer Demoeintrag. Echte Tresore werden nur auf Ihrem Gerät entschlüsselt.',
+  '密码长度应为 4–128 个字符': 'Die Passwortlänge muss 4–128 Zeichen betragen.',
+  请至少选择一种字符类型: 'Wählen Sie mindestens einen Zeichentyp.',
+  '某种已选字符类型被全部排除，请调整规则':
+    'Alle Zeichen eines gewählten Typs sind ausgeschlossen. Passen Sie die Regeln an.',
+  '当前规则较难满足，请增加密码长度或减少排除字符':
+    'Diese Regeln sind schwer zu erfüllen. Erhöhen Sie die Länge oder schließen Sie weniger Zeichen aus.',
+  界面语言: 'Oberflächensprache',
+  选择语言: 'Sprache auswählen',
+  'ClearVault · 密码与验证器': 'ClearVault · Passwörter und Authentifikator',
+  'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。':
+    'ClearVault: lokaler Passworttresor und Authentifikator. SafeInCloud-Datenbanken öffnen, verwalten und speichern.',
+  '。': '.',
+  '本地解密 · 按需填充': 'Lokal entschlüsseln · Auf Wunsch ausfüllen',
+  '你的密码，随手可用。': 'Ihre Passwörter, immer griffbereit.',
+  '点击当前网站的扩展图标授权，再选择账号填充。':
+    'Klicken Sie auf das Erweiterungssymbol dieser Website, um den Zugriff zu erlauben, und wählen Sie ein Konto zum Ausfüllen.',
+  '选择 .db 密码库': '.db-Tresor auswählen',
+  当前网站: 'Aktuelle Website',
+  刷新网站匹配: 'Passende Konten aktualisieren',
+  填充此账号: 'Dieses Konto ausfüllen',
+  '没有精确匹配的账号。可为已有条目添加当前网站地址。':
+    'Keine genaue Übereinstimmung. Fügen Sie die aktuelle Website-Adresse einem bestehenden Eintrag hinzu.',
+  '仅支持 HTTPS 网站。新网站请先点击工具栏中的扩展图标授权。':
+    'Nur HTTPS-Websites. Klicken Sie für eine neue Website zuerst auf das Erweiterungssymbol in der Symbolleiste.',
+  '请选择不超过 64 MB 的 .db 文件。': 'Wählen Sie eine .db-Datei mit höchstens 64 MB.',
+  '操作失败。请检查密码、文件或当前网站的扩展授权。':
+    'Aktion fehlgeschlagen. Prüfen Sie Passwort, Datei und Erweiterungsberechtigung für diese Website.',
+  '已填充，请在网站上确认登录。': 'Ausgefüllt. Bestätigen Sie die Anmeldung auf der Website.',
+  '没有找到唯一的登录输入框，或这是新密码表单，请手动填写。':
+    'Kein eindeutiges Anmeldefeld gefunden, oder dies ist ein Formular für ein neues Passwort. Füllen Sie es manuell aus.',
+  '网站已变化，已停止填充。': 'Die Website hat sich geändert. Ausfüllen wurde gestoppt.',
+  '正在解锁…': 'Wird entsperrt…',
+  '文件只在本地解密。仅在点击填充时向当前网站提供所选账号，不自动提交。导入或更新后请保存；关闭侧栏会丢失未保存修改。':
+    'Dateien werden lokal entschlüsselt. Nur beim Klick auf Ausfüllen wird das gewählte Konto an die Website übergeben, ohne automatische Anmeldung. Speichern Sie nach Importen oder Änderungen; beim Schließen gehen ungespeicherte Änderungen verloren.',
+  帮助与资源: 'Hilfe und Ressourcen',
+  使用指南: 'Anleitungen',
+  安全与隐私: 'Sicherheit und Datenschutz',
+  英文网站: 'Website auf Englisch',
+  为安心留一点空间: 'Ein wenig Platz für ein gutes Gefühl',
+  '一切井井有条。': 'Alles an seinem Platz.',
+  你的私密空间: 'IHR PRIVATER BEREICH',
+  '少一点担忧，多一点从容。': 'Weniger Sorgen. Mehr Klarheit.',
+  '为你的数字生活，留一份安心。': 'Für ein entspanntes digitales Leben.',
+};

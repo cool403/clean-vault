@@ -1,4 +1,35 @@
 export default {
+  '本地解密 · 按需填充': 'Local decryption · Fill on request',
+  '你的密码，随手可用。': 'Your passwords, close at hand.',
+  '点击当前网站的扩展图标授权，再选择账号填充。':
+    'Click the extension icon on this website to grant access, then choose an account.',
+  '选择 .db 密码库': 'Choose a .db vault',
+  当前网站: 'Current website',
+  刷新网站匹配: 'Refresh matching accounts',
+  填充此账号: 'Fill this login',
+  '没有精确匹配的账号。可为已有条目添加当前网站地址。':
+    'No exact match. Add the current website address to an existing entry.',
+  '仅支持 HTTPS 网站。新网站请先点击工具栏中的扩展图标授权。':
+    'HTTPS websites only. Click the toolbar extension icon to authorize a new website.',
+  '请选择不超过 64 MB 的 .db 文件。': 'Choose a .db file up to 64 MB.',
+  '操作失败。请检查密码、文件或当前网站的扩展授权。':
+    'Could not complete the action. Check your password, file or extension permission for this website.',
+  '已填充，请在网站上确认登录。': 'Filled. Confirm sign-in on the website.',
+  '没有找到唯一的登录输入框，或这是新密码表单，请手动填写。':
+    'No unique login input, or this is a new-password form. Fill it manually.',
+  '网站已变化，已停止填充。': 'The website changed. Filling was stopped.',
+  '正在解锁…': 'Unlocking…',
+  '文件只在本地解密。仅在点击填充时向当前网站提供所选账号，不自动提交。导入或更新后请保存；关闭侧栏会丢失未保存修改。':
+    'Files are decrypted locally. Only an explicit Fill shares the selected login with the website, without submitting. Save imports and updates; closing the panel loses unsaved changes.',
+  帮助与资源: 'Helpful links',
+  使用指南: 'Guides',
+  安全与隐私: 'Security & privacy',
+  英文网站: 'English website',
+  为安心留一点空间: 'A little space for peace of mind',
+  '一切井井有条。': 'Everything, in its place.',
+  你的私密空间: 'YOUR PRIVATE SPACE',
+  '少一点担忧，多一点从容。': 'Less worry. More clarity.',
+  '为你的数字生活，留一份安心。': 'Made for your digital peace of mind.',
   解锁当前会话: 'Unlock current session',
   解锁并继续未保存的修改: 'Unlock and continue unsaved changes',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':

@@ -12,6 +12,9 @@
 body {
   margin: 0;
 }
+html[lang='ja'] body {
+  font-family: 'Yu Gothic', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
+}
 header {
   display: flex;
   align-items: center;

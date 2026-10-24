@@ -235,10 +235,39 @@ test('extension updates/imports with confirmation, verifies backups, stops stale
   assert.notDeepEqual(content, saved, 'conflict must preserve the external version');
   await element('#reload').onclick();
   assert.equal(element('#locked').hidden, false);
+  for (const [code, message] of [
+    ['de', 'Datei neu geladen. Geben Sie Ihr Hauptpasswort ein.'],
+    ['ja', 'ファイルを再読み込みしました。マスターパスワードを入力してください。'],
+    ['es', 'Archivo recargado. Introduzca la contraseña maestra.'],
+  ]) {
+    element('#language').value = code;
+    element('#language').onchange();
+    assert.equal(
+      element('#status').textContent,
+      message,
+      'existing status follows language changes',
+    );
+  }
+  element('#language').value = 'en';
+  element('#language').onchange();
   element('#password').value = password;
   await element('#unlock').onsubmit(event());
   assert.match(element('.entry strong').textContent, /External/);
   assert.equal(document.querySelectorAll('.entry').length, 1);
+  for (const [code, label] of [
+    ['de', '.db-Tresor auswählen'],
+    ['ja', '.db 保管庫を選択'],
+    ['es', 'Elegir bóveda .db'],
+  ]) {
+    element('#language').value = code;
+    element('#language').onchange();
+    assert.equal(document.documentElement.lang, code);
+    assert.equal(element('#open').textContent, label);
+    await wait(() => document.querySelector('.entry strong')?.textContent === 'External');
+    assert.equal(document.querySelectorAll('#language option').length, 5);
+  }
+  element('#language').value = 'en';
+  element('#language').onchange();
   await wait(() => document.querySelector('[data-action=recent-open]'));
   await element('#lock').onclick();
   await wait(() => !element('#unlock-button').disabled);

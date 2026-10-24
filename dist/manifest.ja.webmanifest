@@ -1,0 +1,32 @@
+{
+  "id": "./",
+  "name": "ClearVault · パスワードと認証アプリ",
+  "short_name": "ClearVault",
+  "lang": "ja",
+  "description": "ClearVault：ローカル優先のパスワード保管庫・認証アプリ。SafeInCloud データベースを開き、管理・保存できます。",
+  "start_url": "./?lang=ja",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f1e7",
+  "theme_color": "#f5f1e7",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

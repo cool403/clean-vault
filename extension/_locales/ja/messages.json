@@ -1,0 +1,7 @@
+{
+  "extensionName": { "message": "ClearVault · ローカル保管庫" },
+  "extensionDescription": {
+    "message": "SafeInCloud 保管庫をローカルで開き、インポート・保存。対応する HTTPS ログインの入力とパスワード更新の確認ができます。アカウントや同期は不要です。"
+  },
+  "openVault": { "message": "ClearVault を開く" }
+}

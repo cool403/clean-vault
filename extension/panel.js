@@ -9,7 +9,7 @@ import {
   setField,
   touch,
 } from './core/vault.js';
-import { t, getLocale, initializeLanguage, setLanguage } from './core/i18n.js';
+import { t, getLocale, initializeLanguage, setLanguage, supportedLocales } from './core/i18n.js';
 import { fingerprint, readBytes, saveSafely } from './core/safe-save.js';
 import {
   createRecentFiles,
@@ -43,70 +43,44 @@ let recentEntries = [],
   matchEpoch = 0,
   toastTimer,
   statusMessage = '',
+  statusError = null,
   showAll = false,
   lockPending = false,
   pendingLock = false,
   saveError = false,
   selectingReload = false;
 const strings = {
-  'zh-CN': {
-    local: '本地解密 · 按需填充',
-    title: '你的密码，随手可用。',
-    intro: '点击当前网站的扩展图标授权，再选择账号填充。',
-    fileLabel: '选择 .db 密码库',
-    password: '主密码',
-    unlock: '解锁密码库',
-    lock: '锁定',
-    idle: '无操作自动锁定',
-    site: '当前网站',
-    refresh: '刷新网站匹配',
-    fill: '填充此账号',
-    none: '没有精确匹配的账号。可为已有条目添加当前网站地址。',
-    unsupported: '仅支持 HTTPS 网站。新网站请先点击工具栏中的扩展图标授权。',
-    choose: '请选择不超过 64 MB 的 .db 文件。',
-    error: '操作失败。请检查密码、文件或当前网站的扩展授权。',
-    filled: '已填充，请在网站上确认登录。',
-    ambiguous: '没有找到唯一的登录输入框，或这是新密码表单，请手动填写。',
-    origin: '网站已变化，已停止填充。',
-    locked: '密码库已锁定',
-    loading: '正在解锁…',
-    privacy:
-      '文件只在本地解密。仅在点击填充时向当前网站提供所选账号，不自动提交。导入或更新后请保存；关闭侧栏会丢失未保存修改。',
-  },
-  en: {
-    local: 'Local decryption · Fill on request',
-    title: 'Your passwords, close at hand.',
-    intro: 'Click the extension icon on this website to grant access, then choose an account.',
-    fileLabel: 'Choose a .db vault',
-    password: 'Master password',
-    unlock: 'Unlock vault',
-    lock: 'Lock',
-    idle: 'Lock after inactivity',
-    site: 'Current website',
-    refresh: 'Refresh matching accounts',
-    fill: 'Fill this login',
-    none: 'No exact match. Add the current website address to an existing entry.',
-    unsupported:
-      'HTTPS websites only. Click the toolbar extension icon to authorize a new website.',
-    choose: 'Choose a .db file up to 64 MB.',
-    error:
-      'Could not complete the action. Check your password, file or extension permission for this website.',
-    filled: 'Filled. Confirm sign-in on the website.',
-    ambiguous: 'No unique login input, or this is a new-password form. Fill it manually.',
-    origin: 'The website changed. Filling was stopped.',
-    locked: 'Vault locked.',
-    loading: 'Unlocking…',
-    privacy:
-      'Files are decrypted locally. Only an explicit Fill shares the selected login with the website, without submitting. Save imports and updates; closing the panel loses unsaved changes.',
-  },
+  local: '本地解密 · 按需填充',
+  title: '你的密码，随手可用。',
+  intro: '点击当前网站的扩展图标授权，再选择账号填充。',
+  fileLabel: '选择 .db 密码库',
+  password: '主密码',
+  unlock: '解锁密码库',
+  lock: '锁定',
+  idle: '无操作自动锁定',
+  site: '当前网站',
+  refresh: '刷新网站匹配',
+  fill: '填充此账号',
+  none: '没有精确匹配的账号。可为已有条目添加当前网站地址。',
+  unsupported: '仅支持 HTTPS 网站。新网站请先点击工具栏中的扩展图标授权。',
+  choose: '请选择不超过 64 MB 的 .db 文件。',
+  error: '操作失败。请检查密码、文件或当前网站的扩展授权。',
+  filled: '已填充，请在网站上确认登录。',
+  ambiguous: '没有找到唯一的登录输入框，或这是新密码表单，请手动填写。',
+  origin: '网站已变化，已停止填充。',
+  locked: '密码库已锁定',
+  loading: '正在解锁…',
+  privacy:
+    '文件只在本地解密。仅在点击填充时向当前网站提供所选账号，不自动提交。导入或更新后请保存；关闭侧栏会丢失未保存修改。',
 };
 const text = (key) =>
   key === 'username-filled'
     ? t('已填充账号，请在网站继续下一步，再点击填充密码')
-    : strings[getLocale()][key] || t(key);
-function status(key) {
+    : t(strings[key] || key);
+function status(key, error = null) {
   statusMessage = key;
-  $('#status').textContent = text(key);
+  statusError = error;
+  $('#status').textContent = text(key) + (error ? fileError(error) : '');
 }
 function notify(message) {
   const element = $('#toast');
@@ -122,7 +96,7 @@ function notify(message) {
   }, 3200);
 }
 function fail(error) {
-  status(fileError(error));
+  status('', error);
 }
 function setBusy(value) {
   busy = value;
@@ -274,14 +248,14 @@ async function lock() {
     setBusy(true);
     try {
       encrypted = await encryptDatabase(snapshot, key, formatVersion);
-      status(t('已锁定；未保存更改已加密保留在当前页面内，关闭页面会丢失'));
+      status('已锁定；未保存更改已加密保留在当前页面内，关闭页面会丢失');
     } catch (error) {
       doc = previousDoc;
       credential = key;
       $('#unlocked').hidden = false;
       $('#locked').hidden = true;
       $('#vault-name').textContent = name;
-      status(t('锁定失败：') + fileError(error));
+      status('锁定失败：', error);
     } finally {
       lockPending = false;
       setBusy(false);
@@ -301,7 +275,7 @@ async function freshFile() {
   const current = await fingerprint(await readBytes(source));
   if (version !== epoch || source !== handle) return false;
   if (current === expected) return true;
-  status(t('原文件已变化，请重新加载后再填充；当前编辑可另存为副本'));
+  status('原文件已变化，请重新加载后再填充；当前编辑可另存为副本');
   return false;
 }
 function liveCards() {
@@ -574,7 +548,7 @@ async function save(asCopy = false) {
     $('#vault-name').textContent = name;
   } catch (error) {
     saveError = true;
-    status(t('保存失败：') + fileError(error));
+    status('保存失败：', error);
   } finally {
     setBusy(false);
     saveStatus();
@@ -636,7 +610,7 @@ async function replaceFromFile(file, selected = null) {
   saveError = false;
   $('#selected-file').textContent = name;
   void refreshRecent();
-  status(t('已重新加载文件，请输入主密码'));
+  status('已重新加载文件，请输入主密码');
 }
 function localize() {
   document.documentElement.lang = getLocale();
@@ -647,7 +621,7 @@ function localize() {
     .querySelectorAll('[data-t]')
     .forEach((element) => (element.textContent = t(element.dataset.t)));
   $('#language').value = getLocale();
-  $('#status').textContent = text(statusMessage);
+  $('#status').textContent = text(statusMessage) + (statusError ? fileError(statusError) : '');
   $('#language').setAttribute('aria-label', t('选择语言'));
   if (doc) {
     saveStatus();
@@ -817,3 +791,11 @@ chrome.tabs.onUpdated.addListener((_id, change) => {
   if (change.status === 'complete' || change.url) refresh().catch(fail);
 });
 localize();
+$('#language').innerHTML = supportedLocales
+  .map((locale) => `<option value="${locale.code}">${locale.name}</option>`)
+  .join('');
+$('#idle')
+  .querySelectorAll('option')
+  .forEach((option) => {
+    option.textContent = option.value + ' ' + t('分钟');
+  });

@@ -6,6 +6,8 @@
 
 离线优先的 SafeInCloud 兼容密码管理器与 TOTP 验证器。纯静态 PWA，密码库在浏览器本地解密，无需账号或后端服务。
 
+网页和扩展界面支持简体中文、英语、德语、日语和西班牙语，可自动匹配浏览器语言并记住手动选择。语言切换不翻译密码库内容；详见[界面语言说明](docs/USAGE.md#界面语言)。
+
 [使用 ClearVault](https://clear-vault.app) · [GitHub 源码](https://github.com/cool403/clean-vault) · [构建记录](https://github.com/cool403/clean-vault/actions) · [安全设计](SECURITY.md)
 
 ## 开源与可验证发布

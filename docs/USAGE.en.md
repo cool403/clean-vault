@@ -2,6 +2,12 @@
 
 English · [简体中文](USAGE.md)
 
+## Interface languages
+
+The app and browser extension support 简体中文, English, Deutsch, 日本語 and Español. On first use they match the browser's preferred languages, with English as the fallback. Use the language selector at the top of the page or sidebar, or in the app's Preferences. The choice is remembered locally, separately for the app and extension. Switching closes the current dialog, so finish editing first; unsaved changes already applied in the main interface are retained.
+
+Open `/?lang=de`, `/?lang=ja` or `/?lang=es` to launch in a specific language; this parameter takes precedence over the saved choice. Interface text, messages, dates and installation metadata follow the selected language. Vault names, accounts, passwords and notes are never translated. Language switching also works offline. Public guides and security documentation remain available in Chinese and English; other interface languages link to the English documentation.
+
 ## Recent vaults
 
 After successfully unlocking or saving a file, the app or extension remembers up to five recent vaults. Records contain only file names, handles, record IDs, times and folder text labels you confirm, never master passwords, entries or vault contents. The app and extension keep separate histories.

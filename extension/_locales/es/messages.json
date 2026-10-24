@@ -1,0 +1,7 @@
+{
+  "extensionName": { "message": "ClearVault · Bóveda local" },
+  "extensionDescription": {
+    "message": "Abra y guarde bóvedas locales de SafeInCloud. Rellene accesos HTTPS y confirme cambios de contraseña. Sin cuenta."
+  },
+  "openVault": { "message": "Abrir ClearVault" }
+}

@@ -6,6 +6,8 @@ English · [简体中文](README.md)
 
 An offline-first, SafeInCloud-compatible password manager and TOTP authenticator. A static PWA that decrypts vault files locally in your browser, with no account or application server required.
 
+The app and extension support Chinese, English, German, Japanese and Spanish, matching browser preferences and remembering manual choices. Vault contents are never translated. See [interface languages](docs/USAGE.en.md#interface-languages).
+
 [Open ClearVault](https://clear-vault.app) · [Source](https://github.com/cool403/clean-vault) · [Build history](https://github.com/cool403/clean-vault/actions) · [Security design](SECURITY.md)
 
 ## Open source and traceable deployments

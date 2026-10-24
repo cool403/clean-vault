@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:4173. Edit source in `dist/`, `extension/` and `scripts/`, rather than generated output. Update both language catalogs when adding interface text; never translate user data. Increment the cache version in `dist/sw.js` when changing application resources.
+Open http://127.0.0.1:4173. Edit source in `dist/`, `extension/` and `scripts/`, rather than generated output. Update all five catalogs in `dist/locales/` (zh-CN, en, de, ja, es) when adding interface text, preserving matching keys and parameters; never translate user data. The extension uses the shared catalogs. Increment the cache version in `dist/sw.js` when changing application resources; include new language assets in the extension build and offline list.
 
 ## Checks before committing
 
@@ -28,7 +28,7 @@ Source tests cover vault formats, Unicode, TOTP, write conflicts, backup restora
 
 `dist/recent-files.js` stores only names, file handles, record IDs, times and an optional `folder` text label in IndexedDB; never add ciphertext, decrypted data or credentials. `setDirectory` resolves the file handle against a user-selected read-only directory, then stores its name and relative directory without retaining the directory handle or reading other files. This is not an absolute path. Remembering the same file retains the label; saving a different file does not inherit it. `dist/import-data.js` parses and deduplicates imports. `dist/workflow-ui.js` and `dist/workflow.css` share preview and recent-file interactions between the app and extension. `scripts/build-extension.mjs` copies these into generated `extension/core/`; edit the originals. Extension writing reuses `safe-save.js`. Filling and explicit new-password reading remain self-contained functions serialized by Chrome.
 
-Validate the app and sidebar in both languages and narrow layouts. Tests cover duplicate imports, changed passwords, unknown XML preservation, metadata persistence, permission failure, backups, conflicts and stale asynchronous requests after locking. Update `docs/USAGE*.md` and `scripts/public-content.mjs`; generate bilingual public guides, sitemap and robots with `npm run build:public`. Include new runtime assets in the offline list.
+Validate the app and sidebar in all five interface languages and narrow layouts. Tests cover duplicate imports, changed passwords, unknown XML preservation, metadata persistence, permission failure, backups, conflicts and stale asynchronous requests after locking. Update `docs/USAGE*.md` and `scripts/public-content.mjs`; generate bilingual public guides, sitemap and robots with `npm run build:public`. Include new runtime assets in the offline list.
 
 `mergeRecentSession` merges only the display model using a record ID or `isSameEntry`, without persisting session flags. Unmatched sessions get a temporary row so unsaved new vaults and canceled first-unlock flows remain accessible. The `recent-session` action resumes the encrypted in-memory copy; other history rows still reopen files. Locking, history clearing and UI refresh must preserve unsaved encrypted copies.
 

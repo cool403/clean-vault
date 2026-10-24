@@ -1,4 +1,4 @@
-const CACHE = 'clearvault-shell-v40';
+const CACHE = 'clearvault-shell-v41';
 const ASSETS = [
   './',
   './index.html',
@@ -23,6 +23,9 @@ const ASSETS = [
   './i18n.js',
   './locales/en.js',
   './locales/zh-CN.js',
+  './locales/de.js',
+  './locales/ja.js',
+  './locales/es.js',
   './vendor/jsQR.js',
   './icon.svg',
   './icon.svg?v=21',
@@ -30,6 +33,9 @@ const ASSETS = [
   './icon-512.png',
   './manifest.webmanifest',
   './manifest.en.webmanifest',
+  './manifest.de.webmanifest',
+  './manifest.ja.webmanifest',
+  './manifest.es.webmanifest',
 ];
 self.addEventListener('install', (event) =>
   event.waitUntil(

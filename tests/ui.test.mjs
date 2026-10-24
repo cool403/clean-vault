@@ -132,6 +132,17 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   ]);
   assert.equal(document.documentElement.lang, 'en');
   assert.equal(document.querySelector('[data-action=open]').textContent, 'Open .db vault');
+  for (const [code, label] of [
+    ['de', '.db-Tresor öffnen'],
+    ['ja', '.db 保管庫を開く'],
+    ['es', 'Abrir bóveda .db'],
+  ]) {
+    switchLanguage(code);
+    assert.equal(document.documentElement.lang, code);
+    assert.equal(document.querySelector('[data-action=open]').textContent, label);
+    assert.equal(document.querySelectorAll('[data-language] option').length, 5);
+    assert.ok(document.querySelector('.welcome-links a[href="/en/guides/"]'));
+  }
   switchLanguage('zh-CN');
   click('[data-action=create]');
   formValue('#password-form', 'name', '测试密码库');
@@ -190,6 +201,12 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   submit('#editor-form');
   assert.equal(document.querySelector('#modal').open, false);
   assert.equal(document.querySelector('.identity h2').textContent, '没有双重验证的条目');
+  for (const code of ['de', 'ja', 'es']) {
+    switchLanguage(code);
+    assert.equal(document.querySelector('.identity h2').textContent, '没有双重验证的条目');
+    assert.ok(document.querySelector('.status-line').textContent.length);
+  }
+  switchLanguage('zh-CN');
   assert.ok(!document.querySelector('.auth-card'));
   assert.ok(!document.querySelector('.otp-widget'));
   assert.ok(!document.querySelector('[data-action=add-otp]'));

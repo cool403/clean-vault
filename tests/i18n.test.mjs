@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import en from '../dist/locales/en.js';
 import zh from '../dist/locales/zh-CN.js';
+import de from '../dist/locales/de.js';
+import ja from '../dist/locales/ja.js';
+import es from '../dist/locales/es.js';
+import { readFile } from 'node:fs/promises';
 import {
   t,
   html,
@@ -11,6 +15,7 @@ import {
   detectLanguage,
   getLocale,
   LANGUAGE_KEY,
+  supportedLocales,
 } from '../dist/i18n.js';
 import { generatePassword, defaultRules } from '../dist/password-generator.js';
 import { parseOTP } from '../dist/totp.js';
@@ -19,7 +24,10 @@ test('language detection, persistence, metadata and unavailable storage', () => 
   assert.equal(detectLanguage(['fr-FR', 'en-GB']), 'en');
   assert.equal(detectLanguage(['zh-Hans-CN', 'en']), 'zh-CN');
   assert.equal(detectLanguage(['en-US', 'zh-CN']), 'en');
-  assert.equal(detectLanguage(['de']), 'en');
+  assert.equal(detectLanguage(['de-DE']), 'de');
+  assert.equal(detectLanguage(['fr', 'ja-JP', 'en']), 'ja');
+  assert.equal(detectLanguage(['es-MX', 'zh-CN']), 'es');
+  assert.equal(detectLanguage(['fr']), 'en');
   const dom = new JSDOM('<html><head><meta name="description"><link rel="manifest"></head></html>');
   globalThis.document = dom.window.document;
   const stored = new Map();
@@ -87,4 +95,93 @@ test('complete matching catalogs and only static UI fragments are translated', (
   assert.throws(() => parseOTP('INVALID1'), /Base32/);
   setLanguage('zh-CN');
   assert.equal(t('所有条目'), '所有条目');
+});
+
+test('all interface catalogs preserve parameters, literal user data, metadata and preferences', async () => {
+  const catalogs = { 'zh-CN': zh, en, de, ja, es };
+  assert.deepEqual(
+    supportedLocales.map((locale) => locale.code).sort(),
+    Object.keys(catalogs).sort(),
+  );
+  const dom = new JSDOM(
+    '<html><head><meta name="description"><link rel="manifest"></head></html>',
+    { url: 'https://example.test/' },
+  );
+  globalThis.document = dom.window.document;
+  globalThis.localStorage = dom.window.localStorage;
+  const parameters = (value) => [...value.matchAll(/\{(\w+)\}/g)].map((match) => match[1]).sort();
+  const userText = '所有条目 · Passwort · パスワード · Contraseña <note>';
+  for (const [code, catalog] of Object.entries(catalogs)) {
+    assert.deepEqual(Object.keys(catalog).sort(), Object.keys(en).sort(), code);
+    for (const [key, value] of Object.entries(catalog)) {
+      assert.ok(typeof value === 'string' && value.trim(), `${code}: ${key}`);
+      assert.deepEqual(parameters(value), parameters(key), `${code}: ${key}`);
+      if (['de', 'es', 'en'].includes(code))
+        assert.ok(!/\p{Script=Han}/u.test(value), `${code}: ${key}`);
+    }
+    setLanguage(code);
+    assert.equal(document.documentElement.lang, code);
+    assert.equal(document.title, catalog['ClearVault · SafeInCloud 兼容密码管理器与双重验证器']);
+    assert.equal(
+      document.querySelector('meta[name=description]').content,
+      catalog['ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。'],
+    );
+    assert.equal(initializeLanguage(['fr']), code, 'saved selection survives restart');
+    assert.equal(
+      html`<h1>所有条目</h1><p>${userText}</p>`,
+      `<h1>${catalog['所有条目']}</h1><p>${userText}</p>`,
+    );
+    assert.equal(
+      t('找到 {count} 个条目', { count: 7 }),
+      catalog['找到 {count} 个条目'].replace('{count}', '7'),
+    );
+    const manifestPath = document.querySelector('link[rel=manifest]').getAttribute('href');
+    const manifest = JSON.parse(
+      await readFile(new URL('../dist/' + manifestPath, import.meta.url), 'utf8'),
+    );
+    assert.equal(manifest.lang, code);
+    if (['de', 'ja', 'es'].includes(code)) {
+      assert.equal(manifest.name, catalog['ClearVault · 密码与验证器']);
+      assert.equal(manifest.start_url, './?lang=' + code);
+      dom.reconfigure({ url: 'https://example.test/?lang=' + code });
+      assert.equal(initializeLanguage(['zh-CN']), code, 'explicit launch language wins');
+      dom.reconfigure({ url: 'https://example.test/' });
+    }
+  }
+  delete globalThis.localStorage;
+  delete globalThis.document;
+  dom.window.close();
+  setLanguage('zh-CN');
+});
+
+test('new languages are packaged identically for the app, extension and offline cache', async () => {
+  const worker = await readFile(new URL('../dist/sw.js', import.meta.url), 'utf8');
+  for (const code of ['de', 'ja', 'es']) {
+    assert.ok(worker.includes(`'./locales/${code}.js'`));
+    assert.ok(worker.includes(`'./manifest.${code}.webmanifest'`));
+    assert.equal(
+      await readFile(new URL(`../dist/locales/${code}.js`, import.meta.url), 'utf8'),
+      await readFile(new URL(`../extension/core/locales/${code}.js`, import.meta.url), 'utf8'),
+    );
+  }
+  const extensionManifest = JSON.parse(
+    await readFile(new URL('../extension/manifest.json', import.meta.url), 'utf8'),
+  );
+  assert.equal(extensionManifest.default_locale, 'en');
+  for (const code of ['en', 'zh_CN', 'de', 'ja', 'es']) {
+    const messages = JSON.parse(
+      await readFile(
+        new URL(`../extension/_locales/${code}/messages.json`, import.meta.url),
+        'utf8',
+      ),
+    );
+    for (const token of [
+      extensionManifest.name,
+      extensionManifest.description,
+      extensionManifest.action.default_title,
+    ]) {
+      const key = token.match(/^__MSG_(\w+)__$/)?.[1];
+      assert.ok(key && messages[key]?.message, `${code}: ${token}`);
+    }
+  }
 });

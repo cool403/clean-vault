@@ -157,7 +157,7 @@ select:focus {
   letter-spacing: 2px;
 }
 .welcome-copy h1,
-html[lang='en'] .welcome-copy h1 {
+html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .welcome-copy h1 {
   font-family: Georgia, 'STZhongsong', 'Microsoft YaHei', serif;
   font-size: clamp(46px, 5.8vw, 76px);
   line-height: 1.13;
@@ -715,7 +715,7 @@ select {
     font-size: 10px;
   }
   .welcome-copy h1,
-  html[lang='en'] .welcome-copy h1 {
+  html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .welcome-copy h1 {
     font-size: 58px;
   }
   .welcome-header-actions {
@@ -739,7 +739,7 @@ select {
     padding: 42px 0 15px;
   }
   .welcome-copy h1,
-  html[lang='en'] .welcome-copy h1 {
+  html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .welcome-copy h1 {
     font-size: 43px;
     letter-spacing: -1.5px;
     line-height: 1.2;
@@ -808,18 +808,18 @@ select {
     background: #faf7ef;
   }
   .page-heading h1,
-  html[lang='en'] .page-heading h1 {
+  html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .page-heading h1 {
     font-size: 25px;
   }
   .page-heading p {
     font-size: 11px;
   }
   .status-line,
-  html[lang='en'] .status-line {
+  html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .status-line {
     font-size: 10px;
   }
   .heading-actions .button,
-  html[lang='en'] .heading-actions .button {
+  html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .heading-actions .button {
     font-size: 10px;
     padding: 9px 12px;
   }
@@ -1265,6 +1265,12 @@ dialog:has(> #editor-form) {
   .editor-field-head select {
     max-width: 100%;
   }
+}
+html[lang='ja'] body {
+  font-family: 'Yu Gothic', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
+}
+html[lang='ja'] .welcome-copy h1 {
+  font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif JP', serif;
 }
 @media (max-width: 540px) {
   dialog .modal-footer {

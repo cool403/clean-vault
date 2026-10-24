@@ -1,0 +1,32 @@
+{
+  "id": "./",
+  "name": "ClearVault · Passwörter und Authentifikator",
+  "short_name": "ClearVault",
+  "lang": "de",
+  "description": "ClearVault: lokaler Passworttresor und Authentifikator. SafeInCloud-Datenbanken öffnen, verwalten und speichern.",
+  "start_url": "./?lang=de",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f1e7",
+  "theme_color": "#f5f1e7",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
