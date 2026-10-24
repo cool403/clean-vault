@@ -20,6 +20,8 @@
 - 保存 `release/web/`、ZIP 和 JSON 清单为 Actions artifact，保留 30 天。
 - 仅 main 的 push / 手动运行可进入部署 job；PR 不部署、不读取生产 Secrets。
 - 部署 job 下载已通过测试的 artifact，上传其 `release/web/`，不重新构建。main 串行执行发布，避免同时覆盖生产。
+- 部署前通过 Pages API 清除项目的 Web Analytics 配置，避免自动向 HTML 注入第三方分析脚本，使线上 HTML 能与构建产物逐字节比对。
+- `_headers` 是 Cloudflare 消费的部署指令，虽记录于制品清单，但不会作为线上文件提供。
 - 可读 JavaScript 与源码保持一致，不混淆。Web 与扩展产物保留 MIT 和第三方声明。
 
 ## 核对版本
@@ -46,4 +48,4 @@
 
 Keep the existing `clearvault-safeincloud` Pages project and its `clear-vault.app` domain. Set its production branch to `main`. Add `CLOUDFLARE_API_TOKEN` (Pages Edit, restricted to the intended account) and `CLOUDFLARE_ACCOUNT_ID` as GitHub Actions secrets, optionally in the `production` environment. Disable duplicate Cloudflare automatic builds if enabled. Push to main or manually run **Test and deploy**.
 
-Pull requests only run checks. Deployment downloads the tested artifact without rebuilding. Inspect `/build-info.json`, the linked commit / run, and `/ASSET-SHA256SUMS.json` to compare deployed assets. Local builds have no claimed Actions revision. For reproduction, use the same source, lockfile, toolchain and GITHUB_REPOSITORY / GITHUB_SHA / GITHUB_RUN_ID metadata. Hashes are not signatures or audits. Use the Cloudflare deployment list to roll back to a verified production deployment, then fix or revert main.
+The deployment clears Pages Web Analytics injection before uploading, so HTML remains unchanged and no analytics script is inserted. `_headers` is a deployment directive consumed by Cloudflare rather than a publicly served asset. Pull requests only run checks. Deployment downloads the tested artifact without rebuilding. Inspect `/build-info.json`, the linked commit / run, and `/ASSET-SHA256SUMS.json` to compare deployed assets. Local builds have no claimed Actions revision. For reproduction, use the same source, lockfile, toolchain and GITHUB_REPOSITORY / GITHUB_SHA / GITHUB_RUN_ID metadata. Hashes are not signatures or audits. Use the Cloudflare deployment list to roll back to a verified production deployment, then fix or revert main.
