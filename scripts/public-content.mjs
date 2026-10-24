@@ -27,7 +27,7 @@ export const articles = [
         ],
         [
           '4. 重新打开，确认保存结果',
-          '先保存，再锁定并重新打开数据库检查修改。首页“最近密码库”保留最近 5 个文件的名称和句柄，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持句柄时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。可点击记录旁的文件夹图标“确认所在目录”，选择包含密码库的目录；应用核对后显示上次确认的文件夹名和相对目录。浏览器不提供完整绝对路径，文件移动后需重新确认。',
+          '先保存，再锁定并重新打开数据库检查修改。首页“最近密码库”保留最近 5 个文件的名称和句柄，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持句柄时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。当前页面已选择的文件和锁定后的密码库统一显示在列表中，不再另设重新解锁入口；有未保存更改时，点击“解锁并继续未保存的修改”恢复当前加密副本。清空历史不会丢弃当前会话。可点击记录旁的文件夹图标“确认所在目录”，选择包含密码库的目录；应用核对后显示上次确认的文件夹名和相对目录。浏览器不提供完整绝对路径，文件移动后需重新确认。',
         ],
         [
           '打不开文件时检查什么？',
@@ -60,7 +60,7 @@ export const articles = [
         ],
         [
           '4. Reopen to verify the result',
-          'Save, lock and reopen the database to verify changes. Recent vaults on the home screen remembers up to five file names and handles. Select one, grant access again if needed and enter your master password. If the file moved or handles are unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Use the folder icon to confirm a containing directory. The app verifies membership and shows its last confirmed name and relative directory. Browsers do not expose a full absolute path; confirm again after moving files.',
+          'Save, lock and reopen the database to verify changes. Recent vaults on the home screen remembers up to five file names and handles. Select one, grant access again if needed and enter your master password. If the file moved or handles are unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Selected files and locked vaults use this same list without a separate reopen link. Choose Unlock and continue unsaved changes to resume the current encrypted copy. Clearing history keeps this current session. Use the folder icon to confirm a containing directory. The app verifies membership and shows its last confirmed name and relative directory. Browsers do not expose a full absolute path; confirm again after moving files.',
         ],
         [
           'If the file will not open',

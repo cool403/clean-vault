@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
-import { createRecentFiles, allowFile, fileError } from '../dist/recent-files.js';
+import {
+  createRecentFiles,
+  mergeRecentSession,
+  allowFile,
+  fileError,
+} from '../dist/recent-files.js';
 import { recentMarkup } from '../dist/workflow-ui.js';
 import { setLanguage } from '../dist/i18n.js';
 
@@ -75,6 +80,47 @@ test('unavailable or denied storage degrades to session history', async () => {
     await history.clear();
     assert.equal((await history.list()).length, 0);
   }
+});
+
+test('current sessions merge with verified file identities without changing persisted records', async () => {
+  const handle = { isSameEntry: async (other) => other === handle };
+  const entries = [
+    { id: 'other', name: 'same.db', handle: {}, time: 2 },
+    { id: 'current', name: 'same.db', handle, folder: 'Vaults/Work', time: 1 },
+  ];
+  const merged = await mergeRecentSession(entries, { name: 'renamed.db', handle, dirty: true });
+  assert.equal(merged.length, 2);
+  assert.equal(merged[0].id, 'current');
+  assert.equal(merged[0].name, 'renamed.db');
+  assert.equal(merged[0].folder, 'Vaults/Work');
+  assert.equal(merged[0].unsaved, true);
+  assert.equal(entries[1].current, undefined);
+  assert.equal(entries[1].name, 'same.db');
+  assert.equal((await mergeRecentSession(entries, { id: 'current', name: 'same.db' })).length, 2);
+  assert.equal(await mergeRecentSession(entries, null), entries);
+});
+
+test('unsaved and selected sessions remain accessible when recent history is empty or cleared', async () => {
+  const merged = await mergeRecentSession([], { name: 'new.db', dirty: true });
+  const dom = new JSDOM(recentMarkup(merged, true, true));
+  assert.equal(merged[0].ephemeral, true);
+  assert.match(
+    dom.window.document.querySelector('[data-action=recent-session]').textContent,
+    /continue unsaved changes/,
+  );
+  assert.equal(dom.window.document.querySelector('[data-action=recent-remove]'), null);
+  assert.equal(dom.window.document.querySelector('[data-action=recent-clear]'), null);
+  assert.match(
+    dom.window.document.querySelector('.workflow-notice').textContent,
+    /unsaved changes/,
+  );
+  const sameName = [{ id: 'old', name: 'new.db', time: 1 }];
+  assert.equal(
+    (await mergeRecentSession(sameName, { name: 'new.db' })).length,
+    2,
+    'a name alone cannot prove file identity',
+  );
+  dom.window.close();
 });
 
 test('confirmed folders resolve the actual handle, persist as text and remain separate for same-name vaults', async () => {

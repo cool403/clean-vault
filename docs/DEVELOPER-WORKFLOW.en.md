@@ -30,6 +30,8 @@ Source tests cover vault formats, Unicode, TOTP, write conflicts, backup restora
 
 Validate the app and sidebar in both languages and narrow layouts. Tests cover duplicate imports, changed passwords, unknown XML preservation, metadata persistence, permission failure, backups, conflicts and stale asynchronous requests after locking. Update `docs/USAGE*.md` and `scripts/public-content.mjs`; generate bilingual public guides, sitemap and robots with `npm run build:public`. Include new runtime assets in the offline list.
 
+`mergeRecentSession` merges only the display model using a record ID or `isSameEntry`, without persisting session flags. Unmatched sessions get a temporary row so unsaved new vaults and canceled first-unlock flows remain accessible. The `recent-session` action resumes the encrypted in-memory copy; other history rows still reopen files. Locking, history clearing and UI refresh must preserve unsaved encrypted copies.
+
 ## Building
 
 `npm run release` generates the public English and Chinese pages, copies shared extension modules, and creates readable web / extension directories, three ZIPs, and source / artifact SHA-256 manifests. MIT and third-party notices are copied into the deployment directories. Only explicitly listed source directories are packaged. The build excludes `.git`, `.openai`, `node_modules`, personal databases and account configuration. Do not publish the parent workspace's analysis files or personal database to GitHub.

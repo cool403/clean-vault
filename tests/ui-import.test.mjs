@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { encryptDatabase, decryptDatabase, passwordBytes } from '../dist/crypto.js';
 
-test('app import previews, cancels, deduplicates, saves and reopens recent files with fresh permission', async (context) => {
+test('app imports, saves and resumes its locked session through the recent vault list', async (context) => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',
     { url: 'http://localhost/?lang=en' },
@@ -107,6 +107,15 @@ test('app import previews, cancels, deduplicates, saves and reopens recent files
   await import('../dist/app.js');
   click('[data-action=open]');
   await wait(() => document.querySelector('#password-form'));
+  click('[data-action=close-modal]');
+  await wait(() => document.querySelector('[data-action=recent-session]'));
+  assert.equal(document.querySelector('.welcome-secondary [data-action=unlock]'), null);
+  assert.equal(
+    document.querySelectorAll('.recent-row').length,
+    1,
+    'a selected file must remain accessible before its first unlock',
+  );
+  click('[data-action=recent-session]');
   document.querySelector('[name=password]').value = password;
   submit('#password-form');
   await wait(() => document.querySelector('[data-action=import]'));
@@ -178,12 +187,17 @@ test('app import previews, cancels, deduplicates, saves and reopens recent files
   assert.match(decoded.xml, /unknown flag="keep"/);
   decoded.credential.fill(0);
   click('[data-action=lock]');
-  await wait(() => document.querySelector('[data-action=recent-open]'));
+  await wait(() => document.querySelector('[data-action=recent-session]'));
+  assert.equal(
+    document.querySelectorAll('.recent-row').length,
+    1,
+    'the locked session merges with its stored record',
+  );
   assert.ok(!document.querySelector('#app').innerHTML.includes('alice'));
   const beforePermission = requests;
-  click('[data-action=recent-open]');
+  click('[data-action=recent-session]');
   await wait(() => document.querySelector('#password-form'));
-  assert.equal(requests, beforePermission + 1);
+  assert.equal(requests, beforePermission, 'resuming the current page must not reread its file');
   document.querySelector('[name=password]').value = password;
   submit('#password-form');
   await wait(() => document.querySelector('[data-action=import]'));
@@ -207,4 +221,40 @@ test('app import previews, cancels, deduplicates, saves and reopens recent files
   assert.deepEqual(bytes, beforeDirectory, 'confirming a folder must not write the vault');
   click('[data-action=recent-clear]');
   await wait(() => !document.querySelector('[data-action=recent-open]'));
+  click('[data-action=close-modal]');
+  click('[data-action=lock]');
+  await wait(() => document.querySelector('[data-action=recent-session]'));
+  assert.equal(
+    document.querySelectorAll('.recent-row').length,
+    1,
+    'clearing history must not discard the current encrypted session',
+  );
+  click('[data-action=create]');
+  const createForm = document.querySelector('#password-form');
+  createForm.elements.name.value = 'Unsaved new vault';
+  createForm.elements.password.value = password;
+  createForm.elements.confirm.value = password;
+  submit('#password-form');
+  await wait(() => document.querySelector('[data-action=new]'));
+  click('[data-action=new]');
+  document.querySelector('#editor-form').elements.title.value = 'Unsaved item';
+  submit('#editor-form');
+  click('[data-action=lock]');
+  await wait(() => document.querySelector('[data-action=recent-session]'));
+  assert.match(
+    document.querySelector('[data-action=recent-session]').textContent,
+    /Unsaved new vault/,
+  );
+  assert.equal(document.querySelector('[data-action=recent-clear]'), null);
+  click('[data-action=recent-session]');
+  document.querySelector('[name=password]').value = password;
+  submit('#password-form');
+  await wait(() => document.querySelector('[data-action=import]'));
+  assert.match(document.querySelector('.identity h2').textContent, /Unsaved item/);
+  click('[data-action=settings]');
+  assert.equal(
+    document.querySelectorAll('.recent-row').length,
+    0,
+    'an unsaved new vault must not create a persistent file record',
+  );
 });

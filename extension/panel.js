@@ -11,7 +11,12 @@ import {
 } from './core/vault.js';
 import { t, getLocale, initializeLanguage, setLanguage } from './core/i18n.js';
 import { fingerprint, readBytes, saveSafely } from './core/safe-save.js';
-import { createRecentFiles, allowFile, fileError } from './core/recent-files.js';
+import {
+  createRecentFiles,
+  mergeRecentSession,
+  allowFile,
+  fileError,
+} from './core/recent-files.js';
 import { recentMarkup, createImportWizard, escapeHTML as escape } from './core/workflow-ui.js';
 import { applyImport } from './core/import-data.js';
 import { matchesSite, loginOrigin } from './matching.js';
@@ -25,6 +30,7 @@ let recentEntries = [],
   credential = null,
   encrypted = null,
   handle = null,
+  recentId = null,
   signature = null,
   name = '',
   formatVersion = 2,
@@ -122,7 +128,7 @@ function setBusy(value) {
   busy = value;
   document
     .querySelectorAll(
-      '#save, #save-copy, #reload, #import, #add-site, #lock, #open, #unlock-button, #resume',
+      '#save, #save-copy, #reload, #import, #add-site, #lock, #open, #unlock-button',
     )
     .forEach((button) => (button.disabled = value));
   $('#file').disabled = value;
@@ -172,24 +178,36 @@ const importer = createImportWizard({
   },
 });
 async function refreshRecent() {
-  recentEntries = await recentFiles.list();
+  const version = epoch,
+    previousDoc = doc;
+  const entries = await recentFiles.list();
+  const display = await mergeRecentSession(
+    entries,
+    !doc && encrypted ? { id: recentId, name, handle, dirty } : null,
+  );
+  if (version !== epoch || previousDoc !== doc) return;
+  recentEntries = entries;
   $('#recent-files').innerHTML = recentMarkup(
-    recentEntries,
+    display,
     recentFiles.persistent,
     typeof window.showDirectoryPicker === 'function',
   );
 }
 async function remember() {
-  await recentFiles.remember(name, handle);
+  const fileName = name,
+    fileHandle = handle;
+  const entry = await recentFiles.remember(fileName, fileHandle);
+  if (fileName === name && fileHandle === handle) recentId = entry.id;
   await refreshRecent();
 }
-async function loadFile(file, fileHandle = null) {
+async function loadFile(file, fileHandle = null, id = null) {
   if (!file || file.size > 64 * 1024 * 1024) throw new Error(text('choose'));
   const bytes = new Uint8Array(await file.arrayBuffer());
   if (bytes[0] !== 5 || bytes[1] !== 5) throw new Error(t('请选择 SafeInCloud 格式的 .db 文件'));
   const hash = await fingerprint(bytes);
   encrypted = bytes;
   handle = fileHandle;
+  recentId = id;
   name = file.name || fileHandle?.name || 'SafeInCloud.db';
   signature = hash;
   dirty = false;
@@ -197,7 +215,7 @@ async function loadFile(file, fileHandle = null) {
   saveError = false;
   $('#file').value = '';
   $('#selected-file').textContent = name;
-  $('#resume').hidden = false;
+  void refreshRecent();
 }
 async function chooseFile() {
   if (busy || lockPending) return;
@@ -250,7 +268,6 @@ async function lock() {
   $('#origin').textContent = '';
   $('#entries').replaceChildren();
   closeDialog();
-  $('#resume').hidden = !encrypted;
   status('locked');
   if (snapshot) {
     lockPending = true;
@@ -268,10 +285,10 @@ async function lock() {
     } finally {
       lockPending = false;
       setBusy(false);
-      $('#resume').hidden = !encrypted;
     }
   }
   if (credential !== key) key?.fill(0);
+  void refreshRecent();
 }
 function checkIdle() {
   if (doc && !busy && Date.now() - lastActivity >= Number($('#idle').value) * 60000) void lock();
@@ -533,6 +550,7 @@ async function save(asCopy = false) {
         directory: backupDirectory,
         name: target.name,
       });
+      if (!same) recentId = null;
       handle = target;
       name = target.name;
       signature = result.hash;
@@ -612,11 +630,12 @@ async function replaceFromFile(file, selected = null) {
   encrypted = bytes;
   signature = hash;
   handle = selected;
+  recentId = null;
   name = file.name || selected?.name || 'SafeInCloud.db';
   lastSaved = null;
   saveError = false;
   $('#selected-file').textContent = name;
-  $('#resume').hidden = false;
+  void refreshRecent();
   status(t('已重新加载文件，请输入主密码'));
 }
 function localize() {
@@ -642,7 +661,6 @@ $('#language').onchange = () => {
   localize();
 };
 $('#open').onclick = () => chooseFile().catch(fail);
-$('#resume').onclick = () => $('#password').focus();
 $('#file').addEventListener('cancel', () => {
   selectingReload = false;
 });
@@ -731,6 +749,7 @@ document.addEventListener('click', async (event) => {
       await recentFiles.clear();
       notify(t('最近文件记录已清空'));
     }
+    if (button.dataset.action === 'recent-session' && encrypted && !doc) $('#password').focus();
     if (button.dataset.action === 'recent-directory') {
       const entry = recentEntries.find((item) => item.id === button.dataset.id);
       if (entry?.handle && window.showDirectoryPicker) {
@@ -755,7 +774,7 @@ document.addEventListener('click', async (event) => {
       }
       setBusy(true);
       await allowFile(entry.handle);
-      await loadFile(await entry.handle.getFile(), entry.handle);
+      await loadFile(await entry.handle.getFile(), entry.handle, entry.id);
       $('#password').focus();
     }
     await refreshRecent();

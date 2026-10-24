@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ClearVault · Local Vault",
   "description": "Open, import and save local SafeInCloud vaults. Fill matching HTTPS logins and confirm password updates. No account or sync.",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "minimum_chrome_version": "116",
   "permissions": ["activeTab", "scripting", "sidePanel"],
   "action": {

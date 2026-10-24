@@ -45,7 +45,7 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 - Saving an entry in an existing file automatically backs up and writes the database. Choose a separate backup directory before the first write. Cancellation, conflicts and failures preserve the unsaved state. New vaults and download mode require an explicit database save.
 - Backup preview and restoration as a new vault, automatic locking after 1 / 5 / 15 / 30 minutes, English / Simplified Chinese, and offline PWA use.
 - The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, confirmed password updates, imports and verified saves, without submitting forms.
-- Recent vaults remembers up to five names and file handles. Select a containing directory to show its last confirmed folder name and relative location. Reopening still requires the master password. Remove or clear records anytime.
+- Recent vaults remembers up to five names and file handles. Select a containing directory to show its last confirmed folder name and relative location. The current session also unlocks through this list, preserving unsaved edits. Remove or clear history records anytime.
 - Import Chrome password CSV and unencrypted Bitwarden CSV / JSON with preview, field mapping and duplicate checks, without overwriting entries. The app and extension share this flow.
 
 Quick search opens automatically after unlocking an existing vault. It searches titles, usernames, emails, websites and labels, excluding passwords, PINs, OTP secrets and notes.
