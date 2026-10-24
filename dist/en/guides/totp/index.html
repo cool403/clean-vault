@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="Add a TOTP secret or QR-code image to a ClearVault entry. Learn about parameters, recovery, code errors and the security trade-off."
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>Set up TOTP two-factor authentication codes · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/en/guides/totp/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://clear-vault.app/guides/totp/" />
+    <link rel="alternate" hreflang="en" href="https://clear-vault.app/en/guides/totp/" />
+    <link rel="alternate" hreflang="x-default" href="https://clear-vault.app/guides/totp/" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="Set up TOTP two-factor authentication codes · ClearVault" />
+    <meta
+      property="og:description"
+      content="Add a TOTP secret or QR-code image to a ClearVault entry. Learn about parameters, recovery, code errors and the security trade-off."
+    />
+    <meta property="og:url" content="https://clear-vault.app/en/guides/totp/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/en/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/guides/totp/" class="language">简体中文</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/en/guides/" class="back">← All guides</a><span class="eyebrow">GUIDES</span>
+        <h1>Set up TOTP two-factor authentication codes</h1>
+        <p class="lead">
+          ClearVault generates time-based codes from TOTP secrets in your entries. This is an
+          authenticator feature, not an extra sign-in factor for unlocking the vault itself.
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="On this page">
+          <strong>On this page</strong
+          ><a href="#section-1">1. Enable authenticator verification on the website</a
+          ><a href="#section-2">2. Add the secret to the right entry</a
+          ><a href="#section-3">3. Match parameters and confirm on the website</a
+          ><a href="#section-4">If a code is rejected</a
+          ><a href="#section-5">Convenience and separation</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. Enable authenticator verification on the website</h2>
+            <p>
+              Open the target website’s security settings and select an authenticator app. Keep the
+              recovery codes provided by that website so losing an authenticator does not lock you
+              out. Avoid keeping the only recovery copy in the same unbacked-up vault.
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. Add the secret to the right entry</h2>
+            <p>
+              Create or edit an entry in ClearVault, add a two-factor authentication field and enter
+              the Base32 secret or otpauth://totp/ URI. You can also select a QR-code image through
+              the image import action. Parsing happens locally; camera scanning is not used. Both
+              the secret and QR code are sensitive.
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. Match parameters and confirm on the website</h2>
+            <p>
+              SHA1, SHA256 and SHA512, 6- or 8-digit codes and custom periods are supported. Match
+              the website’s parameters, and use a 30-second period when sharing the database with
+              SafeInCloud. Confirm a generated code on the website, then save and reopen the .db
+              file.
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>If a code is rejected</h2>
+            <p>
+              Check the device’s clock synchronization. Wait for a fresh code if the countdown is
+              almost over. Confirm the selected account, complete secret, algorithm, number of
+              digits and period. HOTP counter-based URIs are different from TOTP and cannot be
+              substituted.
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>Convenience and separation</h2>
+            <p>
+              Keeping passwords and TOTP secrets in one vault is convenient, but both may be exposed
+              if the master password or unlocked device is compromised. For stronger separation, use
+              an authenticator on another protected device or a security key supported by the
+              website. ClearVault’s TOTP feature does not provide Passkey support.
+            </p>
+          </section>
+          <section class="related">
+            <h2>Keep reading</h2>
+            <a href="/en/guides/open-safeincloud-db/"
+              >How to open, edit and save a SafeInCloud DB file ↗</a
+            ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
+            ><a href="/en/security/">Security &amp; privacy ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>Ready for a little more clarity?</h2>
+        <p>Try the demo, then test a copy of your database.</p>
+      </div>
+      <a href="/?lang=en" class="button">Open vault ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>An independent SafeInCloud-compatible tool · No account required</p>
+      <nav>
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">Build history</a></small
+      >
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="了解 ClearVault 的本地解密、网络请求、浏览器缓存、加密文件、备份与安全限制。尚未经过独立安全审计。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>安全与隐私：数据在哪里，边界在哪里 · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/security/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://clear-vault.app/security/" />
+    <link rel="alternate" hreflang="en" href="https://clear-vault.app/en/security/" />
+    <link rel="alternate" hreflang="x-default" href="https://clear-vault.app/security/" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="安全与隐私：数据在哪里，边界在哪里 · ClearVault" />
+    <meta
+      property="og:description"
+      content="了解 ClearVault 的本地解密、网络请求、浏览器缓存、加密文件、备份与安全限制。尚未经过独立安全审计。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/security/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a><a href="/en/security/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a
+        ><span class="eyebrow">TRUST, WITH CLARITY</span>
+        <h1>安全与隐私：数据在哪里，边界在哪里</h1>
+        <p class="lead">
+          密码管理器值得被仔细检查。这里说明当前实现做了什么、哪些数据会离开设备，以及它不能保护什么。
+        </p>
+        <span class="status-pill">尚未经过独立安全审计</span>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">你的密码库在设备本地解密</a
+          ><a href="#section-2">访问网页仍有网络元数据</a><a href="#section-3">浏览器保存什么</a
+          ><a href="#section-4">加密兼容性不等于现代认证加密</a
+          ><a href="#section-5">保存、备份与恢复的边界</a
+          ><a href="#section-6">扩展仅获得当前网站授权</a><a href="#section-7">仍无法保护的情况</a
+          ><a href="#section-8">审计与问题报告</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>你的密码库在设备本地解密</h2>
+            <p>
+              数据库文件、主密码、条目和 TOTP
+              密钥不会由应用上传到服务器。解锁期间，解密后的数据库保留在页面内存中以供编辑；锁定时移除界面与引用并清零可控字节数组。JavaScript
+              字符串与垃圾回收无法保证物理内存被彻底擦除。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>访问网页仍有网络元数据</h2>
+            <p>
+              加载托管站点会请求 HTML、脚本、样式和图标，托管服务可看到 IP 地址、时间与 HTTP
+              元数据。应用没有集成第三方行为分析脚本、远程字体或跟踪像素。Search Console
+              用于查看搜索表现，不在密码库中埋点。普通外链只有在你点击时才会打开。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>浏览器保存什么</h2>
+            <p>
+              localStorage 仅保存界面语言；没有将解密条目或整个密码库写入 IndexedDB。Service Worker
+              缓存应用资源，用于离线启动。文件句柄、备份目录授权与保留数量在当前页面会话中使用；换域名后需要重新打开文件。关闭页面不等于已经保存修改。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>加密兼容性不等于现代认证加密</h2>
+            <p>
+              兼容格式沿用 PBKDF2-SHA1（10000 次）与 AES-256-CBC，正文是压缩 XML。CBC 正文没有现代
+              AEAD 提供的认证能力；文件 SHA-256
+              指纹用于检测变化，不是抗恶意篡改认证。新密码库使用支持 Unicode 的版本 2
+              密码编码，但不能因此宣称加密格式已升级为 AEAD。
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>保存、备份与恢复的边界</h2>
+            <p>
+              写回前比较原文件指纹，覆盖前备份原密文并读回校验，写入后再次校验。浏览器不能提供跨应用的原子比较交换，仍应避免同时编辑。旧备份不会随主密码修改而重加密。下载只表示发起导出，需自行确认磁盘上的文件并重新打开检查。
+            </p>
+          </section>
+          <section id="section-6">
+            <h2>扩展仅获得当前网站授权</h2>
+            <p>
+              扩展使用
+              activeTab、scripting、sidePanel，无全站主机权限或持久内容脚本。用户点击后才向精确匹配的
+              HTTPS
+              来源填充所选账号，不自动提交。目标网站能够读取填入它的密码；这属于填充的固有边界。
+            </p>
+          </section>
+          <section id="section-7">
+            <h2>仍无法保护的情况</h2>
+            <p>
+              受感染的操作系统、恶意浏览器或扩展、解锁时被读取的页面内存、主密码泄露以及被篡改的应用发布，都超出当前保护边界。安全使用依赖设备、浏览器和发布来源。可从下载页取得源码与自托管说明，校验值不能代替签名或审计。
+            </p>
+          </section>
+          <section id="section-8">
+            <h2>审计与问题报告</h2>
+            <p>
+              本项目尚未完成独立安全审计、代码签名或浏览器商店审核。目前没有公布专用私密漏洞报告渠道，请勿在公开
+              issue 或任何公开表单上传真实密码库、主密码、TOTP
+              密钥或可利用的敏感材料。应先用合成样本记录版本、复现步骤和影响，再通过维护者确认的私密渠道协调。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
+            ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/downloads/">下载与源码 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="使用 ClearVault 在浏览器本地打开 SafeInCloud .db 密码库，了解主密码、文件保存、备份与恢复步骤。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>如何打开、编辑和保存 SafeInCloud DB 文件 · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/guides/open-safeincloud-db/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/open-safeincloud-db/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/open-safeincloud-db/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/open-safeincloud-db/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="如何打开、编辑和保存 SafeInCloud DB 文件 · ClearVault" />
+    <meta
+      property="og:description"
+      content="使用 ClearVault 在浏览器本地打开 SafeInCloud .db 密码库，了解主密码、文件保存、备份与恢复步骤。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/guides/open-safeincloud-db/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a
+        ><a href="/en/guides/open-safeincloud-db/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">使用指南</span>
+        <h1>如何打开、编辑和保存 SafeInCloud DB 文件</h1>
+        <p class="lead">
+          已有 SafeInCloud 数据库？带上 .db
+          文件和主密码，就可以在浏览器中管理条目。文件在设备本地解密，无需注册账户。
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">开始前，留一份独立备份</a
+          ><a href="#section-2">1. 选择数据库并解锁</a
+          ><a href="#section-3">2. 搜索、查看与编辑条目</a><a href="#section-4">3. 保存到加密文件</a
+          ><a href="#section-5">4. 重新打开，确认保存结果</a
+          ><a href="#section-6">打不开文件时检查什么？</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>开始前，留一份独立备份</h2>
+            <p>
+              复制原始 .db 文件，保存在另一个位置。先用副本验证兼容性；不要同时在 ClearVault
+              和其他应用中编辑同一个文件。ClearVault 是独立的兼容工具，并非 SafeInCloud 官方产品。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>1. 选择数据库并解锁</h2>
+            <p>
+              打开 ClearVault，点击“打开 .db
+              密码库”，选择文件，再输入已有主密码。网站没有账户登录；主密码用于本地解密文件。若只是了解界面，可以点击“先体验一下”，使用合成演示数据。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>2. 搜索、查看与编辑条目</h2>
+            <p>
+              解锁后可搜索条目，查看账号、显示或复制密码，再点击编辑。Ctrl / ⌘ + K 打开快速查找，↑ ↓
+              选择，Ctrl / ⌘ + Enter 复制密码，Ctrl / ⌘ + Shift + L
+              锁定密码库。复制前核对条目，粘贴后留意系统剪贴板历史。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>3. 保存到加密文件</h2>
+            <p>
+              修改不会自动同步到服务器。支持文件写入 API
+              的浏览器可授权写回原文件；覆盖前按应用提示选择独立备份目录。通过普通文件选择器打开或浏览器不支持写回时，使用“另存为
+              .db 文件”并确认下载文件实际保存。
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>4. 重新打开，确认保存结果</h2>
+            <p>
+              先保存，再锁定并重新打开导出的数据库，检查修改是否存在。刷新、关闭页面会丢失未保存内容。自动备份不能替代独立备份；更改主密码也不会更改旧备份的密码。
+            </p>
+          </section>
+          <section id="section-6">
+            <h2>打不开文件时检查什么？</h2>
+            <p>
+              确认文件属于兼容的 SafeInCloud .db
+              格式，主密码、输入法和键盘布局正确。解密失败不一定只有密码错误一种原因，也可能是文件损坏或格式不兼容。不要把真实密码库或主密码发送给网站、公开
+              issue 或他人；排查时只使用合成样本。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/security/">安全与隐私 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>

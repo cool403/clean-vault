@@ -1,0 +1,17 @@
+# Dependencies, vendor code and generated artifacts.
+node_modules/
+dist/vendor/
+dist/downloads/*
+!dist/downloads/index.html
+extension/core/
+release/
+test-artifacts/
+.sites-local/
+.openai/
+package-lock.json
+
+# Private vaults and backup data.
+*.db
+*.bak
+
+/out/

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="在 ClearVault 条目中添加 TOTP 验证密钥或二维码图片，了解动态验证码、兼容参数、备份与常见问题。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>设置 TOTP 双重验证与动态验证码 · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/guides/totp/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://clear-vault.app/guides/totp/" />
+    <link rel="alternate" hreflang="en" href="https://clear-vault.app/en/guides/totp/" />
+    <link rel="alternate" hreflang="x-default" href="https://clear-vault.app/guides/totp/" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="设置 TOTP 双重验证与动态验证码 · ClearVault" />
+    <meta
+      property="og:description"
+      content="在 ClearVault 条目中添加 TOTP 验证密钥或二维码图片，了解动态验证码、兼容参数、备份与常见问题。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/guides/totp/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a><a href="/en/guides/totp/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">使用指南</span>
+        <h1>设置 TOTP 双重验证与动态验证码</h1>
+        <p class="lead">
+          ClearVault 可以从条目中的 TOTP
+          密钥生成动态验证码。它是验证码生成器，不是给密码库本身增加一层登录验证。
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">1. 在目标网站开启验证器验证</a
+          ><a href="#section-2">2. 把密钥加入对应条目</a
+          ><a href="#section-3">3. 核对参数并在网站确认</a
+          ><a href="#section-4">验证码无效怎么办？</a><a href="#section-5">便利与隔离的取舍</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. 在目标网站开启验证器验证</h2>
+            <p>
+              进入目标网站的安全设置，选择验证器应用。妥善保存网站提供的恢复码，避免丢失验证器后无法登录。不要将恢复码与未经备份的唯一数据库放在同一个失效点。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. 把密钥加入对应条目</h2>
+            <p>
+              在 ClearVault 新建或编辑条目，添加双重验证字段，填入 Base32 密钥或 otpauth://totp/
+              地址。也可以通过“导入二维码图片”选择图片；当前使用本地图片解析，不会开启摄像头。验证密钥和二维码都属于秘密。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. 核对参数并在网站确认</h2>
+            <p>
+              支持 SHA1、SHA256、SHA512，6 位或 8 位代码及自定义周期；参数必须和网站一致。与
+              SafeInCloud 共用时请使用 30 秒周期。先将生成代码填入目标网站完成验证，再保存 .db
+              并重新打开检查。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>验证码无效怎么办？</h2>
+            <p>
+              先检查设备时间和时区同步，接近倒计时结束时等待下一组代码。再检查是否选错条目、密钥是否完整，以及算法、位数和周期是否一致。HOTP
+              计数器地址不是 TOTP，不能混用。
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>便利与隔离的取舍</h2>
+            <p>
+              把密码和 TOTP
+              密钥放在同一密码库更方便，但主密码或解锁设备失守时两者可能一起暴露。需要更强隔离时，可将验证器放在另一台受保护的设备，或使用目标网站支持的安全密钥。ClearVault
+              的 TOTP 功能本身不提供 Passkey 支持。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
+            ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/security/">安全与隐私 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>

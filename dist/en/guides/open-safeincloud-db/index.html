@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="Open a SafeInCloud .db file locally with ClearVault. Learn how to unlock, edit, export, back up and verify your encrypted vault."
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>How to open, edit and save a SafeInCloud DB file · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/en/guides/open-safeincloud-db/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/open-safeincloud-db/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/open-safeincloud-db/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/open-safeincloud-db/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta
+      property="og:title"
+      content="How to open, edit and save a SafeInCloud DB file · ClearVault"
+    />
+    <meta
+      property="og:description"
+      content="Open a SafeInCloud .db file locally with ClearVault. Learn how to unlock, edit, export, back up and verify your encrypted vault."
+    />
+    <meta property="og:url" content="https://clear-vault.app/en/guides/open-safeincloud-db/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/en/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/guides/open-safeincloud-db/" class="language">简体中文</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/en/guides/" class="back">← All guides</a><span class="eyebrow">GUIDES</span>
+        <h1>How to open, edit and save a SafeInCloud DB file</h1>
+        <p class="lead">
+          Bring your SafeInCloud .db file and master password to manage entries in your browser.
+          Decryption happens on your device, with no account registration.
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="On this page">
+          <strong>On this page</strong><a href="#section-1">Keep an independent backup first</a
+          ><a href="#section-2">1. Select and unlock the database</a
+          ><a href="#section-3">2. Find and edit entries</a
+          ><a href="#section-4">3. Save an encrypted file</a
+          ><a href="#section-5">4. Reopen to verify the result</a
+          ><a href="#section-6">If the file will not open</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>Keep an independent backup first</h2>
+            <p>
+              Copy the original .db file to another location and test a copy before using your real
+              vault. Avoid editing the same file in ClearVault and another application at the same
+              time. ClearVault is an independent compatible tool, not an official SafeInCloud
+              product.
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>1. Select and unlock the database</h2>
+            <p>
+              Open ClearVault, choose “Open .db vault”, select your file and enter its existing
+              master password. There is no website account login: the password decrypts the file
+              locally. Use “Try a demo” to explore with synthetic data first.
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>2. Find and edit entries</h2>
+            <p>
+              Search your vault, view account details, reveal or copy a password, and edit an entry.
+              Ctrl / ⌘ + K opens quick search; ↑ ↓ selects; Ctrl / ⌘ + Enter copies a password; Ctrl
+              / ⌘ + Shift + L locks the vault. Check the selected entry and be mindful of clipboard
+              history.
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>3. Save an encrypted file</h2>
+            <p>
+              Changes do not sync to a server. Browsers with the file writing API can write back
+              after you grant permission; follow the prompt to choose a separate backup directory
+              before replacing a file. If direct writing is unavailable, use “Save as .db” and
+              confirm that the downloaded file was actually saved.
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>4. Reopen to verify the result</h2>
+            <p>
+              Save, lock and reopen the exported database to check your changes. Refreshing or
+              closing the page loses unsaved edits. Automatic backups do not replace independent
+              backups, and changing the master password does not change the password of older
+              backups.
+            </p>
+          </section>
+          <section id="section-6">
+            <h2>If the file will not open</h2>
+            <p>
+              Check the file format, master password and keyboard layout. A decryption failure can
+              also mean a damaged or incompatible file. Never send a real vault, master password or
+              TOTP secret to a website, public issue or another person. Use synthetic samples for
+              troubleshooting.
+            </p>
+          </section>
+          <section class="related">
+            <h2>Keep reading</h2>
+            <a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
+            ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
+            ><a href="/en/security/">Security &amp; privacy ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>Ready for a little more clarity?</h2>
+        <p>Try the demo, then test a copy of your database.</p>
+      </div>
+      <a href="/?lang=en" class="button">Open vault ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>An independent SafeInCloud-compatible tool · No account required</p>
+      <nav>
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">Build history</a></small
+      >
+    </footer>
+  </body>
+</html>

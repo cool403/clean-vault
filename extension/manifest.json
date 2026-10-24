@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "ClearVault · Local Vault",
+  "description": "Open a local SafeInCloud vault and manually fill matching HTTPS logins. No account, sync or telemetry.",
+  "version": "0.3.8",
+  "minimum_chrome_version": "116",
+  "permissions": ["activeTab", "scripting", "sidePanel"],
+  "action": {
+    "default_title": "Open ClearVault / 打开密码库",
+    "default_icon": {
+      "16": "core/icon-16.png",
+      "32": "core/icon-32.png",
+      "48": "core/icon-48.png",
+      "128": "core/icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "panel.html"
+  },
+  "icons": {
+    "16": "core/icon-16.png",
+    "32": "core/icon-32.png",
+    "48": "core/icon-48.png",
+    "128": "core/icon-128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+  }
+}

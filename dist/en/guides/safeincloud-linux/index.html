@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="Manage SafeInCloud DB files with ClearVault on Linux. Understand browser file saving, offline PWA use and the optional browser extension."
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>Use a SafeInCloud database on Linux · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/en/guides/safeincloud-linux/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/safeincloud-linux/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/safeincloud-linux/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/safeincloud-linux/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="Use a SafeInCloud database on Linux · ClearVault" />
+    <meta
+      property="og:description"
+      content="Manage SafeInCloud DB files with ClearVault on Linux. Understand browser file saving, offline PWA use and the optional browser extension."
+    />
+    <meta property="og:url" content="https://clear-vault.app/en/guides/safeincloud-linux/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/en/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/guides/safeincloud-linux/" class="language">简体中文</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/en/guides/" class="back">← All guides</a><span class="eyebrow">GUIDES</span>
+        <h1>Use a SafeInCloud database on Linux</h1>
+        <p class="lead">
+          ClearVault brings a local vault workflow to your browser. Open a compatible database on
+          Linux, or install the PWA where your browser supports it.
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="On this page">
+          <strong>On this page</strong><a href="#section-1">Start with a copy</a
+          ><a href="#section-2">Your browser determines how saving works</a
+          ><a href="#section-3">Installation and offline use</a
+          ><a href="#section-4">Optional browser extension</a
+          ><a href="#section-5">Avoid conflicts across devices</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>Start with a copy</h2>
+            <p>
+              Bring your encrypted .db file from an existing device, keep an independent backup and
+              open ClearVault on Linux. File transfer is up to you: ClearVault has no cloud drive
+              connection, account sync or background file synchronization.
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>Your browser determines how saving works</h2>
+            <p>
+              Decryption and export use browser capabilities. Writing back to the original requires
+              support for the file writing API and your permission. Browser access does not mean
+              every browser supports direct writing. Otherwise export a .db file and reopen it to
+              verify the result.
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>Installation and offline use</h2>
+            <p>
+              Browsers supporting PWA installation provide an install action. Open the app online
+              first so its Service Worker can cache the application resources, then test launching
+              offline. A first visit, incomplete cache, cleared storage or storage eviction still
+              requires a connection. Installing the PWA does not automatically save your database.
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>Optional browser extension</h2>
+            <p>
+              The downloads page provides a Chrome / Edge extension ZIP; it is not listed in browser
+              stores. Unpack and load it as instructed, visit the target site, click the extension
+              to grant access and choose an entry to fill. The extension is read-only, matches exact
+              HTTPS origins and never submits forms. Firefox, cross-origin iframes and Passkey
+              filling are not supported.
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>Avoid conflicts across devices</h2>
+            <p>
+              Edit in only one app or device at a time. Save and verify the encrypted file before
+              transferring it through a method you trust. If the app reports an external change,
+              save your edits as a separate file and compare versions instead of forcing an
+              overwrite.
+            </p>
+          </section>
+          <section class="related">
+            <h2>Keep reading</h2>
+            <a href="/en/guides/open-safeincloud-db/"
+              >How to open, edit and save a SafeInCloud DB file ↗</a
+            ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
+            ><a href="/en/security/">Security &amp; privacy ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>Ready for a little more clarity?</h2>
+        <p>Try the demo, then test a copy of your database.</p>
+      </div>
+      <a href="/?lang=en" class="button">Open vault ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>An independent SafeInCloud-compatible tool · No account required</p>
+      <nav>
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">Build history</a></small
+      >
+    </footer>
+  </body>
+</html>

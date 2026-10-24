@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ClearVault</title>
+    <link rel="stylesheet" href="panel.css" />
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <img src="core/icon-32.png" alt="" width="30" height="30" /><span class="brand-name"
+          >ClearVault<span>.</span></span
+        >
+      </div>
+      <select id="language" aria-label="Language">
+        <option value="zh-CN">简体中文</option>
+        <option value="en">English</option>
+      </select>
+    </header>
+    <main>
+      <div class="badge" data-i="local">本地解密 · 只读填充</div>
+      <h1 data-i="title">你的密码，随手可用。</h1>
+      <p class="sub" data-i="intro">点击当前网站的扩展图标授权，再选择账号填充。</p>
+      <section id="locked">
+        <label class="file" data-i="fileLabel" for="file">选择 .db 密码库</label
+        ><input id="file" type="file" accept=".db" />
+        <form id="unlock">
+          <label for="password" data-i="password">主密码</label
+          ><input id="password" type="password" autocomplete="current-password" required /><button
+            id="unlock-button"
+            type="submit"
+            data-i="unlock"
+          >
+            解锁密码库
+          </button>
+        </form>
+      </section>
+      <section id="unlocked" hidden>
+        <div class="toolbar">
+          <strong id="vault-name"></strong
+          ><button id="lock" class="secondary" data-i="lock">锁定</button>
+        </div>
+        <label for="idle" data-i="idle">无操作自动锁定</label
+        ><select id="idle">
+          <option value="1">1 min</option>
+          <option value="5" selected>5 min</option>
+          <option value="15">15 min</option>
+        </select>
+        <div class="site"><span data-i="site">当前网站</span><strong id="origin"></strong></div>
+        <button id="refresh" class="secondary" data-i="refresh">刷新网站匹配</button>
+        <div id="entries"></div>
+      </section>
+      <p id="status" role="status" aria-live="polite"></p>
+      <footer data-i="privacy">
+        不上传密码库，不自动提交。密码只在你点击填充时交给当前网站。关闭侧栏后释放密码库；重新打开时需要重新解锁。
+      </footer>
+    </main>
+    <script type="module" src="panel.js"></script>
+  </body>
+</html>

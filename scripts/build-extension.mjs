@@ -1,0 +1,21 @@
+import { mkdir, copyFile } from 'node:fs/promises';
+const root = new URL('../', import.meta.url);
+for (const file of [
+  'crypto.js',
+  'vault.js',
+  'i18n.js',
+  'locales/en.js',
+  'locales/zh-CN.js',
+  'icon-16.png',
+  'icon-32.png',
+  'icon-48.png',
+  'icon-128.png',
+  'icon-192.png',
+]) {
+  const target = new URL('extension/core/' + file, root);
+  await mkdir(new URL('./', target), { recursive: true });
+  await copyFile(new URL('dist/' + file, root), target);
+}
+console.log(
+  'Built extension/ from shared vault core. Load this directory as an unpacked extension.',
+);

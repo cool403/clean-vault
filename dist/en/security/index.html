@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="Understand ClearVault local decryption, network requests, browser storage, encryption, backups and limitations. No independent security audit has been completed."
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>Security and privacy: your data and the boundaries · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/en/security/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://clear-vault.app/security/" />
+    <link rel="alternate" hreflang="en" href="https://clear-vault.app/en/security/" />
+    <link rel="alternate" hreflang="x-default" href="https://clear-vault.app/security/" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta
+      property="og:title"
+      content="Security and privacy: your data and the boundaries · ClearVault"
+    />
+    <meta
+      property="og:description"
+      content="Understand ClearVault local decryption, network requests, browser storage, encryption, backups and limitations. No independent security audit has been completed."
+    />
+    <meta property="og:url" content="https://clear-vault.app/en/security/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/en/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/security/" class="language">简体中文</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/en/guides/" class="back">← All guides</a
+        ><span class="eyebrow">TRUST, WITH CLARITY</span>
+        <h1>Security and privacy: your data and the boundaries</h1>
+        <p class="lead">
+          A password manager deserves close inspection. Here is what the current implementation
+          does, what can leave your device and what it cannot protect.
+        </p>
+        <span class="status-pill">Independent audit not completed</span>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="On this page">
+          <strong>On this page</strong
+          ><a href="#section-1">Your vault is decrypted on your device</a
+          ><a href="#section-2">Visiting the site still creates network metadata</a
+          ><a href="#section-3">What the browser stores</a
+          ><a href="#section-4">Compatibility is not modern authenticated encryption</a
+          ><a href="#section-5">Saving, backups and recovery</a
+          ><a href="#section-6">The extension uses current-site access</a
+          ><a href="#section-7">What remains outside the protection boundary</a
+          ><a href="#section-8">Audit status and reporting</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>Your vault is decrypted on your device</h2>
+            <p>
+              The application does not upload database files, master passwords, entries or TOTP
+              secrets. While unlocked, decrypted data stays in page memory for editing. Locking
+              removes the UI and references and clears controllable byte arrays. JavaScript strings
+              and garbage collection cannot guarantee physical memory erasure.
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>Visiting the site still creates network metadata</h2>
+            <p>
+              Loading the hosted site requests HTML, scripts, styles and icons. The hosting provider
+              can see IP addresses, request times and HTTP metadata. The app includes no third-party
+              behavior analytics scripts, remote fonts or tracking pixels. Search Console reports
+              search performance without tracking actions inside your vault. Ordinary external links
+              open only when you click them.
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>What the browser stores</h2>
+            <p>
+              localStorage holds only the interface language; decrypted entries and the vault are
+              not persisted to IndexedDB. The Service Worker caches application resources for
+              offline use. File handles, backup directory permission and retention settings are used
+              within the current page session. A different domain requires opening the file again.
+              Closing the page does not save changes.
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>Compatibility is not modern authenticated encryption</h2>
+            <p>
+              The compatible format uses PBKDF2-SHA1 with 10,000 iterations and AES-256-CBC over
+              compressed XML. The CBC payload does not provide modern AEAD authentication. SHA-256
+              file fingerprints detect changes; they are not authentication against malicious
+              tampering. New vaults use version 2 Unicode password encoding, which does not upgrade
+              the format to AEAD.
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>Saving, backups and recovery</h2>
+            <p>
+              Before writing, the app compares the original file fingerprint, backs up and verifies
+              existing ciphertext, and checks the written result. Browsers cannot offer atomic
+              compare-and-swap across applications, so avoid simultaneous editing. Changing a master
+              password does not re-encrypt older backups. A download action only starts export:
+              confirm the file on disk and reopen it to verify.
+            </p>
+          </section>
+          <section id="section-6">
+            <h2>The extension uses current-site access</h2>
+            <p>
+              The extension uses activeTab, scripting and sidePanel, with no global host permissions
+              or persistent content scripts. After a user action it fills only the selected
+              credentials into an exact matching HTTPS origin, without submitting. The destination
+              website can read a password filled into it; that is an inherent boundary of filling.
+            </p>
+          </section>
+          <section id="section-7">
+            <h2>What remains outside the protection boundary</h2>
+            <p>
+              A compromised operating system, malicious browser or extension, access to unlocked
+              page memory, a leaked master password or a tampered app release can expose data. Safe
+              use depends on your device, browser and release source. Source code and self-hosting
+              instructions are available in downloads. Checksums do not replace signatures or
+              audits.
+            </p>
+          </section>
+          <section id="section-8">
+            <h2>Audit status and reporting</h2>
+            <p>
+              Independent security auditing, code signing and browser store review have not been
+              completed. No dedicated private vulnerability reporting channel is currently
+              published. Never upload real vaults, master passwords, TOTP secrets or exploitable
+              sensitive material to public issues or forms. Record the version, reproduction and
+              impact with synthetic samples, then coordinate through a private channel confirmed by
+              the maintainer.
+            </p>
+          </section>
+          <section class="related">
+            <h2>Keep reading</h2>
+            <a href="/en/guides/open-safeincloud-db/"
+              >How to open, edit and save a SafeInCloud DB file ↗</a
+            ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
+            ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
+            ><a href="/en/downloads/">Downloads &amp; source ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>Ready for a little more clarity?</h2>
+        <p>Try the demo, then test a copy of your database.</p>
+      </div>
+      <a href="/?lang=en" class="button">Open vault ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>An independent SafeInCloud-compatible tool · No account required</p>
+      <nav>
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">Build history</a></small
+      >
+    </footer>
+  </body>
+</html>

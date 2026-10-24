@@ -1,0 +1,6 @@
+ClearVault is an independent implementation, not affiliated with SafeInCloud.
+Original ClearVault code: MIT (LICENSE).
+Bundled jsQR 1.4.0: Apache-2.0; see dist/vendor/jsQR.LICENSE.txt.
+jsdom and development dependencies are not bundled into the web or extension
+runtime. Their notices remain in npm packages when dependencies are installed.
+tests/fixtures/*.db contains artificial compatibility test data, not user data.

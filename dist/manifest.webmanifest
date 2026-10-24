@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "ClearVault · 密码与验证器",
+  "short_name": "ClearVault",
+  "lang": "zh-CN",
+  "description": "离线管理 SafeInCloud 密码库与 TOTP 验证码",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f1e7",
+  "theme_color": "#f5f1e7",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

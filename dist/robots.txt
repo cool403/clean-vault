@@ -1,0 +1,87 @@
+# Public SEO pages only. All unlisted crawlers are denied.
+User-agent: Googlebot
+User-agent: Google-InspectionTool
+User-agent: bingbot
+User-agent: Baiduspider
+User-agent: DuckDuckBot
+User-agent: Applebot
+User-agent: Sogou web spider
+User-agent: YandexBot
+User-agent: 360Spider
+User-agent: Slurp
+Disallow: /
+Allow: /$
+Allow: /index.html$
+Allow: /sitemap.xml$
+Allow: /downloads$
+Allow: /downloads/$
+Allow: /downloads/index.html$
+
+# BEGIN PUBLIC PAGES
+Allow: /en/$
+Allow: /en/index.html$
+Allow: /en/downloads/$
+Allow: /en/downloads/index.html$
+Allow: /en/guides/$
+Allow: /en/guides/index.html$
+Allow: /en/guides/open-safeincloud-db/$
+Allow: /en/guides/open-safeincloud-db/index.html$
+Allow: /en/guides/safeincloud-linux/$
+Allow: /en/guides/safeincloud-linux/index.html$
+Allow: /en/guides/totp/$
+Allow: /en/guides/totp/index.html$
+Allow: /en/security/$
+Allow: /en/security/index.html$
+Allow: /guides/$
+Allow: /guides/index.html$
+Allow: /guides/open-safeincloud-db/$
+Allow: /guides/open-safeincloud-db/index.html$
+Allow: /guides/safeincloud-linux/$
+Allow: /guides/safeincloud-linux/index.html$
+Allow: /guides/totp/$
+Allow: /guides/totp/index.html$
+Allow: /security/$
+Allow: /security/index.html$
+Allow: /public.css$
+# END PUBLIC PAGES
+
+# Local resources required to render the public pages.
+Allow: /app.js$
+Allow: /quick-search.js$
+Allow: /crypto.js$
+Allow: /downloads.css$
+Allow: /downloads.js$
+Allow: /i18n.js$
+Allow: /icon-128.png$
+Allow: /icon-16.png$
+Allow: /icon-192.png$
+Allow: /icon-32.png$
+Allow: /icon-48.png$
+Allow: /icon-512.png$
+Allow: /icon.svg$
+Allow: /locales/en.js$
+Allow: /locales/zh-CN.js$
+Allow: /manifest.en.webmanifest$
+Allow: /manifest.webmanifest$
+Allow: /password-generator.js$
+Allow: /safe-save.js$
+Allow: /styles.css$
+Allow: /support.js$
+Allow: /sw.js$
+Allow: /theme.css$
+Allow: /totp.js$
+Allow: /vault.js$
+Allow: /vendor/jsQR.js$
+Allow: /icon.svg?v=21$
+
+# Brand images used by Google Search. All other paths remain denied.
+User-agent: Googlebot-Image
+Disallow: /
+Allow: /icon-192.png$
+Allow: /icon-512.png$
+
+# Includes AI crawlers, bulk scrapers and SEO audit crawlers.
+User-agent: *
+Disallow: /
+
+Sitemap: https://clear-vault.app/sitemap.xml

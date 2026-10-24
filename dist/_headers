@@ -1,0 +1,14 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Cache-Control: no-cache
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; frame-ancestors 'none'
+
+# Keep the default Pages host and deployment previews out of search results.
+https://clearvault-safeincloud.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.clearvault-safeincloud.pages.dev/*
+  X-Robots-Tag: noindex

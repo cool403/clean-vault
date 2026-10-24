@@ -1,0 +1,93 @@
+# ClearVault
+
+[English](README.en.md) · 简体中文
+
+离线优先的 SafeInCloud 兼容密码管理器与 TOTP 验证器。纯静态 PWA，密码库在浏览器本地解密，无需账号或后端服务。
+
+[使用 ClearVault](https://clear-vault.app) · [GitHub 源码](https://github.com/cool403/clean-vault) · [构建记录](https://github.com/cool403/clean-vault/actions) · [安全设计](SECURITY.md)
+
+## 开源与可验证发布
+
+自有代码采用 [MIT 许可证](LICENSE)，允许使用、修改、分发和商业使用，须保留许可和版权声明。第三方许可见 [NOTICE](NOTICE)。ClearVault 是独立兼容工具，与 SafeInCloud 官方无隶属关系。
+
+仓库中的 `dist/` 是可读源码。生产构建直接复制 JavaScript，**不再混淆**。推送到 `main` 后，GitHub Actions 安装锁定依赖、检查格式、测试源码、打包并测试正式产物，成功后将同一份产物部署到 Cloudflare Pages。Pull Request 只运行检查，不获取部署凭据。
+
+线上 `/build-info.json` 记录版本、Git 提交和 Actions 运行链接；`/ASSET-SHA256SUMS.json` 记录部署文件哈希。下载页提供仓库、具体提交和构建记录入口；Actions 保存 Web、扩展、源码 ZIP 和 SHA-256 清单。开源与校验提高可追溯性，不能证明托管方未修改代码，也不代表经过独立安全审计。可自行构建和托管。
+
+## 快速开始
+
+需要 Node.js 24+ 和 Python 3.10+。
+
+```sh
+npm ci
+npm run dev
+```
+
+访问 `http://127.0.0.1:4173`。正式环境使用 HTTPS；不能直接双击 HTML。首次联网缓存资源后可离线使用或安装为 PWA。浏览器存储清理后需要重新联网，缓存不等于密码库备份。
+
+```sh
+npm test
+npm run test:release
+```
+
+`release/web/` 是部署目录，`release/extension/` 是扩展目录，`out/` 是 Web 的相同副本。发布脚本只包含明确列出的源码目录，排除本地账号配置、密钥及真实数据库，仅包含三个人工兼容测试样本。
+
+## 功能
+
+- 打开 SafeInCloud 格式 1 / 2 的 `.db`，支持新建格式 2 和完整 Unicode 主密码；保存保留已有格式。
+- 条目、多个字段、备注、标签、收藏、归档、回收站和密码生成器。
+- TOTP：Base32、`otpauth://totp` 和本地二维码图片；SHA1 / SHA256 / SHA512、6 / 8 位、1–300 秒周期。与 SafeInCloud 26.0 共用时保留 30 秒周期。
+- 支持文件 API 的浏览器可写回原文件；写回前检查密文 SHA-256，备份并校验，写入后读回验证。其他浏览器下载加密副本。
+- 已有文件的条目保存自动备份并写回。首次写回需选择独立备份目录；失败、取消或冲突保留未保存状态。新库和下载模式需显式保存数据库。
+- 备份预览与恢复为新库、自动锁定（1 / 5 / 15 / 30 分钟）、中英文界面、离线 PWA。
+- Chrome / Edge 侧栏扩展只读打开密码库，按 HTTPS 精确 origin 匹配，手动填充单个账号，不自动提交。
+
+解锁已有库时自动打开快速查找，搜索标题、账号、邮箱、网站和标签，不索引密码、PIN、OTP 或备注。
+
+| 操作       | Windows / Linux  | macOS         |
+| ---------- | ---------------- | ------------- |
+| 快速查找   | Ctrl + K         | ⌘ + K         |
+| 上下选择   | ↑ / ↓            | ↑ / ↓         |
+| 复制密码   | Ctrl + Enter     | ⌘ + Enter     |
+| 查看详情   | Enter            | Enter         |
+| 锁定密码库 | Ctrl + Shift + L | ⌘ + Shift + L |
+| 关闭查找   | Esc              | Esc           |
+
+快捷键仅在应用获得焦点时生效，支持中文输入法。编辑表单不被快速查找打断。锁定后复制内容仍在系统剪贴板中。
+
+## 数据与安全边界
+
+主密码、解密 XML 和 OTP 密钥不写入 localStorage / IndexedDB，不通过网络上传。localStorage 只保存语言，Service Worker 只缓存应用资源。文件、备份权限和保留数量仅在当前页面有效。托管服务器仍能看到访问 IP 和 HTTP 元数据。
+
+编辑保留未知 XML、附件、图片和历史；二进制字段只读。当前不支持附件管理、云同步、Passkey、摄像头扫描、Firefox 扩展和损坏 XML 修复。TOTP 不是额外的密码库解锁认证。
+
+格式兼容沿用 PBKDF2-SHA1 和 AES-CBC，没有正文认证。浏览器无法提供跨应用事务锁或可证明的内存擦除，请保留独立加密备份并避免同时编辑。锁定时未保存修改仅加密保留在本页内存，刷新或关闭仍会丢失；下载导出无法确认原文件已更新。
+
+尚未经过独立安全审计，扩展尚未在浏览器商店上架。请先用合成数据和数据库副本验证。详细边界和漏洞报告方式见 [SECURITY.md](SECURITY.md)。
+
+## GitHub Actions → Cloudflare
+
+工作流：[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)。默认部署 `main` 到现有 Pages 项目 `clearvault-safeincloud`，继续使用 `clear-vault.app`。
+
+在 GitHub 仓库的 **Settings → Secrets and variables → Actions** 设置：
+
+| Secret                  | 内容                                        |
+| ----------------------- | ------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | 目标 Cloudflare 账号的 Pages Edit API Token |
+| `CLOUDFLARE_ACCOUNT_ID` | 对应账号 ID                                 |
+
+如 `production` Environment 已配置单独 Secrets，也可将它们保存在该环境。不要将 Token 写入源码。配置后推送 `main`，或在 Actions 手动运行工作流。Cloudflare 若启用了另一套自动构建，应关闭重复触发，保留此工作流作为发布入口。配置和回滚详见[自动部署指南](docs/GITHUB-CLOUDFLARE.md)。
+
+## 扩展与自托管
+
+运行 `npm run build:extension`，在 Chrome / Edge 扩展管理页面开启开发者模式，加载 `extension/`；也可下载扩展 ZIP 并解压加载。目标网站点击扩展图标后打开 `.db`。新网站需重新授权，PWA 修改文件后扩展需重新打开。
+
+自行托管运行 `npm run test:release` 后上传 `release/web/` 到 HTTPS 静态服务器。Docker、备份与安装说明见[自托管文档](docs/SELF-HOSTING.md)。
+
+## 开发与贡献
+
+[开发流程](docs/DEVELOPER-WORKFLOW.md) · [贡献指南](CONTRIBUTING.md)
+
+新增文案需同时更新 `dist/locales/zh-CN.js` 和 `dist/locales/en.js`，仅翻译界面，不翻译用户数据。测试覆盖数据库往返、人工兼容样本、Unicode、RFC 6238 全部 18 组向量、保存冲突、备份恢复、快速查找、语言和扩展填充。Windows 上存在对应原始安装时还会运行原始程序互通验证；Linux CI 使用人工样本和 Web Crypto 往返测试。
+
+第三方二维码解码使用 jsQR 1.4.0，随应用本地打包；jsdom 和 Prettier 仅用于开发。参见 [RFC 6238](https://www.rfc-editor.org/rfc/rfc6238.html)。

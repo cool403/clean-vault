@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"
+    />
+    <link rel="icon" href="../icon-192.png" type="image/png" sizes="192x192" />
+    <meta
+      name="description"
+      content="下载 ClearVault 浏览器扩展和 MIT 开源代码，查看安装与自托管说明。"
+    />
+    <link rel="canonical" href="https://clear-vault.app/downloads/" />
+    <title>ClearVault · 下载与源代码</title>
+    <link rel="stylesheet" href="../downloads.css" />
+    <link rel="alternate" hreflang="zh-CN" href="https://clear-vault.app/downloads/" />
+    <link rel="alternate" hreflang="en" href="https://clear-vault.app/en/downloads/" />
+    <link rel="alternate" hreflang="x-default" href="https://clear-vault.app/downloads/" />
+  </head>
+  <body>
+    <main id="downloads">
+      <header>
+        <a class="brand" href="../"
+          ><img src="../icon.svg" alt="" width="29" height="29" />ClearVault.</a
+        >
+      </header>
+      <h1>下载与源代码</h1>
+      <p>ClearVault 浏览器扩展、MIT 开源代码和自托管说明。</p>
+      <div class="grid">
+        <section class="card">
+          <h2>浏览器扩展</h2>
+          <p>只读解锁密码库，手动填充精确匹配的 HTTPS 账号。</p>
+          <a class="button" download href="./clearvault-0.3.8-extension.zip">下载扩展</a>
+        </section>
+        <section class="card">
+          <h2>MIT 开源代码</h2>
+          <p>在 GitHub 查看 MIT 源码、提交历史和自动构建记录。线上 JavaScript 保持可读。</p>
+          <p>
+            <a class="button" href="https://github.com/cool403/clean-vault">在 GitHub 查看源码 ↗</a>
+          </p>
+          <p>
+            <a href="https://github.com/cool403/clean-vault/actions">GitHub Actions 构建记录 ↗</a>
+          </p>
+          <a class="button" download href="./clearvault-0.3.8-source.zip">下载源代码</a>
+        </section>
+      </div>
+      <h2>核对线上版本</h2>
+      <p>
+        <a href="/build-info.json">版本与提交信息</a> ·
+        <a href="/ASSET-SHA256SUMS.json">线上文件 SHA-256 清单</a>
+      </p>
+      <p>
+        GitHub Actions 测试通过后部署到
+        Cloudflare。开源与构建记录方便核对，不代表已通过独立安全审计。
+      </p>
+      <h2>安装扩展</h2>
+      <p>
+        解压扩展包，在 Chrome 或 Edge 的扩展管理页面启用开发者模式，然后选择“加载已解压的扩展程序”。
+      </p>
+      <p>
+        扩展尚未在浏览器商店上架。独立审计和浏览器实际安装验证尚未完成，请先用合成数据验证并保留独立加密备份。
+      </p>
+      <footer>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/en/downloads/" lang="en">English</a><a href="./SHA256SUMS.json">SHA-256</a
+        ><a href="../">返回 ClearVault</a>
+      </footer>
+    </main>
+    <script type="module" src="../downloads.js"></script>
+  </body>
+</html>
