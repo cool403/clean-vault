@@ -18,7 +18,7 @@ test('download directory page localizes and resolves packages without HTML/direc
   assert.equal(document.querySelector('script').src, 'https://example.test/downloads.js');
   assert.equal(
     document.querySelector('a[download]').href,
-    'https://example.test/downloads/clearvault-0.3.8-extension.zip',
+    `https://example.test/downloads/clearvault-${buildInfo.version}-extension.zip`,
   );
   assert.equal(document.querySelectorAll('a[download]').length, 1);
   assert.equal(document.querySelector('a[href$="-source.zip"]'), null);

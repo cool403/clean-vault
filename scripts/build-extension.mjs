@@ -3,6 +3,12 @@ const root = new URL('../', import.meta.url);
 for (const file of [
   'crypto.js',
   'vault.js',
+  'totp.js',
+  'safe-save.js',
+  'recent-files.js',
+  'import-data.js',
+  'workflow-ui.js',
+  'workflow.css',
   'i18n.js',
   'locales/en.js',
   'locales/zh-CN.js',

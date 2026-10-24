@@ -24,6 +24,10 @@ Allow: /en/downloads/$
 Allow: /en/downloads/index.html$
 Allow: /en/guides/$
 Allow: /en/guides/index.html$
+Allow: /en/guides/browser-extension/$
+Allow: /en/guides/browser-extension/index.html$
+Allow: /en/guides/import-passwords/$
+Allow: /en/guides/import-passwords/index.html$
 Allow: /en/guides/open-safeincloud-db/$
 Allow: /en/guides/open-safeincloud-db/index.html$
 Allow: /en/guides/safeincloud-linux/$
@@ -34,6 +38,10 @@ Allow: /en/security/$
 Allow: /en/security/index.html$
 Allow: /guides/$
 Allow: /guides/index.html$
+Allow: /guides/browser-extension/$
+Allow: /guides/browser-extension/index.html$
+Allow: /guides/import-passwords/$
+Allow: /guides/import-passwords/index.html$
 Allow: /guides/open-safeincloud-db/$
 Allow: /guides/open-safeincloud-db/index.html$
 Allow: /guides/safeincloud-linux/$
@@ -48,6 +56,10 @@ Allow: /public.css$
 # Local resources required to render the public pages.
 Allow: /app.js$
 Allow: /quick-search.js$
+Allow: /recent-files.js$
+Allow: /import-data.js$
+Allow: /workflow-ui.js$
+Allow: /workflow.css$
 Allow: /crypto.js$
 Allow: /downloads.css$
 Allow: /downloads.js$

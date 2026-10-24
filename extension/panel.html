@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>ClearVault</title>
     <link rel="stylesheet" href="panel.css" />
+    <link rel="stylesheet" href="core/workflow.css" />
   </head>
   <body>
     <header>
@@ -23,8 +24,14 @@
       <h1 data-i="title">你的密码，随手可用。</h1>
       <p class="sub" data-i="intro">点击当前网站的扩展图标授权，再选择账号填充。</p>
       <section id="locked">
-        <label class="file" data-i="fileLabel" for="file">选择 .db 密码库</label
-        ><input id="file" type="file" accept=".db" />
+        <button id="open" class="button secondary" type="button" data-i="fileLabel">
+          选择 .db 密码库
+        </button>
+        <input id="file" type="file" accept=".db" hidden />
+        <p id="selected-file" class="form-help"></p>
+        <button id="resume" class="text-button" type="button" data-t="重新打开并解锁" hidden>
+          重新打开并解锁
+        </button>
         <form id="unlock">
           <label for="password" data-i="password">主密码</label
           ><input id="password" type="password" autocomplete="current-password" required /><button
@@ -35,11 +42,21 @@
             解锁密码库
           </button>
         </form>
+        <div id="recent-files"></div>
       </section>
       <section id="unlocked" hidden>
         <div class="toolbar">
           <strong id="vault-name"></strong
           ><button id="lock" class="secondary" data-i="lock">锁定</button>
+        </div>
+        <p id="save-status" class="form-help" role="status" aria-live="polite"></p>
+        <div class="workflow-actions">
+          <button id="save" class="button primary" data-t="保存数据库">保存数据库</button>
+          <button id="save-copy" class="button secondary" data-t="另存为 .db 文件">
+            另存为 .db 文件
+          </button>
+          <button id="reload" class="button secondary" data-t="重新加载文件">重新加载文件</button>
+          <button id="import" class="button secondary" data-t="导入密码">导入密码</button>
         </div>
         <label for="idle" data-i="idle">无操作自动锁定</label
         ><select id="idle">
@@ -49,6 +66,12 @@
         </select>
         <div class="site"><span data-i="site">当前网站</span><strong id="origin"></strong></div>
         <button id="refresh" class="secondary" data-i="refresh">刷新网站匹配</button>
+        <button id="add-site" class="button secondary" data-t="添加网站地址">添加网站地址</button>
+        <label class="checkbox-label"
+          ><input id="show-all" type="checkbox" /><span data-t="查看所有条目"
+            >查看所有条目</span
+          ></label
+        >
         <div id="entries"></div>
       </section>
       <p id="status" role="status" aria-live="polite"></p>
@@ -56,6 +79,8 @@
         不上传密码库，不自动提交。密码只在你点击填充时交给当前网站。关闭侧栏后释放密码库；重新打开时需要重新解锁。
       </footer>
     </main>
+    <dialog id="modal" aria-labelledby="modal-title"></dialog>
+    <div id="toast" role="status" aria-live="polite"></div>
     <script type="module" src="panel.js"></script>
   </body>
 </html>

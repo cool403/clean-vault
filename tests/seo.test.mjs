@@ -51,8 +51,8 @@ test('sitemap contains only public canonical pages; robots preserves crawler res
     'http://www.sitemaps.org/schemas/sitemap/0.9',
   );
   const urls = [...dom.window.document.querySelectorAll('loc')].map((el) => el.textContent);
-  assert.equal(urls.length, 14);
-  assert.equal(new Set(urls).size, 14);
+  assert.equal(urls.length, 18);
+  assert.equal(new Set(urls).size, 18);
   for (const path of [
     '/',
     '/downloads/',

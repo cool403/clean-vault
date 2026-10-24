@@ -89,11 +89,13 @@
           <section id="section-3">
             <h2>What the browser stores</h2>
             <p>
-              localStorage holds only the interface language; decrypted entries and the vault are
-              not persisted to IndexedDB. The Service Worker caches application resources for
-              offline use. File handles, backup directory permission and retention settings are used
-              within the current page session. A different domain requires opening the file again.
-              Closing the page does not save changes.
+              localStorage stores only the interface language. IndexedDB stores up to five recent
+              vault names, file handles, record IDs, opening times and optional confirmed folder
+              labels, never passwords, entries or vault contents. Remove or clear history anytime.
+              The app and extension have separate storage, subject to browser permissions and
+              storage clearing. The Service Worker caches app resources only; backup directory
+              access and retention settings last for the current session. Closing a page does not
+              save changes.
             </p>
           </section>
           <section id="section-4">
@@ -152,6 +154,9 @@
               >How to open, edit and save a SafeInCloud DB file ↗</a
             ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
             ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
+            ><a href="/en/guides/import-passwords/">Import passwords from Chrome or Bitwarden ↗</a
+            ><a href="/en/guides/browser-extension/"
+              >Extension guide: fill, update passwords and reload ↗</a
             ><a href="/en/downloads/">Downloads &amp; source ↗</a>
           </section>
         </article>
@@ -173,7 +178,7 @@
         ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
       </nav>
       <small
-        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        >© ClearVault · MIT · 0.4.2 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
         <a href="https://github.com/cool403/clean-vault/actions">Build history</a></small
       >
     </footer>

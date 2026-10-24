@@ -26,8 +26,8 @@ npm run test:release
 先执行前面的构建命令，Docker 会复制可读的 `release/web/`。
 
 ```sh
-docker build -t clearvault:0.3.8 .
-docker run --rm -p 127.0.0.1:8080:80 clearvault:0.3.8
+docker build -t clearvault:0.4.2 .
+docker run --rm -p 127.0.0.1:8080:80 clearvault:0.4.2
 ```
 
 本机访问 http://localhost:8080。远程访问必须加 HTTPS 反向代理，否则 Web Crypto、文件 API、Service Worker 可能不可用。生产环境应在验证后将 Nginx 基础镜像固定到 digest；这里提供通用模板，不声称镜像构建已验证。
@@ -36,7 +36,7 @@ docker run --rm -p 127.0.0.1:8080:80 clearvault:0.3.8
 
 执行 `npm run build:extension`，打开 Chrome 的 chrome://extensions 或 Edge 的 edge://extensions，启用开发者模式，加载已解压的 `extension/` 目录。也可解压 release 中的 extension ZIP 后加载。无需上传密码库或 API token。
 
-在目标 HTTPS 网站点击工具栏扩展图标，侧栏选择 .db、输入主密码，点击匹配账号填充。密码库内网站字段必须填写该网站的精确域名；accounts.example.com 和 example.com 不自动等价。新站点需再次点击扩展图标授权。文件被 PWA 修改后，需要在扩展中重新打开；第一版不会同步或写回。侧栏关闭/隐藏会锁定，空闲默认 5 分钟。仅检测一个可见密码框，不支持多步骤用户名页面、iframe 或 Passkey。
+在目标 HTTPS 网站点击工具栏扩展图标，选择 .db 或最近密码库并输入主密码，再点击匹配账号填充。支持分步用户名登录、添加多个明确的 HTTPS 地址、密码更新确认、Chrome / Bitwarden 导入和带备份的验证保存。各地址精确匹配主机与端口，不自动包括子域；新来源须重新点击扩展图标授权。外部文件变化会停止填充，先另存编辑，再重新加载并解锁。侧栏隐藏会锁定，空闲默认 5 分钟；未保存内容仅加密暂存在当前侧栏，关闭/刷新会丢失。不支持 iframe 或 Passkey。更新扩展后需在扩展管理页重新加载。详见 [使用教程](USAGE.md)。
 
 浏览器商店上架需要发布者账号、隐私政策链接与人工审核，尚未完成。支持具备 sidePanel API 的 Chromium（Chrome 116+）；Edge 应在目标版本实测。Firefox 暂不支持。
 

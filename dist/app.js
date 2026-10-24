@@ -2,6 +2,9 @@ import { createQuickSearch, modifier } from './quick-search.js';
 import { t, html, getLocale, initializeLanguage, setLanguage, supportedLocales } from './i18n.js';
 import { buildInfo } from './build-info.js';
 import { mountSupportLinks } from './support.js';
+import { createRecentFiles, allowFile, fileError } from './recent-files.js';
+import { recentMarkup, createImportWizard } from './workflow-ui.js';
+import { applyImport } from './import-data.js';
 import { decryptDatabase, encryptDatabase, passwordBytes, encode } from './crypto.js';
 import { parseOTP, totp } from './totp.js';
 import { generatePassword, defaultRules } from './password-generator.js';
@@ -26,6 +29,8 @@ initializeLanguage();
 const $ = (selector) => document.querySelector(selector);
 const app = $('#app'),
   modal = $('#modal');
+const recentFiles = createRecentFiles();
+let recentEntries = [];
 const state = {
   doc: null,
   credential: null,
@@ -85,6 +90,17 @@ function mountLanguagePickers() {
     .querySelectorAll('.welcome-header-actions, .top-actions')
     .forEach((container) => container.insertAdjacentHTML('afterbegin', languagePicker()));
   mountSupportLinks();
+  if (state.doc) {
+    document
+      .querySelector('.top-actions .profile')
+      ?.insertAdjacentHTML(
+        'beforebegin',
+        button('import', t('导入密码'), 'upload', 'button secondary import-trigger'),
+      );
+    const trigger = document.querySelector('.import-trigger');
+    trigger?.setAttribute('aria-label', t('导入密码'));
+    trigger?.setAttribute('title', t('导入密码'));
+  }
 }
 const paths = {
   shield: '<path d="M12 3 20 6v6c0 5-4 8-8 10-4-2-8-5-8-10V6z"/><path d="m8 12 3 3 5-6"/>',
@@ -134,7 +150,36 @@ function toast(message) {
 }
 
 function message(error) {
-  return error?.message || t('操作未完成，请重试');
+  return fileError(error);
+}
+async function refreshRecent() {
+  recentEntries = await recentFiles.list();
+  const container = document.querySelector('#recent-files');
+  if (container)
+    container.innerHTML = recentMarkup(
+      recentEntries,
+      recentFiles.persistent,
+      typeof window.showDirectoryPicker === 'function',
+    );
+}
+async function rememberFile() {
+  await recentFiles.remember(state.name, state.handle);
+  await refreshRecent();
+}
+async function openRecent(id) {
+  const entry = recentEntries.find((item) => item.id === id);
+  if (!entry) return;
+  if (!entry.handle) {
+    await openFile();
+    return;
+  }
+  if (state.dirty && !(await askDiscard())) return;
+  try {
+    await allowFile(entry.handle);
+    await acceptFile(await entry.handle.getFile(), entry.handle);
+  } catch (error) {
+    toast(message(error));
+  }
 }
 function labels() {
   return state.doc ? children(state.doc.documentElement, 'label') : [];
@@ -375,6 +420,10 @@ function renderWelcome() {
       'beforeend',
       button('restore-file', t('从文件恢复'), 'clock', 'text-button'),
     );
+  document
+    .querySelector('.welcome-copy')
+    ?.insertAdjacentHTML('beforeend', '<div id="recent-files"></div>');
+  void refreshRecent();
 }
 async function refreshCodes() {
   const generation = otpGeneration;
@@ -416,6 +465,7 @@ function showModal(content) {
   modal.querySelector('input:not([type=hidden]),textarea,button')?.focus();
 }
 function closeModal() {
+  importWizard.reset();
   closeGenerator();
   modal.close();
   modal.innerHTML = '';
@@ -426,6 +476,22 @@ function closeModal() {
 }
 const modalHeader = (title, caption = '') =>
   `<div class="modal-heading"><div><h2 id="modal-title">${title}</h2>${caption ? `<p>${caption}</p>` : ''}</div>${iconButton('close-modal', t('关闭'), 'close')}</div>`;
+const importWizard = createImportWizard({
+  dialog: modal,
+  getDoc: () => state.doc,
+  show: showModal,
+  close: closeModal,
+  commit: async (plan) => {
+    const imported = applyImport(state.doc, plan);
+    state.dirty = true;
+    state.section = 'all';
+    state.search = '';
+    state.selected = imported[0]?.getAttribute('id') || null;
+    closeModal();
+    render();
+    toast(t('已导入 {count} 个条目，请保存数据库', { count: imported.length }));
+  },
+});
 function showPassword(mode) {
   const create = mode === 'create' || mode === 'set-password';
   showModal(
@@ -514,6 +580,7 @@ async function submitPassword(form) {
       }
       state.credential = result.credential;
       state.version = result.version;
+      void rememberFile();
     } else if (mode === 'create') {
       state.generation++;
       wipeUnlocked();
@@ -592,6 +659,12 @@ function showEditor(card = null, addOTP = false) {
     ?.insertAdjacentHTML(
       'beforeend',
       button('qr-import', t('导入二维码图片'), 'upload', 'text-button'),
+    );
+  modal
+    .querySelector('.add-field-actions')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      button('add-website', t('添加网站地址'), 'plus', 'text-button'),
     );
   if (addOTP) modal.querySelector('.editor-field:last-child textarea')?.focus();
 }
@@ -691,6 +764,7 @@ async function saveFile(asCopy = false) {
         ],
       });
     }
+    if (handle) await allowFile(handle, 'readwrite');
     if (handle && !backupDirectory) {
       // An opened file is nonempty. Request backup access directly from this
       // save gesture, before encryption consumes transient user activation.
@@ -723,6 +797,7 @@ async function saveFile(asCopy = false) {
       state.signature = result.hash;
       state.lastSaved = Date.now();
       state.lastExported = null;
+      void rememberFile();
       toast(
         result.retentionWarning
           ? t('保存已验证，但旧备份清理失败')
@@ -1040,11 +1115,59 @@ function settings() {
       'afterend',
       `<p><a href="./downloads/" target="_blank" rel="noopener">${t('下载与源代码')}</a> · <a href="${buildInfo.source || './downloads/'}" target="_blank" rel="noopener noreferrer">GitHub · MIT ↗</a></p>`,
     );
+  const note = modal.querySelector('.settings-note p');
+  if (note)
+    note.textContent = t(
+      '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。',
+    );
+  modal
+    .querySelector('.settings-buttons')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      button('import', t('导入密码'), 'upload', 'button secondary'),
+    );
+  modal
+    .querySelector('.modal-footer')
+    ?.insertAdjacentHTML(
+      'beforebegin',
+      `<div id="recent-files">${recentMarkup(recentEntries, recentFiles.persistent, typeof window.showDirectoryPicker === 'function')}</div>`,
+    );
 }
 async function action(name, target) {
   if (state.busy && !['copy-field', 'copy-otp'].includes(name)) return;
   const card = selectedCard();
   switch (name) {
+    case 'import':
+      if (state.doc) importWizard.open();
+      break;
+    case 'recent-open':
+      await openRecent(target.dataset.id);
+      break;
+    case 'recent-directory': {
+      const entry = recentEntries.find((item) => item.id === target.dataset.id);
+      if (!entry?.handle || !window.showDirectoryPicker) break;
+      try {
+        const directory = await window.showDirectoryPicker({
+          mode: 'read',
+          id: 'clearvault-recent-directory',
+        });
+        await recentFiles.setDirectory(entry.id, directory);
+        await refreshRecent();
+        toast(t('已确认密码库所在目录'));
+      } catch (error) {
+        if (error.name !== 'AbortError') throw error;
+      }
+      break;
+    }
+    case 'recent-remove':
+      await recentFiles.remove(target.dataset.id);
+      await refreshRecent();
+      break;
+    case 'recent-clear':
+      await recentFiles.clear();
+      await refreshRecent();
+      toast(t('最近文件记录已清空'));
+      break;
     case 'open':
       await openFile();
       break;
@@ -1089,13 +1212,18 @@ async function action(name, target) {
       break;
     }
     case 'add-field':
+    case 'add-website':
     case 'editor-add-otp': {
       const dummy = newCard(state.doc);
       const field = setField(
         dummy,
-        name === 'editor-add-otp' ? t('两步验证码') : '',
+        name === 'editor-add-otp' ? t('两步验证码') : name === 'add-website' ? t('网站') : '',
         '',
-        name === 'editor-add-otp' ? 'one_time_password' : 'text',
+        name === 'editor-add-otp'
+          ? 'one_time_password'
+          : name === 'add-website'
+            ? 'website'
+            : 'text',
       );
       editFields.push(field);
       $('#editor-fields').insertAdjacentHTML(
@@ -1373,14 +1501,9 @@ document.addEventListener('submit', (event) => {
   }
 });
 modal.addEventListener('cancel', (event) => {
-  if (state.busy) event.preventDefault();
-  else {
-    editCard = null;
-    editFields = [];
-    restorePreview?.credential?.fill(0);
-    restorePreview = null;
-    modal.innerHTML = '';
-  }
+  if (event.target !== modal) return;
+  event.preventDefault();
+  if (!state.busy) closeModal();
 });
 $('#file-input').addEventListener('change', (event) => {
   const file = event.target.files[0];

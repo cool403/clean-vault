@@ -9,6 +9,12 @@ test('extension panel decrypts, matches, fills selected login only, and locks st
     { url: 'https://extension.test/' },
   );
   const realInterval = globalThis.setInterval;
+  dom.window.HTMLDialogElement.prototype.showModal = function () {
+    this.setAttribute('open', '');
+  };
+  dom.window.HTMLDialogElement.prototype.close = function () {
+    this.removeAttribute('open');
+  };
   globalThis.setInterval = () => 0;
   Object.assign(globalThis, {
     window: dom.window,

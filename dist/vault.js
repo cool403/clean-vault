@@ -30,13 +30,15 @@ export function touch(card) {
     card.setAttribute('first_stamp', card.getAttribute('time_stamp') || String(stamp));
   card.setAttribute('time_stamp', String(stamp));
 }
-export function newCard(doc) {
+export function newCard(doc, reservedIds = null) {
   const card = doc.createElement('card');
-  const ids = new Set([...doc.documentElement.children].map((el) => el.getAttribute('id')));
+  const ids =
+    reservedIds || new Set([...doc.documentElement.children].map((el) => el.getAttribute('id')));
   let id;
   do {
     id = String(crypto.getRandomValues(new Uint32Array(1))[0] & 0x7fffffff);
   } while (id === '0' || ids.has(id));
+  ids.add(id);
   card.setAttribute('id', id);
   card.setAttribute('type', 'card');
   card.setAttribute('color', '0xff7960d4');

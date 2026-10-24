@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="在网页和浏览器扩展中本地导入 Chrome CSV、Bitwarden CSV / JSON，预览重复条目并验证加密保存。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>从 Chrome 或 Bitwarden 导入密码 · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/guides/import-passwords/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/import-passwords/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/import-passwords/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/import-passwords/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="从 Chrome 或 Bitwarden 导入密码 · ClearVault" />
+    <meta
+      property="og:description"
+      content="在网页和浏览器扩展中本地导入 Chrome CSV、Bitwarden CSV / JSON，预览重复条目并验证加密保存。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/guides/import-passwords/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a
+        ><a href="/en/guides/import-passwords/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">使用指南</span>
+        <h1>从 Chrome 或 Bitwarden 导入密码</h1>
+        <p class="lead">
+          先打开或新建 ClearVault
+          密码库，再导入已有密码。网页与扩展共用相同的导入预览、字段对应和重复检测。
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">1. 从原工具导出</a
+          ><a href="#section-2">2. 选择来源并预览</a><a href="#section-3">3. 核对字段与保留范围</a
+          ><a href="#section-4">4. 确认并保存</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. 从原工具导出</h2>
+            <p>
+              Chrome：打开 Google 密码管理工具的设置，选择导出密码，按系统提示验证身份并保存
+              CSV。Bitwarden：在导出密码库中选择未加密 CSV 或 JSON，JSON
+              更适合保留多个网址与自定义字段。通行密钥不属于 Chrome 密码
+              CSV。本地导出文件可能包含明文密码，请妥善保管。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. 选择来源并预览</h2>
+            <p>
+              解锁目标 .db 后，在网页顶栏、偏好设置或扩展中点击“导入密码”，选择 Chrome
+              CSV、Bitwarden CSV 或 Bitwarden JSON，再选择文件并点击“预览导入”。文件最大 20
+              MB，一次最多 10000 个条目。预览展示新增、重复、不支持的数量及前 10
+              个条目的名称和账号，不展示密码。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. 核对字段与保留范围</h2>
+            <p>
+              名称对应条目名称，用户名对应账号，密码对应密码，网址对应网站，备注保留，Bitwarden
+              文件夹对应标签、收藏对应收藏。支持登录和安全笔记；JSON
+              支持多个网址、自定义文本、布尔值与隐藏字段。CSV
+              自定义字段整体保留为私密字段。不支持的验证码密钥原样保留为私密字段。卡片、身份等类型会计数跳过；附件、通行密钥与关联字段会提示未导入。Bitwarden
+              的网址匹配规则和再次验证策略不迁移，扩展始终按精确 HTTPS 来源匹配。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>4. 确认并保存</h2>
+            <p>
+              完全相同的条目会跳过，密码或其他内容不同的条目分别保留，不覆盖已有条目。点击“确认导入”才修改当前密码库；取消或锁定会清除预览。导入后点击“保存数据库”，首次覆盖原文件时选择独立加密备份目录。浏览器只能下载时，请确认下载成功并重新打开加密
+              .db 核对，再妥善清理明文导出。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
+            ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/guides/browser-extension/">扩展教程：填充、更新密码与重新加载 ↗</a
+            ><a href="/security/">安全与隐私 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.2 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>

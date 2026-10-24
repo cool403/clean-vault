@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { matchesSite, loginOrigin } from '../extension/matching.js';
-import { fillLogin } from '../extension/fill.js';
+import { fillLogin, readNewPassword } from '../extension/fill.js';
 import { readFile } from 'node:fs/promises';
 test('extension matching rejects suffixes, HTTP, other subdomains and ports', () => {
   assert.ok(
@@ -62,4 +62,31 @@ test('extension has no global host, storage, external message or persistent cont
   assert.equal(manifest.content_scripts, undefined);
   assert.equal(manifest.externally_connectable, undefined);
   assert.match(manifest.content_security_policy.extension_pages, /connect-src 'none'/);
+});
+
+test('multistep login fills only a unique username and never submits or fills OTP fields', () => {
+  const { dom, win, run } = page(
+    '<form><input autocomplete="username"><button>Continue</button></form>',
+  );
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'username-filled');
+  assert.equal(win.document.querySelector('input').value, 'alice');
+  win.document.querySelector('input').autocomplete = 'one-time-code';
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'ambiguous');
+  win.document.body.innerHTML = '<input type="email"><input type="email">';
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'ambiguous');
+  dom.window.close();
+});
+
+test('explicit password capture reads only matching new-password inputs from the expected origin', () => {
+  const { dom, win } = page(
+    '<form><input type="password" autocomplete="current-password" value="old"><input type="password" autocomplete="new-password" value="new"><input type="password" autocomplete="new-password" value="new"></form>',
+  );
+  const read = win.eval('(' + readNewPassword.toString() + ')');
+  assert.equal(read('https://evil.test').status, 'origin');
+  assert.equal(read('https://example.com').password, 'new');
+  win.document.querySelectorAll('[autocomplete=new-password]')[1].value = 'different';
+  assert.equal(read('https://example.com').status, 'ambiguous');
+  win.document.querySelectorAll('[autocomplete=new-password]').forEach((input) => input.remove());
+  assert.equal(read('https://example.com').status, 'ambiguous');
+  dom.window.close();
 });

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="了解 ClearVault Chrome / Edge 扩展的分步登录、多网址匹配、密码更新确认、加密保存和文件冲突处理。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>扩展教程：填充、更新密码与重新加载 · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/guides/browser-extension/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/browser-extension/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/browser-extension/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/browser-extension/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="扩展教程：填充、更新密码与重新加载 · ClearVault" />
+    <meta
+      property="og:description"
+      content="了解 ClearVault Chrome / Edge 扩展的分步登录、多网址匹配、密码更新确认、加密保存和文件冲突处理。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/guides/browser-extension/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a
+        ><a href="/en/guides/browser-extension/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">使用指南</span>
+        <h1>扩展教程：填充、更新密码与重新加载</h1>
+        <p class="lead">
+          扩展在侧栏本地解锁
+          .db，并在你明确点击后操作当前网站。网页和扩展可以分别打开同一文件，使用前请核对保存状态。
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">1. 安装和打开</a
+          ><a href="#section-2">2. 填充和分步登录</a><a href="#section-3">3. 为同一账号添加网址</a
+          ><a href="#section-4">4. 更新密码并确认</a
+          ><a href="#section-5">5. 保存、外部变化与锁定</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. 安装和打开</h2>
+            <p>
+              从下载页取得扩展 ZIP 并解压，在 Chrome / Edge
+              扩展管理页开启开发者模式并加载解压目录。更新扩展后点击重新加载扩展。打开目标 HTTPS
+              网站，点击工具栏扩展图标授权，选择 .db 或最近密码库，再输入主密码。最近记录最多 5
+              个，可移除或清空；它不保存密码和库内容。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. 填充和分步登录</h2>
+            <p>
+              核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。多个密码框、验证码框、新密码表单或不明确的输入框会拒绝填充。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. 为同一账号添加网址</h2>
+            <p>
+              在新网站点击扩展图标，解锁后点击“添加网站地址”，核对展示的完整 HTTPS
+              来源并选择条目，确认后保存。也可在网页编辑器点击“添加网站地址”。每个网址单独精确匹配主机和端口，不自动扩展到其他子域。勾选“查看所有条目”可更新非当前网站条目，但不能向不匹配网站填充。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>4. 更新密码并确认</h2>
+            <p>
+              在网站修改密码时，选择扩展内对应条目的“更新密码”。可手动输入新密码两次，或明确点击“从当前网页读取新密码”，读取当前匹配网站标记为
+              new-password
+              的可见密码框；无法唯一识别时手动输入。读取只填入确认表单，确认后才修改条目。先确认网站修改成功，再保存数据库。扩展不监听全站输入，也不自动提交或自动采集密码。
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>5. 保存、外部变化与锁定</h2>
+            <p>
+              点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏和空闲时锁定，未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
+            ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/guides/import-passwords/">从 Chrome 或 Bitwarden 导入密码 ↗</a
+            ><a href="/security/">安全与隐私 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.2 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>

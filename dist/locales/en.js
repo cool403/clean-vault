@@ -1,4 +1,103 @@
 export default {
+  '上次确认的目录：{folder}': 'Last confirmed folder: {folder}',
+  所在目录尚未确认: 'Folder not yet confirmed',
+  确认所在目录: 'Confirm containing folder',
+  所选文件夹: 'Selected folder',
+  '记录已失效，请重新打开密码库': 'This history record is no longer available. Reopen the vault.',
+  '所选文件夹不包含此密码库，请重新选择':
+    'The selected folder does not contain this vault. Choose its containing folder.',
+  已确认密码库所在目录: 'Vault folder confirmed.',
+  '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。':
+    'Browsers do not expose the full local path. Use the folder icon to select a containing folder and verify its name and relative directory.',
+  '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。':
+    'Browsers do not expose the full local path. Check the containing folder in the system file picker when selecting the file again.',
+  '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Only file names, handles and folder labels you confirm are remembered, never master passwords or vault contents. The app and extension keep separate histories.',
+  从当前网页读取新密码: 'Read new password from this website',
+  '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
+    'Reads the new-password fields on this website only after you click. Your entry changes only after confirmation.',
+  '无法识别唯一的新密码，请手动输入':
+    'A unique new password could not be identified. Enter it manually.',
+  '新密码已读取，请确认更新': 'New password read. Confirm to update your entry.',
+  最近密码库: 'Recent vaults',
+  清空记录: 'Clear history',
+  移除记录: 'Remove from history',
+  重新打开并解锁: 'Reopen and unlock',
+  需要重新选择文件: 'Select the file again',
+  '仅记住文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Only file names and handles are remembered, never master passwords or vault contents. The app and extension keep separate histories.',
+  '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。':
+    'This browser cannot persist file history. History is available for this page session only.',
+  '打开或保存密码库后，会在这里显示。': 'Opened or saved vaults will appear here.',
+  '文件授权未完成，请重新授权或重新选择文件':
+    'File access was not granted. Grant access again or select the file again.',
+  '文件已移动或删除，请重新选择文件': 'The file was moved or deleted. Select the file again.',
+  操作已取消: 'Action canceled.',
+  导入密码: 'Import passwords',
+  导入来源: 'Import source',
+  选择导出文件: 'Choose an export file',
+  预览导入: 'Preview import',
+  确认导入: 'Confirm import',
+  重新选择: 'Choose again',
+  '文件仅在本地处理，确认前不会修改密码库。':
+    'Files are processed locally. Your vault changes only after confirmation.',
+  '支持 Chrome 密码 CSV、Bitwarden 未加密 CSV / JSON 的登录和安全笔记。':
+    'Supports Chrome password CSV and login entries and secure notes from unencrypted Bitwarden CSV / JSON.',
+  '导出文件可能含明文密码，请在完成导入并验证加密保存后妥善清理。':
+    'Exports may contain plain text passwords. Handle them carefully and remove them after importing and verifying your encrypted save.',
+  '新增 {added} · 重复 {duplicates} · 不支持 {skipped}':
+    'New {added} · Duplicates {duplicates} · Unsupported {skipped}',
+  '完全相同的条目会跳过；密码或内容不同的条目将分别保留，不覆盖已有数据。':
+    'Identical entries are skipped. Entries with different passwords or contents are kept separately; existing data is never replaced.',
+  '字段对应：名称 → 条目名称，用户名 → 账号，密码 → 密码，网址 → 网站，文件夹 → 标签。':
+    'Mapping: name → entry title, username → account, password → password, URL → website, folder → label.',
+  '不支持的条目已跳过，请保留源文件并核对。':
+    'Unsupported entries were skipped. Keep the source file and check the results.',
+  '仅展示前 10 个条目，确认后导入全部新增条目。':
+    'Showing the first 10 entries. Confirmation imports all new entries.',
+  'CSV 格式无效，请使用原始导出文件': 'Invalid CSV format. Use the original export file.',
+  'CSV 列数不一致，请使用原始导出文件': 'CSV column counts differ. Use the original export file.',
+  '一次最多导入 10000 个条目，请拆分文件':
+    'Import up to 10,000 entries at a time. Split the file into smaller exports.',
+  '导入文件不能超过 20 MB': 'Import files must be no larger than 20 MB.',
+  'JSON 格式无效，请选择未加密的 Bitwarden JSON 导出':
+    'Invalid JSON. Choose an unencrypted Bitwarden JSON export.',
+  '文件列与所选来源不匹配，请检查导入格式':
+    'The file columns do not match the selected source. Check the import format.',
+  导入文件中没有条目: 'The import file contains no entries.',
+  '部分验证密钥不受支持，已原样保留为私密字段':
+    'Some authenticator secrets are unsupported and have been preserved as private fields.',
+  '附件、通行密钥和关联字段未导入，请保留源数据':
+    'Attachments, passkeys and linked fields were not imported. Keep the source data.',
+  导入的自定义字段: 'Imported custom fields',
+  '已导入 {count} 个条目，请保存数据库': 'Imported {count} entries. Save your vault.',
+  最近文件记录已清空: 'Recent file history cleared.',
+  '保存的文件授权可能过期，点击最近密码库可重新授权。':
+    'Saved file access may expire. Select a recent vault to grant access again.',
+  重新加载文件: 'Reload file',
+  '原文件已变化，请重新加载后再填充；当前编辑可另存为副本':
+    'The original file changed. Reload before filling; save current edits as a copy if needed.',
+  '已填充账号，请在网站继续下一步，再点击填充密码':
+    'Username filled. Continue on the website, then click Fill again for the password.',
+  添加网站地址: 'Add website address',
+  '将当前 HTTPS 网站添加到此条目，保存后即可在这里匹配。':
+    'Add the current HTTPS website to this entry and save to enable matching here.',
+  选择条目: 'Choose an entry',
+  '已添加网站地址，请保存数据库': 'Website address added. Save your vault.',
+  更新密码: 'Update password',
+  输入新密码: 'Enter a new password',
+  确认新密码: 'Confirm new password',
+  '确认后更新此条目，再保存到加密文件。':
+    'Confirm to update this entry, then save the encrypted file.',
+  '密码已更新，请保存数据库': 'Password updated. Save your vault.',
+  查看所有条目: 'Show all entries',
+  '重新加载会放弃当前未保存修改，是否继续？': 'Reloading discards your unsaved changes. Continue?',
+  确认重新加载: 'Confirm reload',
+  '已重新加载文件，请输入主密码': 'File reloaded. Enter your master password.',
+  '请先保存当前修改，再导入或重新加载文件':
+    'Save your current changes before importing or reloading a file.',
+  '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。':
+    'Vaults are decrypted in memory only. Recent history stores only names, handles and folder labels you confirm and can be cleared anytime. Reopening still requires your master password.',
   '在 GitHub 查看源码': 'View source on GitHub',
   查看构建记录: 'View build history',
   核对线上版本: 'Verify this deployment',
@@ -32,10 +131,10 @@ export default {
     'Only excess backups created for this source file in this page are removed. Other sources and earlier sessions are kept. Copy backups to a separate device and confirm downloads.',
 
   下载与源代码: 'Downloads and source',
-  '版本 0.3.8 · 本地优先，自由保管。': 'Version 0.3.8 · Local first. Yours to keep.',
+  '版本 {version} · 本地优先，自由保管。': 'Version {version} · Local first. Yours to keep.',
   浏览器扩展: 'Browser extension',
-  '只读解锁密码库，手动填充精确匹配的 HTTPS 账号。':
-    'Unlock your vault read-only and manually fill logins on exactly matching HTTPS websites.',
+  '本地解锁，支持分步填充、导入、密码更新确认与验证保存。':
+    'Unlock locally for multistep filling, imports, confirmed password updates and verified saves.',
   下载扩展: 'Download extension',
   'MIT 开源代码': 'MIT open source',
   '包含应用、扩展、测试、安全说明和自托管配置。':
@@ -44,8 +143,8 @@ export default {
   安装扩展: 'Install the extension',
   '解压扩展包，在 Chrome 或 Edge 的扩展管理页面启用开发者模式，然后选择“加载已解压的扩展程序”。点击目标网站的工具栏扩展图标，再打开密码库。':
     'Extract the extension ZIP. Enable Developer mode in Chrome or Edge extension settings and choose Load unpacked. Click the toolbar extension icon on your target website, then open your vault.',
-  '此版本未在浏览器商店上架。第一版不写回密码库，不支持 Firefox、Passkey 或 iframe 填充。':
-    'This version is not listed in browser stores. It does not write vault files or support Firefox, passkeys or iframe filling.',
+  '此版本未在浏览器商店上架。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
+    'This version is not listed in browser stores. It supports local saves with backups; Firefox, passkeys and iframe filling are unsupported.',
   自行部署: 'Self-host',
   '先执行 npm ci 和 npm run release，再将 release/web 目录部署到 HTTPS 静态托管，或按 docs/SELF-HOSTING.md 使用 Docker。开发扩展执行 npm run build:extension，验证正式产物执行 npm run test:release。':
     'Run npm ci and npm run release, then serve the readable release/web directory on HTTPS static hosting, or use Docker as described in docs/SELF-HOSTING.en.md. Build the development extension with npm run build:extension and verify production artifacts with npm run test:release.',

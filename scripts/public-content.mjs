@@ -27,7 +27,7 @@ export const articles = [
         ],
         [
           '4. 重新打开，确认保存结果',
-          '先保存，再锁定并重新打开导出的数据库，检查修改是否存在。刷新、关闭页面会丢失未保存内容。自动备份不能替代独立备份；更改主密码也不会更改旧备份的密码。',
+          '先保存，再锁定并重新打开数据库检查修改。首页“最近密码库”保留最近 5 个文件的名称和句柄，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持句柄时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。可点击记录旁的文件夹图标“确认所在目录”，选择包含密码库的目录；应用核对后显示上次确认的文件夹名和相对目录。浏览器不提供完整绝对路径，文件移动后需重新确认。',
         ],
         [
           '打不开文件时检查什么？',
@@ -60,7 +60,7 @@ export const articles = [
         ],
         [
           '4. Reopen to verify the result',
-          'Save, lock and reopen the exported database to check your changes. Refreshing or closing the page loses unsaved edits. Automatic backups do not replace independent backups, and changing the master password does not change the password of older backups.',
+          'Save, lock and reopen the database to verify changes. Recent vaults on the home screen remembers up to five file names and handles. Select one, grant access again if needed and enter your master password. If the file moved or handles are unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Use the folder icon to confirm a containing directory. The app verifies membership and shows its last confirmed name and relative directory. Browsers do not expose a full absolute path; confirm again after moving files.',
         ],
         [
           'If the file will not open',
@@ -92,7 +92,7 @@ export const articles = [
         ],
         [
           '可选：浏览器扩展',
-          '下载页提供 Chrome / Edge 扩展压缩包，尚未上架商店。按说明解压并加载后，打开目标网站，手动点击扩展授权，再选择条目填充。扩展只读，不写回数据库；只匹配 HTTPS 精确来源，不自动提交表单，不支持 Firefox、跨域 iframe 或 Passkey 填充。',
+          '下载页提供 Chrome / Edge 扩展压缩包，尚未上架商店。解压加载后，在目标网站点击扩展授权，再打开最近密码库或选择文件并解锁。支持分步登录、为同一条目添加多个精确 HTTPS 地址、确认更新密码和导入。修改后点击保存数据库，覆盖前自动备份并验证。文件外部变化时先另存编辑结果，再重新加载并解锁。不支持 Firefox、iframe 或 Passkey，不自动提交表单。',
         ],
         [
           '多设备使用时如何避免冲突',
@@ -121,7 +121,7 @@ export const articles = [
         ],
         [
           'Optional browser extension',
-          'The downloads page provides a Chrome / Edge extension ZIP; it is not listed in browser stores. Unpack and load it as instructed, visit the target site, click the extension to grant access and choose an entry to fill. The extension is read-only, matches exact HTTPS origins and never submits forms. Firefox, cross-origin iframes and Passkey filling are not supported.',
+          'Download and unpack the Chrome / Edge extension; it is not listed in browser stores. Click its icon on the target website, reopen a recent vault or choose a file, then unlock. It supports multistep login, multiple explicitly added HTTPS origins, confirmed password updates and imports. Save changes with verified backups before overwriting. If the file changes externally, save your edits as a copy, then reload and unlock. Firefox, iframe and Passkey filling are unsupported. Forms are never submitted automatically.',
         ],
         [
           'Avoid conflicts across devices',
@@ -193,6 +193,123 @@ export const articles = [
   },
 ];
 
+articles.push(
+  {
+    slug: 'import-passwords',
+    zh: {
+      title: '从 Chrome 或 Bitwarden 导入密码',
+      description:
+        '在网页和浏览器扩展中本地导入 Chrome CSV、Bitwarden CSV / JSON，预览重复条目并验证加密保存。',
+      intro:
+        '先打开或新建 ClearVault 密码库，再导入已有密码。网页与扩展共用相同的导入预览、字段对应和重复检测。',
+      sections: [
+        [
+          '1. 从原工具导出',
+          'Chrome：打开 Google 密码管理工具的设置，选择导出密码，按系统提示验证身份并保存 CSV。Bitwarden：在导出密码库中选择未加密 CSV 或 JSON，JSON 更适合保留多个网址与自定义字段。通行密钥不属于 Chrome 密码 CSV。本地导出文件可能包含明文密码，请妥善保管。',
+        ],
+        [
+          '2. 选择来源并预览',
+          '解锁目标 .db 后，在网页顶栏、偏好设置或扩展中点击“导入密码”，选择 Chrome CSV、Bitwarden CSV 或 Bitwarden JSON，再选择文件并点击“预览导入”。文件最大 20 MB，一次最多 10000 个条目。预览展示新增、重复、不支持的数量及前 10 个条目的名称和账号，不展示密码。',
+        ],
+        [
+          '3. 核对字段与保留范围',
+          '名称对应条目名称，用户名对应账号，密码对应密码，网址对应网站，备注保留，Bitwarden 文件夹对应标签、收藏对应收藏。支持登录和安全笔记；JSON 支持多个网址、自定义文本、布尔值与隐藏字段。CSV 自定义字段整体保留为私密字段。不支持的验证码密钥原样保留为私密字段。卡片、身份等类型会计数跳过；附件、通行密钥与关联字段会提示未导入。Bitwarden 的网址匹配规则和再次验证策略不迁移，扩展始终按精确 HTTPS 来源匹配。',
+        ],
+        [
+          '4. 确认并保存',
+          '完全相同的条目会跳过，密码或其他内容不同的条目分别保留，不覆盖已有条目。点击“确认导入”才修改当前密码库；取消或锁定会清除预览。导入后点击“保存数据库”，首次覆盖原文件时选择独立加密备份目录。浏览器只能下载时，请确认下载成功并重新打开加密 .db 核对，再妥善清理明文导出。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import passwords from Chrome or Bitwarden',
+      description:
+        'Import Chrome CSV and Bitwarden CSV / JSON locally in the app or extension, preview duplicates and verify your encrypted save.',
+      intro:
+        'Open or create a ClearVault vault first. The app and extension share the same import preview, mapping and duplicate checks.',
+      sections: [
+        [
+          '1. Export from your previous tool',
+          'In Chrome, open Google Password Manager settings and export passwords as CSV, completing system authentication. In Bitwarden, export an unencrypted CSV or JSON file; JSON retains multiple URLs and typed custom fields more accurately. Chrome password CSV does not contain passkeys. Export files may contain plain text passwords: handle them carefully.',
+        ],
+        [
+          '2. Select a source and preview',
+          'Unlock the destination .db and choose Import passwords in the app toolbar, preferences or extension. Select Chrome CSV, Bitwarden CSV or Bitwarden JSON, choose the file and preview. The limit is 20 MB and 10,000 entries per file. Preview shows new, duplicate and unsupported counts and the first ten names and accounts, without displaying passwords.',
+        ],
+        [
+          '3. Check mapping and supported data',
+          'Names map to titles, usernames to accounts, URLs to website fields and folders to labels. Passwords, notes and favorites are retained. Login entries and secure notes are supported. JSON retains multiple URLs and custom text, boolean and hidden fields. CSV custom fields are kept together as a private field. Unsupported authenticator secrets are retained as private fields. Unsupported item types are counted and skipped; attachments, passkeys and linked fields show warnings. Bitwarden URI match rules and reprompt policies are not migrated; extension matching always uses exact HTTPS origins.',
+        ],
+        [
+          '4. Confirm and save',
+          'Identical entries are skipped. Entries with different passwords or contents are kept separately, without overwriting. Only confirmation changes the vault; cancellation or locking clears the preview. Save the database afterwards, selecting a separate encrypted backup directory before the first overwrite. If the browser only downloads files, verify the download and reopen the encrypted .db before carefully removing plain text exports.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'browser-extension',
+    zh: {
+      title: '扩展教程：填充、更新密码与重新加载',
+      description:
+        '了解 ClearVault Chrome / Edge 扩展的分步登录、多网址匹配、密码更新确认、加密保存和文件冲突处理。',
+      intro:
+        '扩展在侧栏本地解锁 .db，并在你明确点击后操作当前网站。网页和扩展可以分别打开同一文件，使用前请核对保存状态。',
+      sections: [
+        [
+          '1. 安装和打开',
+          '从下载页取得扩展 ZIP 并解压，在 Chrome / Edge 扩展管理页开启开发者模式并加载解压目录。更新扩展后点击重新加载扩展。打开目标 HTTPS 网站，点击工具栏扩展图标授权，选择 .db 或最近密码库，再输入主密码。最近记录最多 5 个，可移除或清空；它不保存密码和库内容。',
+        ],
+        [
+          '2. 填充和分步登录',
+          '核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。多个密码框、验证码框、新密码表单或不明确的输入框会拒绝填充。',
+        ],
+        [
+          '3. 为同一账号添加网址',
+          '在新网站点击扩展图标，解锁后点击“添加网站地址”，核对展示的完整 HTTPS 来源并选择条目，确认后保存。也可在网页编辑器点击“添加网站地址”。每个网址单独精确匹配主机和端口，不自动扩展到其他子域。勾选“查看所有条目”可更新非当前网站条目，但不能向不匹配网站填充。',
+        ],
+        [
+          '4. 更新密码并确认',
+          '在网站修改密码时，选择扩展内对应条目的“更新密码”。可手动输入新密码两次，或明确点击“从当前网页读取新密码”，读取当前匹配网站标记为 new-password 的可见密码框；无法唯一识别时手动输入。读取只填入确认表单，确认后才修改条目。先确认网站修改成功，再保存数据库。扩展不监听全站输入，也不自动提交或自动采集密码。',
+        ],
+        [
+          '5. 保存、外部变化与锁定',
+          '点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏和空闲时锁定，未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Extension guide: fill, update passwords and reload',
+      description:
+        'Use the ClearVault Chrome / Edge extension for multistep logins, multiple URLs, confirmed password updates and verified encrypted saves.',
+      intro:
+        'The sidebar decrypts .db files locally and acts on the website after your explicit click. The app and extension open files separately: check save status before switching.',
+      sections: [
+        [
+          '1. Install and open',
+          'Download and unpack the extension ZIP. Enable developer mode in Chrome / Edge extensions and load the unpacked directory. Reload the extension after updating it. On the target HTTPS website, click its toolbar icon to grant access, choose a .db file or recent vault and enter your master password. Up to five recent records can be removed or cleared; they contain no passwords or vault contents.',
+        ],
+        [
+          '2. Fill and multistep login',
+          'Check the website and account, click Fill this login and submit yourself. On username-first sites, only a unique username or email input is filled. Continue on the website, then click Fill again on the password page. If redirected to another origin, click the extension icon to grant access there. Ambiguous inputs, OTP inputs, multiple password fields and new-password forms are rejected.',
+        ],
+        [
+          '3. Add another website',
+          'Grant access on the new website, unlock and choose Add website address. Check the full HTTPS origin, select an entry, confirm and save. The app editor also has an Add website address button. Each host and port is matched exactly; subdomains are not automatically included. Show all entries allows updating other entries, but filling remains disabled for nonmatching websites.',
+        ],
+        [
+          '4. Confirm a password update',
+          'When changing a password on a website, choose Update password for its entry. Enter it twice or explicitly click Read new password from this website to read visible new-password fields on the currently matching website. If identification is ambiguous, enter it manually. Reading populates only the confirmation form; the entry changes after confirmation. Verify the website accepted the change before saving the vault. The extension does not monitor inputs across websites or submit forms automatically.',
+        ],
+        [
+          '5. Save, reload and lock',
+          'Choose Save database and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing handle support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar or inactivity locks it; unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
+        ],
+      ],
+    },
+  },
+);
+
 export const security = {
   zh: {
     title: '安全与隐私：数据在哪里，边界在哪里',
@@ -211,7 +328,7 @@ export const security = {
       ],
       [
         '浏览器保存什么',
-        'localStorage 仅保存界面语言；没有将解密条目或整个密码库写入 IndexedDB。Service Worker 缓存应用资源，用于离线启动。文件句柄、备份目录授权与保留数量在当前页面会话中使用；换域名后需要重新打开文件。关闭页面不等于已经保存修改。',
+        'localStorage 仅保存界面语言；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
       ],
       [
         '加密兼容性不等于现代认证加密',
@@ -252,7 +369,7 @@ export const security = {
       ],
       [
         'What the browser stores',
-        'localStorage holds only the interface language; decrypted entries and the vault are not persisted to IndexedDB. The Service Worker caches application resources for offline use. File handles, backup directory permission and retention settings are used within the current page session. A different domain requires opening the file again. Closing the page does not save changes.',
+        'localStorage stores only the interface language. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
       ],
       [
         'Compatibility is not modern authenticated encryption',

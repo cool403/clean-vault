@@ -95,8 +95,10 @@
             <h2>可选：浏览器扩展</h2>
             <p>
               下载页提供 Chrome / Edge
-              扩展压缩包，尚未上架商店。按说明解压并加载后，打开目标网站，手动点击扩展授权，再选择条目填充。扩展只读，不写回数据库；只匹配
-              HTTPS 精确来源，不自动提交表单，不支持 Firefox、跨域 iframe 或 Passkey 填充。
+              扩展压缩包，尚未上架商店。解压加载后，在目标网站点击扩展授权，再打开最近密码库或选择文件并解锁。支持分步登录、为同一条目添加多个精确
+              HTTPS
+              地址、确认更新密码和导入。修改后点击保存数据库，覆盖前自动备份并验证。文件外部变化时先另存编辑结果，再重新加载并解锁。不支持
+              Firefox、iframe 或 Passkey，不自动提交表单。
             </p>
           </section>
           <section id="section-5">
@@ -109,6 +111,8 @@
             <h2>继续阅读</h2>
             <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
             ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/guides/import-passwords/">从 Chrome 或 Bitwarden 导入密码 ↗</a
+            ><a href="/guides/browser-extension/">扩展教程：填充、更新密码与重新加载 ↗</a
             ><a href="/security/">安全与隐私 ↗</a>
           </section>
         </article>
@@ -129,7 +133,7 @@
         ><a href="/downloads/">下载与源码</a>
       </nav>
       <small
-        >© ClearVault · MIT · 0.3.8 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        >© ClearVault · MIT · 0.4.2 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
         <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
       >
     </footer>

@@ -44,7 +44,9 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 - Browsers supporting File System Access can write back to the original file. Saving checks the ciphertext SHA-256, verifies an encrypted backup and reads back the written file. Other browsers download encrypted copies.
 - Saving an entry in an existing file automatically backs up and writes the database. Choose a separate backup directory before the first write. Cancellation, conflicts and failures preserve the unsaved state. New vaults and download mode require an explicit database save.
 - Backup preview and restoration as a new vault, automatic locking after 1 / 5 / 15 / 30 minutes, English / Simplified Chinese, and offline PWA use.
-- A Chrome / Edge sidebar extension opens vaults read-only and manually fills one selected account for an exact HTTPS origin, without submitting forms.
+- The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, confirmed password updates, imports and verified saves, without submitting forms.
+- Recent vaults remembers up to five names and file handles. Select a containing directory to show its last confirmed folder name and relative location. Reopening still requires the master password. Remove or clear records anytime.
+- Import Chrome password CSV and unencrypted Bitwarden CSV / JSON with preview, field mapping and duplicate checks, without overwriting entries. The app and extension share this flow.
 
 Quick search opens automatically after unlocking an existing vault. It searches titles, usernames, emails, websites and labels, excluding passwords, PINs, OTP secrets and notes.
 
@@ -61,7 +63,7 @@ Shortcuts work while the application has focus. Search supports IME input and do
 
 ## Data and security boundaries
 
-Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only the language preference; the Service Worker caches application resources. File permissions, backup permissions and retention settings last only for the current page session. The hosting server can still see your IP and HTTP request metadata.
+Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only language. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
 
 Editing preserves unknown XML, attachments, images and history. Binary fields are read-only. Attachment management, cloud sync, Passkeys, camera scanning, Firefox extensions and damaged XML repair are not supported. TOTP codes do not add another vault-unlock factor.
 
@@ -84,7 +86,9 @@ You can also store the secrets in the `production` Environment. Never commit tok
 
 ## Extension and self-hosting
 
-Run `npm run build:extension`. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. On the target website, click the extension icon and open your `.db`. Each new site requires authorization. Reopen the file in the extension after changes in the PWA.
+Run `npm run build:extension`. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. Reload after updating. On the target website, click the icon and open your `.db` or a recent vault. New websites need authorization. External changes stop filling: save edits as a copy, reload the file and unlock.
+
+See the [usage guide](docs/USAGE.en.md) for recent files, imports, multistep filling, multiple URLs, password updates and saving. Matching public guides are generated at `/en/guides/import-passwords/` and `/en/guides/browser-extension/`.
 
 For self-hosting, run `npm run test:release` and serve `release/web/` from an HTTPS static host. See [self-hosting](docs/SELF-HOSTING.en.md) for Docker, backup and installation details.
 
