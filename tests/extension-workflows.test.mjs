@@ -208,6 +208,11 @@ test('extension updates/imports with confirmation, verifies backups, stops stale
   assert.equal(document.querySelectorAll('.entry').length, 2);
   await element('#lock').onclick();
   assert.equal(document.querySelectorAll('.entry').length, 0);
+  await wait(() => document.querySelector('[data-action=recent-session]'));
+  assert.equal(document.querySelector('#resume'), null);
+  assert.match(element('[data-action=recent-session]').textContent, /continue unsaved changes/);
+  element('[data-action=recent-session]').click();
+  assert.equal(document.activeElement, element('#password'));
   element('#password').value = password;
   await element('#unlock').onsubmit(event());
   assert.equal(
@@ -236,7 +241,7 @@ test('extension updates/imports with confirmation, verifies backups, stops stale
   assert.equal(document.querySelectorAll('.entry').length, 1);
   await wait(() => document.querySelector('[data-action=recent-open]'));
   await element('#lock').onclick();
-  await wait(() => !element('#resume').disabled);
+  await wait(() => !element('#unlock-button').disabled);
   element('[data-action=recent-open]').click();
   await wait(() => element('#selected-file').textContent === 'synthetic.db');
   element('#language').value = 'zh-CN';

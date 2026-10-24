@@ -30,6 +30,8 @@ npm run test:release
 
 修改这些流程需同时验证网页、侧栏、中英文和窄屏。测试覆盖重复导入、差异密码保留、未知 XML 保留、元数据持久化、权限失败、保存备份、冲突停止填充及锁定后的异步请求。使用教程维护 `docs/USAGE*.md` 与 `scripts/public-content.mjs`，执行 `npm run build:public` 生成中英文教程、站点地图和 robots；新资源同步加入离线清单。
 
+`mergeRecentSession` 仅合并显示模型，通过记录 ID 或 `isSameEntry` 判断同一文件，不把会话标记写回历史存储。无匹配记录时创建临时行，确保新库和取消首次解锁后的文件仍可访问。当前会话行使用 `recent-session` 动作解锁加密内存副本，其他历史行仍重新选取或读取文件。锁定、清空历史和刷新界面不能覆盖未保存的加密副本。
+
 ## 构建
 
 `npm run release` 更新公开中英文页面和扩展共享代码，生成可读 Web / 扩展目录、三份 ZIP、源码与制品 SHA-256 清单。MIT 和第三方声明复制到部署目录。只使用明确列出的源码目录，不打包 .git、.openai、node_modules、真实数据库和账号配置。不要将工作区上层的分析目录或个人数据库发布到 GitHub。

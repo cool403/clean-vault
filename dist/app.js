@@ -2,7 +2,7 @@ import { createQuickSearch, modifier } from './quick-search.js';
 import { t, html, getLocale, initializeLanguage, setLanguage, supportedLocales } from './i18n.js';
 import { buildInfo } from './build-info.js';
 import { mountSupportLinks } from './support.js';
-import { createRecentFiles, allowFile, fileError } from './recent-files.js';
+import { createRecentFiles, mergeRecentSession, allowFile, fileError } from './recent-files.js';
 import { recentMarkup, createImportWizard } from './workflow-ui.js';
 import { applyImport } from './import-data.js';
 import { decryptDatabase, encryptDatabase, passwordBytes, encode } from './crypto.js';
@@ -38,6 +38,7 @@ const state = {
   encrypted: null,
   name: '',
   handle: null,
+  recentId: null,
   signature: null,
   dirty: false,
   demo: false,
@@ -153,17 +154,30 @@ function message(error) {
   return fileError(error);
 }
 async function refreshRecent() {
-  recentEntries = await recentFiles.list();
+  const generation = state.generation,
+    doc = state.doc;
+  const entries = await recentFiles.list();
+  const display = await mergeRecentSession(
+    entries,
+    !state.doc && state.encrypted
+      ? { id: state.recentId, name: state.name, handle: state.handle, dirty: state.dirty }
+      : null,
+  );
+  if (generation !== state.generation || doc !== state.doc) return;
+  recentEntries = entries;
   const container = document.querySelector('#recent-files');
   if (container)
     container.innerHTML = recentMarkup(
-      recentEntries,
+      display,
       recentFiles.persistent,
       typeof window.showDirectoryPicker === 'function',
     );
 }
 async function rememberFile() {
-  await recentFiles.remember(state.name, state.handle);
+  const name = state.name,
+    handle = state.handle;
+  const entry = await recentFiles.remember(name, handle);
+  if (name === state.name && handle === state.handle) state.recentId = entry.id;
   await refreshRecent();
 }
 async function openRecent(id) {
@@ -176,7 +190,7 @@ async function openRecent(id) {
   if (state.dirty && !(await askDiscard())) return;
   try {
     await allowFile(entry.handle);
-    await acceptFile(await entry.handle.getFile(), entry.handle);
+    await acceptFile(await entry.handle.getFile(), entry.handle, entry.id);
   } catch (error) {
     toast(message(error));
   }
@@ -410,7 +424,7 @@ function welcomeNavigation() {
 }
 function renderWelcome() {
   app.innerHTML = html`<div class="welcome"><header class="welcome-header"><a class="brand" href="./"><img src="./icon.svg" alt="" width="29" height="29"><span>ClearVault<span class="brand-dot">.</span></span></a><div class="welcome-header-actions"><span class="privacy-pill"><i></i> 你的设备，你的密码库</span>${state.install ? button('install', t('安装应用'), 'download', 'button secondary') : ''}</div></header>
-    <main class="welcome-main"><div class="welcome-copy"><span class="overline">A LITTLE SPACE FOR PEACE OF MIND</span><h1>重要的，<br>安心放在这里<span>。</span></h1><p>密码、账号和两步验证码，井井有条。<br>打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。</p><div class="welcome-buttons">${button('open', t('打开 .db 密码库'), 'folder', 'button primary large-button')}${button('create', t('创建新密码库'), 'plus', 'button secondary large-button')}</div><div class="welcome-secondary">${state.encrypted ? button('unlock', t('重新解锁 ') + e(state.name), 'lock', 'text-button') : button('demo', t('先体验一下'), 'sparkle', 'text-button')}<span>无需注册 · 无需上传文件</span></div></div>
+    <main class="welcome-main"><div class="welcome-copy"><span class="overline">A LITTLE SPACE FOR PEACE OF MIND</span><h1>重要的，<br>安心放在这里<span>。</span></h1><p>密码、账号和两步验证码，井井有条。<br>打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。</p><div class="welcome-buttons">${button('open', t('打开 .db 密码库'), 'folder', 'button primary large-button')}${button('create', t('创建新密码库'), 'plus', 'button secondary large-button')}</div><div class="welcome-secondary">${state.encrypted ? '' : button('demo', t('先体验一下'), 'sparkle', 'text-button')}<span>无需注册 · 无需上传文件</span></div></div>
     <div class="welcome-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="floating-tag tag-top">${icon('check', 15)} Everything, in its place.</div><div class="vault-illustration"><div class="vault-face">${icon('shield', 92)}<span>YOUR PRIVATE SPACE</span></div><div class="vault-foot"></div></div><div class="floating-otp"><div class="mini-brand">G</div><div><small>双重验证 · Google</small><strong>482 <span>916</span></strong></div><div class="illustration-ring">24</div></div><div class="art-sparkle">✦</div></div></main>
     <section class="welcome-features"><article>${icon('lock', 23)}<h3>只在本地，安心解锁</h3><p>主密码解密，文件始终由你掌握。</p></article><article>${icon('clock', 23)}<h3>两步验证，一眼即得</h3><p>实时动态验证码，轻点即可复制。</p></article><article>${icon('download', 23)}<h3>随时保存，自由带走</h3><p>读写兼容 .db 格式，离线也能使用。</p></article></section><footer class="welcome-footer"><div class="welcome-footer-copy"><span>Less worry. More clarity.</span><span>Made for your digital peace of mind.</span></div>${welcomeNavigation()}</footer></div>`;
   mountLanguagePickers();
@@ -522,7 +536,7 @@ async function openFile() {
   $('#file-input').value = '';
   $('#file-input').click();
 }
-async function acceptFile(file, handle = null) {
+async function acceptFile(file, handle = null, recentId = null) {
   if (file.size > 64 * 1024 * 1024) throw new Error(t('文件超过 64 MB，请使用桌面客户端处理'));
   const bytes = new Uint8Array(await file.arrayBuffer());
   if (bytes[0] !== 5 || bytes[1] !== 5) throw new Error(t('请选择 SafeInCloud 格式的 .db 文件'));
@@ -532,6 +546,7 @@ async function acceptFile(file, handle = null) {
   state.encrypted = bytes;
   state.name = file.name;
   state.handle = handle;
+  state.recentId = recentId;
   state.signature = hash;
   state.lastSaved = null;
   state.lastExported = null;
@@ -580,7 +595,7 @@ async function submitPassword(form) {
       }
       state.credential = result.credential;
       state.version = result.version;
-      void rememberFile();
+      if (state.handle || state.signature) void rememberFile();
     } else if (mode === 'create') {
       state.generation++;
       wipeUnlocked();
@@ -590,6 +605,7 @@ async function submitPassword(form) {
       state.encrypted = null;
       state.name = (form.elements.name.value.trim() || t('我的密码库')) + '.db';
       state.handle = null;
+      state.recentId = null;
       state.signature = null;
       state.lastSaved = null;
       state.lastExported = null;
@@ -792,6 +808,7 @@ async function saveFile(asCopy = false) {
         name: handle.name,
         retention: backupRetention,
       });
+      if (!same) state.recentId = null;
       state.handle = handle;
       state.name = handle.name;
       state.signature = result.hash;
@@ -1086,6 +1103,7 @@ function confirmRecovery() {
   state.encrypted = recovered.bytes;
   state.name = recovered.name.replace(/\.db$/i, '') + '-recovered.db';
   state.handle = null;
+  state.recentId = null;
   state.signature = null;
   state.demo = false;
   state.dirty = true;
@@ -1143,6 +1161,9 @@ async function action(name, target) {
     case 'recent-open':
       await openRecent(target.dataset.id);
       break;
+    case 'recent-session':
+      if (state.encrypted && !state.doc) showPassword('unlock');
+      break;
     case 'recent-directory': {
       const entry = recentEntries.find((item) => item.id === target.dataset.id);
       if (!entry?.handle || !window.showDirectoryPicker) break;
@@ -1173,9 +1194,6 @@ async function action(name, target) {
       break;
     case 'create':
       if (!state.dirty || (await askDiscard())) showPassword('create');
-      break;
-    case 'unlock':
-      showPassword('unlock');
       break;
     case 'demo':
       state.generation++;

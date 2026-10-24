@@ -1,5 +1,36 @@
 import { t } from './i18n.js';
 
+export async function mergeRecentSession(entries, session) {
+  if (!session?.name) return entries;
+  let matched = entries.find((entry) => entry.id === session.id);
+  if (!matched && session.handle) {
+    for (const entry of entries) {
+      try {
+        if (
+          entry.handle &&
+          (entry.handle === session.handle || (await session.handle.isSameEntry?.(entry.handle)))
+        ) {
+          matched = entry;
+          break;
+        }
+      } catch {}
+    }
+  }
+  const current = {
+    ...(matched || {
+      id: 'current-session',
+      name: session.name,
+      handle: session.handle || null,
+      time: Date.now(),
+      ephemeral: true,
+    }),
+    name: session.name,
+    current: true,
+    unsaved: Boolean(session.dirty),
+  };
+  return [current, ...entries.filter((entry) => entry !== matched)];
+}
+
 export async function allowFile(handle, mode = 'read') {
   if (!handle?.queryPermission) return;
   if ((await handle.queryPermission({ mode })) === 'granted') return;

@@ -242,7 +242,7 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
       bubbles: true,
     }),
   );
-  await waitFor(() => !!document.querySelector('[data-action=unlock]'));
+  await waitFor(() => !!document.querySelector('[data-action=recent-session]'));
   assert.deepEqual(footerLinks(), [
     '/guides/',
     '/security/',
@@ -257,7 +257,7 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   );
   assert.ok(!document.querySelector('.otp-widget'));
   assert.ok(!document.querySelector('.field-value'));
-  click('[data-action=unlock]');
+  click('[data-action=recent-session]');
   formValue('#password-form', 'password', 'wrong');
   submit('#password-form');
   await waitFor(() => document.querySelector('#password-error')?.textContent.includes('不正确'));
@@ -280,8 +280,17 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   assert.match(document.querySelector('.identity h2').textContent, /编辑后的验证器/);
   // Dirty snapshots survive lock in encrypted memory without writing the file.
   click('[data-action=lock]');
-  await waitFor(() => !!document.querySelector('[data-action=unlock]'));
-  click('[data-action=unlock]');
+  await waitFor(() => !!document.querySelector('[data-action=recent-session]'));
+  assert.equal(document.querySelector('[data-action=unlock]'), null);
+  assert.match(
+    document.querySelector('[data-action=recent-session]').textContent,
+    /解锁并继续未保存的修改/,
+  );
+  assert.match(
+    document.querySelector('.recent-files .workflow-notice').textContent,
+    /未保存的更改/,
+  );
+  click('[data-action=recent-session]');
   formValue('#password-form', 'password', 'synthetic-中文😀-2026');
   submit('#password-form');
   await waitFor(() => !!document.querySelector('[data-action=save]'));

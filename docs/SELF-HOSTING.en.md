@@ -26,8 +26,8 @@ The public ClearVault site retains Pages Web Analytics. This host-side HTML inje
 Run the build commands above first. Docker copies the readable `release/web/` directory.
 
 ```sh
-docker build -t clearvault:0.4.2 .
-docker run --rm -p 127.0.0.1:8080:80 clearvault:0.4.2
+docker build -t clearvault:0.4.3 .
+docker run --rm -p 127.0.0.1:8080:80 clearvault:0.4.3
 ```
 
 Open http://localhost:8080 locally. Remote access requires an HTTPS reverse proxy; otherwise Web Crypto, file APIs and the Service Worker may be unavailable. For production, validate and pin the Nginx base image to a digest. This is a general template, not a claim that the image build has been verified.

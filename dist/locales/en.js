@@ -1,4 +1,8 @@
 export default {
+  解锁当前会话: 'Unlock current session',
+  解锁并继续未保存的修改: 'Unlock and continue unsaved changes',
+  '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
+    'This session has unsaved changes. Unlock and save them before refreshing or closing the page.',
   '上次确认的目录：{folder}': 'Last confirmed folder: {folder}',
   所在目录尚未确认: 'Folder not yet confirmed',
   确认所在目录: 'Confirm containing folder',
