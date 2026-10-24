@@ -23,7 +23,7 @@ export function recentMarkup(entries, persistent, canChooseDirectory = false) {
       const remove = entry.ephemeral
         ? ''
         : `<button type="button" class="icon-button" data-action="recent-remove" data-id="${escapeHTML(entry.id)}" aria-label="${t('移除记录')}">×</button>`;
-      return `<div class="recent-row"><button type="button" class="button secondary recent-open" data-action="${entry.current ? 'recent-session' : 'recent-open'}" data-id="${escapeHTML(entry.id)}"><strong>${escapeHTML(entry.name)}</strong><span class="recent-directory">${escapeHTML(folder)}</span><small>${status} · ${new Date(entry.time).toLocaleDateString(getLocale())}</small></button>${locate}${remove}</div>`;
+      return `<div class="recent-row"><button type="button" class="button secondary recent-open" data-action="${entry.current ? 'recent-session' : 'recent-open'}" data-id="${escapeHTML(entry.id)}"><strong>${escapeHTML(entry.name)}</strong><span class="recent-meta"><span class="recent-directory">${escapeHTML(folder)}</span><small>${status} · ${new Date(entry.time).toLocaleDateString(getLocale())}</small></span></button>${locate || remove ? `<div class="recent-actions">${locate}${remove}</div>` : ''}</div>`;
     })
     .join('');
   const directoryHelp = entries.length

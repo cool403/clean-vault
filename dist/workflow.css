@@ -22,26 +22,32 @@
   text-align: center;
 }
 .recent-row {
-  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  grid-template-columns: minmax(0, 1fr) auto;
   margin-top: 10px;
 }
 .recent-open {
-  grid-column: 2;
-  grid-row: 1;
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
   min-width: 0;
   width: 100%;
 }
 .recent-open strong,
+.recent-meta,
 .recent-directory,
 .recent-open small {
   max-width: 100%;
   overflow-wrap: anywhere;
   white-space: normal;
+}
+.recent-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin-top: 4px;
 }
 .recent-open small {
   color: #66645f;
@@ -49,24 +55,22 @@
   font-size: 12px;
 }
 .recent-directory {
-  margin-top: 4px;
   font-size: 12px;
   font-weight: 400;
   color: #315ca0;
 }
 .recent-directory-button {
-  grid-column: 1;
-  grid-row: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
-.recent-row > .icon-button {
-  width: 36px;
+.recent-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.recent-row > [data-action='recent-remove'] {
-  grid-column: 3;
-  grid-row: 1;
+.recent-actions > .icon-button {
+  width: 36px;
 }
 .workflow-notice {
   padding: 12px 14px;
