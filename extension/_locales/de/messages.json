@@ -1,0 +1,7 @@
+{
+  "extensionName": { "message": "ClearVault · Lokaler Tresor" },
+  "extensionDescription": {
+    "message": "SafeInCloud-Tresore lokal öffnen und speichern. HTTPS-Logins ausfüllen und Passwortänderungen bestätigen. Ohne Konto."
+  },
+  "openVault": { "message": "ClearVault öffnen" }
+}

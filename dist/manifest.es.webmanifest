@@ -1,0 +1,32 @@
+{
+  "id": "./",
+  "name": "ClearVault · Contraseñas y autenticador",
+  "short_name": "ClearVault",
+  "lang": "es",
+  "description": "ClearVault: bóveda local de contraseñas y autenticador. Abra, gestione y guarde bases de datos de SafeInCloud.",
+  "start_url": "./?lang=es",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f1e7",
+  "theme_color": "#f5f1e7",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ export const articles = [
       description:
         '使用 ClearVault 在浏览器本地打开 SafeInCloud .db 密码库，了解主密码、文件保存、备份与恢复步骤。',
       intro:
-        '已有 SafeInCloud 数据库？带上 .db 文件和主密码，就可以在浏览器中管理条目。文件在设备本地解密，无需注册账户。',
+        '已有 SafeInCloud 数据库？带上 .db 文件和主密码，就可以在浏览器中管理条目。文件在设备本地解密，无需注册账户。网页顶部和偏好设置支持简体中文、English、Deutsch、日本語和 Español；首次按浏览器偏好匹配，手动选择会本地记住，不翻译密码库内容。可用 /?lang=de、/?lang=ja、/?lang=es 指定启动语言，离线也能切换。公开教程继续提供中英文。',
       sections: [
         [
           '开始前，留一份独立备份',
@@ -40,7 +40,7 @@ export const articles = [
       description:
         'Open a SafeInCloud .db file locally with ClearVault. Learn how to unlock, edit, export, back up and verify your encrypted vault.',
       intro:
-        'Bring your SafeInCloud .db file and master password to manage entries in your browser. Decryption happens on your device, with no account registration.',
+        'Bring your SafeInCloud .db file and master password to manage entries in your browser. Decryption happens on your device, with no account registration. The header and Preferences offer Chinese, English, German, Japanese and Spanish. The app matches browser preferences and remembers manual choices locally without translating vault contents. Launch with /?lang=de, /?lang=ja or /?lang=es to choose a language explicitly. Language switching works offline. Public guides remain available in Chinese and English.',
       sections: [
         [
           'Keep an independent backup first',
@@ -254,7 +254,7 @@ articles.push(
       description:
         '了解 ClearVault Chrome / Edge 扩展的分步登录、多网址匹配、密码更新确认、加密保存和文件冲突处理。',
       intro:
-        '扩展在侧栏本地解锁 .db，并在你明确点击后操作当前网站。网页和扩展可以分别打开同一文件，使用前请核对保存状态。',
+        '扩展在侧栏本地解锁 .db，并在你明确点击后操作当前网站。网页和扩展可以分别打开同一文件，使用前请核对保存状态。侧栏顶部可切换简体中文、English、Deutsch、日本語和 Español；语言选择与网页分别保存在本地，密码库内容保持原样。',
       sections: [
         [
           '1. 安装和打开',
@@ -283,7 +283,7 @@ articles.push(
       description:
         'Use the ClearVault Chrome / Edge extension for multistep logins, multiple URLs, confirmed password updates and verified encrypted saves.',
       intro:
-        'The sidebar decrypts .db files locally and acts on the website after your explicit click. The app and extension open files separately: check save status before switching.',
+        'The sidebar decrypts .db files locally and acts on the website after your explicit click. The app and extension open files separately: check save status before switching. Choose Chinese, English, German, Japanese or Spanish at the top of the sidebar. Language preferences are remembered locally, separately from the app, without translating vault contents.',
       sections: [
         [
           '1. Install and open',

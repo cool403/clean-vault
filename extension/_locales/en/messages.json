@@ -1,0 +1,7 @@
+{
+  "extensionName": { "message": "ClearVault · Local Vault" },
+  "extensionDescription": {
+    "message": "Open, import and save local SafeInCloud vaults. Fill matching HTTPS logins and confirm password updates. No account or sync."
+  },
+  "openVault": { "message": "Open ClearVault" }
+}

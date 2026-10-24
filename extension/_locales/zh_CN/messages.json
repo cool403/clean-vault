@@ -1,0 +1,7 @@
+{
+  "extensionName": { "message": "ClearVault · 本地密码库" },
+  "extensionDescription": {
+    "message": "在本地打开、导入和保存 SafeInCloud 密码库，填充匹配的 HTTPS 登录并确认密码更新。无需账号或同步。"
+  },
+  "openVault": { "message": "打开 ClearVault 密码库" }
+}

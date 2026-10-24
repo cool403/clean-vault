@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "ClearVault · Local Vault",
-  "description": "Open, import and save local SafeInCloud vaults. Fill matching HTTPS logins and confirm password updates. No account or sync.",
-  "version": "0.4.3",
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
+  "version": "0.4.4",
   "minimum_chrome_version": "116",
   "permissions": ["activeTab", "scripting", "sidePanel"],
   "action": {
-    "default_title": "Open ClearVault / 打开密码库",
+    "default_title": "__MSG_openVault__",
     "default_icon": {
       "16": "core/icon-16.png",
       "32": "core/icon-32.png",
