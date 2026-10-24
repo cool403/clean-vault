@@ -78,10 +78,12 @@
             <h2>Visiting the site still creates network metadata</h2>
             <p>
               Loading the hosted site requests HTML, scripts, styles and icons. The hosting provider
-              can see IP addresses, request times and HTTP metadata. The app includes no third-party
-              behavior analytics scripts, remote fonts or tracking pixels. Search Console reports
-              search performance without tracking actions inside your vault. Ordinary external links
-              open only when you click them.
+              can see IP addresses, request times and HTTP metadata. The application source includes
+              no remote fonts or tracking pixels. The public site retains Cloudflare Pages Web
+              Analytics, which injects an analytics script into hosted HTML; loading and execution
+              are subject to the site CSP. Self-hosted packages do not contain this injection.
+              Search Console reports search performance without tracking actions inside your vault.
+              Ordinary external links open only when you click them.
             </p>
           </section>
           <section id="section-3">

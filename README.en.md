@@ -14,6 +14,8 @@ Original code is licensed under [MIT](LICENSE): use, modify, distribute and use 
 
 The deployed `/build-info.json` identifies the version, Git commit and Actions run. `/ASSET-SHA256SUMS.json` lists deployment file hashes. The downloads page links to the repository, exact source revision and build history. Actions retains web, extension and source ZIPs with SHA-256 manifests. These improve traceability; they do not prove the host serves unmodified code or constitute an independent security audit. You can build and host your own copy.
 
+The public site retains Cloudflare Pages Web Analytics. The host may inject an analytics script into HTML, subject to the site CSP. Manifests describe build artifacts, so hosted HTML can differ from the original hashes; JavaScript, CSS, images and download packages can be compared directly. Self-hosted packages do not include this platform injection.
+
 ## Quick start
 
 Requires Node.js 24+ and Python 3.10+.

@@ -207,7 +207,7 @@ export const security = {
       ],
       [
         '访问网页仍有网络元数据',
-        '加载托管站点会请求 HTML、脚本、样式和图标，托管服务可看到 IP 地址、时间与 HTTP 元数据。应用没有集成第三方行为分析脚本、远程字体或跟踪像素。Search Console 用于查看搜索表现，不在密码库中埋点。普通外链只有在你点击时才会打开。',
+        '加载托管站点会请求 HTML、脚本、样式和图标，托管服务可看到 IP 地址、时间与 HTTP 元数据。应用源码没有集成远程字体或跟踪像素。公开站点保留 Cloudflare Pages Web Analytics，托管平台会向 HTML 注入统计脚本，其加载与执行受站点 CSP 限制；自行托管的原始包不含此注入。Search Console 用于查看搜索表现，不在密码库中埋点。普通外链只有在你点击时才会打开。',
       ],
       [
         '浏览器保存什么',
@@ -248,7 +248,7 @@ export const security = {
       ],
       [
         'Visiting the site still creates network metadata',
-        'Loading the hosted site requests HTML, scripts, styles and icons. The hosting provider can see IP addresses, request times and HTTP metadata. The app includes no third-party behavior analytics scripts, remote fonts or tracking pixels. Search Console reports search performance without tracking actions inside your vault. Ordinary external links open only when you click them.',
+        'Loading the hosted site requests HTML, scripts, styles and icons. The hosting provider can see IP addresses, request times and HTTP metadata. The application source includes no remote fonts or tracking pixels. The public site retains Cloudflare Pages Web Analytics, which injects an analytics script into hosted HTML; loading and execution are subject to the site CSP. Self-hosted packages do not contain this injection. Search Console reports search performance without tracking actions inside your vault. Ordinary external links open only when you click them.',
       ],
       [
         'What the browser stores',

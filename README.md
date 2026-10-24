@@ -14,6 +14,8 @@
 
 线上 `/build-info.json` 记录版本、Git 提交和 Actions 运行链接；`/ASSET-SHA256SUMS.json` 记录部署文件哈希。下载页提供仓库、具体提交和构建记录入口；Actions 保存 Web、扩展、源码 ZIP 和 SHA-256 清单。开源与校验提高可追溯性，不能证明托管方未修改代码，也不代表经过独立安全审计。可自行构建和托管。
 
+公开站点保留 Cloudflare Pages Web Analytics，托管平台可能向 HTML 注入统计脚本，其加载和执行受 CSP 限制。清单描述构建产物，线上 HTML 因此可能与原始哈希不同；JavaScript、CSS、图片和下载包可直接核对。自行托管包不包含这项平台注入。
+
 ## 快速开始
 
 需要 Node.js 24+ 和 Python 3.10+。

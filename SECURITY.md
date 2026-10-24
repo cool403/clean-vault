@@ -15,7 +15,7 @@ PWA 解锁期间在内存保留 XML 和密码字节用于保存；锁定时清�
 
 扩展只读：解密后立即清零返回的密码字节，保留 XML 用于手动填充；后台 service worker 不保存密钥或 XML。侧栏隐藏、关闭或空闲到期时锁定。无 storage 权限，不持久保存密码库、路径和密码。语言仅可由共享 i18n 写入界面偏好。
 
-PWA 的 localStorage 仅保存语言。无 IndexedDB 密码库、无遥测、无第三方字体、图标或分析脚本。Service Worker 只预缓存应用资源。访问托管站点仍产生服务器可见的 IP/HTTP 元数据；离线与自托管可减少这类暴露。
+PWA 的 localStorage 仅保存语言。应用源码不包含 IndexedDB 密码库、遥测、第三方字体或远程图标。公开托管站点保留 Cloudflare Pages Web Analytics，平台会向 HTML 注入统计脚本，其加载与执行受站点 CSP 限制；自托管包不包含该注入。Service Worker 只预缓存应用资源。访问托管站点仍产生服务器可见的 IP/HTTP 元数据；离线与自托管可减少这类暴露。
 
 ## 保存与备份
 

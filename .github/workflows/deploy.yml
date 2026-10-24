@@ -5,6 +5,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      restore_pages_analytics:
+        description: Restore the previous Pages Analytics configuration from deployment history
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -61,33 +66,42 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
-      - name: Disable injected Pages analytics
+      - name: Restore previous Pages analytics when requested
+        if: inputs.restore_pages_analytics == true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           node --input-type=module <<'JS'
-          const response = await fetch(
-            `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/pages/projects/clearvault-safeincloud`,
-            {
+          const endpoint = `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/pages/projects/clearvault-safeincloud`;
+          const headers = {
+            Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,
+            'Content-Type': 'application/json',
+          };
+          async function request(url, options = {}) {
+            const response = await fetch(url, { ...options, headers });
+            const body = await response.json();
+            if (!response.ok || !body.success) throw new Error(`Pages API request failed (HTTP ${response.status})`);
+            return body.result;
+          }
+          const current = await request(endpoint);
+          if (current.build_config?.web_analytics_token) {
+            console.log('Existing Pages analytics configuration retained.');
+          } else {
+            const history = await request(endpoint + '/deployments?per_page=25');
+            const previous = history.find((deployment) => deployment.build_config?.web_analytics_token);
+            if (!previous) throw new Error('No previous analytics configuration found; restore it in the Cloudflare dashboard.');
+            const config = previous.build_config;
+            const updated = await request(endpoint, {
               method: 'PATCH',
-              headers: {
-                Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                build_config: { web_analytics_tag: null, web_analytics_token: null },
-              }),
-            },
-          );
-          const result = await response.json();
-          if (!response.ok || !result.success) {
-            throw new Error(`Unable to disable Pages analytics (HTTP ${response.status})`);
+              body: JSON.stringify({ build_config: {
+                web_analytics_tag: config.web_analytics_tag,
+                web_analytics_token: config.web_analytics_token,
+              } }),
+            });
+            if (updated.build_config?.web_analytics_token !== config.web_analytics_token) throw new Error('Analytics restoration could not be verified');
+            console.log('Previous Pages analytics configuration restored.');
           }
-          if (result.result.build_config?.web_analytics_token || result.result.build_config?.web_analytics_tag) {
-            throw new Error('Pages analytics injection is still configured');
-          }
-          console.log('Pages analytics injection disabled; production HTML stays unchanged.');
           JS
       - name: Deploy verified artifact to Cloudflare Pages
         id: deploy
