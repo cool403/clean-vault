@@ -1,5 +1,7 @@
 # 自托管与可验证发布
 
+[English](SELF-HOSTING.en.md) · 简体中文
+
 需要 Node.js 24+（开发与测试）、Python 3.10+（生成 ZIP）。静态运行无需 Node/Python 服务端。
 
 ```sh
@@ -16,6 +18,8 @@ npm run test:release
 ## Cloudflare Pages
 
 生产发布改由 GitHub Actions 测试和部署，配置详见 [GitHub → Cloudflare 指南](GITHUB-CLOUDFLARE.md)。自托管可将 `release/web/` 上传到自己的 Pages 项目。
+
+公开 ClearVault 站点保留 Pages Web Analytics。平台的 HTML 注入不属于自托管包；自托管环境是否添加统计由自己的托管设置决定，部署工作流不修改该设置。
 
 ## Docker / Nginx
 
@@ -35,5 +39,7 @@ docker run --rm -p 127.0.0.1:8080:80 clearvault:0.3.8
 在目标 HTTPS 网站点击工具栏扩展图标，侧栏选择 .db、输入主密码，点击匹配账号填充。密码库内网站字段必须填写该网站的精确域名；accounts.example.com 和 example.com 不自动等价。新站点需再次点击扩展图标授权。文件被 PWA 修改后，需要在扩展中重新打开；第一版不会同步或写回。侧栏关闭/隐藏会锁定，空闲默认 5 分钟。仅检测一个可见密码框，不支持多步骤用户名页面、iframe 或 Passkey。
 
 浏览器商店上架需要发布者账号、隐私政策链接与人工审核，尚未完成。支持具备 sidePanel API 的 Chromium（Chrome 116+）；Edge 应在目标版本实测。Firefox 暂不支持。
+
+## Sites 输出
 
 Sites 的静态目录配置使用自动生成的 `out/`，它是 `release/web/` 的相同副本；不要部署开发源码 `dist/`。

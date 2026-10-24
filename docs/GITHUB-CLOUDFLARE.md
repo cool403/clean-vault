@@ -1,5 +1,7 @@
 # GitHub Actions → Cloudflare Pages
 
+[English](GITHUB-CLOUDFLARE.en.md) · 简体中文
+
 仓库：https://github.com/cool403/clean-vault
 
 生产域名：https://clear-vault.app
@@ -43,9 +45,3 @@
 - 项目不存在：检查 account ID、Token 的账号范围和项目名。工作流不会自动创建 Pages 项目。
 - 检查失败：修复源码并重跑；失败的构建不会进入部署 job。
 - 部署成功但界面旧：核对域名绑定和 `/build-info.json`，重新联网刷新；Service Worker 已更新缓存号。
-
-## Initial setup (English)
-
-Keep the existing `clearvault-safeincloud` Pages project and its `clear-vault.app` domain. Set its production branch to `main`. Add `CLOUDFLARE_API_TOKEN` (Pages Edit, restricted to the intended account) and `CLOUDFLARE_ACCOUNT_ID` as GitHub Actions secrets, optionally in the `production` environment. Disable duplicate Cloudflare automatic builds if enabled. Push to main or manually run **Test and deploy**.
-
-Normal deployments preserve Pages Web Analytics settings. Hosted HTML may include an injected analytics script and therefore differ from raw artifact hashes; JavaScript, CSS, images and packages remain directly comparable. Manage Analytics in the Cloudflare Pages project dashboard under Metrics → Web Analytics. `_headers` is a deployment directive consumed by Cloudflare rather than a publicly served asset. Pull requests only run checks. Deployment downloads the tested artifact without rebuilding. Inspect `/build-info.json`, the linked commit / run, and `/ASSET-SHA256SUMS.json` to compare deployed assets. Local builds have no claimed Actions revision. For reproduction, use the same source, lockfile, toolchain and GITHUB_REPOSITORY / GITHUB_SHA / GITHUB_RUN_ID metadata. Hashes are not signatures or audits. Use the Cloudflare deployment list to roll back to a verified production deployment, then fix or revert main.

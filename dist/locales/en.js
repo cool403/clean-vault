@@ -48,7 +48,7 @@ export default {
     'This version is not listed in browser stores. It does not write vault files or support Firefox, passkeys or iframe filling.',
   自行部署: 'Self-host',
   '先执行 npm ci 和 npm run release，再将 release/web 目录部署到 HTTPS 静态托管，或按 docs/SELF-HOSTING.md 使用 Docker。开发扩展执行 npm run build:extension，验证正式产物执行 npm run test:release。':
-    'Run npm ci and npm run release, then serve the readable release/web directory on HTTPS static hosting, or use Docker as described in docs/SELF-HOSTING.md. Build the development extension with npm run build:extension and verify production artifacts with npm run test:release.',
+    'Run npm ci and npm run release, then serve the readable release/web directory on HTTPS static hosting, or use Docker as described in docs/SELF-HOSTING.en.md. Build the development extension with npm run build:extension and verify production artifacts with npm run test:release.',
   '校验值用于比对文件，不能代替签名或安全审计。独立审计和浏览器实际安装验证尚未完成。请先使用合成数据验证，保留独立加密备份。':
     'Checksums compare files; they do not replace signatures or security audits. Independent auditing and real browser installation testing are pending. Validate with synthetic data first and keep separate encrypted backups.',
 

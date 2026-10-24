@@ -20,8 +20,8 @@ test('download directory page localizes and resolves packages without HTML/direc
     document.querySelector('a[download]').href,
     'https://example.test/downloads/clearvault-0.3.8-extension.zip',
   );
-  const source = document.querySelectorAll('a[download]')[1];
-  assert.equal(source.href, 'https://example.test/downloads/clearvault-0.3.8-source.zip');
+  assert.equal(document.querySelectorAll('a[download]').length, 1);
+  assert.equal(document.querySelector('a[href$="-source.zip"]'), null);
   assert.ok([...document.querySelectorAll('a')].some((anchor) => anchor.href === buildInfo.source));
   assert.match(document.body.textContent, /Production code stays readable/);
   const picker = document.querySelector('select');
@@ -29,5 +29,7 @@ test('download directory page localizes and resolves packages without HTML/direc
   picker.onchange({ target: picker });
   assert.equal(document.querySelector('h1').textContent, '下载与源代码');
   assert.match(document.body.textContent, /线上代码保持可读/);
+  assert.equal(document.querySelectorAll('a[download]').length, 1);
+  assert.equal(document.querySelector('a[href$="-source.zip"]'), null);
   dom.window.close();
 });

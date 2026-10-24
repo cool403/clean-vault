@@ -22,6 +22,16 @@ test('every public page has static content, reciprocal languages and working loc
   for (const [url, dom] of pages) {
     const doc = dom.window.document;
     assert.equal(doc.querySelector('link[rel=canonical]').href, url);
+    if (new URL(url).pathname.includes('/downloads/')) {
+      assert.equal(doc.querySelectorAll('a[download]').length, 1, url);
+      assert.equal(doc.querySelector('a[href$="-source.zip"]'), null, url);
+      assert.ok(
+        [...doc.querySelectorAll('a')].some((anchor) =>
+          anchor.href.startsWith('https://github.com/'),
+        ),
+        url,
+      );
+    }
     const expectedLocale = new URL(url).pathname.startsWith('/en/') ? 'en' : 'zh-CN';
     assert.equal(doc.documentElement.lang, expectedLocale);
     assert.equal(doc.querySelectorAll('h1').length, 1, url);

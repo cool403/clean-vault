@@ -35,7 +35,7 @@ test('public HTML is readable before JavaScript and declares canonical URLs', as
       const { version } = JSON.parse(
         await readFile(new URL('../extension/manifest.json', import.meta.url)),
       );
-      assert.equal(doc.querySelectorAll('a[download]').length, 2);
+      assert.equal(doc.querySelectorAll('a[download]').length, 1);
       for (const link of doc.querySelectorAll('a[download]'))
         assert.ok(link.href.includes(`clearvault-${version}-`));
     }

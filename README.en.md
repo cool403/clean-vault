@@ -78,17 +78,17 @@ In **Settings → Secrets and variables → Actions**, configure:
 | `CLOUDFLARE_API_TOKEN`  | An API token with Pages Edit access for the target Cloudflare account |
 | `CLOUDFLARE_ACCOUNT_ID` | The corresponding account ID                                          |
 
-You can also store the secrets in the `production` Environment. Never commit tokens. Push to `main` or run the workflow manually after configuration. Disable duplicate Cloudflare automatic builds if another build integration is enabled. See the [deployment guide](docs/GITHUB-CLOUDFLARE.md) for setup and rollback instructions.
+You can also store the secrets in the `production` Environment. Never commit tokens. Push to `main` or run the workflow manually after configuration. Disable duplicate Cloudflare automatic builds if another build integration is enabled. See the [deployment guide](docs/GITHUB-CLOUDFLARE.en.md) for setup and rollback instructions.
 
 ## Extension and self-hosting
 
 Run `npm run build:extension`. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. On the target website, click the extension icon and open your `.db`. Each new site requires authorization. Reopen the file in the extension after changes in the PWA.
 
-For self-hosting, run `npm run test:release` and serve `release/web/` from an HTTPS static host. See [self-hosting](docs/SELF-HOSTING.md) for Docker, backup and installation details.
+For self-hosting, run `npm run test:release` and serve `release/web/` from an HTTPS static host. See [self-hosting](docs/SELF-HOSTING.en.md) for Docker, backup and installation details.
 
 ## Development and contributing
 
-[Developer workflow](docs/DEVELOPER-WORKFLOW.md) · [Contributing](CONTRIBUTING.md)
+[Developer workflow](docs/DEVELOPER-WORKFLOW.en.md) · [Contributing](CONTRIBUTING.md)
 
 Update both `dist/locales/zh-CN.js` and `dist/locales/en.js` when adding UI text. Never translate user data. Tests cover database round trips, synthetic compatibility fixtures, Unicode, all 18 RFC 6238 vectors, save conflicts, backup restoration, quick search, languages and extension filling. Windows also checks interoperability against the original application when the expected installation is present; Linux CI uses synthetic fixtures and Web Crypto round trips.
 
