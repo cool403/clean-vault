@@ -10,6 +10,10 @@ on:
         description: Restore the previous Pages Analytics configuration from deployment history
         type: boolean
         default: false
+      pages_analytics_token:
+        description: Existing public beacon token, only needed if deployment history has no analytics configuration
+        type: string
+        default: ''
 permissions:
   contents: read
 concurrency:
@@ -69,6 +73,7 @@ jobs:
       - name: Restore previous Pages analytics when requested
         if: inputs.restore_pages_analytics == true
         env:
+          PAGES_ANALYTICS_TOKEN: ${{ inputs.pages_analytics_token }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
@@ -90,8 +95,13 @@ jobs:
           } else {
             const history = await request(endpoint + '/deployments?per_page=25');
             const previous = history.find((deployment) => deployment.build_config?.web_analytics_token);
-            if (!previous) throw new Error('No previous analytics configuration found; restore it in the Cloudflare dashboard.');
-            const config = previous.build_config;
+            const publicToken = process.env.PAGES_ANALYTICS_TOKEN;
+            if (publicToken && !/^[a-f0-9]{32}$/i.test(publicToken)) throw new Error('Invalid public analytics beacon token');
+            const config = previous?.build_config || (publicToken ? {
+              web_analytics_tag: null,
+              web_analytics_token: publicToken,
+            } : null);
+            if (!config) throw new Error('Provide the existing public beacon token or restore Analytics in the Cloudflare dashboard.');
             const updated = await request(endpoint, {
               method: 'PATCH',
               body: JSON.stringify({ build_config: {
