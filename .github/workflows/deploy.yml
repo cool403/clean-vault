@@ -5,15 +5,6 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      restore_pages_analytics:
-        description: Restore the previous Pages Analytics configuration from deployment history
-        type: boolean
-        default: false
-      pages_analytics_token:
-        description: Existing public beacon token, only needed if deployment history has no analytics configuration
-        type: string
-        default: ''
 permissions:
   contents: read
 concurrency:
@@ -70,49 +61,6 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
-      - name: Restore previous Pages analytics when requested
-        if: inputs.restore_pages_analytics == true
-        env:
-          PAGES_ANALYTICS_TOKEN: ${{ inputs.pages_analytics_token }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          node --input-type=module <<'JS'
-          const endpoint = `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/pages/projects/clearvault-safeincloud`;
-          const headers = {
-            Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,
-            'Content-Type': 'application/json',
-          };
-          async function request(url, options = {}) {
-            const response = await fetch(url, { ...options, headers });
-            const body = await response.json();
-            if (!response.ok || !body.success) throw new Error(`Pages API request failed (HTTP ${response.status})`);
-            return body.result;
-          }
-          const current = await request(endpoint);
-          if (current.build_config?.web_analytics_token) {
-            console.log('Existing Pages analytics configuration retained.');
-          } else {
-            const history = await request(endpoint + '/deployments?per_page=25');
-            const previous = history.find((deployment) => deployment.build_config?.web_analytics_token);
-            const publicToken = process.env.PAGES_ANALYTICS_TOKEN;
-            if (publicToken && !/^[a-f0-9]{32}$/i.test(publicToken)) throw new Error('Invalid public analytics beacon token');
-            const config = previous?.build_config || (publicToken ? {
-              web_analytics_tag: null,
-              web_analytics_token: publicToken,
-            } : null);
-            if (!config) throw new Error('Provide the existing public beacon token or restore Analytics in the Cloudflare dashboard.');
-            const updated = await request(endpoint, {
-              method: 'PATCH',
-              body: JSON.stringify({ build_config: {
-                web_analytics_tag: config.web_analytics_tag,
-                web_analytics_token: config.web_analytics_token,
-              } }),
-            });
-            if (updated.build_config?.web_analytics_token !== config.web_analytics_token) throw new Error('Analytics restoration could not be verified');
-            console.log('Previous Pages analytics configuration restored.');
-          }
-          JS
       - name: Deploy verified artifact to Cloudflare Pages
         id: deploy
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
