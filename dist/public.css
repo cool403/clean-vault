@@ -445,3 +445,10 @@ code {
     transform: none;
   }
 }
+
+.download-grid .download-details {
+  margin-bottom: 24px;
+}
+.download-grid .download-details p {
+  margin: 8px 0 0;
+}

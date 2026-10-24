@@ -1,5 +1,7 @@
 # ClearVault
 
+[![Build and deploy](https://github.com/cool403/clean-vault/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/cool403/clean-vault/actions/workflows/deploy.yml)
+
 English · [简体中文](README.md)
 
 An offline-first, SafeInCloud-compatible password manager and TOTP authenticator. A static PWA that decrypts vault files locally in your browser, with no account or application server required.

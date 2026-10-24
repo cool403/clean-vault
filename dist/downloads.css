@@ -228,3 +228,7 @@ footer > .support-link {
   flex-shrink: 0;
   border-radius: 8px;
 }
+
+.card .download-details {
+  margin-bottom: 24px;
+}

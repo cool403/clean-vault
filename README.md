@@ -1,5 +1,7 @@
 # ClearVault
 
+[![构建与部署](https://github.com/cool403/clean-vault/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/cool403/clean-vault/actions/workflows/deploy.yml)
+
 [English](README.en.md) · 简体中文
 
 离线优先的 SafeInCloud 兼容密码管理器与 TOTP 验证器。纯静态 PWA，密码库在浏览器本地解密，无需账号或后端服务。
