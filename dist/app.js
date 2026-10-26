@@ -1,6 +1,8 @@
 import { createQuickSearch, modifier } from './quick-search.js';
 import { createClipboardGuard } from './clipboard.js';
 import { passwordStrength } from './password-strength.js';
+import { pinyinSearch } from './pinyin.js';
+import { createSnapshotStore, snapshotsSupported } from './snapshots.js';
 import { t, html, getLocale, initializeLanguage, setLanguage, supportedLocales } from './i18n.js';
 import { buildInfo } from './build-info.js';
 import { mountSupportLinks } from './support.js';
@@ -44,10 +46,12 @@ const state = {
   signature: null,
   dirty: false,
   demo: false,
+  externalChange: false,
   selected: null,
   mobileDetail: false,
   section: 'all',
   search: '',
+  listLimit: 200,
   busy: false,
   generation: 0,
   lastActivity: Date.now(),
@@ -57,6 +61,7 @@ const state = {
 let editCard = null,
   editFields = [],
   toastTimer,
+  searchTimer,
   otpGeneration = 0;
 let backupDirectory = null,
   backupRetention = 10,
@@ -77,6 +82,106 @@ const clipboardNotice = () =>
   clipboardGuard.seconds
     ? t('已复制到剪贴板，{seconds} 秒后自动清除', { seconds: clipboardGuard.seconds })
     : t('已复制到剪贴板');
+const RECENT_KEY = 'clearvault.recentEntries';
+function allRecents() {
+  try {
+    const data = JSON.parse(globalThis.localStorage?.getItem(RECENT_KEY) || '{}');
+    return data && typeof data === 'object' ? data : {};
+  } catch {
+    return {};
+  }
+}
+function recentForVault() {
+  const map = allRecents()[state.name || 'unnamed'];
+  return map && typeof map === 'object' ? map : {};
+}
+function recordRecent(id) {
+  if (!id) return;
+  try {
+    const data = allRecents();
+    const key = state.name || 'unnamed';
+    const map = { ...(data[key] || {}), [id]: Date.now() };
+    data[key] = Object.fromEntries(
+      Object.entries(map)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 50),
+    );
+    const keys = Object.keys(data);
+    for (const old of keys.slice(0, Math.max(0, keys.length - 20))) delete data[old];
+    globalThis.localStorage?.setItem(RECENT_KEY, JSON.stringify(data));
+  } catch {
+    /* Recents only affect ordering; storage failures are harmless. */
+  }
+}
+function clearRecentEntries() {
+  try {
+    const data = allRecents();
+    delete data[state.name || 'unnamed'];
+    globalThis.localStorage?.setItem(RECENT_KEY, JSON.stringify(data));
+  } catch {
+    /* Ignore unavailable storage. */
+  }
+  toast(t('最近使用记录已清除'));
+}
+const channel =
+  globalThis.window === globalThis && globalThis.BroadcastChannel
+    ? new BroadcastChannel('clearvault-tabs')
+    : null;
+channel?.addEventListener('message', (event) => {
+  const message = event.data;
+  if (!message || typeof message !== 'object' || !state.doc || message.name !== state.name) return;
+  if (message.type === 'saved' && message.signature !== state.signature) {
+    state.externalChange = true;
+    render();
+  } else if (message.type === 'locked') {
+    void lockVault();
+  }
+});
+const SNAPSHOT_KEY = 'clearvault.snapshotRetention';
+let snapshotRetention = 10;
+try {
+  const stored = globalThis.localStorage?.getItem(SNAPSHOT_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([5, 10, 20, 50].includes(saved)) snapshotRetention = saved;
+} catch {
+  /* Keep the default when storage is unavailable. */
+}
+const snapshotStore = createSnapshotStore({ retention: snapshotRetention });
+async function checkExternalChange() {
+  if (!state.handle || !state.doc || state.busy) return;
+  const generation = state.generation,
+    handle = state.handle,
+    signature = state.signature;
+  try {
+    const current = await fingerprint(await readBytes(handle));
+    if (generation !== state.generation || handle !== state.handle || !state.doc) return;
+    const changed = current !== signature;
+    if (changed !== state.externalChange) {
+      state.externalChange = changed;
+      render();
+    }
+  } catch {
+    /* Permission or file availability can change; saving still checks the hash. */
+  }
+}
+function showConflict() {
+  showModal(
+    `${modalHeader(t('原文件已被其他应用修改'), t('当前编辑仍在页面内。请选择“另存为副本”或重新加载外部版本，避免覆盖。'))}<div class="modal-footer">${button('close-modal', t('保留当前编辑'), null, 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'button secondary')}${button('conflict-save-copy', t('另存为副本'), 'download', 'button primary')}</div>`,
+  );
+}
+async function reloadFromDisk() {
+  if (state.dirty && !(await askDiscard())) return;
+  if (!state.handle) {
+    await openFile();
+    return;
+  }
+  try {
+    await allowFile(state.handle, 'read');
+    await acceptFile(await state.handle.getFile(), state.handle, state.recentId);
+  } catch (error) {
+    toast(message(error));
+  }
+}
 function saveStatus() {
   if (state.busy) return t('正在处理…');
   if (state.saveError) return t('保存未完成，当前编辑仍在页面内，请重试或另存副本');
@@ -226,21 +331,27 @@ const quickSearch = createQuickSearch({
     state.doc
       ? cards(state.doc)
           .filter(active)
-          .map((card) => ({
-            id: card.getAttribute('id'),
-            title: title(card),
-            subtitle: account(card),
-            hasPassword: fields(card).some(
-              (field) => fieldType(field) === 'password' && field.textContent,
-            ),
-            search: [
+          .map((card) => {
+            const id = card.getAttribute('id');
+            const searchText = [
               title(card),
               ...fields(card)
                 .filter((field) => ['login', 'email', 'website'].includes(fieldType(field)))
                 .map((field) => field.textContent),
               ...cardLabels(card).map((label) => label.getAttribute('name')),
-            ].join(' '),
-          }))
+            ].join(' ');
+            return {
+              id,
+              title: title(card),
+              subtitle: account(card),
+              hasPassword: fields(card).some(
+                (field) => fieldType(field) === 'password' && field.textContent,
+              ),
+              hasOTP: fields(card).some(hasOTP),
+              recent: recentForVault()[id] || 0,
+              search: searchText + ' ' + pinyinSearch(searchText),
+            };
+          })
       : [],
   copyPassword: async (id) => {
     if (!state.doc || state.busy) throw new Error('Vault unavailable');
@@ -249,9 +360,72 @@ const quickSearch = createQuickSearch({
       card && fields(card).find((field) => fieldType(field) === 'password' && field.textContent);
     if (!password) throw new Error('Password unavailable');
     await clipboardGuard.write(password.textContent);
+    recordRecent(id);
+  },
+  copyOTP: async (id) => {
+    if (!state.doc || state.busy) throw new Error('Vault unavailable');
+    const card = cards(state.doc).find((item) => item.getAttribute('id') === id && active(item));
+    const field = card && fields(card).find(hasOTP);
+    if (!field) throw new Error('OTP unavailable');
+    const config = parseOTP(field.textContent);
+    try {
+      await clipboardGuard.write(await totp(config));
+    } finally {
+      config.secret.fill(0);
+    }
+    recordRecent(id);
   },
   copyNotice: clipboardNotice,
+  commands: () => [
+    {
+      label: t('新建条目'),
+      keywords: ['new', 'add', '新建', '添加'],
+      run: () => {
+        quickSearch.close(false);
+        showEditor(null, false);
+      },
+    },
+    {
+      label: t('添加验证器'),
+      keywords: ['otp', 'totp', '2fa', '验证器', '验证码'],
+      run: () => {
+        quickSearch.close(false);
+        showEditor(null, true);
+      },
+    },
+    {
+      label: t('生成密码'),
+      keywords: ['generate', 'password', '生成', '密码'],
+      run: async () => {
+        await clipboardGuard.write(generatePassword());
+        toast(clipboardNotice());
+      },
+    },
+    {
+      label: t('锁定密码库'),
+      keywords: ['lock', '锁定'],
+      run: () => lockVault(),
+    },
+    {
+      label: t('打开其他密码库'),
+      keywords: ['switch', 'open', '切换', '打开'],
+      run: () => {
+        quickSearch.close(false);
+        return openFile();
+      },
+    },
+    {
+      label: t('偏好设置'),
+      keywords: ['settings', 'preferences', '设置', '偏好'],
+      run: () => {
+        quickSearch.close(false);
+        settings();
+      },
+    },
+  ],
   openEntry: (id) => {
+    clearTimeout(searchTimer);
+    recordRecent(id);
     state.section = 'all';
     state.search = '';
     state.selected = id;
@@ -317,6 +491,11 @@ function render() {
   const saveAttention = Boolean(state.dirty || state.saveError || state.demo);
   const saveStyle = saveAttention ? 'button primary' : 'button secondary';
   const newStyle = saveAttention ? 'button secondary' : 'button primary';
+  const selectedIndex = visible.findIndex((card) => card.getAttribute('id') === state.selected);
+  if (selectedIndex >= state.listLimit)
+    state.listLimit = Math.ceil((selectedIndex + 1) / 200) * 200;
+  const shownVisible = visible.slice(0, state.listLimit);
+  const remaining = visible.length - shownVisible.length;
   app.innerHTML = html`<div class="shell ${state.selected ? 'has-selection' : ''} ${state.mobileDetail ? '' : 'mobile-list'}">
     <aside class="sidebar">
       <a class="brand" href="./" aria-label="ClearVault 首页"><img src="./icon.svg" alt="" width="29" height="29"><span>ClearVault<span class="brand-dot">.</span></span></a>
@@ -344,12 +523,12 @@ function render() {
     <main class="workspace">
       <header class="topbar"><div class="breadcrumb">个人空间 ${icon('chevron', 12)}<strong>${e(heading)}</strong></div><div class="top-actions"><span class="privacy-pill"><i></i> 本地加密</span>${state.demo ? t('<span class="demo-pill">演示</span>') : ''}${iconButton('open', t('打开其他密码库'), 'folder')}${iconButton('settings', t('偏好设置'), 'settings', 'mobile-top-action')}${iconButton('lock', t('锁定密码库'), 'lock', 'mobile-top-action')}${state.install ? iconButton('install', t('安装应用'), 'download') : ''}<div class="profile">我</div></div></header>
       <section class="page-heading"><div><div class="eyebrow">为你的数字生活，留一份安心。</div><h1>${e(heading)}<span>${visible.length}</span></h1><p>${e(subtitle)}</p></div><div class="heading-actions">${button('save', state.busy ? t('处理中…') : state.demo ? t('保存为我的密码库') : state.dirty || state.saveError ? t('保存更改') : t('保存数据库'), 'download', saveStyle)}${button('new', state.section === 'otp' ? t('添加验证器') : t('新建条目'), 'plus', newStyle)}</div></section>
-      <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span>${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>
+      <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span>${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>${state.externalChange ? html`<div class="conflict-banner" role="alert"><div><strong>${t('原文件已被其他应用修改')}</strong><span>${t('保存会停止，避免覆盖外部版本。')}</span></div><div class="conflict-banner-actions">${button('conflict-save-copy', t('另存为副本'), 'download', 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'text-button')}</div></div>` : ''}
       <button type="button" class="quick-launch" data-action="quick-search" aria-keyshortcuts="Control+k Meta+k"><span>${icon('search', 18)}<strong>${e(t('快速查找'))}</strong><kbd>${modifier} K</kbd></span><small>${e(t('↑ ↓ 选择'))} <span>·</span> ${modifier} ↵ ${e(t('复制密码'))} <span>·</span> ${modifier} ⇧ L ${e(t('锁定'))}</small>${icon('chevron', 16)}</button>
       <section class="vault-content ${state.section === 'otp' ? 'auth-view' : ''}">
         <div class="entry-pane"><div class="search-row"><label class="search-box">${icon('search', 18)}<input id="search" type="search" placeholder="搜索条目、账号或标签…" value="${e(state.search)}" autocomplete="off" aria-label="搜索条目"></label><button type="button" class="key-hint" data-action="quick-search" aria-label="${e(t('快速查找'))}">${modifier} K</button></div>
         <div class="list-meta"><span>${state.section === 'otp' ? t('你的验证器') : t('名称')}</span><span>${state.section === 'otp' ? t('动态验证码') : t('按名称排列')}</span></div>
-        <div class="entry-list">${visible.length ? visible.map((card) => renderRow(card)).join('') : `<div class="empty-state">${icon(state.section === 'otp' ? 'clock' : 'search', 34)}<h3>${state.search ? t('没有找到相关条目') : t('这里还是空的')}</h3><p>${state.search ? t('试试其他关键词') : t('添加一个账号，开始整理你的数字生活。')}</p>${state.search ? button('clear-search', t('清除搜索'), null, 'text-button') : button('new', t('添加第一个条目'), 'plus', 'button secondary')}</div>`}</div>
+        <div class="entry-list">${visible.length ? shownVisible.map((card) => renderRow(card)).join('') + (remaining ? button('more', t('显示更多（还有 {count} 条）', { count: remaining }), null, 'button secondary more-entries') : '') : `<div class="empty-state">${icon(state.section === 'otp' ? 'clock' : 'search', 34)}<h3>${state.search ? t('没有找到相关条目') : t('这里还是空的')}</h3><p>${state.search ? t('试试其他关键词') : t('添加一个账号，开始整理你的数字生活。')}</p>${state.search ? button('clear-search', t('清除搜索'), null, 'text-button') : button('new', t('添加第一个条目'), 'plus', 'button secondary')}</div>`}</div>
         <div class="list-footer">${icon('shield', 14)} 数据在此设备上解密，不上传密码库</div></div>
         <div class="detail-pane">${selected ? renderDetail(selected) : html`<div class="empty-state detail-empty">${icon('shield', 48)}<h3>留一点空间，给安心</h3><p>选择一个条目查看详情</p></div>`}</div>
       </section><footer class="page-footer"><span>少一点担忧，多一点从容。</span><span>ClearVault <span class="footer-dot">·</span> SafeInCloud 兼容</span></footer>
@@ -377,7 +556,7 @@ function filteredCards() {
       )
         return false;
       const search = state.search.trim().toLocaleLowerCase();
-      const searchable = [
+      const searchableText = [
         title(card),
         ...fields(card)
           .filter(
@@ -388,10 +567,12 @@ function filteredCards() {
           )
           .map((field) => field.textContent),
         ...cardLabels(card).map((label) => label.getAttribute('name')),
-      ]
-        .join(' ')
-        .toLocaleLowerCase();
-      return !search || searchable.includes(search);
+      ].join(' ');
+      return (
+        !search ||
+        searchableText.toLocaleLowerCase().includes(search) ||
+        pinyinSearch(searchableText).includes(search)
+      );
     })
     .sort((a, b) => title(a).localeCompare(title(b), getLocale()));
 }
@@ -469,15 +650,20 @@ async function refreshCodes() {
       state.doc && cards(state.doc).find((card) => card.getAttribute('id') === widget.dataset.card);
     const field = card && fields(card)[Number(widget.dataset.field)];
     if (!field) continue;
+    let config;
     try {
-      const config = parseOTP(field.textContent),
-        now = Date.now();
+      config = parseOTP(field.textContent);
+      const now = Date.now();
       const remaining = config.period - ((now / 1000) % config.period);
-      const code = await totp(config, now);
-      config.secret.fill(0);
-      if (generation !== otpGeneration || !widget.isConnected) return;
-      widget.querySelector('.otp-code').textContent =
-        code.slice(0, code.length / 2) + ' ' + code.slice(code.length / 2);
+      const counter = Math.floor(now / 1000 / config.period);
+      if (widget.dataset.otpCounter !== String(counter) || !widget.dataset.otpCode) {
+        const code = await totp(config, now);
+        if (generation !== otpGeneration || !widget.isConnected) return;
+        widget.dataset.otpCounter = String(counter);
+        widget.dataset.otpCode = code;
+        widget.querySelector('.otp-code').textContent =
+          code.slice(0, code.length / 2) + ' ' + code.slice(code.length / 2);
+      }
       widget.querySelector('.countdown small').textContent = Math.ceil(remaining);
       widget
         .querySelector('.countdown')
@@ -489,6 +675,8 @@ async function refreshCodes() {
     } catch {
       widget.querySelector('.otp-code').textContent = t('密钥无效');
       widget.querySelector('.countdown').hidden = true;
+    } finally {
+      config?.secret.fill(0);
     }
   }
 }
@@ -610,9 +798,12 @@ async function acceptFile(file, handle = null, recentId = null) {
 }
 function wipeUnlocked() {
   quickSearch.close(false);
+  clearTimeout(searchTimer);
   state.credential?.fill(0);
   state.credential = null;
   state.doc = null;
+  state.listLimit = 200;
+  state.externalChange = false;
   otpGeneration++;
 }
 async function submitPassword(form) {
@@ -837,13 +1028,14 @@ async function saveFile(asCopy = false) {
     showPassword('set-password');
     return;
   }
+  const shouldSnapshot = state.dirty;
   state.busy = true;
   render();
   try {
     // Obtain pickers in the user activation before awaiting encryption.
     let handle = asCopy ? null : state.handle;
     if ((asCopy || !handle) && 'showSaveFilePicker' in window) {
-      handle = await window.showSaveFilePicker({
+      [handle] = await window.showSaveFilePicker({
         suggestedName: state.name || 'SafeInCloud.db',
         types: [
           { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },
@@ -905,12 +1097,22 @@ async function saveFile(asCopy = false) {
     state.encrypted = bytes;
     state.dirty = !handle;
     state.saveError = false;
+    if (handle) {
+      state.externalChange = false;
+      channel?.postMessage({ type: 'saved', name: state.name, signature: state.signature });
+    }
+    if (shouldSnapshot)
+      void snapshotStore.write(state.name, bytes, snapshotRetention).catch(() => {});
   } catch (error) {
     state.saveError = true;
-    toast(
-      t('保存失败：') +
-        (error.name === 'AbortError' ? t('保存已取消，更改尚未写入数据库') : message(error)),
-    );
+    if (error.code === 'conflict') {
+      state.externalChange = true;
+      showConflict();
+    } else
+      toast(
+        t('保存失败：') +
+          (error.name === 'AbortError' ? t('保存已取消，更改尚未写入数据库') : message(error)),
+      );
   } finally {
     state.busy = false;
     render();
@@ -935,6 +1137,7 @@ async function lockVault() {
     wipeUnlocked();
     closeModal();
     render();
+    channel?.postMessage({ type: 'locked', name: state.name });
     toast(
       state.dirty
         ? t('已锁定；未保存更改已加密保留在当前页面内，关闭页面会丢失')
@@ -1096,6 +1299,31 @@ async function showBackups() {
       }),
   );
 }
+async function showSnapshots() {
+  if (!snapshotsSupported()) {
+    toast(t('当前浏览器不支持本地快照'));
+    return;
+  }
+  const generation = state.generation;
+  const snapshots = await snapshotStore.list(state.name);
+  if (generation !== state.generation) return;
+  showModal(
+    `${modalHeader(t('本地加密快照'), t('快照是加密的 .db 密文，恢复时需要当时的主密码。'))}<div class="backup-list">${snapshots.length ? snapshots.map((item, index) => `<button class="button secondary" data-snapshot-index="${index}">${e(new Date(item.time).toLocaleString(getLocale()))}</button>`).join('') : `<p>${t('暂无本地快照')}</p>`}</div><div class="modal-footer">${button('close-modal', t('关闭'), null, 'button primary')}</div>`,
+  );
+  modal.querySelectorAll('[data-snapshot-index]').forEach((button) => {
+    button.onclick = async () => {
+      if (state.dirty && !(await askDiscard())) return;
+      try {
+        const item = snapshots[Number(button.dataset.snapshotIndex)];
+        const bytes = await snapshotStore.read(item.name);
+        if (!bytes) throw new Error(t('当前浏览器不支持本地快照'));
+        await beginRecovery(bytes, item.name);
+      } catch (error) {
+        toast(message(error));
+      }
+    };
+  });
+}
 async function pickRecovery() {
   if (state.dirty && !(await askDiscard())) return;
   const input = document.createElement('input');
@@ -1212,7 +1440,7 @@ function downloadRecoveryKit() {
 }
 function settings() {
   showModal(
-    html`${modalHeader(t('偏好设置'), t('简单一点，安心一点。'))}<label class="form-label">无操作自动锁定<select id="idle-select">${[1, 5, 15, 30].map((n) => html`<option value="${n}" ${state.idleMinutes === n ? 'selected' : ''}>${n} 分钟</option>`).join('')}</select></label><label class="form-label">剪贴板自动清除<select id="clipboard-select">${[0, 15, 30, 60].map((n) => `<option value="${n}" ${clipboardGuard.seconds === n ? 'selected' : ''}>${n ? t('{seconds} 秒', { seconds: n }) : t('关闭')}</option>`).join('')}</select></label><p class="form-help">复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。</p><div class="settings-note">${icon('shield', 23)}<p>密码库只在内存中解密，不写入浏览器存储。离线缓存只包含应用文件。请将更改保存到 .db，关闭页面后需要重新打开文件。</p></div><div class="settings-buttons">${button('save-copy', t('另存为 .db 文件'), 'download', 'button secondary')}${button('recovery-kit', t('恢复工具包'), 'download', 'button secondary')}${button('change-master', t('更改主密码'), 'key', 'button secondary')}${button('install', t('安装到设备'), 'plus', 'button secondary')}</div><div class="modal-footer">${button('close-modal', t('完成'), null, 'button primary')}</div>`,
+    html`${modalHeader(t('偏好设置'), t('简单一点，安心一点。'))}<label class="form-label">无操作自动锁定<select id="idle-select">${[1, 5, 15, 30].map((n) => html`<option value="${n}" ${state.idleMinutes === n ? 'selected' : ''}>${n} 分钟</option>`).join('')}</select></label><label class="form-label">剪贴板自动清除<select id="clipboard-select">${[0, 15, 30, 60].map((n) => `<option value="${n}" ${clipboardGuard.seconds === n ? 'selected' : ''}>${n ? t('{seconds} 秒', { seconds: n }) : t('关闭')}</option>`).join('')}</select></label><p class="form-help">复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。</p><div class="settings-note">${icon('shield', 23)}<p>密码库只在内存中解密，不写入浏览器存储。离线缓存只包含应用文件。请将更改保存到 .db，关闭页面后需要重新打开文件。</p></div><div class="settings-buttons">${button('save-copy', t('另存为 .db 文件'), 'download', 'button secondary')}${button('recovery-kit', t('恢复工具包'), 'download', 'button secondary')}${button('change-master', t('更改主密码'), 'key', 'button secondary')}${button('clear-recents', t('清除最近使用记录'), 'trash', 'button secondary')}${button('install', t('安装到设备'), 'plus', 'button secondary')}</div><div class="modal-footer">${button('close-modal', t('完成'), null, 'button primary')}</div>`,
   );
   modal
     .querySelector('.settings-buttons')
@@ -1224,7 +1452,7 @@ function settings() {
     .querySelector('.settings-buttons')
     .insertAdjacentHTML(
       'afterend',
-      `<section class="backup-settings"><h3>${t('保存与恢复')}</h3><p>${t('覆盖前自动保留原始加密文件。目录授权仅在当前页面保留，刷新后需重新选择。')}</p><p><strong>${e(backupDirectory?.name || t('尚未选择备份目录'))}</strong></p><label class="form-label">${t('当前会话保留备份数量')}<select id="backup-retention">${[5, 10, 20, 50].map((n) => `<option ${n === backupRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('backup-directory', t('选择加密备份目录'), 'folder', 'button secondary')}${button('backups', t('查看加密备份'), 'clock', 'button secondary')}${button('restore-file', t('从文件恢复'), 'upload', 'button secondary')}</div><p class="form-help">${t('仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。')}</p></section>`,
+      `<section class="backup-settings"><h3>${t('保存与恢复')}</h3><p>${t('覆盖前自动保留原始加密文件。目录授权仅在当前页面保留，刷新后需重新选择。')}</p><p><strong>${e(backupDirectory?.name || t('尚未选择备份目录'))}</strong></p><label class="form-label">${t('当前会话保留备份数量')}<select id="backup-retention">${[5, 10, 20, 50].map((n) => `<option ${n === backupRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('backup-directory', t('选择加密备份目录'), 'folder', 'button secondary')}${button('backups', t('查看加密备份'), 'clock', 'button secondary')}${button('restore-file', t('从文件恢复'), 'upload', 'button secondary')}</div><p class="form-help">${t('仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。')}</p><h3>${t('本地加密快照')}</h3><p>${t('保存在浏览器本地，加密且不会上传；清除站点数据会删除。')}</p><label class="form-label">${t('保留数量')}<select id="snapshot-retention">${[5, 10, 20, 50].map((n) => `<option value="${n}" ${n === snapshotRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('snapshots', t('查看本地快照'), 'clock', 'button secondary')}${button('clear-snapshots', t('清除本地快照'), 'trash', 'button secondary')}</div><p class="form-help" id="snapshot-status"></p></section>`,
     );
   const note = modal.querySelector('.settings-note p');
   if (note)
@@ -1243,6 +1471,23 @@ function settings() {
       'beforebegin',
       `<div id="recent-files">${recentMarkup(recentEntries, recentFiles.persistent, typeof window.showDirectoryPicker === 'function')}</div>`,
     );
+  const snapshotStatus = modal.querySelector('#snapshot-status');
+  if (snapshotStatus) {
+    if (!snapshotsSupported()) snapshotStatus.textContent = t('当前浏览器不支持本地快照');
+    else
+      void snapshotStore
+        .list(state.name)
+        .then((snapshots) => {
+          if (snapshotStatus.isConnected)
+            snapshotStatus.textContent = snapshots.length
+              ? t('当前 {count} 份本地快照', { count: snapshots.length })
+              : t('暂无本地快照');
+        })
+        .catch(() => {
+          if (snapshotStatus.isConnected)
+            snapshotStatus.textContent = t('当前浏览器不支持本地快照');
+        });
+  }
 }
 async function action(name, target) {
   if (state.busy && !['copy-field', 'copy-otp'].includes(name)) return;
@@ -1373,12 +1618,33 @@ async function action(name, target) {
     case 'recovery-kit':
       downloadRecoveryKit();
       break;
+    case 'clear-recents':
+      clearRecentEntries();
+      break;
     case 'backup-directory':
       await chooseBackupDirectory();
       break;
     case 'backups':
       await showBackups();
       break;
+    case 'snapshots':
+      await showSnapshots();
+      break;
+    case 'clear-snapshots':
+      if (!snapshotsSupported()) {
+        toast(t('当前浏览器不支持本地快照'));
+        break;
+      }
+      showModal(
+        `${modalHeader(t('清除本地快照'), t('这将删除当前密码库的本地加密快照，无法撤销。'))}<div class="modal-footer">${button('close-modal', t('取消'), null, 'button secondary')}${button('confirm-clear-snapshots', t('清除'), null, 'button danger')}</div>`,
+      );
+      break;
+    case 'confirm-clear-snapshots': {
+      const count = await snapshotStore.clear(state.name);
+      closeModal();
+      toast(t('已清除 {count} 份本地快照', { count }));
+      break;
+    }
     case 'restore-file':
       await pickRecovery();
       break;
@@ -1392,13 +1658,17 @@ async function action(name, target) {
       await lockVault();
       break;
     case 'copy-field':
-      if (card) await copy(fields(card)[Number(target.dataset.index)].textContent);
+      if (card) {
+        await copy(fields(card)[Number(target.dataset.index)].textContent);
+        recordRecent(card.getAttribute('id'));
+      }
       break;
     case 'copy-otp': {
       const item = cards(state.doc).find((c) => c.getAttribute('id') === target.dataset.id);
       const config = parseOTP(fields(item)[Number(target.dataset.index)].textContent);
       try {
         await copy(await totp(config));
+        recordRecent(item.getAttribute('id'));
       } finally {
         config.secret.fill(0);
       }
@@ -1455,8 +1725,37 @@ async function action(name, target) {
     case 'quick-search':
       showQuickSearch();
       break;
+    case 'more': {
+      const list = document.querySelector('.entry-list'),
+        more = list?.querySelector('.more-entries');
+      if (!list || !more) break;
+      const visible = filteredCards(),
+        start = state.listLimit;
+      state.listLimit += 200;
+      more.insertAdjacentHTML(
+        'beforebegin',
+        visible
+          .slice(start, state.listLimit)
+          .map((card) => renderRow(card))
+          .join(''),
+      );
+      const remaining = visible.length - state.listLimit;
+      if (remaining > 0) more.textContent = t('显示更多（还有 {count} 条）', { count: remaining });
+      else more.remove();
+      void refreshCodes();
+      break;
+    }
+    case 'conflict-save-copy':
+      closeModal();
+      await saveFile(true);
+      break;
+    case 'conflict-reload':
+      closeModal();
+      await reloadFromDisk();
+      break;
     case 'clear-search':
       state.search = '';
+      state.listLimit = 200;
       render();
       break;
     case 'back-list':
@@ -1485,12 +1784,16 @@ document.addEventListener('click', (event) => {
     if (['cancel-discard', 'confirm-discard'].includes(target.dataset.action)) return;
     action(target.dataset.action, target).catch((error) => toast(message(error)));
   } else if (!state.busy && target.dataset.section) {
+    clearTimeout(searchTimer);
     state.section = target.dataset.section;
     state.search = '';
+    state.listLimit = 200;
     state.selected = null;
     state.mobileDetail = false;
     render();
   } else if (target.dataset.select) {
+    clearTimeout(searchTimer);
+    recordRecent(target.dataset.select);
     state.selected = target.dataset.select;
     state.mobileDetail = true;
     render();
@@ -1513,6 +1816,8 @@ document.addEventListener('keydown', (event) => {
     if (!modal.open && !quickSearch.isOpen) saveFile();
   }
   if (event.key === 'Enter' && event.target.matches('[data-select]')) {
+    clearTimeout(searchTimer);
+    recordRecent(event.target.dataset.select);
     state.selected = event.target.dataset.select;
     state.mobileDetail = true;
     render();
@@ -1522,14 +1827,21 @@ const composingSearchInputs = new WeakSet();
 function updateSearch(input) {
   if (input !== $('#search') || input.value === state.search) return;
   const { selectionStart, selectionEnd, selectionDirection } = input;
-  state.search = input.value;
-  render();
-  const search = $('#search');
-  if (!search) return;
-  search.focus({ preventScroll: true });
-  try {
-    search.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
-  } catch {}
+  const value = input.value;
+  const apply = () => {
+    state.search = value;
+    state.listLimit = 200;
+    render();
+    const search = $('#search');
+    if (!search) return;
+    search.focus({ preventScroll: true });
+    try {
+      search.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+    } catch {}
+  };
+  clearTimeout(searchTimer);
+  if (state.doc && cards(state.doc).length > 500) searchTimer = setTimeout(apply, 120);
+  else apply();
 }
 document.addEventListener('compositionstart', (event) => {
   if (event.target.id === 'search') composingSearchInputs.add(event.target);
@@ -1574,6 +1886,14 @@ document.addEventListener('change', (event) => {
     }
   }
   if (event.target.id === 'backup-retention') backupRetention = Number(event.target.value);
+  if (event.target.id === 'snapshot-retention') {
+    snapshotRetention = Number(event.target.value);
+    try {
+      globalThis.localStorage?.setItem(SNAPSHOT_KEY, String(snapshotRetention));
+    } catch {
+      /* Keep the setting for this session when storage is unavailable. */
+    }
+  }
   if (event.target.matches('.editor-field select')) {
     const row = event.target.closest('.editor-field'),
       index = Number(row.dataset.index),
@@ -1708,6 +2028,10 @@ setInterval(() => {
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && state.doc && Date.now() - state.lastActivity > state.idleMinutes * 60000)
     lockVault();
+  if (!document.hidden) void checkExternalChange();
+});
+window.addEventListener('focus', () => {
+  if (state.doc) void checkExternalChange();
 });
 if ('serviceWorker' in navigator)
   navigator.serviceWorker.register('./sw.js').catch(() => toast(t('离线缓存未启用，仍可在线使用')));

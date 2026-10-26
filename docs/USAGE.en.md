@@ -8,6 +8,14 @@ The app and browser extension support 简体中文, English, Deutsch, 日本語 
 
 Open `/?lang=de`, `/?lang=ja` or `/?lang=es` to launch in a specific language; this parameter takes precedence over the saved choice. Interface text, messages, dates and installation metadata follow the selected language. Vault names, accounts, passwords and notes are never translated. Language switching also works offline. Public guides and security documentation remain available in Chinese and English; other interface languages link to the English documentation.
 
+## Quick search, pinyin and commands
+
+Quick search opens automatically after unlocking, or press Ctrl / ⌘ + K. It searches names, accounts, websites, labels and pinyin initials (for example, `wx` for 微信). Title-prefix matches rank first, followed by recently used entries. Ctrl / ⌘ + Enter copies the password, Ctrl / ⌘ + Shift + Enter copies the code, and Enter opens details.
+
+Type `>` for command mode: new entry, add authenticator, generate password, lock vault, open another vault and preferences. Quick search shows at most 50 results for large vaults; keep typing to narrow them. The main list renders 200 entries first and offers Show more.
+
+Recent usage stores only entry IDs and times for ordering; clear them with Clear recent usage in Preferences. Passwords, OTP secrets and notes are not stored. Polyphonic characters use their primary reading for pinyin indexing.
+
 ## Recent vaults
 
 After successfully unlocking or saving a file, the app or extension remembers up to five recent vaults. Records contain only file names, handles, record IDs, times and folder text labels you confirm, never master passwords, entries or vault contents. The app and extension keep separate histories.
@@ -62,6 +70,12 @@ Verify the entry and that the website accepted the change, then confirm and Save
 ## Clipboard auto-clear
 
 After copying a username, password or code, ClearVault tries to clear the system clipboard after 30 seconds by default. Choose 15 / 60 seconds or off in app preferences or the extension's More actions menu. Clearing can fail when the browser window loses focus, the page closes or permission is restricted; clear the clipboard manually or lock immediately on shared devices. The setting is local and contains no vault contents.
+
+## Local encrypted snapshots and save conflicts
+
+After each save, the app tries to write encrypted `.db` ciphertext to a local OPFS snapshot, keeping 10 by default. Choose 5 / 10 / 20 / 50 in Preferences. Snapshots contain no plaintext, require the master password used at that time to restore, and are deleted when site data is cleared. View local snapshots restores a preview; Clear local snapshots removes only the current vault's snapshots.
+
+If another application or browser tab changes the original file, a banner appears. Saving stops and offers Save a copy / Reload file / Keep current edits, so the external version is not overwritten. Reloading discards unsaved edits after confirmation. External-change detection is best effort; saving still enforces the ciphertext SHA-256 check.
 
 ## Save, handle conflicts and lock
 

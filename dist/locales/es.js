@@ -549,4 +549,35 @@ export default {
   '恢复工具包已下载，请打印并妥善保管':
     'Kit de recuperación descargado. Imprímalo y guárdelo de forma segura.',
   尚未保存的密码库: 'Bóveda sin guardar',
+  命令模式: 'Modo de comandos',
+  没有找到命令: 'No se encontraron comandos',
+  '输入 > 查看命令': 'Escriba > para ver comandos',
+  运行命令: 'Ejecutar comando',
+  '{count} 个命令': '{count} comandos',
+  '显示前 {count} 条': 'Mostrando los primeros {count}',
+  清除最近使用记录: 'Borrar uso reciente',
+  最近使用记录已清除: 'Uso reciente borrado',
+  '显示更多（还有 {count} 条）': 'Mostrar más (quedan {count})',
+  本地加密快照: 'Instantáneas cifradas locales',
+  '保存在浏览器本地，加密且不会上传；清除站点数据会删除。':
+    'Se guardan localmente en el navegador, cifradas y sin subirse; borrar los datos del sitio las elimina.',
+  保留数量: 'Cantidad a conservar',
+  查看本地快照: 'Ver instantáneas locales',
+  清除本地快照: 'Borrar instantáneas locales',
+  '当前 {count} 份本地快照': '{count} instantáneas locales',
+  暂无本地快照: 'No hay instantáneas locales',
+  当前浏览器不支持本地快照: 'Este navegador no admite instantáneas locales',
+  '快照是加密的 .db 密文，恢复时需要当时的主密码。':
+    'Las instantáneas son .db cifrados; para restaurarlas se necesita la contraseña maestra de ese momento.',
+  '这将删除当前密码库的本地加密快照，无法撤销。':
+    'Esto elimina las instantáneas cifradas locales de la bóveda actual y no se puede deshacer.',
+  清除: 'Borrar',
+  '已清除 {count} 份本地快照': 'Se borraron {count} instantáneas locales',
+  原文件已被其他应用修改: 'Otra aplicación modificó el archivo original',
+  '当前编辑仍在页面内。请选择“另存为副本”或重新加载外部版本，避免覆盖。':
+    'Tus cambios siguen en esta página. Guarda una copia o recarga la versión externa para no sobrescribirla.',
+  '保存会停止，避免覆盖外部版本。':
+    'Se detiene el guardado para no sobrescribir la versión externa.',
+  另存为副本: 'Guardar una copia',
+  保留当前编辑: 'Mantener los cambios actuales',
 };

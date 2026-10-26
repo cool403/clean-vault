@@ -556,4 +556,35 @@ export default {
   '恢复工具包已下载，请打印并妥善保管':
     'Wiederherstellungs-Kit heruntergeladen. Drucken und sicher aufbewahren.',
   尚未保存的密码库: 'Nicht gespeicherter Tresor',
+  命令模式: 'Befehlsmodus',
+  没有找到命令: 'Keine passenden Befehle',
+  '输入 > 查看命令': 'Geben Sie > ein, um Befehle zu sehen',
+  运行命令: 'Befehl ausführen',
+  '{count} 个命令': '{count} Befehle',
+  '显示前 {count} 条': 'Zeige die ersten {count}',
+  清除最近使用记录: 'Letzte Nutzung löschen',
+  最近使用记录已清除: 'Letzte Nutzung gelöscht',
+  '显示更多（还有 {count} 条）': 'Mehr anzeigen ({count} übrig)',
+  本地加密快照: 'Lokale verschlüsselte Snapshots',
+  '保存在浏览器本地，加密且不会上传；清除站点数据会删除。':
+    'Lokal im Browser gespeichert, verschlüsselt und nie hochgeladen; das Löschen der Website-Daten entfernt sie.',
+  保留数量: 'Anzahl behalten',
+  查看本地快照: 'Lokale Snapshots anzeigen',
+  清除本地快照: 'Lokale Snapshots löschen',
+  '当前 {count} 份本地快照': '{count} lokale Snapshots',
+  暂无本地快照: 'Keine lokalen Snapshots',
+  当前浏览器不支持本地快照: 'Dieser Browser unterstützt keine lokalen Snapshots',
+  '快照是加密的 .db 密文，恢复时需要当时的主密码。':
+    'Snapshots sind verschlüsselte .db-Dateien; zur Wiederherstellung ist das damalige Master-Passwort nötig.',
+  '这将删除当前密码库的本地加密快照，无法撤销。':
+    'Dadurch werden die lokalen verschlüsselten Snapshots dieses Tresors gelöscht; dies kann nicht rückgängig gemacht werden.',
+  清除: 'Löschen',
+  '已清除 {count} 份本地快照': '{count} lokale Snapshots gelöscht',
+  原文件已被其他应用修改: 'Die Originaldatei wurde von einer anderen Anwendung geändert',
+  '当前编辑仍在页面内。请选择“另存为副本”或重新加载外部版本，避免覆盖。':
+    'Ihre Änderungen sind noch auf dieser Seite. Speichern Sie eine Kopie oder laden Sie die externe Version neu, statt sie zu überschreiben.',
+  '保存会停止，避免覆盖外部版本。':
+    'Das Speichern wird gestoppt, um die externe Version nicht zu überschreiben.',
+  另存为副本: 'Als Kopie speichern',
+  保留当前编辑: 'Aktuelle Änderungen behalten',
 };

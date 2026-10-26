@@ -1,5 +1,6 @@
 import { decryptDatabase, encryptDatabase } from './core/crypto.js';
 import { createClipboardGuard } from './core/clipboard.js';
+import { pinyinSearch } from './core/pinyin.js';
 import {
   parseVault,
   serializeVault,
@@ -351,7 +352,7 @@ function labelNames() {
   );
 }
 function searchableText(card, labels) {
-  return [
+  const text = [
     title(card),
     ...fields(card)
       .filter(
@@ -362,9 +363,8 @@ function searchableText(card, labels) {
     ...children(card, 'label_id')
       .map((label) => labels.get(label.textContent))
       .filter(Boolean),
-  ]
-    .join(' ')
-    .toLocaleLowerCase();
+  ].join(' ');
+  return text.toLocaleLowerCase() + ' ' + pinyinSearch(text);
 }
 function visibleCards() {
   const query = searchQuery.trim().toLocaleLowerCase();
@@ -447,10 +447,15 @@ async function refreshCodes() {
       config = parseOTP(field.textContent);
       const now = Date.now();
       const remaining = config.period - ((now / 1000) % config.period);
-      const value = await totp(config, now);
-      if (version !== epoch || !code.isConnected) continue;
-      const middle = Math.ceil(value.length / 2);
-      code.textContent = value.slice(0, middle) + ' ' + value.slice(middle);
+      const counter = Math.floor(now / 1000 / config.period);
+      if (code.dataset.otpCounter !== String(counter) || !code.dataset.otpValue) {
+        const value = await totp(config, now);
+        if (version !== epoch || !code.isConnected) continue;
+        code.dataset.otpCounter = String(counter);
+        code.dataset.otpValue = value;
+        const middle = Math.ceil(value.length / 2);
+        code.textContent = value.slice(0, middle) + ' ' + value.slice(middle);
+      }
       const countdown = code.closest('.entry-otp')?.querySelector('[data-otp-countdown]');
       if (countdown) countdown.textContent = Math.ceil(remaining) + 's';
       code.classList.toggle('expiring', remaining < 6);

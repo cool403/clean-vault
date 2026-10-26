@@ -1286,3 +1286,55 @@ html[lang='ja'] .welcome-copy h1 {
     overflow-wrap: anywhere;
   }
 }
+
+.quick-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.quick-actions [data-quick-lock] {
+  margin-right: auto;
+}
+.quick-actions [data-quick-run] {
+  margin-left: auto;
+}
+.quick-actions [hidden] {
+  display: none !important;
+}
+
+.more-entries {
+  display: block;
+  width: auto;
+  margin: 14px auto;
+  padding-inline: 18px;
+}
+
+.conflict-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 12px 16px;
+  color: #6b241e;
+  background: #fff0ec;
+  border: 1.5px solid #922c25;
+  border-radius: 14px;
+}
+.conflict-banner > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.conflict-banner strong {
+  font-size: 13px;
+}
+.conflict-banner span {
+  font-size: 12px;
+}
+.conflict-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}

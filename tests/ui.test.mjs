@@ -79,7 +79,7 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
     },
   };
   dom.window.showDirectoryPicker = async () => backupDirectory;
-  dom.window.showSaveFilePicker = async () => handle;
+  dom.window.showSaveFilePicker = async () => [handle];
   await import('../dist/app.js');
   const click = (selector) => {
     const el = document.querySelector(selector);
@@ -340,8 +340,10 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   });
   click('[data-action=save]');
   await waitFor(() =>
-    document.querySelector('#toast').textContent.includes('原文件已被其他应用修改'),
+    document.querySelector('#modal').textContent.includes('原文件已被其他应用修改'),
   );
+  assert.ok(document.querySelector('.conflict-banner'));
+  click('[data-action=close-modal]');
   switchLanguage('en');
   assert.equal(
     document.querySelector('[data-section=all]').getAttribute('aria-label'),

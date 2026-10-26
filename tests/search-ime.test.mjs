@@ -64,6 +64,34 @@ test('search preserves IME composition and filters committed Chinese, pasted tex
   input(search(), 'figma');
   assert.equal(rows().length, 1);
   assert.match(rows()[0].textContent, /Figma/);
+  input(search(), 'kf');
+  assert.ok(rows().length > 0, 'pinyin initials match the 开发与协作 label');
+  assert.match(
+    rows()
+      .map((row) => row.textContent)
+      .join(' '),
+    /GitHub/,
+  );
+  assert.match(
+    rows()
+      .map((row) => row.textContent)
+      .join(' '),
+    /Cloudflare/,
+  );
+  input(search(), 'rcsh');
+  assert.ok(rows().length > 0, 'pinyin initials match the 日常生活 label');
+  assert.match(
+    rows()
+      .map((row) => row.textContent)
+      .join(' '),
+    /Google/,
+  );
+  assert.match(
+    rows()
+      .map((row) => row.textContent)
+      .join(' '),
+    /Notion/,
+  );
   input(search(), '', { inputType: 'deleteContentBackward' });
   assert.equal(rows().length, initialRows);
 

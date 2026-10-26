@@ -328,7 +328,7 @@ export const security = {
       ],
       [
         '浏览器保存什么',
-        'localStorage 仅保存界面语言、自动锁定分钟数和剪贴板清除时间等非敏感偏好；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+        'localStorage 仅保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量和最近使用条目 ID/时间等非敏感偏好与排序元数据；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。OPFS 本地快照只保存加密的 .db 密文。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
       ],
       [
         '剪贴板清除是尽力而为',
@@ -337,6 +337,10 @@ export const security = {
       [
         '主密码无法找回',
         '主密码不写入任何持久存储，ClearVault 不提供找回。创建新库或从演示库保存时会显示本地强度估算并要求确认无法找回；更改主密码需验证当前主密码。偏好设置或扩展“更多操作”可下载恢复工具包，其中只有填写空白和恢复步骤，不含密码、TOTP 密钥或密码库内容。强度估算是启发式提示，不是安全保证。',
+      ],
+      [
+        '本地快照只保存密文',
+        '每次保存后会尝试把加密的 .db 密文写入浏览器 OPFS，默认保留 10 份，可配置。快照不含明文或密码，恢复时需要保存时的主密码；清除站点数据会删除，不能替代独立备份。外部文件变化时保存会停止并提示另存副本或重新加载；跨标签页广播用于协调，不是安全边界。',
       ],
       [
         '加密兼容性不等于现代认证加密',
@@ -377,7 +381,7 @@ export const security = {
       ],
       [
         'What the browser stores',
-        'localStorage stores only non-sensitive preferences such as the interface language, auto-lock minutes and clipboard-clear delay. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
+        'localStorage stores only non-sensitive preferences and ordering metadata such as the interface language, auto-lock minutes, clipboard-clear delay, snapshot retention and recent entry IDs/times. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. OPFS local snapshots contain only encrypted .db ciphertext. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
       ],
       [
         'Clipboard clearing is best effort',
@@ -386,6 +390,10 @@ export const security = {
       [
         'The master password cannot be recovered',
         "The master password is not written to persistent storage and ClearVault cannot recover it. Creating a new vault or saving the demo as a real vault shows a local strength estimate and requires acknowledging this; changing the master password requires the current one. Preferences or the extension's More actions can download a recovery kit containing blank lines and recovery steps, never passwords, TOTP secrets or vault contents. The strength estimate is a heuristic, not a security guarantee.",
+      ],
+      [
+        'Local snapshots contain ciphertext only',
+        'After each save, ClearVault tries to write encrypted .db ciphertext to browser OPFS, keeping 10 snapshots by default (configurable). Snapshots contain no plaintext or passwords and require the master password used at that time to restore. Clearing site data deletes them; they are not a substitute for independent backups. External file changes stop saving and offer a copy or reload; cross-tab broadcasts are coordination, not a security boundary.',
       ],
       [
         'Compatibility is not modern authenticated encryption',

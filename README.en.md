@@ -47,26 +47,30 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 - Browsers supporting File System Access can write back to the original file. Saving checks the ciphertext SHA-256, verifies an encrypted backup and reads back the written file. Other browsers download encrypted copies.
 - Saving an entry in an existing file automatically backs up and writes the database. Choose a separate backup directory before the first write. Cancellation, conflicts and failures preserve the unsaved state. New vaults and download mode require an explicit database save.
 - Backup preview and restoration as a new vault, automatic locking after 1 / 5 / 15 / 30 minutes, English / Simplified Chinese, and offline PWA use.
+- Quick search supports pinyin initials, recency ordering, TOTP copying and a command mode (new entry, generate password, lock, switch vault). Large lists render in batches and search results are capped at 50.
+- Each save attempts to write encrypted `.db` ciphertext to a local OPFS snapshot, keeping 10 by default. External file changes prompt you to save a copy or reload instead of overwriting.
 - The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, searching all entries, copying usernames/passwords, creating an entry for the current website, showing/copying/filling TOTP codes, confirmed password updates, imports and verified saves, without submitting forms.
 - Recent vaults remembers up to five names and file handles. Select a containing directory to show its last confirmed folder name and relative location. The current session also unlocks through this list, preserving unsaved edits. Remove or clear history records anytime.
 - Import Chrome password CSV and unencrypted Bitwarden CSV / JSON with preview, field mapping and duplicate checks, without overwriting entries. The app and extension share this flow.
 
-Quick search opens automatically after unlocking an existing vault. It searches titles, usernames, emails, websites and labels, excluding passwords, PINs, OTP secrets and notes.
+Quick search opens automatically after unlocking an existing vault. It searches titles, usernames, emails, websites, labels and pinyin initials, excluding passwords, PINs, OTP secrets and notes.
 
-| Action            | Windows / Linux  | macOS         |
-| ----------------- | ---------------- | ------------- |
-| Open quick search | Ctrl + K         | ⌘ + K         |
-| Select result     | ↑ / ↓            | ↑ / ↓         |
-| Copy password     | Ctrl + Enter     | ⌘ + Enter     |
-| View details      | Enter            | Enter         |
-| Lock vault        | Ctrl + Shift + L | ⌘ + Shift + L |
-| Close search      | Esc              | Esc           |
+| Action            | Windows / Linux      | macOS             |
+| ----------------- | -------------------- | ----------------- |
+| Open quick search | Ctrl + K             | ⌘ + K             |
+| Select result     | ↑ / ↓                | ↑ / ↓             |
+| Copy password     | Ctrl + Enter         | ⌘ + Enter         |
+| Copy code         | Ctrl + Shift + Enter | ⌘ + Shift + Enter |
+| View details      | Enter                | Enter             |
+| Command mode      | Type >               | Type >            |
+| Lock vault        | Ctrl + Shift + L     | ⌘ + Shift + L     |
+| Close search      | Esc                  | Esc               |
 
 Shortcuts work while the application has focus. Search supports IME input and does not interrupt entry editing. After copying a username, password or code, ClearVault tries to clear the system clipboard after 30 seconds by default; choose 15 / 60 seconds or off in app preferences or the extension's More actions menu. Clearing can fail when the window loses focus or the page closes; clear the clipboard manually on shared devices.
 
 ## Data and security boundaries
 
-Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences such as interface language, auto-lock minutes and clipboard-clear delay. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
+Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences and ordering metadata such as interface language, auto-lock minutes, clipboard-clear delay, snapshot retention and recent entry IDs/times. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. OPFS snapshots contain only encrypted `.db` ciphertext, never plaintext vault data. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
 
 Editing preserves unknown XML, attachments, images and history. Binary fields are read-only. Attachment management, cloud sync, Passkeys, camera scanning, Firefox extensions and damaged XML repair are not supported. TOTP codes do not add another vault-unlock factor.
 
