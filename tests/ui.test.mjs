@@ -149,6 +149,13 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   formValue('#password-form', 'password', 'synthetic-中文😀-2026');
   formValue('#password-form', 'confirm', 'synthetic-中文😀-2026');
   submit('#password-form');
+  assert.match(
+    document.querySelector('#password-error').textContent,
+    /确认主密码无法找回/,
+    'creating a vault requires acknowledging the unrecoverable master password',
+  );
+  document.querySelector('#password-form').elements.acknowledge.checked = true;
+  submit('#password-form');
   await waitFor(() => !!document.querySelector('[data-action=new]'));
   // Empty OTP template fields must not imply a configured authenticator.
   click('[data-action=new]');
@@ -289,6 +296,19 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   document.activeElement.dispatchEvent(
     new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
   );
+  click('[data-action=settings]');
+  click('[data-action=change-master]');
+  const changeMasterForm = document.querySelector('#password-form');
+  assert.ok(
+    changeMasterForm.elements.current,
+    'changing the master password requires the current one',
+  );
+  changeMasterForm.elements.current.value = 'wrong';
+  changeMasterForm.elements.password.value = 'new-master-password-2026!';
+  changeMasterForm.elements.confirm.value = 'new-master-password-2026!';
+  submit('#password-form');
+  assert.match(document.querySelector('#password-error').textContent, /当前主密码不正确/);
+  click('[data-action=close-modal]');
   click('[data-action=delete]');
   click('[data-section=trash]');
   assert.ok(document.querySelector('[data-action=restore]'));

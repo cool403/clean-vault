@@ -274,7 +274,7 @@ articles.push(
         ],
         [
           '5. 保存、外部变化与锁定',
-          '点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏不会立即锁定；空闲达到所选的 1 / 5 / 15 / 30 分钟后锁定。未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
+          '点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏不会立即锁定；空闲达到所选的 1 / 5 / 15 / 30 分钟后锁定。复制账号、密码或验证码后默认 30 秒尝试清空剪贴板，可在“更多操作”中改为 15 / 60 秒或关闭。未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
         ],
       ],
     },
@@ -303,7 +303,7 @@ articles.push(
         ],
         [
           '5. Save, reload and lock',
-          'Choose Save database and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing handle support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar does not lock immediately; the selected 1 / 5 / 15 / 30 minute idle timeout applies. Unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
+          'Choose Save database and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing handle support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar does not lock immediately; the selected 1 / 5 / 15 / 30 minute idle timeout applies. After copying a username, password or code, ClearVault tries to clear the clipboard after 30 seconds by default; choose 15 / 60 seconds or off in More actions. Unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
         ],
       ],
     },
@@ -328,7 +328,15 @@ export const security = {
       ],
       [
         '浏览器保存什么',
-        'localStorage 仅保存界面语言和自动锁定分钟数等非敏感偏好；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+        'localStorage 仅保存界面语言、自动锁定分钟数和剪贴板清除时间等非敏感偏好；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+      ],
+      [
+        '剪贴板清除是尽力而为',
+        '复制账号、密码或验证码会把明文写入系统剪贴板。应用默认在 30 秒后尝试写入空字符串，可在设置中改为 15 / 60 秒或关闭。窗口失焦、浏览器限制或页面关闭时清除可能失败；清除前其他本地应用仍可读取。共用设备应手动清空剪贴板或立即锁定。',
+      ],
+      [
+        '主密码无法找回',
+        '主密码不写入任何持久存储，ClearVault 不提供找回。创建新库或从演示库保存时会显示本地强度估算并要求确认无法找回；更改主密码需验证当前主密码。偏好设置或扩展“更多操作”可下载恢复工具包，其中只有填写空白和恢复步骤，不含密码、TOTP 密钥或密码库内容。强度估算是启发式提示，不是安全保证。',
       ],
       [
         '加密兼容性不等于现代认证加密',
@@ -369,7 +377,15 @@ export const security = {
       ],
       [
         'What the browser stores',
-        'localStorage stores only non-sensitive preferences such as the interface language and auto-lock minutes. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
+        'localStorage stores only non-sensitive preferences such as the interface language, auto-lock minutes and clipboard-clear delay. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
+      ],
+      [
+        'Clipboard clearing is best effort',
+        'Copying a username, password or code writes plaintext to the system clipboard. ClearVault tries to write an empty value after 30 seconds by default; choose 15 / 60 seconds or off in settings. Clearing can fail when the window loses focus, the browser restricts access or the page closes; other local applications can read the clipboard before it is cleared. On shared devices, clear it manually or lock immediately.',
+      ],
+      [
+        'The master password cannot be recovered',
+        "The master password is not written to persistent storage and ClearVault cannot recover it. Creating a new vault or saving the demo as a real vault shows a local strength estimate and requires acknowledging this; changing the master password requires the current one. Preferences or the extension's More actions can download a recovery kit containing blank lines and recovery steps, never passwords, TOTP secrets or vault contents. The strength estimate is a heuristic, not a security guarantee.",
       ],
       [
         'Compatibility is not modern authenticated encryption',

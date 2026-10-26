@@ -1,4 +1,6 @@
 import { createQuickSearch, modifier } from './quick-search.js';
+import { createClipboardGuard } from './clipboard.js';
+import { passwordStrength } from './password-strength.js';
 import { t, html, getLocale, initializeLanguage, setLanguage, supportedLocales } from './i18n.js';
 import { buildInfo } from './build-info.js';
 import { mountSupportLinks } from './support.js';
@@ -62,6 +64,19 @@ let backupDirectory = null,
 state.lastSaved = null;
 state.lastExported = null;
 state.saveError = false;
+const CLIPBOARD_KEY = 'clearvault.clipboardTimeout';
+const clipboardGuard = createClipboardGuard();
+try {
+  const stored = globalThis.localStorage?.getItem(CLIPBOARD_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([0, 15, 30, 60].includes(saved)) clipboardGuard.setSeconds(saved);
+} catch {
+  /* Storage can be unavailable in private contexts. */
+}
+const clipboardNotice = () =>
+  clipboardGuard.seconds
+    ? t('已复制到剪贴板，{seconds} 秒后自动清除', { seconds: clipboardGuard.seconds })
+    : t('已复制到剪贴板');
 function saveStatus() {
   if (state.busy) return t('正在处理…');
   if (state.saveError) return t('保存未完成，当前编辑仍在页面内，请重试或另存副本');
@@ -233,8 +248,9 @@ const quickSearch = createQuickSearch({
     const password =
       card && fields(card).find((field) => fieldType(field) === 'password' && field.textContent);
     if (!password) throw new Error('Password unavailable');
-    await navigator.clipboard.writeText(password.textContent);
+    await clipboardGuard.write(password.textContent);
   },
+  copyNotice: clipboardNotice,
   openEntry: (id) => {
     state.section = 'all';
     state.search = '';
@@ -514,10 +530,36 @@ const importWizard = createImportWizard({
 });
 function showPassword(mode) {
   const create = mode === 'create' || mode === 'set-password';
+  const change = mode === 'set-password' && !state.demo;
+  const acknowledge = mode === 'create' || (mode === 'set-password' && state.demo);
+  const title =
+    mode === 'create' || (mode === 'set-password' && state.demo)
+      ? t('为密码库设置主密码')
+      : mode === 'set-password'
+        ? t('更改主密码')
+        : t('欢迎回来');
+  const caption =
+    mode === 'create' || mode === 'set-password'
+      ? t('请牢记主密码，它是解开这个密码库的钥匙。')
+      : t('输入主密码，在此设备上解锁你的密码库。');
+  const passwordLabel = mode === 'set-password' ? t('新主密码') : t('主密码');
   showModal(
-    html`<form id="password-form" data-mode="${mode}">${modalHeader(create ? t('为密码库设置主密码') : t('欢迎回来'), create ? t('请牢记主密码，它是解开这个密码库的钥匙。') : t('输入主密码，在此设备上解锁你的密码库。'))}<div class="password-vault">${icon('lock', 26)}<div><strong>${e(state.name || t('新密码库'))}</strong><small>SafeInCloud 兼容数据库</small></div></div>${mode === 'create' ? t('<label class="form-label">密码库名称<input name="name" value="我的密码库" maxlength="100" required></label>') : ''}<label class="form-label">主密码<div class="password-input"><input name="password" type="password" autocomplete="${create ? 'new-password' : 'current-password'}" ${create ? 'minlength="8"' : ''} required autofocus>${iconButton('toggle-master', t('显示或隐藏主密码'), 'eye')}</div></label>${create ? t('<label class="form-label">确认主密码<input name="confirm" type="password" autocomplete="new-password" minlength="8" required></label><p class="form-help">至少 8 个字符。新密码库使用支持完整 Unicode 的版本 2 格式。</p>') : ''}<p class="form-error" id="password-error" role="alert"></p><div class="modal-footer">${button('close-modal', t('取消'), null, 'button secondary')}<button class="button primary" type="submit">${icon(create ? 'check' : 'lock')}<span>${create ? t('确认并继续') : t('解锁密码库')}</span></button></div></form>`,
+    html`<form id="password-form" data-mode="${mode}">${modalHeader(title, caption)}<div class="password-vault">${icon('lock', 26)}<div><strong>${e(state.name || t('新密码库'))}</strong><small>SafeInCloud 兼容数据库</small></div></div>${mode === 'create' ? t('<label class="form-label">密码库名称<input name="name" value="我的密码库" maxlength="100" required></label>') : ''}${change ? `<label class="form-label">${t('当前主密码')}<input name="current" type="password" autocomplete="current-password" required></label>` : ''}<label class="form-label">${passwordLabel}<div class="password-input"><input name="password" type="password" autocomplete="${create ? 'new-password' : 'current-password'}" ${create ? 'minlength="8"' : ''} required autofocus>${iconButton('toggle-master', t('显示或隐藏主密码'), 'eye')}</div></label>${create ? html`<div class="strength-meter" id="master-strength" data-score="0"><span><i></i></span><small></small></div><p class="form-help">${t('主密码无法找回，请务必妥善保管。')}</p><label class="form-label">${t('确认主密码')}<input name="confirm" type="password" autocomplete="new-password" minlength="8" required></label><p class="form-help">${t('至少 8 个字符。新密码库使用支持完整 Unicode 的版本 2 格式。')}</p>` : ''}${acknowledge ? html`<label class="checkbox-row"><input type="checkbox" name="acknowledge" required>${t('我确认主密码无法找回')}</label>` : ''}${acknowledge ? html`<p class="form-help">${t('创建后可在偏好设置下载恢复工具包。')}</p>` : ''}<p class="form-error" id="password-error" role="alert"></p><div class="modal-footer">${button('close-modal', t('取消'), null, 'button secondary')}<button class="button primary" type="submit">${icon(create ? 'check' : 'lock')}<span>${create ? t('确认并继续') : t('解锁密码库')}</span></button></div></form>`,
   );
-  modal.querySelector('[name=password]')?.focus();
+  const passwordInput = modal.querySelector('[name=password]');
+  const meter = modal.querySelector('#master-strength');
+  if (meter && passwordInput) {
+    const update = () => {
+      const result = passwordStrength(passwordInput.value);
+      meter.dataset.score = String(result.score);
+      meter.querySelector('i').style.width = `${(result.score + 1) * 20}%`;
+      meter.querySelector('small').textContent = `${t('主密码强度')}：${t(result.label)}${
+        result.suggestions.length ? ' · ' + t(result.suggestions[0]) : ''
+      }`;
+    };
+    passwordInput.addEventListener('input', update);
+    update();
+  }
 }
 async function openFile() {
   if (state.dirty && !(await askDiscard())) return;
@@ -581,6 +623,28 @@ async function submitPassword(form) {
   if (confirm !== undefined && confirm !== password) {
     errorBox.textContent = t('两次输入的密码不一致');
     return;
+  }
+  if (
+    (mode === 'create' || (mode === 'set-password' && state.demo)) &&
+    !form.elements.acknowledge?.checked
+  ) {
+    errorBox.textContent = t('请确认主密码无法找回');
+    return;
+  }
+  if (mode === 'set-password' && form.elements.current) {
+    const current = passwordBytes(form.elements.current.value, state.version);
+    let valid = Boolean(state.credential && current.length === state.credential.length);
+    if (valid) {
+      let difference = 0;
+      for (let index = 0; index < current.length; index++)
+        difference |= current[index] ^ state.credential[index];
+      valid = difference === 0;
+    }
+    current.fill(0);
+    if (!valid) {
+      errorBox.textContent = t('当前主密码不正确');
+      return;
+    }
   }
   const generation = state.generation;
   const submit = form.querySelector('[type=submit]');
@@ -906,8 +970,8 @@ function askDiscard() {
 }
 async function copy(text) {
   try {
-    await navigator.clipboard.writeText(text);
-    toast(t('已复制到剪贴板'));
+    await clipboardGuard.write(text);
+    toast(clipboardNotice());
   } catch {
     toast(t('复制失败，请检查浏览器剪贴板权限'));
   }
@@ -1123,21 +1187,44 @@ function confirmRecovery() {
   closeModal();
   render();
 }
+function downloadRecoveryKit() {
+  const now = new Date();
+  const text = [
+    'ClearVault ' + t('恢复工具包'),
+    t('生成时间') + ': ' + now.toLocaleString(getLocale()),
+    t('密码库文件') + ': ' + (state.name || t('尚未保存的密码库')),
+    '',
+    t('主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。'),
+    t('主密码') + ': ______________________________',
+    t('备份位置') + ': ______________________________',
+    '',
+    t('恢复步骤') + ': ' + t('打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。'),
+    '',
+    t('本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。'),
+  ].join('\n');
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `clearvault-recovery-kit-${now.toISOString().slice(0, 10)}.txt`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  toast(t('恢复工具包已下载，请打印并妥善保管'));
+}
 function settings() {
   showModal(
-    html`${modalHeader(t('偏好设置'), t('简单一点，安心一点。'))}<label class="form-label">无操作自动锁定<select id="idle-select">${[1, 5, 15, 30].map((n) => html`<option value="${n}" ${state.idleMinutes === n ? 'selected' : ''}>${n} 分钟</option>`).join('')}</select></label><div class="settings-note">${icon('shield', 23)}<p>密码库只在内存中解密，不写入浏览器存储。离线缓存只包含应用文件。请将更改保存到 .db，关闭页面后需要重新打开文件。</p></div><div class="settings-buttons">${button('save-copy', t('另存为 .db 文件'), 'download', 'button secondary')}${button('change-master', t('更改主密码'), 'key', 'button secondary')}${button('install', t('安装到设备'), 'plus', 'button secondary')}</div><div class="modal-footer">${button('close-modal', t('完成'), null, 'button primary')}</div>`,
+    html`${modalHeader(t('偏好设置'), t('简单一点，安心一点。'))}<label class="form-label">无操作自动锁定<select id="idle-select">${[1, 5, 15, 30].map((n) => html`<option value="${n}" ${state.idleMinutes === n ? 'selected' : ''}>${n} 分钟</option>`).join('')}</select></label><label class="form-label">剪贴板自动清除<select id="clipboard-select">${[0, 15, 30, 60].map((n) => `<option value="${n}" ${clipboardGuard.seconds === n ? 'selected' : ''}>${n ? t('{seconds} 秒', { seconds: n }) : t('关闭')}</option>`).join('')}</select></label><p class="form-help">复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。</p><div class="settings-note">${icon('shield', 23)}<p>密码库只在内存中解密，不写入浏览器存储。离线缓存只包含应用文件。请将更改保存到 .db，关闭页面后需要重新打开文件。</p></div><div class="settings-buttons">${button('save-copy', t('另存为 .db 文件'), 'download', 'button secondary')}${button('recovery-kit', t('恢复工具包'), 'download', 'button secondary')}${button('change-master', t('更改主密码'), 'key', 'button secondary')}${button('install', t('安装到设备'), 'plus', 'button secondary')}</div><div class="modal-footer">${button('close-modal', t('完成'), null, 'button primary')}</div>`,
   );
-  modal
-    .querySelector('.settings-buttons')
-    .insertAdjacentHTML(
-      'beforebegin',
-      `<section class="backup-settings"><h3>${t('保存与恢复')}</h3><p>${t('覆盖前自动保留原始加密文件。目录授权仅在当前页面保留，刷新后需重新选择。')}</p><p><strong>${e(backupDirectory?.name || t('尚未选择备份目录'))}</strong></p><label class="form-label">${t('当前会话保留备份数量')}<select id="backup-retention">${[5, 10, 20, 50].map((n) => `<option ${n === backupRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('backup-directory', t('选择加密备份目录'), 'folder', 'button secondary')}${button('backups', t('查看加密备份'), 'clock', 'button secondary')}${button('restore-file', t('从文件恢复'), 'upload', 'button secondary')}</div><p class="form-help">${t('仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。')}</p></section>`,
-    );
   modal
     .querySelector('.settings-buttons')
     .insertAdjacentHTML(
       'afterend',
       `<p><a href="./downloads/" target="_blank" rel="noopener">${t('下载与源代码')}</a> · <a href="${buildInfo.source || './downloads/'}" target="_blank" rel="noopener noreferrer">GitHub · MIT ↗</a></p>`,
+    );
+  modal
+    .querySelector('.settings-buttons')
+    .insertAdjacentHTML(
+      'afterend',
+      `<section class="backup-settings"><h3>${t('保存与恢复')}</h3><p>${t('覆盖前自动保留原始加密文件。目录授权仅在当前页面保留，刷新后需重新选择。')}</p><p><strong>${e(backupDirectory?.name || t('尚未选择备份目录'))}</strong></p><label class="form-label">${t('当前会话保留备份数量')}<select id="backup-retention">${[5, 10, 20, 50].map((n) => `<option ${n === backupRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('backup-directory', t('选择加密备份目录'), 'folder', 'button secondary')}${button('backups', t('查看加密备份'), 'clock', 'button secondary')}${button('restore-file', t('从文件恢复'), 'upload', 'button secondary')}</div><p class="form-help">${t('仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。')}</p></section>`,
     );
   const note = modal.querySelector('.settings-note p');
   if (note)
@@ -1282,6 +1369,9 @@ async function action(name, target) {
     case 'save-copy':
       closeModal();
       await saveFile(true);
+      break;
+    case 'recovery-kit':
+      downloadRecoveryKit();
       break;
     case 'backup-directory':
       await chooseBackupDirectory();
@@ -1474,6 +1564,15 @@ document.addEventListener('change', (event) => {
     if (preferencesOpen) settings();
   }
   if (event.target.id === 'idle-select') state.idleMinutes = Number(event.target.value);
+  if (event.target.id === 'clipboard-select') {
+    const seconds = Number(event.target.value);
+    clipboardGuard.setSeconds(seconds);
+    try {
+      globalThis.localStorage?.setItem(CLIPBOARD_KEY, String(seconds));
+    } catch {
+      /* Keep the preference for this page when storage is unavailable. */
+    }
+  }
   if (event.target.id === 'backup-retention') backupRetention = Number(event.target.value);
   if (event.target.matches('.editor-field select')) {
     const row = event.target.closest('.editor-field'),

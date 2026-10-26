@@ -234,6 +234,7 @@ test('app imports, saves and resumes its locked session through the recent vault
   createForm.elements.name.value = 'Unsaved new vault';
   createForm.elements.password.value = password;
   createForm.elements.confirm.value = password;
+  createForm.elements.acknowledge.checked = true;
   submit('#password-form');
   await wait(() => document.querySelector('[data-action=new]'));
   click('[data-action=new]');

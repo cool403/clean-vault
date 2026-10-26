@@ -62,6 +62,9 @@
             </button>
             <button id="reload" class="button secondary" data-t="重新加载文件">重新加载文件</button>
             <button id="import" class="button secondary" data-t="导入密码">导入密码</button>
+            <button id="recovery-kit" class="button secondary" data-t="恢复工具包">
+              恢复工具包
+            </button>
           </div>
           <label for="idle" data-i="idle">无操作自动锁定</label
           ><select id="idle">
@@ -69,6 +72,13 @@
             <option value="5" selected>5 min</option>
             <option value="15">15 min</option>
             <option value="30">30 min</option>
+          </select>
+          <label for="clipboard-timeout" data-t="剪贴板自动清除">剪贴板自动清除</label
+          ><select id="clipboard-timeout">
+            <option value="0">关闭</option>
+            <option value="15">15 s</option>
+            <option value="30" selected>30 s</option>
+            <option value="60">60 s</option>
           </select>
         </details>
         <div class="site"><span data-i="site">当前网站</span><strong id="origin"></strong></div>

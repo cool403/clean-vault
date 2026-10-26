@@ -514,6 +514,46 @@ export default {
   保存为我的密码库: 'Als meinen Tresor speichern',
   '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
     'Eine verschlüsselte Kopie wurde exportiert; die Originaldatei ist nicht aktualisiert. Änderungen sind weiterhin ungespeichert und bleiben auf dieser Seite.',
+  剪贴板自动清除: 'Zwischenablage automatisch löschen',
+  '{seconds} 秒': '{seconds} Sekunden',
+  '已复制到剪贴板，{seconds} 秒后自动清除':
+    'In die Zwischenablage kopiert. Wird in {seconds} Sekunden gelöscht.',
+  '复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。':
+    'Nach dem Kopieren von Benutzername, Passwort oder Code wird versucht, die Zwischenablage nach der gewählten Zeit zu leeren; bei fehlendem Fensterfokus kann dies fehlschlagen.',
   '无法识别唯一的验证码输入框，请手动填写':
     'Kein eindeutiges Feld für den Bestätigungscode gefunden. Bitte manuell eingeben.',
+  主密码强度: 'Master-Passwort-Stärke',
+  太弱: 'Sehr schwach',
+  弱: 'Schwach',
+  一般: 'Mittel',
+  强: 'Stark',
+  很强: 'Sehr stark',
+  '建议至少 12 个字符': 'Verwenden Sie mindestens 12 Zeichen',
+  '混合大小写、数字和符号': 'Mischen Sie Groß-/Kleinschreibung, Zahlen und Symbole',
+  '避免常见单词、重复或连续字符': 'Vermeiden Sie häufige Wörter, Wiederholungen oder Folgen',
+  '主密码无法找回，请务必妥善保管。':
+    'Das Master-Passwort kann nicht wiederhergestellt werden. Bewahren Sie es sicher auf.',
+  我确认主密码无法找回:
+    'Ich verstehe, dass das Master-Passwort nicht wiederhergestellt werden kann',
+  请确认主密码无法找回:
+    'Bestätigen Sie, dass das Master-Passwort nicht wiederhergestellt werden kann',
+  当前主密码: 'Aktuelles Master-Passwort',
+  当前主密码不正确: 'Das aktuelle Master-Passwort ist falsch',
+  新主密码: 'Neues Master-Passwort',
+  '创建后可在偏好设置下载恢复工具包。':
+    'Nach dem Erstellen können Sie in den Einstellungen ein Wiederherstellungs-Kit herunterladen.',
+  恢复工具包: 'Wiederherstellungs-Kit',
+  生成时间: 'Erstellt',
+  密码库文件: 'Tresordatei',
+  '主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。':
+    'ClearVault kann Ihr Master-Passwort nicht wiederherstellen. Schreiben Sie es hier von Hand auf und bewahren Sie es getrennt von Ihren Tresor-Backups auf.',
+  备份位置: 'Backup-Speicherort',
+  恢复步骤: 'Wiederherstellungsschritte',
+  '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
+    'Öffnen Sie ClearVault, wählen Sie .db-Tresor öffnen und geben Sie das Master-Passwort ein.',
+  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
+    'Dieses Kit enthält keine Passwörter, TOTP-Geheimnisse oder Tresorinhalte. Bewahren Sie es sicher auf.',
+  '恢复工具包已下载，请打印并妥善保管':
+    'Wiederherstellungs-Kit heruntergeladen. Drucken und sicher aufbewahren.',
+  尚未保存的密码库: 'Nicht gespeicherter Tresor',
 };

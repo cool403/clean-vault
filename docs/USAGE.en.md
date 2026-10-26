@@ -20,6 +20,12 @@ Browsers do not expose complete local absolute paths. When directory selection a
 
 Remove individual records or clear history. This removes shortcuts only, not files on disk. History is not a backup and does not save edits.
 
+## Master password and recovery kit
+
+Creating a vault shows a local strength estimate and requires acknowledging that the master password cannot be recovered. Changing it requires the current master password. The estimate is a local heuristic, not a security guarantee; use at least 12–16 characters with a mix of character types, preferably a long passphrase.
+
+Choose Recovery kit in the app's Preferences or the extension's More actions to download a plain-text sheet with blank lines for the master password and backup location, recovery steps and safety notes. It contains no passwords, TOTP secrets or vault contents. Print it, write the master password by hand and store it separately from vault backups. ClearVault cannot recover a lost master password.
+
 ## Import Chrome or Bitwarden data
 
 1. Export Chrome passwords from Google Password Manager settings, completing system authentication. Export Bitwarden as unencrypted CSV or JSON; prefer JSON for multiple URLs and typed custom fields. See [Chrome export help](https://support.google.com/chrome/answer/13068232) and [Bitwarden file formats](https://bitwarden.com/help/condition-bitwarden-import/).
@@ -52,6 +58,10 @@ After unlocking you can also:
 Choose Update password for the entry while changing its website password. Enter the new value twice, or explicitly click Read new password from this website. Reading accepts only visible `new-password` fields on the currently matching HTTPS origin, with equal values for confirmation fields. Enter it manually if identification fails. Reading only populates the extension confirmation form. When an entry has multiple password fields, choose the intended field.
 
 Verify the entry and that the website accepted the change, then confirm and Save database. The extension does not monitor website input or submissions or collect passwords in the background. Unsaved status remains visible after updates and imports.
+
+## Clipboard auto-clear
+
+After copying a username, password or code, ClearVault tries to clear the system clipboard after 30 seconds by default. Choose 15 / 60 seconds or off in app preferences or the extension's More actions menu. Clearing can fail when the browser window loses focus, the page closes or permission is restricted; clear the clipboard manually or lock immediately on shared devices. The setting is local and contains no vault contents.
 
 ## Save, handle conflicts and lock
 

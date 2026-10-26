@@ -58,11 +58,13 @@
           ><a href="#section-1">Your vault is decrypted on your device</a
           ><a href="#section-2">Visiting the site still creates network metadata</a
           ><a href="#section-3">What the browser stores</a
-          ><a href="#section-4">Compatibility is not modern authenticated encryption</a
-          ><a href="#section-5">Saving, backups and recovery</a
-          ><a href="#section-6">The extension uses current-site access</a
-          ><a href="#section-7">What remains outside the protection boundary</a
-          ><a href="#section-8">Audit status and reporting</a>
+          ><a href="#section-4">Clipboard clearing is best effort</a
+          ><a href="#section-5">The master password cannot be recovered</a
+          ><a href="#section-6">Compatibility is not modern authenticated encryption</a
+          ><a href="#section-7">Saving, backups and recovery</a
+          ><a href="#section-8">The extension uses current-site access</a
+          ><a href="#section-9">What remains outside the protection boundary</a
+          ><a href="#section-10">Audit status and reporting</a>
         </aside>
         <article class="prose">
           <section id="section-1">
@@ -89,16 +91,37 @@
           <section id="section-3">
             <h2>What the browser stores</h2>
             <p>
-              localStorage stores only non-sensitive preferences such as the interface language and
-              auto-lock minutes. IndexedDB stores up to five recent vault names, file handles,
-              record IDs, opening times and optional confirmed folder labels, never passwords,
-              entries or vault contents. Remove or clear history anytime. The app and extension have
-              separate storage, subject to browser permissions and storage clearing. The Service
-              Worker caches app resources only; backup directory access and retention settings last
-              for the current session. Closing a page does not save changes.
+              localStorage stores only non-sensitive preferences such as the interface language,
+              auto-lock minutes and clipboard-clear delay. IndexedDB stores up to five recent vault
+              names, file handles, record IDs, opening times and optional confirmed folder labels,
+              never passwords, entries or vault contents. Remove or clear history anytime. The app
+              and extension have separate storage, subject to browser permissions and storage
+              clearing. The Service Worker caches app resources only; backup directory access and
+              retention settings last for the current session. Closing a page does not save changes.
             </p>
           </section>
           <section id="section-4">
+            <h2>Clipboard clearing is best effort</h2>
+            <p>
+              Copying a username, password or code writes plaintext to the system clipboard.
+              ClearVault tries to write an empty value after 30 seconds by default; choose 15 / 60
+              seconds or off in settings. Clearing can fail when the window loses focus, the browser
+              restricts access or the page closes; other local applications can read the clipboard
+              before it is cleared. On shared devices, clear it manually or lock immediately.
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>The master password cannot be recovered</h2>
+            <p>
+              The master password is not written to persistent storage and ClearVault cannot recover
+              it. Creating a new vault or saving the demo as a real vault shows a local strength
+              estimate and requires acknowledging this; changing the master password requires the
+              current one. Preferences or the extension's More actions can download a recovery kit
+              containing blank lines and recovery steps, never passwords, TOTP secrets or vault
+              contents. The strength estimate is a heuristic, not a security guarantee.
+            </p>
+          </section>
+          <section id="section-6">
             <h2>Compatibility is not modern authenticated encryption</h2>
             <p>
               The compatible format uses PBKDF2-SHA1 with 10,000 iterations and AES-256-CBC over
@@ -108,7 +131,7 @@
               the format to AEAD.
             </p>
           </section>
-          <section id="section-5">
+          <section id="section-7">
             <h2>Saving, backups and recovery</h2>
             <p>
               Before writing, the app compares the original file fingerprint, backs up and verifies
@@ -118,7 +141,7 @@
               confirm the file on disk and reopen it to verify.
             </p>
           </section>
-          <section id="section-6">
+          <section id="section-8">
             <h2>The extension uses current-site access</h2>
             <p>
               The extension uses activeTab, scripting and sidePanel, with no global host permissions
@@ -129,7 +152,7 @@
               read a password or code filled into it; that is an inherent boundary of filling.
             </p>
           </section>
-          <section id="section-7">
+          <section id="section-9">
             <h2>What remains outside the protection boundary</h2>
             <p>
               A compromised operating system, malicious browser or extension, access to unlocked
@@ -139,7 +162,7 @@
               audits.
             </p>
           </section>
-          <section id="section-8">
+          <section id="section-10">
             <h2>Audit status and reporting</h2>
             <p>
               Independent security auditing, code signing and browser store review have not been

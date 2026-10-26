@@ -8,7 +8,7 @@ const escape = (value) =>
 export const modifier = /Mac|iPhone|iPad/.test(globalThis.navigator?.platform || '') ? '⌘' : 'Ctrl';
 
 // Results contain identifiers and public summaries only. Retrieve a secret only on explicit copy.
-export function createQuickSearch({ items, copyPassword, openEntry, lock, notify }) {
+export function createQuickSearch({ items, copyPassword, openEntry, lock, notify, copyNotice }) {
   let dialog,
     results = [],
     selected = 0,
@@ -62,7 +62,7 @@ export function createQuickSearch({ items, copyPassword, openEntry, lock, notify
     select(selected);
     try {
       await copyPassword(item.id);
-      if (dialog === current) notify(t('已复制到剪贴板'));
+      if (dialog === current) notify(copyNotice ? copyNotice() : t('已复制到剪贴板'));
     } catch {
       if (dialog === current) notify(t('复制失败，请检查浏览器剪贴板权限'));
     } finally {

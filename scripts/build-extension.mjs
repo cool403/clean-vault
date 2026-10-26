@@ -2,6 +2,8 @@ import { mkdir, copyFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 for (const file of [
   'crypto.js',
+  'clipboard.js',
+  'password-strength.js',
   'vault.js',
   'totp.js',
   'password-generator.js',

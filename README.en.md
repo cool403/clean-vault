@@ -41,6 +41,7 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 ## Features
 
 - Open SafeInCloud format 1 / 2 `.db` files. Create format 2 vaults with full Unicode master passwords; preserve the format when saving an existing vault.
+- Creating a vault shows a local master-password strength estimate and requires acknowledging that it cannot be recovered. Changing it requires the current password. Preferences or the extension's More actions can download a recovery kit without passwords or OTP secrets.
 - Entries, multiple fields, notes, labels, favorites, archiving, trash, restoration and a password generator.
 - TOTP import through Base32, `otpauth://totp` or local QR images. Supports SHA1 / SHA256 / SHA512, 6 / 8 digits and 1–300 second periods. Keep 30-second periods when sharing files with SafeInCloud 26.0.
 - Browsers supporting File System Access can write back to the original file. Saving checks the ciphertext SHA-256, verifies an encrypted backup and reads back the written file. Other browsers download encrypted copies.
@@ -61,11 +62,11 @@ Quick search opens automatically after unlocking an existing vault. It searches 
 | Lock vault        | Ctrl + Shift + L | ⌘ + Shift + L |
 | Close search      | Esc              | Esc           |
 
-Shortcuts work while the application has focus. Search supports IME input and does not interrupt entry editing. Copied data remains in the system clipboard after locking.
+Shortcuts work while the application has focus. Search supports IME input and does not interrupt entry editing. After copying a username, password or code, ClearVault tries to clear the system clipboard after 30 seconds by default; choose 15 / 60 seconds or off in app preferences or the extension's More actions menu. Clearing can fail when the window loses focus or the page closes; clear the clipboard manually on shared devices.
 
 ## Data and security boundaries
 
-Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences such as interface language and auto-lock minutes. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
+Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences such as interface language, auto-lock minutes and clipboard-clear delay. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
 
 Editing preserves unknown XML, attachments, images and history. Binary fields are read-only. Attachment management, cloud sync, Passkeys, camera scanning, Firefox extensions and damaged XML repair are not supported. TOTP codes do not add another vault-unlock factor.
 

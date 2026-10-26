@@ -105,6 +105,8 @@ test('extension daily loop: site matching, search, copy, OTP, new entry and no l
     ['Example', 'OTP only', 'Password only'],
   );
   assert.equal(badge, '3');
+  assert.equal(element('#clipboard-timeout').value, '30');
+  assert.ok(element('#recovery-kit'), 'the extension exposes the recovery kit');
   assert.equal(
     document.querySelectorAll('.entry')[1].querySelector('[data-copy-username]'),
     null,
@@ -133,6 +135,12 @@ test('extension daily loop: site matching, search, copy, OTP, new entry and no l
   assert.equal(element('.entry .primary').disabled, true);
   element('[data-copy-password]').click();
   await wait(() => copied === 'other-secret');
+  const timeout = element('#clipboard-timeout');
+  timeout.value = '60';
+  timeout.onchange();
+  assert.equal(dom.window.localStorage.getItem('clearvault.clipboardTimeout'), '60');
+  element('[data-copy-password]').click();
+  await wait(() => /60 seconds/.test(element('#toast').textContent));
 
   input('work');
   await wait(() => document.querySelectorAll('.entry').length === 2);

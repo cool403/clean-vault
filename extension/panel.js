@@ -1,4 +1,5 @@
 import { decryptDatabase, encryptDatabase } from './core/crypto.js';
+import { createClipboardGuard } from './core/clipboard.js';
 import {
   parseVault,
   serializeVault,
@@ -29,7 +30,16 @@ import { fillLogin, readNewPassword, fillOTP } from './fill.js';
 
 const $ = (selector) => document.querySelector(selector);
 const IDLE_KEY = 'clearvault.extension.idle';
+const CLIPBOARD_KEY = 'clearvault.clipboardTimeout';
 initializeLanguage();
+const clipboardGuard = createClipboardGuard();
+try {
+  const stored = globalThis.localStorage?.getItem(CLIPBOARD_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([0, 15, 30, 60].includes(saved)) clipboardGuard.setSeconds(saved);
+} catch {
+  /* Extension storage can be unavailable in private contexts. */
+}
 const recentFiles = createRecentFiles();
 let recentEntries = [],
   doc = null,
@@ -112,7 +122,7 @@ function setBusy(value) {
   busy = value;
   document
     .querySelectorAll(
-      '#new-entry, #save, #save-copy, #reload, #import, #add-site, #lock, #open, #unlock-button, #entry-search',
+      '#new-entry, #save, #save-copy, #reload, #import, #recovery-kit, #add-site, #lock, #open, #unlock-button, #entry-search, #clipboard-timeout',
     )
     .forEach((button) => (button.disabled = value));
   $('#file').disabled = value;
@@ -378,11 +388,38 @@ function visibleCards() {
 async function copyText(value) {
   if (!value) return;
   try {
-    await navigator.clipboard.writeText(value);
-    notify(t('已复制到剪贴板'));
+    await clipboardGuard.write(value);
+    notify(
+      clipboardGuard.seconds
+        ? t('已复制到剪贴板，{seconds} 秒后自动清除', { seconds: clipboardGuard.seconds })
+        : t('已复制到剪贴板'),
+    );
   } catch {
     notify(t('复制失败，请检查浏览器剪贴板权限'));
   }
+}
+function downloadRecoveryKit() {
+  const now = new Date();
+  const text = [
+    'ClearVault ' + t('恢复工具包'),
+    t('生成时间') + ': ' + now.toLocaleString(getLocale()),
+    t('密码库文件') + ': ' + (name || t('尚未保存的密码库')),
+    '',
+    t('主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。'),
+    t('主密码') + ': ______________________________',
+    t('备份位置') + ': ______________________________',
+    '',
+    t('恢复步骤') + ': ' + t('打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。'),
+    '',
+    t('本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。'),
+  ].join('\n');
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `clearvault-recovery-kit-${now.toISOString().slice(0, 10)}.txt`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  notify(t('恢复工具包已下载，请打印并妥善保管'));
 }
 async function otpCode(card, index) {
   const field = fields(card)[index];
@@ -954,6 +991,17 @@ function localize() {
     .forEach((element) => (element.textContent = t(element.dataset.t)));
   $('#language').value = getLocale();
   $('#entry-search').placeholder = t('搜索条目、账号或标签…');
+  $('#idle')
+    .querySelectorAll('option')
+    .forEach((option) => {
+      option.textContent = option.value + ' ' + t('分钟');
+    });
+  $('#clipboard-timeout')
+    .querySelectorAll('option')
+    .forEach((option) => {
+      const seconds = Number(option.value);
+      option.textContent = seconds ? t('{seconds} 秒', { seconds }) : t('关闭');
+    });
   $('#status').textContent = text(statusMessage) + (statusError ? fileError(statusError) : '');
   $('#language').setAttribute('aria-label', t('选择语言'));
   if (doc) {
@@ -1036,6 +1084,7 @@ $('#unlock').onsubmit = async (event) => {
 $('#lock').onclick = () => lock();
 $('#refresh').onclick = () => refresh().catch(fail);
 $('#new-entry').onclick = () => newEntry();
+$('#recovery-kit').onclick = () => downloadRecoveryKit();
 $('#save').onclick = () => save();
 $('#save-copy').onclick = () => save(true);
 $('#reload').onclick = () => reload().catch(fail);
@@ -1136,11 +1185,6 @@ chrome.action?.setBadgeBackgroundColor?.({ color: '#315ca0' });
 $('#language').innerHTML = supportedLocales
   .map((locale) => `<option value="${locale.code}">${locale.name}</option>`)
   .join('');
-$('#idle')
-  .querySelectorAll('option')
-  .forEach((option) => {
-    option.textContent = option.value + ' ' + t('分钟');
-  });
 try {
   const saved = Number(localStorage.getItem(IDLE_KEY));
   if ([1, 5, 15, 30].includes(saved)) $('#idle').value = String(saved);
@@ -1150,6 +1194,22 @@ try {
 $('#idle').onchange = () => {
   try {
     localStorage.setItem(IDLE_KEY, $('#idle').value);
+  } catch {
+    /* The selection still applies to this side panel session. */
+  }
+};
+try {
+  const stored = localStorage.getItem(CLIPBOARD_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([0, 15, 30, 60].includes(saved)) $('#clipboard-timeout').value = String(saved);
+} catch {
+  /* Keep the default when extension storage is unavailable. */
+}
+$('#clipboard-timeout').onchange = () => {
+  const seconds = Number($('#clipboard-timeout').value);
+  clipboardGuard.setSeconds(seconds);
+  try {
+    localStorage.setItem(CLIPBOARD_KEY, String(seconds));
   } catch {
     /* The selection still applies to this side panel session. */
   }

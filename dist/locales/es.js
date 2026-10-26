@@ -509,6 +509,44 @@ export default {
   保存为我的密码库: 'Guardar como mi bóveda',
   '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
     'Se exportó una copia cifrada; el archivo original no se ha actualizado. Los cambios siguen sin guardar en esta página.',
+  剪贴板自动清除: 'Borrar el portapapeles automáticamente',
+  '{seconds} 秒': '{seconds} segundos',
+  '已复制到剪贴板，{seconds} 秒后自动清除':
+    'Copiado al portapapeles. Se borrará en {seconds} segundos.',
+  '复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。':
+    'Tras copiar un usuario, contraseña o código, se intentará borrar el portapapeles después del tiempo elegido; puede fallar si la página pierde el foco.',
   '无法识别唯一的验证码输入框，请手动填写':
     'No se pudo identificar un campo único para el código de verificación. Introdúcelo manualmente.',
+  主密码强度: 'Seguridad de la contraseña maestra',
+  太弱: 'Muy débil',
+  弱: 'Débil',
+  一般: 'Aceptable',
+  强: 'Fuerte',
+  很强: 'Muy fuerte',
+  '建议至少 12 个字符': 'Use al menos 12 caracteres',
+  '混合大小写、数字和符号': 'Combine mayúsculas, minúsculas, números y símbolos',
+  '避免常见单词、重复或连续字符': 'Evite palabras comunes, repeticiones o secuencias',
+  '主密码无法找回，请务必妥善保管。':
+    'La contraseña maestra no se puede recuperar. Guárdela de forma segura.',
+  我确认主密码无法找回: 'Entiendo que la contraseña maestra no se puede recuperar',
+  请确认主密码无法找回: 'Confirme que la contraseña maestra no se puede recuperar',
+  当前主密码: 'Contraseña maestra actual',
+  当前主密码不正确: 'La contraseña maestra actual es incorrecta',
+  新主密码: 'Nueva contraseña maestra',
+  '创建后可在偏好设置下载恢复工具包。':
+    'Después de crear la bóveda, descargue un kit de recuperación en Preferencias.',
+  恢复工具包: 'Kit de recuperación',
+  生成时间: 'Creado',
+  密码库文件: 'Archivo de la bóveda',
+  '主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。':
+    'ClearVault no puede recuperar su contraseña maestra. Escríbala aquí a mano y guárdela por separado de las copias de seguridad.',
+  备份位置: 'Ubicación de la copia de seguridad',
+  恢复步骤: 'Pasos de recuperación',
+  '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
+    'Abra ClearVault, elija Abrir bóveda .db e introduzca la contraseña maestra.',
+  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
+    'Este kit no contiene contraseñas, secretos TOTP ni el contenido de la bóveda. Guárdelo de forma segura.',
+  '恢复工具包已下载，请打印并妥善保管':
+    'Kit de recuperación descargado. Imprímalo y guárdelo de forma segura.',
+  尚未保存的密码库: 'Bóveda sin guardar',
 };

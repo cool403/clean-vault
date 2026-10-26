@@ -503,6 +503,41 @@ export default {
   保存为我的密码库: 'Save as my vault',
   '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
     'An encrypted copy was exported; the original file is not updated. Changes are still unsaved on this page.',
+  剪贴板自动清除: 'Clear clipboard automatically',
+  '{seconds} 秒': '{seconds} seconds',
+  '已复制到剪贴板，{seconds} 秒后自动清除': 'Copied to clipboard. Clears in {seconds} seconds.',
+  '复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。':
+    'After copying a username, password or code, ClearVault tries to clear the system clipboard after the selected delay. This can fail when the page loses focus.',
   '无法识别唯一的验证码输入框，请手动填写':
     'Could not identify a unique verification code field. Enter it manually.',
+  主密码强度: 'Master password strength',
+  太弱: 'Very weak',
+  弱: 'Weak',
+  一般: 'Fair',
+  强: 'Strong',
+  很强: 'Very strong',
+  '建议至少 12 个字符': 'Use at least 12 characters',
+  '混合大小写、数字和符号': 'Mix upper/lowercase letters, numbers and symbols',
+  '避免常见单词、重复或连续字符': 'Avoid common words, repeats or sequences',
+  '主密码无法找回，请务必妥善保管。': 'The master password cannot be recovered. Keep it safe.',
+  我确认主密码无法找回: 'I understand the master password cannot be recovered',
+  请确认主密码无法找回: 'Confirm that the master password cannot be recovered',
+  当前主密码: 'Current master password',
+  当前主密码不正确: 'The current master password is incorrect',
+  新主密码: 'New master password',
+  '创建后可在偏好设置下载恢复工具包。':
+    'After creating the vault, download a recovery kit in Preferences.',
+  恢复工具包: 'Recovery kit',
+  生成时间: 'Created',
+  密码库文件: 'Vault file',
+  '主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。':
+    'ClearVault cannot recover your master password. Write it here by hand and store it separately from your vault backups.',
+  备份位置: 'Backup location',
+  恢复步骤: 'Recovery steps',
+  '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
+    'Open ClearVault, choose Open .db vault and enter the master password.',
+  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
+    'This kit contains no passwords, TOTP secrets or vault contents. Keep it safe.',
+  '恢复工具包已下载，请打印并妥善保管': 'Recovery kit downloaded. Print and keep it safe.',
+  尚未保存的密码库: 'Unsaved vault',
 };
