@@ -499,4 +499,16 @@ export default {
   你的私密空间: 'SU ESPACIO PRIVADO',
   '少一点担忧，多一点从容。': 'Menos preocupación. Más claridad.',
   '为你的数字生活，留一份安心。': 'Para su tranquilidad digital.',
+  显示: 'Mostrar',
+  隐藏: 'Ocultar',
+  复制账号: 'Copiar usuario',
+  填入验证码: 'Rellenar código',
+  '已添加条目，请保存数据库': 'Entrada añadida. Guarda tu bóveda.',
+  为此网站新建条目: 'Añadir una entrada para este sitio',
+  更多操作: 'Más acciones',
+  保存为我的密码库: 'Guardar como mi bóveda',
+  '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
+    'Se exportó una copia cifrada; el archivo original no se ha actualizado. Los cambios siguen sin guardar en esta página.',
+  '无法识别唯一的验证码输入框，请手动填写':
+    'No se pudo identificar un campo único para el código de verificación. Introdúcelo manualmente.',
 };

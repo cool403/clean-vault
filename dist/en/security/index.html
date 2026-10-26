@@ -89,13 +89,13 @@
           <section id="section-3">
             <h2>What the browser stores</h2>
             <p>
-              localStorage stores only the interface language. IndexedDB stores up to five recent
-              vault names, file handles, record IDs, opening times and optional confirmed folder
-              labels, never passwords, entries or vault contents. Remove or clear history anytime.
-              The app and extension have separate storage, subject to browser permissions and
-              storage clearing. The Service Worker caches app resources only; backup directory
-              access and retention settings last for the current session. Closing a page does not
-              save changes.
+              localStorage stores only non-sensitive preferences such as the interface language and
+              auto-lock minutes. IndexedDB stores up to five recent vault names, file handles,
+              record IDs, opening times and optional confirmed folder labels, never passwords,
+              entries or vault contents. Remove or clear history anytime. The app and extension have
+              separate storage, subject to browser permissions and storage clearing. The Service
+              Worker caches app resources only; backup directory access and retention settings last
+              for the current session. Closing a page does not save changes.
             </p>
           </section>
           <section id="section-4">
@@ -122,9 +122,11 @@
             <h2>The extension uses current-site access</h2>
             <p>
               The extension uses activeTab, scripting and sidePanel, with no global host permissions
-              or persistent content scripts. After a user action it fills only the selected
-              credentials into an exact matching HTTPS origin, without submitting. The destination
-              website can read a password filled into it; that is an inherent boundary of filling.
+              or persistent content scripts. After an explicit user action it fills only the
+              selected credentials or TOTP code into an exact matching HTTPS origin, without
+              submitting. Search, copy and new entries are handled locally in the unlocked sidebar;
+              copying writes the selected value to the system clipboard. The destination website can
+              read a password or code filled into it; that is an inherent boundary of filling.
             </p>
           </section>
           <section id="section-7">
@@ -156,7 +158,7 @@
             ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
             ><a href="/en/guides/import-passwords/">Import passwords from Chrome or Bitwarden ↗</a
             ><a href="/en/guides/browser-extension/"
-              >Extension guide: fill, update passwords and reload ↗</a
+              >Extension guide: fill, search, OTP and new entries ↗</a
             ><a href="/en/downloads/">Downloads &amp; source ↗</a>
           </section>
         </article>

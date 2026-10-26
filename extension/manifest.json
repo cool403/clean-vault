@@ -22,6 +22,15 @@
   "side_panel": {
     "default_path": "panel.html"
   },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "__MSG_openVault__"
+    }
+  },
   "icons": {
     "16": "core/icon-16.png",
     "32": "core/icon-32.png",

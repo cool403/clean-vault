@@ -50,23 +50,40 @@
           ><button id="lock" class="secondary" data-i="lock">锁定</button>
         </div>
         <p id="save-status" class="form-help" role="status" aria-live="polite"></p>
-        <div class="workflow-actions">
-          <button id="save" class="button primary" data-t="保存数据库">保存数据库</button>
-          <button id="save-copy" class="button secondary" data-t="另存为 .db 文件">
-            另存为 .db 文件
-          </button>
-          <button id="reload" class="button secondary" data-t="重新加载文件">重新加载文件</button>
-          <button id="import" class="button secondary" data-t="导入密码">导入密码</button>
+        <div class="primary-row">
+          <button id="new-entry" class="button primary" data-t="新建条目">新建条目</button>
+          <button id="save" class="button secondary" data-t="保存数据库">保存数据库</button>
         </div>
-        <label for="idle" data-i="idle">无操作自动锁定</label
-        ><select id="idle">
-          <option value="1">1 min</option>
-          <option value="5" selected>5 min</option>
-          <option value="15">15 min</option>
-        </select>
+        <details class="vault-menu">
+          <summary data-t="更多操作">更多操作</summary>
+          <div class="workflow-actions">
+            <button id="save-copy" class="button secondary" data-t="另存为 .db 文件">
+              另存为 .db 文件
+            </button>
+            <button id="reload" class="button secondary" data-t="重新加载文件">重新加载文件</button>
+            <button id="import" class="button secondary" data-t="导入密码">导入密码</button>
+          </div>
+          <label for="idle" data-i="idle">无操作自动锁定</label
+          ><select id="idle">
+            <option value="1">1 min</option>
+            <option value="5" selected>5 min</option>
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+          </select>
+        </details>
         <div class="site"><span data-i="site">当前网站</span><strong id="origin"></strong></div>
-        <button id="refresh" class="secondary" data-i="refresh">刷新网站匹配</button>
-        <button id="add-site" class="button secondary" data-t="添加网站地址">添加网站地址</button>
+        <div class="site-actions">
+          <button id="refresh" class="text-button" data-i="refresh">刷新网站匹配</button>
+          <button id="add-site" class="text-button" data-t="添加网站地址">添加网站地址</button>
+        </div>
+        <label class="search-field" for="entry-search" data-t="搜索所有条目">搜索所有条目</label>
+        <input
+          id="entry-search"
+          type="search"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="搜索条目、账号或标签…"
+        />
         <label class="checkbox-label"
           ><input id="show-all" type="checkbox" /><span data-t="查看所有条目"
             >查看所有条目</span

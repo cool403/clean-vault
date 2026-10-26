@@ -4,6 +4,7 @@ for (const file of [
   'crypto.js',
   'vault.js',
   'totp.js',
+  'password-generator.js',
   'safe-save.js',
   'recent-files.js',
   'import-data.js',

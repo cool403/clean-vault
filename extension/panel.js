@@ -8,6 +8,9 @@ import {
   title,
   setField,
   touch,
+  newCard,
+  hasOTP,
+  children,
 } from './core/vault.js';
 import { t, getLocale, initializeLanguage, setLanguage, supportedLocales } from './core/i18n.js';
 import { fingerprint, readBytes, saveSafely } from './core/safe-save.js';
@@ -19,10 +22,13 @@ import {
 } from './core/recent-files.js';
 import { recentMarkup, createImportWizard, escapeHTML as escape } from './core/workflow-ui.js';
 import { applyImport } from './core/import-data.js';
+import { generatePassword } from './core/password-generator.js';
+import { parseOTP, totp } from './core/totp.js';
 import { matchesSite, loginOrigin } from './matching.js';
-import { fillLogin, readNewPassword } from './fill.js';
+import { fillLogin, readNewPassword, fillOTP } from './fill.js';
 
 const $ = (selector) => document.querySelector(selector);
+const IDLE_KEY = 'clearvault.extension.idle';
 initializeLanguage();
 const recentFiles = createRecentFiles();
 let recentEntries = [],
@@ -48,7 +54,11 @@ let recentEntries = [],
   lockPending = false,
   pendingLock = false,
   saveError = false,
-  selectingReload = false;
+  selectingReload = false,
+  currentTab = null,
+  currentOrigin = '',
+  currentFresh = true,
+  searchQuery = '';
 const strings = {
   local: '本地解密 · 按需填充',
   title: '你的密码，随手可用。',
@@ -102,7 +112,7 @@ function setBusy(value) {
   busy = value;
   document
     .querySelectorAll(
-      '#save, #save-copy, #reload, #import, #add-site, #lock, #open, #unlock-button',
+      '#new-entry, #save, #save-copy, #reload, #import, #add-site, #lock, #open, #unlock-button, #entry-search',
     )
     .forEach((button) => (button.disabled = value));
   $('#file').disabled = value;
@@ -122,6 +132,13 @@ function saveStatus() {
         : lastSaved
           ? t('已验证保存于 {time}', { time: new Date(lastSaved).toLocaleTimeString(getLocale()) })
           : t('密码库已解锁 · 修改后可保存为兼容的 .db 文件');
+  const save = $('#save');
+  if (save) {
+    const attention = Boolean(dirty || saveError);
+    save.textContent = busy ? t('处理中…') : attention ? t('保存更改') : t('保存数据库');
+    save.classList.toggle('primary', attention);
+    save.classList.toggle('secondary', !attention);
+  }
 }
 function closeDialog() {
   importer.reset();
@@ -241,6 +258,12 @@ async function lock() {
   $('#vault-name').textContent = '';
   $('#origin').textContent = '';
   $('#entries').replaceChildren();
+  currentTab = null;
+  currentOrigin = '';
+  currentFresh = true;
+  searchQuery = '';
+  $('#entry-search').value = '';
+  chrome.action?.setBadgeText?.({ text: '' });
   closeDialog();
   status('locked');
   if (snapshot) {
@@ -286,6 +309,298 @@ function liveCards() {
       )
     : [];
 }
+function passwordField(card) {
+  return fields(card).find((field) => fieldType(field) === 'password');
+}
+function accountText(card) {
+  return (
+    fields(card).find((field) => ['login', 'email'].includes(fieldType(field)))?.textContent || ''
+  );
+}
+function websites(card) {
+  return fields(card)
+    .filter((field) => fieldType(field) === 'website')
+    .map((field) => field.textContent.trim());
+}
+function cardMatches(card) {
+  return Boolean(currentOrigin && matchesSite(websites(card), currentOrigin));
+}
+function availableCards() {
+  return liveCards().filter((card) =>
+    fields(card).some((field) => fieldType(field) === 'password' || hasOTP(field)),
+  );
+}
+function labelNames() {
+  return new Map(
+    doc
+      ? children(doc.documentElement, 'label').map((label) => [
+          label.getAttribute('id'),
+          label.getAttribute('name') || '',
+        ])
+      : [],
+  );
+}
+function searchableText(card, labels) {
+  return [
+    title(card),
+    ...fields(card)
+      .filter(
+        (field) =>
+          !['password', 'secret', 'pin', 'binary', 'one_time_password'].includes(fieldType(field)),
+      )
+      .map((field) => field.textContent),
+    ...children(card, 'label_id')
+      .map((label) => labels.get(label.textContent))
+      .filter(Boolean),
+  ]
+    .join(' ')
+    .toLocaleLowerCase();
+}
+function visibleCards() {
+  const query = searchQuery.trim().toLocaleLowerCase();
+  const labels = labelNames();
+  let matching = availableCards();
+  if (query) {
+    matching = matching.filter((card) => searchableText(card, labels).includes(query));
+    matching.sort((a, b) => {
+      const left = title(a).toLocaleLowerCase(),
+        right = title(b).toLocaleLowerCase();
+      return (
+        Number(right.startsWith(query)) - Number(left.startsWith(query)) ||
+        left.localeCompare(right)
+      );
+    });
+  } else if (!showAll) {
+    matching = matching.filter(cardMatches);
+  }
+  return { query, matching };
+}
+async function copyText(value) {
+  if (!value) return;
+  try {
+    await navigator.clipboard.writeText(value);
+    notify(t('已复制到剪贴板'));
+  } catch {
+    notify(t('复制失败，请检查浏览器剪贴板权限'));
+  }
+}
+async function otpCode(card, index) {
+  const field = fields(card)[index];
+  if (!field) return '';
+  let config;
+  try {
+    config = parseOTP(field.textContent);
+    return await totp(config, Date.now());
+  } catch {
+    return '';
+  } finally {
+    config?.secret.fill(0);
+  }
+}
+async function refreshCodes() {
+  if (!doc) return;
+  const version = epoch;
+  for (const code of document.querySelectorAll('[data-otp-card]')) {
+    if (version !== epoch) return;
+    const card = liveCards().find((item) => item.getAttribute('id') === code.dataset.otpCard);
+    const field = card && fields(card)[Number(code.dataset.otpIndex)];
+    if (!field) continue;
+    let config;
+    try {
+      config = parseOTP(field.textContent);
+      const now = Date.now();
+      const remaining = config.period - ((now / 1000) % config.period);
+      const value = await totp(config, now);
+      if (version !== epoch || !code.isConnected) continue;
+      const middle = Math.ceil(value.length / 2);
+      code.textContent = value.slice(0, middle) + ' ' + value.slice(middle);
+      const countdown = code.closest('.entry-otp')?.querySelector('[data-otp-countdown]');
+      if (countdown) countdown.textContent = Math.ceil(remaining) + 's';
+      code.classList.toggle('expiring', remaining < 6);
+    } catch {
+      if (version === epoch && code.isConnected) {
+        code.textContent = t('密钥无效');
+        const countdown = code.closest('.entry-otp')?.querySelector('[data-otp-countdown]');
+        if (countdown) countdown.hidden = true;
+      }
+    } finally {
+      config?.secret.fill(0);
+    }
+  }
+}
+function updateBadge() {
+  const count = currentOrigin ? availableCards().filter(cardMatches).length : 0;
+  chrome.action?.setBadgeText?.({ text: count ? String(count) : '' });
+}
+function emptyState(query) {
+  const empty = document.createElement('div');
+  empty.className = 'entry-empty';
+  const heading = document.createElement('strong');
+  heading.textContent = t('没有找到相关条目');
+  const caption = document.createElement('small');
+  caption.textContent = query ? t('试试其他关键词') : text(currentOrigin ? 'none' : 'unsupported');
+  const create = document.createElement('button');
+  create.type = 'button';
+  create.className = 'button secondary';
+  create.textContent = currentOrigin ? t('为此网站新建条目') : t('新建条目');
+  create.onclick = () => newEntry();
+  empty.append(heading, caption, create);
+  return empty;
+}
+function entryElement(card, version, request, tab, fresh) {
+  const item = document.createElement('article');
+  item.className = 'entry';
+  item.dataset.entryId = card.getAttribute('id');
+  const head = document.createElement('div');
+  head.className = 'entry-head';
+  const label = document.createElement('strong');
+  label.textContent = title(card);
+  const rawAccount = accountText(card);
+  const account = document.createElement('small');
+  account.textContent = rawAccount || t('暂无账号');
+  head.append(label, account);
+  item.append(head);
+  const matched = cardMatches(card);
+  const password = passwordField(card);
+  for (const field of fields(card).filter(hasOTP)) {
+    const index = fields(card).indexOf(field);
+    const row = document.createElement('div');
+    row.className = 'entry-otp';
+    const meta = document.createElement('div');
+    meta.className = 'otp-main';
+    const fieldLabel = document.createElement('small');
+    fieldLabel.textContent = field.getAttribute('name') || t('一次性验证码');
+    const code = document.createElement('span');
+    code.className = 'otp-code';
+    code.dataset.otpCard = card.getAttribute('id');
+    code.dataset.otpIndex = String(index);
+    code.textContent = '••• •••';
+    const countdown = document.createElement('span');
+    countdown.className = 'otp-countdown';
+    countdown.dataset.otpCountdown = '';
+    countdown.textContent = '30s';
+    meta.append(fieldLabel, code, countdown);
+    row.append(meta);
+    const copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'text-button';
+    copy.dataset.otpCopy = '';
+    copy.textContent = t('复制');
+    copy.title = t('复制动态验证码');
+    copy.disabled = !fresh;
+    copy.onclick = async () => {
+      if (!doc || busy || version !== epoch || request !== matchEpoch) return;
+      await copyText(await otpCode(card, index));
+    };
+    row.append(copy);
+    if (matched) {
+      const fill = document.createElement('button');
+      fill.type = 'button';
+      fill.className = 'text-button';
+      fill.dataset.otpFill = '';
+      fill.textContent = t('填入验证码');
+      fill.disabled = !fresh;
+      fill.onclick = () =>
+        fillOtp(card, tab, index, version, request).catch((error) => {
+          if (version === epoch) fail(error);
+        });
+      row.append(fill);
+    }
+    item.append(row);
+  }
+  const actions = document.createElement('div');
+  actions.className = 'entry-actions';
+  const fill = document.createElement('button');
+  fill.type = 'button';
+  fill.className = 'button primary';
+  fill.textContent = text('fill');
+  fill.disabled = !fresh || !matched || !password?.textContent;
+  fill.onclick = async () => {
+    checkIdle();
+    if (!doc || busy || version !== epoch || request !== matchEpoch) return;
+    fill.disabled = true;
+    try {
+      if (!(await freshFile())) return;
+      const [current] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (
+        !doc ||
+        busy ||
+        version !== epoch ||
+        request !== matchEpoch ||
+        current?.id !== tab.id ||
+        loginOrigin(current.url || '') !== currentOrigin
+      ) {
+        if (version === epoch) status('origin');
+        return;
+      }
+      const result = await chrome.scripting.executeScript({
+        target: { tabId: tab.id, frameIds: [0] },
+        world: 'ISOLATED',
+        func: fillLogin,
+        args: [currentOrigin, rawAccount, password.textContent],
+      });
+      if (version === epoch) status(result[0]?.result || 'error');
+    } catch (error) {
+      if (version === epoch) fail(error);
+    } finally {
+      fill.disabled = !fresh || !matched || !password?.textContent;
+    }
+  };
+  if (password?.textContent) actions.append(fill);
+  if (rawAccount) {
+    const copyUser = document.createElement('button');
+    copyUser.type = 'button';
+    copyUser.className = 'text-button';
+    copyUser.dataset.copyUsername = '';
+    copyUser.textContent = t('复制账号');
+    copyUser.disabled = !fresh;
+    copyUser.onclick = () => {
+      if (fresh) void copyText(rawAccount);
+    };
+    actions.append(copyUser);
+  }
+  if (password?.textContent) {
+    const copyPass = document.createElement('button');
+    copyPass.type = 'button';
+    copyPass.className = 'text-button';
+    copyPass.dataset.copyPassword = '';
+    copyPass.textContent = t('复制密码');
+    copyPass.disabled = !fresh;
+    copyPass.onclick = () => {
+      if (fresh) void copyText(password.textContent);
+    };
+    actions.append(copyPass);
+  }
+  if (password) {
+    const update = document.createElement('button');
+    update.type = 'button';
+    update.className = 'button secondary';
+    update.textContent = t('更新密码');
+    update.onclick = () => {
+      if (!busy && doc && version === epoch && request === matchEpoch) updatePassword(card, tab);
+    };
+    actions.append(update);
+  }
+  if (actions.childElementCount) item.append(actions);
+  return item;
+}
+function renderEntries() {
+  if (!doc) return;
+  const { query, matching } = visibleCards();
+  const entries = $('#entries');
+  entries.replaceChildren();
+  if (!matching.length) {
+    entries.append(emptyState(query));
+    if (currentFresh && !query && currentOrigin) status('none');
+    else if (currentFresh && query && statusMessage === 'none') status('');
+  } else {
+    if (currentFresh && currentOrigin && (query || statusMessage === 'none')) status('');
+    for (const card of matching)
+      entries.append(entryElement(card, epoch, matchEpoch, currentTab, currentFresh));
+  }
+  updateBadge();
+  void refreshCodes();
+}
 async function refresh() {
   checkIdle();
   const request = ++matchEpoch,
@@ -295,81 +610,98 @@ async function refresh() {
   if (!doc) return;
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (request !== matchEpoch || version !== epoch || !doc) return;
+  currentTab = tab || null;
   const origin = tab?.url && loginOrigin(tab.url);
-  $('#origin').textContent = origin || '';
+  currentOrigin = origin || '';
+  $('#origin').textContent = currentOrigin;
   status(origin ? '' : 'unsupported');
   const fresh = await freshFile();
   if (request !== matchEpoch || version !== epoch || !doc) return;
-  const matches = (card) =>
-    matchesSite(
-      fields(card)
-        .filter((field) => fieldType(field) === 'website')
-        .map((field) => field.textContent.trim()),
-      tab?.url || '',
-    );
-  const available = liveCards().filter((card) =>
-    fields(card).some((field) => fieldType(field) === 'password' && field.textContent),
-  );
-  const matching = available.filter((card) => showAll || matches(card));
-  if (!matching.length && origin && fresh) status('none');
-  for (const card of matching) {
-    const item = document.createElement('article');
-    item.className = 'entry';
-    const label = document.createElement('strong');
-    label.textContent = title(card);
-    const account = document.createElement('small');
-    account.textContent =
-      fields(card).find((field) => ['login', 'email'].includes(fieldType(field)))?.textContent ||
-      '';
-    const button = document.createElement('button');
-    button.className = 'button primary';
-    button.textContent = text('fill');
-    button.disabled = !fresh || !matches(card);
-    button.onclick = async () => {
-      checkIdle();
-      if (!doc || busy || version !== epoch || request !== matchEpoch) return;
-      button.disabled = true;
-      try {
-        if (!(await freshFile())) return;
-        const [current] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (
-          !doc ||
-          busy ||
-          version !== epoch ||
-          request !== matchEpoch ||
-          current?.id !== tab.id ||
-          loginOrigin(current.url || '') !== origin
-        ) {
-          if (version === epoch) status('origin');
-          return;
-        }
-        const password = fields(card).find((field) => fieldType(field) === 'password').textContent;
-        const result = await chrome.scripting.executeScript({
-          target: { tabId: tab.id, frameIds: [0] },
-          world: 'ISOLATED',
-          func: fillLogin,
-          args: [origin, account.textContent, password],
-        });
-        if (version === epoch) status(result[0]?.result || 'error');
-      } catch (error) {
-        if (version === epoch) fail(error);
-      } finally {
-        button.disabled = !fresh || !matches(card);
-      }
-    };
-    const update = document.createElement('button');
-    update.className = 'button secondary';
-    update.textContent = t('更新密码');
-    update.onclick = () => {
-      if (!busy && doc && version === epoch && request === matchEpoch) updatePassword(card, tab);
-    };
-    item.append(label, account, button, update);
-    $('#entries').append(item);
+  currentFresh = fresh;
+  renderEntries();
+}
+async function fillOtp(card, tab, index, version, request) {
+  if (!doc || busy || !tab || version !== epoch || request !== matchEpoch) return;
+  const code = await otpCode(card, index);
+  if (!code) {
+    notify(t('密钥无效'));
+    return;
   }
+  try {
+    if (!(await freshFile())) return;
+    const [current] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (
+      !doc ||
+      busy ||
+      version !== epoch ||
+      request !== matchEpoch ||
+      current?.id !== tab.id ||
+      loginOrigin(current.url || '') !== currentOrigin
+    ) {
+      if (version === epoch) status('origin');
+      return;
+    }
+    const result = await chrome.scripting.executeScript({
+      target: { tabId: tab.id, frameIds: [0] },
+      world: 'ISOLATED',
+      func: fillOTP,
+      args: [currentOrigin, code],
+    });
+    const outcome = result[0]?.result;
+    if (version !== epoch) return;
+    if (outcome === 'otp-filled') notify(t('已填充，请在网站上确认登录。'));
+    else if (outcome === 'origin') status('origin');
+    else notify(t('无法识别唯一的验证码输入框，请手动填写'));
+  } catch (error) {
+    if (version === epoch) fail(error);
+  }
+}
+function newEntry() {
+  if (!doc || busy) return;
+  const suggested =
+    currentTab?.title?.trim() || (currentOrigin ? new URL(currentOrigin).hostname : '');
+  showDialog(
+    `<form id="new-entry-form">${heading(t('新建条目'), t('把重要的信息，妥善收在一起。'))}<label class="form-label">${t('条目名称')}<input name="title" maxlength="200" required value="${escape(suggested)}"></label><label class="form-label">${t('账号')}<input name="username" autocomplete="off"></label><label class="form-label">${t('密码')}<div class="new-password-row"><input name="password" type="password" autocomplete="new-password"><button type="button" class="text-button" id="new-password-generate">${t('生成密码')}</button><button type="button" class="text-button" id="new-password-toggle" aria-label="${t('显示或隐藏内容')}">${t('显示')}</button></div></label><label class="form-label">${t('网站')}<input name="website" type="text" inputmode="url" value="${escape(currentOrigin)}"></label><p class="form-error" role="alert"></p><div class="modal-footer"><button type="button" class="button secondary" data-close>${t('取消')}</button><button type="submit" class="button primary">${t('保存条目')}</button></div></form>`,
+  );
+  const form = $('#new-entry-form');
+  $('#new-password-generate').onclick = () => {
+    form.elements.password.value = generatePassword();
+    form.elements.password.focus();
+  };
+  $('#new-password-toggle').onclick = () => {
+    const showing = form.elements.password.type === 'text';
+    form.elements.password.type = showing ? 'password' : 'text';
+    $('#new-password-toggle').textContent = t(showing ? '显示' : '隐藏');
+  };
+  form.onsubmit = (event) => {
+    event.preventDefault();
+    if (!doc || busy) return;
+    const card = newCard(doc);
+    card.setAttribute('title', form.elements.title.value.trim() || t('未命名条目'));
+    setField(card, t('账号'), form.elements.username.value, 'login');
+    setField(card, t('密码'), form.elements.password.value, 'password');
+    setField(card, t('网站'), form.elements.website.value.trim(), 'website');
+    doc.documentElement.append(card);
+    dirty = true;
+    const matchesCurrent =
+      currentOrigin && matchesSite([form.elements.website.value.trim()], currentOrigin);
+    if (!matchesCurrent) {
+      showAll = true;
+      $('#show-all').checked = true;
+    }
+    searchQuery = '';
+    $('#entry-search').value = '';
+    closeDialog();
+    saveStatus();
+    void refresh();
+    notify(t('已添加条目，请保存数据库'));
+  };
+  form.querySelector('[name=title]')?.select();
 }
 function updatePassword(card, tab) {
   const version = epoch;
   const passwords = fields(card).filter((entry) => fieldType(entry) === 'password');
+  if (!passwords.length) return;
   const origin = loginOrigin(tab?.url || '');
   const matched =
     origin &&
@@ -491,7 +823,7 @@ async function save(asCopy = false) {
   try {
     let target = asCopy ? null : handle;
     if (!target && window.showSaveFilePicker)
-      target = await window.showSaveFilePicker({
+      [target] = await window.showSaveFilePicker({
         suggestedName: name || 'SafeInCloud.db',
         types: [
           { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },
@@ -621,6 +953,7 @@ function localize() {
     .querySelectorAll('[data-t]')
     .forEach((element) => (element.textContent = t(element.dataset.t)));
   $('#language').value = getLocale();
+  $('#entry-search').placeholder = t('搜索条目、账号或标签…');
   $('#status').textContent = text(statusMessage) + (statusError ? fileError(statusError) : '');
   $('#language').setAttribute('aria-label', t('选择语言'));
   if (doc) {
@@ -702,6 +1035,7 @@ $('#unlock').onsubmit = async (event) => {
 };
 $('#lock').onclick = () => lock();
 $('#refresh').onclick = () => refresh().catch(fail);
+$('#new-entry').onclick = () => newEntry();
 $('#save').onclick = () => save();
 $('#save-copy').onclick = () => save(true);
 $('#reload').onclick = () => reload().catch(fail);
@@ -709,9 +1043,13 @@ $('#import').onclick = () => {
   if (doc && !busy) importer.open();
 };
 $('#add-site').onclick = () => addSite().catch(fail);
+$('#entry-search').addEventListener('input', () => {
+  searchQuery = $('#entry-search').value;
+  renderEntries();
+});
 $('#show-all').onchange = () => {
   showAll = $('#show-all').checked;
-  void refresh().catch(fail);
+  renderEntries();
 };
 document.addEventListener('click', async (event) => {
   if (event.target.closest('[data-close]')) closeDialog();
@@ -778,10 +1116,13 @@ for (const name of ['pointerdown', 'keydown'])
     },
     { passive: true },
   );
-setInterval(checkIdle, 1000);
+setInterval(() => {
+  checkIdle();
+  if (!document.hidden) void refreshCodes();
+}, 500);
 document.addEventListener('visibilitychange', () => {
   checkIdle();
-  if (document.hidden) void lock();
+  if (!document.hidden) void refreshCodes();
 });
 window.addEventListener('pagehide', () => {
   void lock();
@@ -791,6 +1132,7 @@ chrome.tabs.onUpdated.addListener((_id, change) => {
   if (change.status === 'complete' || change.url) refresh().catch(fail);
 });
 localize();
+chrome.action?.setBadgeBackgroundColor?.({ color: '#315ca0' });
 $('#language').innerHTML = supportedLocales
   .map((locale) => `<option value="${locale.code}">${locale.name}</option>`)
   .join('');
@@ -799,3 +1141,16 @@ $('#idle')
   .forEach((option) => {
     option.textContent = option.value + ' ' + t('分钟');
   });
+try {
+  const saved = Number(localStorage.getItem(IDLE_KEY));
+  if ([1, 5, 15, 30].includes(saved)) $('#idle').value = String(saved);
+} catch {
+  /* Keep the default when extension storage is unavailable. */
+}
+$('#idle').onchange = () => {
+  try {
+    localStorage.setItem(IDLE_KEY, $('#idle').value);
+  } catch {
+    /* The selection still applies to this side panel session. */
+  }
+};

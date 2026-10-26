@@ -493,4 +493,16 @@ export default {
   'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。':
     'ClearVault: a local-first password vault and authenticator. Open, manage and save SafeInCloud databases.',
   '。': '.',
+  显示: 'Show',
+  隐藏: 'Hide',
+  复制账号: 'Copy username',
+  填入验证码: 'Fill code',
+  '已添加条目，请保存数据库': 'Entry added. Save your vault.',
+  为此网站新建条目: 'Add an entry for this website',
+  更多操作: 'More actions',
+  保存为我的密码库: 'Save as my vault',
+  '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
+    'An encrypted copy was exported; the original file is not updated. Changes are still unsaved on this page.',
+  '无法识别唯一的验证码输入框，请手动填写':
+    'Could not identify a unique verification code field. Enter it manually.',
 };

@@ -250,11 +250,11 @@ articles.push(
   {
     slug: 'browser-extension',
     zh: {
-      title: '扩展教程：填充、更新密码与重新加载',
+      title: '扩展教程：填充、搜索、OTP 与新建条目',
       description:
-        '了解 ClearVault Chrome / Edge 扩展的分步登录、多网址匹配、密码更新确认、加密保存和文件冲突处理。',
+        '了解 ClearVault Chrome / Edge 扩展的分步登录、搜索复制、TOTP 验证码、新建条目、多网址匹配、密码更新确认、加密保存和文件冲突处理。',
       intro:
-        '扩展在侧栏本地解锁 .db，并在你明确点击后操作当前网站。网页和扩展可以分别打开同一文件，使用前请核对保存状态。侧栏顶部可切换简体中文、English、Deutsch、日本語和 Español；语言选择与网页分别保存在本地，密码库内容保持原样。',
+        '扩展在侧栏本地解锁 .db，并在你明确点击后操作当前网站。解锁后可搜索所有条目、复制账号或密码、为当前网站新建条目，并复制或填入 TOTP 验证码。网页和扩展可以分别打开同一文件，使用前请核对保存状态。侧栏顶部可切换简体中文、English、Deutsch、日本語和 Español；语言选择与网页分别保存在本地，密码库内容保持原样。',
       sections: [
         [
           '1. 安装和打开',
@@ -262,11 +262,11 @@ articles.push(
         ],
         [
           '2. 填充和分步登录',
-          '核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。多个密码框、验证码框、新密码表单或不明确的输入框会拒绝填充。',
+          '核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。解锁后还可以搜索所有条目并复制账号或密码；点击“新建条目”会预填当前 HTTPS 来源，保存数据库后才写入文件。条目含 TOTP 时列表直接显示验证码：点击“复制”复制，点击“填入验证码”只填唯一、明确的验证码输入框。多个密码框、未明确点击的验证码框、新密码表单或不明确的输入框会拒绝填充。',
         ],
         [
           '3. 为同一账号添加网址',
-          '在新网站点击扩展图标，解锁后点击“添加网站地址”，核对展示的完整 HTTPS 来源并选择条目，确认后保存。也可在网页编辑器点击“添加网站地址”。每个网址单独精确匹配主机和端口，不自动扩展到其他子域。勾选“查看所有条目”可更新非当前网站条目，但不能向不匹配网站填充。',
+          '在新网站点击扩展图标，解锁后点击“添加网站地址”，核对展示的完整 HTTPS 来源并选择条目，确认后保存。也可在网页编辑器点击“添加网站地址”。每个网址单独精确匹配主机和端口，不自动扩展到其他子域。勾选“查看所有条目”或搜索可查看非当前网站条目；复制始终可用，但不能向不匹配网站填充。',
         ],
         [
           '4. 更新密码并确认',
@@ -274,16 +274,16 @@ articles.push(
         ],
         [
           '5. 保存、外部变化与锁定',
-          '点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏和空闲时锁定，未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
+          '点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏不会立即锁定；空闲达到所选的 1 / 5 / 15 / 30 分钟后锁定。未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
         ],
       ],
     },
     en: {
-      title: 'Extension guide: fill, update passwords and reload',
+      title: 'Extension guide: fill, search, OTP and new entries',
       description:
-        'Use the ClearVault Chrome / Edge extension for multistep logins, multiple URLs, confirmed password updates and verified encrypted saves.',
+        'Use the ClearVault Chrome / Edge extension for multistep logins, search and copy, TOTP codes, new entries, multiple URLs, confirmed password updates and verified encrypted saves.',
       intro:
-        'The sidebar decrypts .db files locally and acts on the website after your explicit click. The app and extension open files separately: check save status before switching. Choose Chinese, English, German, Japanese or Spanish at the top of the sidebar. Language preferences are remembered locally, separately from the app, without translating vault contents.',
+        'The sidebar decrypts .db files locally and acts on the website after your explicit click. After unlocking, search all entries, copy usernames or passwords, create an entry for the current website, and copy or fill TOTP codes. The app and extension open files separately: check save status before switching. Choose Chinese, English, German, Japanese or Spanish at the top of the sidebar. Language preferences are remembered locally, separately from the app, without translating vault contents.',
       sections: [
         [
           '1. Install and open',
@@ -291,11 +291,11 @@ articles.push(
         ],
         [
           '2. Fill and multistep login',
-          'Check the website and account, click Fill this login and submit yourself. On username-first sites, only a unique username or email input is filled. Continue on the website, then click Fill again on the password page. If redirected to another origin, click the extension icon to grant access there. Ambiguous inputs, OTP inputs, multiple password fields and new-password forms are rejected.',
+          'Check the website and account, click Fill this login and submit yourself. On username-first sites, only a unique username or email input is filled. Continue on the website, then click Fill again on the password page. If redirected to another origin, click the extension icon to grant access there. After unlocking you can also search all entries and copy a username or password; New entry prefills the current HTTPS origin, and the entry is written only after Save database. Entries with TOTP show the current code: Copy copies it, and Fill code fills only a unique, explicit verification-code input. Ambiguous inputs, OTP inputs you did not explicitly click, multiple password fields and new-password forms are rejected.',
         ],
         [
           '3. Add another website',
-          'Grant access on the new website, unlock and choose Add website address. Check the full HTTPS origin, select an entry, confirm and save. The app editor also has an Add website address button. Each host and port is matched exactly; subdomains are not automatically included. Show all entries allows updating other entries, but filling remains disabled for nonmatching websites.',
+          'Grant access on the new website, unlock and choose Add website address. Check the full HTTPS origin, select an entry, confirm and save. The app editor also has an Add website address button. Each host and port is matched exactly; subdomains are not automatically included. Show all entries or search lets you view nonmatching entries; copying remains available, but filling stays disabled for nonmatching websites.',
         ],
         [
           '4. Confirm a password update',
@@ -303,7 +303,7 @@ articles.push(
         ],
         [
           '5. Save, reload and lock',
-          'Choose Save database and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing handle support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar or inactivity locks it; unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
+          'Choose Save database and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing handle support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar does not lock immediately; the selected 1 / 5 / 15 / 30 minute idle timeout applies. Unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
         ],
       ],
     },
@@ -328,7 +328,7 @@ export const security = {
       ],
       [
         '浏览器保存什么',
-        'localStorage 仅保存界面语言；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+        'localStorage 仅保存界面语言和自动锁定分钟数等非敏感偏好；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
       ],
       [
         '加密兼容性不等于现代认证加密',
@@ -340,7 +340,7 @@ export const security = {
       ],
       [
         '扩展仅获得当前网站授权',
-        '扩展使用 activeTab、scripting、sidePanel，无全站主机权限或持久内容脚本。用户点击后才向精确匹配的 HTTPS 来源填充所选账号，不自动提交。目标网站能够读取填入它的密码；这属于填充的固有边界。',
+        '扩展使用 activeTab、scripting、sidePanel，无全站主机权限或持久内容脚本。用户明确点击后才向精确匹配的 HTTPS 来源填充所选账号或 TOTP 验证码，不自动提交。搜索、复制和新建条目在解锁后的侧栏内本地处理；复制会写入系统剪贴板。目标网站能够读取填入它的密码或验证码；这属于填充的固有边界。',
       ],
       [
         '仍无法保护的情况',
@@ -369,7 +369,7 @@ export const security = {
       ],
       [
         'What the browser stores',
-        'localStorage stores only the interface language. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
+        'localStorage stores only non-sensitive preferences such as the interface language and auto-lock minutes. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
       ],
       [
         'Compatibility is not modern authenticated encryption',
@@ -381,7 +381,7 @@ export const security = {
       ],
       [
         'The extension uses current-site access',
-        'The extension uses activeTab, scripting and sidePanel, with no global host permissions or persistent content scripts. After a user action it fills only the selected credentials into an exact matching HTTPS origin, without submitting. The destination website can read a password filled into it; that is an inherent boundary of filling.',
+        'The extension uses activeTab, scripting and sidePanel, with no global host permissions or persistent content scripts. After an explicit user action it fills only the selected credentials or TOTP code into an exact matching HTTPS origin, without submitting. Search, copy and new entries are handled locally in the unlocked sidebar; copying writes the selected value to the system clipboard. The destination website can read a password or code filled into it; that is an inherent boundary of filling.',
       ],
       [
         'What remains outside the protection boundary',

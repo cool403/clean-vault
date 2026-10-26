@@ -39,7 +39,13 @@ Install as described in [self-hosting](SELF-HOSTING.en.md). Reload the extension
 1. Visit the intended HTTPS website, click the extension icon to grant access, choose a file or recent vault and unlock.
 2. Check the website and account, then click Fill this login. Submit yourself. On username-first sites only a unique, explicit username or email input is filled. Continue on the website, then click Fill again on the password page. A different origin needs fresh toolbar authorization.
 3. For another website using the same account, authorize it, choose Add website address, check the full origin, select the entry, confirm and save. The app editor also has Add website address. Hosts, subdomains and ports are matched exactly, without automatic scope expansion.
-4. Show all entries lets you update other entries; filling stays disabled for nonmatching websites. Multiple password fields, OTP inputs, new-password forms and iframes are not filled automatically.
+4. Show all entries lets you update other entries; filling stays disabled for nonmatching websites. Multiple password fields, OTP inputs you did not explicitly click, new-password forms and iframes are not filled automatically.
+
+After unlocking you can also:
+
+- Search all entries by name, account, website or label. Search results can copy a username or password; filling stays disabled for nonmatching websites.
+- Choose New entry to save a login for the current website. The HTTPS origin is prefilled and a password can be generated. The entry stays in the current session until you choose Save database.
+- Entries with TOTP show the current code and remaining time in the list. Choose Copy to copy it, or Fill code to fill a unique, explicit verification-code input on the matching website. Nothing is submitted automatically; enter the code manually if no unique input is found.
 
 ## Confirm password updates
 
@@ -53,4 +59,4 @@ The app and extension share SHA-256 conflict checking, verified original-ciphert
 
 The extension checks an associated file before filling. If the PWA changed it, filling stops. Save any edits as a copy, choose Reload file and enter the master password. Reloading with unsaved edits requires explicit confirmation to discard; cancel keeps them. Ordinary file input supplies no handle for change detection and must be selected again. Avoid editing one file in two applications simultaneously.
 
-Hiding the sidebar or inactivity locks it. Unsaved edits remain encrypted in current sidebar memory and can be unlocked again. Closing, refreshing or reloading the extension loses them. Names and history reveal usage metadata on a shared device; clear history when appropriate. They never bypass the master password.
+Hiding the sidebar does not lock it immediately; it locks after the selected 1 / 5 / 15 / 30 minutes of inactivity, and the auto-lock choice is remembered by the extension. Unsaved edits remain encrypted in current sidebar memory and can be unlocked again. Closing, refreshing or reloading the extension loses them. Names and history reveal usage metadata on a shared device; clear history when appropriate. They never bypass the master password.

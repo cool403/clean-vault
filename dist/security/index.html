@@ -78,7 +78,8 @@
           <section id="section-3">
             <h2>浏览器保存什么</h2>
             <p>
-              localStorage 仅保存界面语言；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录
+              localStorage 仅保存界面语言和自动锁定分钟数等非敏感偏好；IndexedDB 仅保存最近 5
+              个密码库的文件名、文件句柄、记录
               ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service
               Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。
             </p>
@@ -102,9 +103,9 @@
             <h2>扩展仅获得当前网站授权</h2>
             <p>
               扩展使用
-              activeTab、scripting、sidePanel，无全站主机权限或持久内容脚本。用户点击后才向精确匹配的
-              HTTPS
-              来源填充所选账号，不自动提交。目标网站能够读取填入它的密码；这属于填充的固有边界。
+              activeTab、scripting、sidePanel，无全站主机权限或持久内容脚本。用户明确点击后才向精确匹配的
+              HTTPS 来源填充所选账号或 TOTP
+              验证码，不自动提交。搜索、复制和新建条目在解锁后的侧栏内本地处理；复制会写入系统剪贴板。目标网站能够读取填入它的密码或验证码；这属于填充的固有边界。
             </p>
           </section>
           <section id="section-7">
@@ -127,7 +128,7 @@
             ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
             ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
             ><a href="/guides/import-passwords/">从 Chrome 或 Bitwarden 导入密码 ↗</a
-            ><a href="/guides/browser-extension/">扩展教程：填充、更新密码与重新加载 ↗</a
+            ><a href="/guides/browser-extension/">扩展教程：填充、搜索、OTP 与新建条目 ↗</a
             ><a href="/downloads/">下载与源码 ↗</a>
           </section>
         </article>

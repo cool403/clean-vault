@@ -65,7 +65,10 @@ state.saveError = false;
 function saveStatus() {
   if (state.busy) return t('正在处理…');
   if (state.saveError) return t('保存未完成，当前编辑仍在页面内，请重试或另存副本');
-  if (state.dirty) return t('有未保存的更改，记得保存到 .db 文件');
+  if (state.dirty)
+    return state.lastExported
+      ? t('已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内')
+      : t('有未保存的更改，记得保存到 .db 文件');
   if (state.lastSaved)
     return t('已验证保存于 {time}', {
       time: new Date(state.lastSaved).toLocaleTimeString(getLocale()),
@@ -295,6 +298,9 @@ function render() {
   if (!visible.some((card) => card.getAttribute('id') === state.selected))
     state.selected = visible[0]?.getAttribute('id') || null;
   const selected = visible.find((card) => card.getAttribute('id') === state.selected);
+  const saveAttention = Boolean(state.dirty || state.saveError || state.demo);
+  const saveStyle = saveAttention ? 'button primary' : 'button secondary';
+  const newStyle = saveAttention ? 'button secondary' : 'button primary';
   app.innerHTML = html`<div class="shell ${state.selected ? 'has-selection' : ''} ${state.mobileDetail ? '' : 'mobile-list'}">
     <aside class="sidebar">
       <a class="brand" href="./" aria-label="ClearVault 首页"><img src="./icon.svg" alt="" width="29" height="29"><span>ClearVault<span class="brand-dot">.</span></span></a>
@@ -321,7 +327,7 @@ function render() {
     </aside>
     <main class="workspace">
       <header class="topbar"><div class="breadcrumb">个人空间 ${icon('chevron', 12)}<strong>${e(heading)}</strong></div><div class="top-actions"><span class="privacy-pill"><i></i> 本地加密</span>${state.demo ? t('<span class="demo-pill">演示</span>') : ''}${iconButton('open', t('打开其他密码库'), 'folder')}${iconButton('settings', t('偏好设置'), 'settings', 'mobile-top-action')}${iconButton('lock', t('锁定密码库'), 'lock', 'mobile-top-action')}${state.install ? iconButton('install', t('安装应用'), 'download') : ''}<div class="profile">我</div></div></header>
-      <section class="page-heading"><div><div class="eyebrow">为你的数字生活，留一份安心。</div><h1>${e(heading)}<span>${visible.length}</span></h1><p>${e(subtitle)}</p></div><div class="heading-actions">${button('save', state.busy ? t('处理中…') : state.dirty ? t('保存更改') : t('保存数据库'), 'download', 'button primary')}${button('new', state.section === 'otp' ? t('添加验证器') : t('新建条目'), 'plus', 'button secondary')}</div></section>
+      <section class="page-heading"><div><div class="eyebrow">为你的数字生活，留一份安心。</div><h1>${e(heading)}<span>${visible.length}</span></h1><p>${e(subtitle)}</p></div><div class="heading-actions">${button('save', state.busy ? t('处理中…') : state.demo ? t('保存为我的密码库') : state.dirty || state.saveError ? t('保存更改') : t('保存数据库'), 'download', saveStyle)}${button('new', state.section === 'otp' ? t('添加验证器') : t('新建条目'), 'plus', newStyle)}</div></section>
       <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span>${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>
       <button type="button" class="quick-launch" data-action="quick-search" aria-keyshortcuts="Control+k Meta+k"><span>${icon('search', 18)}<strong>${e(t('快速查找'))}</strong><kbd>${modifier} K</kbd></span><small>${e(t('↑ ↓ 选择'))} <span>·</span> ${modifier} ↵ ${e(t('复制密码'))} <span>·</span> ${modifier} ⇧ L ${e(t('锁定'))}</small>${icon('chevron', 16)}</button>
       <section class="vault-content ${state.section === 'otp' ? 'auth-view' : ''}">
@@ -424,7 +430,7 @@ function welcomeNavigation() {
 }
 function renderWelcome() {
   app.innerHTML = html`<div class="welcome"><header class="welcome-header"><a class="brand" href="./"><img src="./icon.svg" alt="" width="29" height="29"><span>ClearVault<span class="brand-dot">.</span></span></a><div class="welcome-header-actions"><span class="privacy-pill"><i></i> 你的设备，你的密码库</span>${state.install ? button('install', t('安装应用'), 'download', 'button secondary') : ''}</div></header>
-    <main class="welcome-main"><div class="welcome-copy"><span class="overline">为安心留一点空间</span><h1>重要的，<br>安心放在这里<span>。</span></h1><p>密码、账号和两步验证码，井井有条。<br>打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。</p><div class="welcome-buttons">${button('open', t('打开 .db 密码库'), 'folder', 'button primary large-button')}${button('create', t('创建新密码库'), 'plus', 'button secondary large-button')}</div><div class="welcome-secondary">${state.encrypted ? '' : button('demo', t('先体验一下'), 'sparkle', 'text-button')}<span>无需注册 · 无需上传文件</span></div></div>
+    <main class="welcome-main"><div class="welcome-copy"><span class="overline">为安心留一点空间</span><h1>重要的，<br>安心放在这里<span>。</span></h1><p>密码、账号和两步验证码，井井有条。<br>打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。</p><div class="welcome-buttons">${button('open', t('打开 .db 密码库'), 'folder', 'button primary large-button')}${state.encrypted ? '' : button('demo', t('先体验一下'), 'sparkle', 'button secondary large-button')}</div><div class="welcome-secondary">${button('create', t('创建新密码库'), 'plus', 'text-button')}<span>无需注册 · 无需上传文件</span></div></div>
     <div class="welcome-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="floating-tag tag-top">${icon('check', 15)} 一切井井有条。</div><div class="vault-illustration"><div class="vault-face">${icon('shield', 92)}<span>你的私密空间</span></div><div class="vault-foot"></div></div><div class="floating-otp"><div class="mini-brand">G</div><div><small>双重验证 · Google</small><strong>482 <span>916</span></strong></div><div class="illustration-ring">24</div></div><div class="art-sparkle">✦</div></div></main>
     <section class="welcome-features"><article>${icon('lock', 23)}<h3>只在本地，安心解锁</h3><p>主密码解密，文件始终由你掌握。</p></article><article>${icon('clock', 23)}<h3>两步验证，一眼即得</h3><p>实时动态验证码，轻点即可复制。</p></article><article>${icon('download', 23)}<h3>随时保存，自由带走</h3><p>读写兼容 .db 格式，离线也能使用。</p></article></section><footer class="welcome-footer"><div class="welcome-footer-copy"><span>少一点担忧，多一点从容。</span><span>为你的数字生活，留一份安心。</span></div>${welcomeNavigation()}</footer></div>`;
   mountLanguagePickers();
@@ -1611,3 +1617,5 @@ if (!crypto.subtle || !('CompressionStream' in window))
     t('请使用支持 Web Crypto 和 CompressionStream 的现代浏览器，并通过 HTTPS 或 localhost 打开'),
   );
 render();
+if (!state.doc && new URLSearchParams(globalThis.location?.search || '').get('demo') === '1')
+  void action('demo');

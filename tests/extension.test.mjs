@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { matchesSite, loginOrigin } from '../extension/matching.js';
-import { fillLogin, readNewPassword } from '../extension/fill.js';
+import { fillLogin, fillOTP, readNewPassword } from '../extension/fill.js';
 import { readFile } from 'node:fs/promises';
 test('extension matching rejects suffixes, HTTP, other subdomains and ports', () => {
   assert.ok(
@@ -74,6 +74,32 @@ test('multistep login fills only a unique username and never submits or fills OT
   assert.equal(run('https://example.com', 'alice', 'secret'), 'ambiguous');
   win.document.body.innerHTML = '<input type="email"><input type="email">';
   assert.equal(run('https://example.com', 'alice', 'secret'), 'ambiguous');
+  dom.window.close();
+});
+
+test('fills one explicit verification-code input without submitting or matching generic code fields', () => {
+  const { dom, win } = page(
+    '<form><input name="postal-code" inputmode="numeric"><input autocomplete="one-time-code" inputmode="numeric"><button>Verify</button></form>',
+  );
+  const run = win.eval('(' + fillOTP.toString() + ')');
+  let submitted = false,
+    inputs = 0;
+  win.document.querySelector('form').onsubmit = () => {
+    submitted = true;
+  };
+  win.document.addEventListener('input', () => inputs++);
+  const field = win.document.querySelector('[autocomplete=one-time-code]');
+  assert.equal(run('https://evil.test', '123456'), 'origin');
+  assert.equal(field.value, '');
+  assert.equal(run('https://example.com', '123456'), 'otp-filled');
+  assert.equal(field.value, '123456');
+  assert.equal(inputs, 1);
+  assert.equal(submitted, false);
+  win.document.body.innerHTML =
+    '<input aria-label="Verification code"><input name="otp"><button>Verify</button>';
+  assert.equal(run('https://example.com', '123456'), 'ambiguous');
+  win.document.body.innerHTML = '<input name="postal-code" inputmode="numeric">';
+  assert.equal(run('https://example.com', '123456'), 'ambiguous');
   dom.window.close();
 });
 

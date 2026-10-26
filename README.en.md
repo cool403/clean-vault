@@ -29,7 +29,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://127.0.0.1:4173`. Production hosting requires HTTPS; opening HTML directly from disk does not work. After an initial online visit caches application resources, the app can run offline and be installed as a PWA. Clearing browser storage requires another online visit. Cached application files are not a vault backup.
+Open `http://127.0.0.1:4173`. Production hosting requires HTTPS; opening HTML directly from disk does not work. After an initial online visit caches application resources, the app can run offline and be installed as a PWA. Clearing browser storage requires another online visit. Cached application files are not a vault backup. Share the online demo link `https://clear-vault.app/?demo=1` to open a demo vault without a file or master password.
 
 ```sh
 npm test
@@ -46,7 +46,7 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 - Browsers supporting File System Access can write back to the original file. Saving checks the ciphertext SHA-256, verifies an encrypted backup and reads back the written file. Other browsers download encrypted copies.
 - Saving an entry in an existing file automatically backs up and writes the database. Choose a separate backup directory before the first write. Cancellation, conflicts and failures preserve the unsaved state. New vaults and download mode require an explicit database save.
 - Backup preview and restoration as a new vault, automatic locking after 1 / 5 / 15 / 30 minutes, English / Simplified Chinese, and offline PWA use.
-- The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, confirmed password updates, imports and verified saves, without submitting forms.
+- The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, searching all entries, copying usernames/passwords, creating an entry for the current website, showing/copying/filling TOTP codes, confirmed password updates, imports and verified saves, without submitting forms.
 - Recent vaults remembers up to five names and file handles. Select a containing directory to show its last confirmed folder name and relative location. The current session also unlocks through this list, preserving unsaved edits. Remove or clear history records anytime.
 - Import Chrome password CSV and unencrypted Bitwarden CSV / JSON with preview, field mapping and duplicate checks, without overwriting entries. The app and extension share this flow.
 
@@ -65,7 +65,7 @@ Shortcuts work while the application has focus. Search supports IME input and do
 
 ## Data and security boundaries
 
-Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only language. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
+Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences such as interface language and auto-lock minutes. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
 
 Editing preserves unknown XML, attachments, images and history. Binary fields are read-only. Attachment management, cloud sync, Passkeys, camera scanning, Firefox extensions and damaged XML repair are not supported. TOTP codes do not add another vault-unlock factor.
 
@@ -88,7 +88,7 @@ You can also store the secrets in the `production` Environment. Never commit tok
 
 ## Extension and self-hosting
 
-Run `npm run build:extension`. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. Reload after updating. On the target website, click the icon and open your `.db` or a recent vault. New websites need authorization. External changes stop filling: save edits as a copy, reload the file and unlock.
+Run `npm run build:extension`. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. Reload after updating. On the target website, click the icon and open your `.db` or a recent vault. Search all entries, copy usernames/passwords, create an entry for the current website, and copy or fill TOTP codes. New websites need authorization. External changes stop filling: save edits as a copy, reload the file and unlock. Hiding the sidebar no longer locks immediately; the selected idle timeout applies.
 
 See the [usage guide](docs/USAGE.en.md) for recent files, imports, multistep filling, multiple URLs, password updates and saving. Matching public guides are generated at `/en/guides/import-passwords/` and `/en/guides/browser-extension/`.
 

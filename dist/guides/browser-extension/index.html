@@ -6,10 +6,10 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       name="description"
-      content="了解 ClearVault Chrome / Edge 扩展的分步登录、多网址匹配、密码更新确认、加密保存和文件冲突处理。"
+      content="了解 ClearVault Chrome / Edge 扩展的分步登录、搜索复制、TOTP 验证码、新建条目、多网址匹配、密码更新确认、加密保存和文件冲突处理。"
     />
     <meta name="theme-color" content="#f5f1e7" />
-    <title>扩展教程：填充、更新密码与重新加载 · ClearVault</title>
+    <title>扩展教程：填充、搜索、OTP 与新建条目 · ClearVault</title>
     <link rel="canonical" href="https://clear-vault.app/guides/browser-extension/" />
     <link
       rel="alternate"
@@ -30,10 +30,10 @@
     <link rel="stylesheet" href="/public.css" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ClearVault" />
-    <meta property="og:title" content="扩展教程：填充、更新密码与重新加载 · ClearVault" />
+    <meta property="og:title" content="扩展教程：填充、搜索、OTP 与新建条目 · ClearVault" />
     <meta
       property="og:description"
-      content="了解 ClearVault Chrome / Edge 扩展的分步登录、多网址匹配、密码更新确认、加密保存和文件冲突处理。"
+      content="了解 ClearVault Chrome / Edge 扩展的分步登录、搜索复制、TOTP 验证码、新建条目、多网址匹配、密码更新确认、加密保存和文件冲突处理。"
     />
     <meta property="og:url" content="https://clear-vault.app/guides/browser-extension/" />
     <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
@@ -53,10 +53,12 @@
     <main id="main" class="article-page">
       <div class="article-head">
         <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">使用指南</span>
-        <h1>扩展教程：填充、更新密码与重新加载</h1>
+        <h1>扩展教程：填充、搜索、OTP 与新建条目</h1>
         <p class="lead">
           扩展在侧栏本地解锁
-          .db，并在你明确点击后操作当前网站。网页和扩展可以分别打开同一文件，使用前请核对保存状态。侧栏顶部可切换简体中文、English、Deutsch、日本語和
+          .db，并在你明确点击后操作当前网站。解锁后可搜索所有条目、复制账号或密码、为当前网站新建条目，并复制或填入
+          TOTP
+          验证码。网页和扩展可以分别打开同一文件，使用前请核对保存状态。侧栏顶部可切换简体中文、English、Deutsch、日本語和
           Español；语言选择与网页分别保存在本地，密码库内容保持原样。
         </p>
       </div>
@@ -80,14 +82,16 @@
           <section id="section-2">
             <h2>2. 填充和分步登录</h2>
             <p>
-              核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。多个密码框、验证码框、新密码表单或不明确的输入框会拒绝填充。
+              核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。解锁后还可以搜索所有条目并复制账号或密码；点击“新建条目”会预填当前
+              HTTPS 来源，保存数据库后才写入文件。条目含 TOTP
+              时列表直接显示验证码：点击“复制”复制，点击“填入验证码”只填唯一、明确的验证码输入框。多个密码框、未明确点击的验证码框、新密码表单或不明确的输入框会拒绝填充。
             </p>
           </section>
           <section id="section-3">
             <h2>3. 为同一账号添加网址</h2>
             <p>
               在新网站点击扩展图标，解锁后点击“添加网站地址”，核对展示的完整 HTTPS
-              来源并选择条目，确认后保存。也可在网页编辑器点击“添加网站地址”。每个网址单独精确匹配主机和端口，不自动扩展到其他子域。勾选“查看所有条目”可更新非当前网站条目，但不能向不匹配网站填充。
+              来源并选择条目，确认后保存。也可在网页编辑器点击“添加网站地址”。每个网址单独精确匹配主机和端口，不自动扩展到其他子域。勾选“查看所有条目”或搜索可查看非当前网站条目；复制始终可用，但不能向不匹配网站填充。
             </p>
           </section>
           <section id="section-4">
@@ -101,7 +105,9 @@
           <section id="section-5">
             <h2>5. 保存、外部变化与锁定</h2>
             <p>
-              点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏和空闲时锁定，未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。
+              点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏不会立即锁定；空闲达到所选的
+              1 / 5 / 15 / 30
+              分钟后锁定。未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。
             </p>
           </section>
           <section class="related">

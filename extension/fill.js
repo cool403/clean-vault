@@ -65,6 +65,43 @@ export function fillLogin(expectedOrigin, username, password) {
   return 'filled';
 }
 
+export function fillOTP(expectedOrigin, code) {
+  if (location.origin !== expectedOrigin || location.protocol !== 'https:' || window.top !== window)
+    return 'origin';
+  const visible = (input) => {
+    const style = getComputedStyle(input),
+      rect = input.getBoundingClientRect();
+    return (
+      !input.disabled &&
+      !input.readOnly &&
+      style.display !== 'none' &&
+      style.visibility === 'visible' &&
+      Number(style.opacity) > 0 &&
+      rect.width > 0 &&
+      rect.height > 0 &&
+      !input.closest('[inert]')
+    );
+  };
+  const candidates = [...document.querySelectorAll('input')].filter((input) => {
+    if (!['text', 'tel', 'number', 'password'].includes(input.type) || !visible(input))
+      return false;
+    if (input.autocomplete === 'one-time-code') return true;
+    const label = [input.name, input.id, input.getAttribute('aria-label'), input.placeholder]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    return /otp|one[-_ ]?time|verification|2fa|auth(?:entication)?|security[_ -]?code|token/.test(
+      label,
+    );
+  });
+  if (candidates.length !== 1) return 'ambiguous';
+  const field = candidates[0];
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(field, code);
+  field.dispatchEvent(new Event('input', { bubbles: true }));
+  field.dispatchEvent(new Event('change', { bubbles: true }));
+  return 'otp-filled';
+}
+
 export function readNewPassword(expectedOrigin) {
   if (location.origin !== expectedOrigin || location.protocol !== 'https:' || window.top !== window)
     return { status: 'origin' };

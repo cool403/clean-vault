@@ -504,4 +504,16 @@ export default {
   你的私密空间: 'IHR PRIVATER BEREICH',
   '少一点担忧，多一点从容。': 'Weniger Sorgen. Mehr Klarheit.',
   '为你的数字生活，留一份安心。': 'Für ein entspanntes digitales Leben.',
+  显示: 'Anzeigen',
+  隐藏: 'Ausblenden',
+  复制账号: 'Benutzername kopieren',
+  填入验证码: 'Code einfügen',
+  '已添加条目，请保存数据库': 'Eintrag hinzugefügt. Speichern Sie Ihren Tresor.',
+  为此网站新建条目: 'Eintrag für diese Website anlegen',
+  更多操作: 'Weitere Aktionen',
+  保存为我的密码库: 'Als meinen Tresor speichern',
+  '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
+    'Eine verschlüsselte Kopie wurde exportiert; die Originaldatei ist nicht aktualisiert. Änderungen sind weiterhin ungespeichert und bleiben auf dieser Seite.',
+  '无法识别唯一的验证码输入框，请手动填写':
+    'Kein eindeutiges Feld für den Bestätigungscode gefunden. Bitte manuell eingeben.',
 };

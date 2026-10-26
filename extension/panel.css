@@ -391,3 +391,198 @@ dialog::backdrop {
 #status:empty {
   display: none;
 }
+
+.search-field {
+  margin-top: 18px;
+}
+.search-field + input {
+  margin-top: 6px;
+}
+.entry-head strong,
+.entry-head small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.entry-otp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #b0bfd8;
+  border-radius: 12px;
+  background: #e3ecff;
+}
+.entry-otp .otp-main {
+  display: flex;
+  flex: 1 1 160px;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.entry-otp .otp-main small {
+  color: #31547f;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.otp-code {
+  font:
+    700 20px/1.1 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  letter-spacing: 1px;
+  color: #20201f;
+  white-space: nowrap;
+}
+.otp-code.expiring {
+  color: #a52c22;
+}
+.otp-countdown {
+  color: #31547f;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.entry-otp .text-button {
+  min-height: 32px;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+.entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 12px;
+}
+.entry-actions button {
+  width: auto;
+  margin: 0;
+}
+.entry-actions .button.primary {
+  flex: 1 1 100%;
+}
+.entry-actions .text-button {
+  min-height: 32px;
+  font-size: 12px;
+}
+.entry-actions .button.secondary {
+  flex: 1 1 auto;
+  min-height: 40px;
+  margin: 0;
+}
+.entry-empty {
+  margin-top: 14px;
+  padding: 28px 18px;
+  border: 1.5px dashed #b9b6aa;
+  border-radius: 16px;
+  text-align: center;
+}
+.entry-empty strong,
+.entry-empty small {
+  display: block;
+}
+.entry-empty small {
+  margin-top: 6px;
+  color: #64635d;
+  font-size: 12px;
+}
+.entry-empty button {
+  width: auto;
+  margin-top: 14px;
+}
+.new-password-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.new-password-row input {
+  flex: 1;
+  margin-top: 0;
+}
+.new-password-row .text-button {
+  min-height: 32px;
+  padding: 4px 6px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+body:has(#unlocked:not([hidden])) .badge,
+body:has(#unlocked:not([hidden])) h1,
+body:has(#unlocked:not([hidden])) .sub {
+  display: none;
+}
+body:has(#unlocked:not([hidden])) main {
+  padding-top: 16px;
+}
+#unlocked .workflow-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+#unlocked .workflow-actions > button {
+  width: 100%;
+  margin: 0;
+}
+#unlocked .workflow-actions > #new-entry {
+  grid-column: 1 / -1;
+}
+
+.primary-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.primary-row > button {
+  flex: 1 1 0;
+  width: auto;
+  margin: 0;
+}
+.vault-menu {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #dedbd3;
+}
+.vault-menu > summary {
+  padding: 6px 0;
+  color: #315ca0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.vault-menu[open] > summary {
+  margin-bottom: 8px;
+}
+.vault-menu .workflow-actions {
+  margin-top: 0;
+}
+.vault-menu label {
+  margin-top: 10px;
+}
+.vault-menu select {
+  width: auto;
+  margin-top: 6px;
+}
+.site {
+  margin-top: 14px;
+  padding: 10px 12px;
+}
+.site span {
+  font-size: 11px;
+}
+.site strong {
+  font-size: 13px;
+}
+.site-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+.site-actions .text-button {
+  flex: 1 1 0;
+  justify-content: center;
+  min-height: 32px;
+  font-size: 12px;
+}
