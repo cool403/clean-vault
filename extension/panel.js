@@ -865,7 +865,8 @@ async function save(asCopy = false) {
   try {
     let target = asCopy ? null : handle;
     if (!target && window.showSaveFilePicker)
-      [target] = await window.showSaveFilePicker({
+      // showSaveFilePicker resolves to one handle; showOpenFilePicker resolves to an array.
+      target = await window.showSaveFilePicker({
         suggestedName: name || 'SafeInCloud.db',
         types: [
           { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },

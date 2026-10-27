@@ -79,7 +79,7 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
     },
   };
   dom.window.showDirectoryPicker = async () => backupDirectory;
-  dom.window.showSaveFilePicker = async () => [handle];
+  dom.window.showSaveFilePicker = async () => handle;
   await import('../dist/app.js');
   const click = (selector) => {
     const el = document.querySelector(selector);

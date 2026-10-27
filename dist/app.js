@@ -1035,7 +1035,8 @@ async function saveFile(asCopy = false) {
     // Obtain pickers in the user activation before awaiting encryption.
     let handle = asCopy ? null : state.handle;
     if ((asCopy || !handle) && 'showSaveFilePicker' in window) {
-      [handle] = await window.showSaveFilePicker({
+      // showSaveFilePicker resolves to one handle; showOpenFilePicker resolves to an array.
+      handle = await window.showSaveFilePicker({
         suggestedName: state.name || 'SafeInCloud.db',
         types: [
           { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },

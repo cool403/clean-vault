@@ -183,7 +183,7 @@ test('extension daily loop: site matching, search, copy, OTP, new entry and no l
     }),
     isSameEntry: async (other) => other === target,
   };
-  dom.window.showSaveFilePicker = async () => [target];
+  dom.window.showSaveFilePicker = async () => target;
   await element('#save').onclick();
   assert.ok(saved, 'new entry must be written');
   const result = await decryptDatabase(saved, password);
