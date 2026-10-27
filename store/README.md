@@ -6,6 +6,10 @@ SafeInCloud-compatible tool and is not affiliated with SafeInCloud.
 
 ## Files
 
+- `SUBMISSION.md` — copy-paste Chrome / Edge submission fields and rejection risks.
+- `screenshots/` — 1280×800 synthetic screenshots; see `screenshots/README.md`.
+- `promo-440x280.png` — optional promotional tile.
+
 - `listing-en.md` — English store copy, category, URLs and reviewer notes.
 - `listing-zh.md` — Simplified Chinese store copy.
 - `privacy-policy.md` — dedicated privacy policy text.
@@ -18,9 +22,9 @@ SafeInCloud-compatible tool and is not affiliated with SafeInCloud.
 2. Run `npm ci && npm run test:release` and upload
    `release/clearvault-<version>-extension.zip`.
 3. Use the copy in `listing-en.md` / `listing-zh.md`; category: Productivity.
-4. Set the privacy policy URL. Until a dedicated `/privacy/` page is hosted, use
-   `https://clear-vault.app/security/` (the policy text in this folder is the
-   authoritative draft; host it at a stable URL before submission if preferred).
+4. Set the privacy policy URL to `https://clear-vault.app/privacy/`. The policy
+   text in this folder is the authoritative draft; keep it in sync with the
+   published page.
 5. Complete the privacy practices form: no collection, sale or transfer of user data;
    single purpose; local processing only.
 6. Paste the permission justifications from `permissions.md`.

@@ -47,7 +47,7 @@ English, Simplified Chinese, German, Japanese, Spanish (extension UI)
 ## URLs
 
 - Homepage: https://clear-vault.app/
-- Privacy policy: https://clear-vault.app/security/ (draft policy also in store/privacy-policy.md)
+- Privacy policy: https://clear-vault.app/privacy/ (draft also in store/privacy-policy.md)
 - Support: https://github.com/cool403/clean-vault/issues
 - Source: https://github.com/cool403/clean-vault
 - Security: https://clear-vault.app/security/

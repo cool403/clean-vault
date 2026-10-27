@@ -54,7 +54,7 @@ test('sitemap contains only public canonical pages; robots preserves crawler res
   const guides = new JSDOM(
     await readFile(new URL('../dist/guides/index.html', import.meta.url), 'utf8'),
   );
-  const expected = 8 + guides.window.document.querySelectorAll('a.guide-card').length * 2;
+  const expected = 10 + guides.window.document.querySelectorAll('a.guide-card').length * 2;
   guides.window.close();
   assert.equal(urls.length, expected);
   assert.equal(new Set(urls).size, expected);

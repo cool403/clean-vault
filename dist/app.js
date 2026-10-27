@@ -265,23 +265,35 @@ async function mergeExternalChanges() {
       decrypted.credential.fill(0);
     }
     const baseDoc = state.baseXml ? parseVault(state.baseXml) : null;
-    const result = mergeVaults(baseDoc, state.doc, externalDoc);
-    pendingMerge = { result, externalDoc, bytes, hash };
+    const localDoc = state.doc;
+    const result = mergeVaults(baseDoc, localDoc, externalDoc);
+    pendingMerge = { result, baseDoc, localDoc, externalDoc, bytes, hash };
     showMergePreview(result);
   } catch (error) {
     toast(message(error));
   }
 }
+function mergeValue(value, type) {
+  if (type === 'flag') return e(value === 'true' ? t('是') : t('否'));
+  if (['password', 'pin', 'secret', 'one_time_password'].includes(type))
+    return `<code class="merge-secret" data-value="${e(value)}">••••••</code>`;
+  return `<code>${e(value || '—')}</code>`;
+}
 function showMergePreview(result) {
-  const conflicts = result.conflicts
+  const sections = result.conflicts
     .slice(0, 10)
-    .map(
-      (conflict) =>
-        `<li><strong>${e(conflict.title)}</strong><small>${t(conflict.chosen === 'local' ? '本地' : '外部')}</small></li>`,
-    )
+    .map((conflict) => {
+      const fields = conflict.fields
+        .map(
+          (field, index) =>
+            `<div class="merge-field"><strong>${e(field.label)}</strong><div class="merge-options"><label><input type="radio" name="merge-${e(conflict.id)}-${index}" value="local" ${field.chosen === 'local' ? 'checked' : ''}><span>${t('本地')}</span>${mergeValue(field.local, field.type)}</label><label><input type="radio" name="merge-${e(conflict.id)}-${index}" value="external" ${field.chosen === 'external' ? 'checked' : ''}><span>${t('外部')}</span>${mergeValue(field.external, field.type)}</label></div></div>`,
+        )
+        .join('');
+      return `<section class="merge-conflict" data-merge-card="${e(conflict.id)}"><h3>${e(conflict.title)}</h3>${fields || `<p class="form-help">${t('此条目在两边被删除或重建，默认保留较新版本。')}</p>`}</section>`;
+    })
     .join('');
   showModal(
-    `${modalHeader(t('合并外部更改'), t('外部文件已解锁并与当前编辑合并。请核对冲突后保存。'))}<p>${t('共合并 {count} 个条目，{conflicts} 个冲突。', { count: result.merged, conflicts: result.conflicts.length })}</p>${result.conflicts.length ? `<p class="form-help">${t('冲突按较新的修改时间选择，时间相同则保留本地。')}</p><ul class="conflict-list">${conflicts}</ul>${result.conflicts.length > 10 ? `<p class="form-help">${t('仅展示前 10 个冲突。')}</p>` : ''}` : ''}<div class="modal-footer">${button('close-modal', t('取消'), null, 'button secondary')}<button class="button primary" type="button" data-action="merge-apply">${t('采用合并结果')}</button></div>`,
+    `${modalHeader(t('合并外部更改'), t('外部文件已解锁并与当前编辑合并。请核对冲突后保存。'))}<p>${t('共合并 {count} 个条目，{conflicts} 个冲突。', { count: result.merged, conflicts: result.conflicts.length })}</p>${result.conflicts.length ? `<p class="form-help">${t('冲突字段按较新的修改时间预选，可逐项更改。')}</p>${sections}${result.conflicts.length > 10 ? `<p class="form-help">${t('仅展示前 10 个冲突。')}</p>` : ''}<button type="button" class="text-button" data-action="merge-reveal">${t('显示冲突内容')}</button>` : ''}<div class="modal-footer">${button('close-modal', t('取消'), null, 'button secondary')}<button class="button primary" type="button" data-action="merge-apply">${t('采用合并结果')}</button></div>`,
   );
 }
 function showConflict() {
@@ -2142,11 +2154,32 @@ async function action(name, target) {
     case 'merge-external':
       await mergeExternalChanges();
       break;
+    case 'merge-reveal':
+      modal.querySelectorAll('.merge-secret').forEach((element) => {
+        element.textContent = element.dataset.value || '';
+        element.classList.remove('merge-secret');
+      });
+      target.remove();
+      break;
     case 'merge-apply': {
       if (!pendingMerge) break;
       const merge = pendingMerge;
       pendingMerge = null;
-      state.doc = merge.result.doc;
+      const choices = {};
+      for (const conflict of merge.result.conflicts) {
+        const section = modal.querySelector(`[data-merge-card="${conflict.id}"]`);
+        if (!section) continue;
+        const fields = {};
+        conflict.fields.forEach((field, index) => {
+          const input = section.querySelector(
+            `input[name="merge-${conflict.id}-${index}"]:checked`,
+          );
+          if (input) fields[field.key] = input.value;
+        });
+        choices[conflict.id] = fields;
+      }
+      const final = mergeVaults(merge.baseDoc, merge.localDoc, merge.externalDoc, choices);
+      state.doc = final.doc;
       state.encrypted = merge.bytes;
       state.signature = merge.hash;
       state.baseXml = serializeVault(merge.externalDoc);

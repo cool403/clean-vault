@@ -47,7 +47,7 @@ ClearVault 是离线优先的 SafeInCloud 兼容密码库与 TOTP 验证器。�
 ## URL
 
 - 主页：https://clear-vault.app/
-- 隐私政策：https://clear-vault.app/security/（草稿也见 store/privacy-policy.md）
+- 隐私政策：https://clear-vault.app/privacy/（草稿也见 store/privacy-policy.md）
 - 支持：https://github.com/cool403/clean-vault/issues
 - 源码：https://github.com/cool403/clean-vault
 - 安全：https://clear-vault.app/security/

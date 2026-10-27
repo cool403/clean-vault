@@ -1605,3 +1605,44 @@ html[lang='ja'] .welcome-copy h1 {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+.merge-conflict {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.merge-conflict h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.merge-field {
+  margin: 10px 0;
+}
+.merge-field > strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.merge-options {
+  display: grid;
+  gap: 6px;
+}
+.merge-options label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 12px;
+}
+.merge-options input {
+  accent-color: #315ca0;
+}
+.merge-options code {
+  padding: 2px 5px;
+  color: var(--ink);
+  background: #f5f1e7;
+  border-radius: 6px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

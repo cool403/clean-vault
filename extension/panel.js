@@ -1272,6 +1272,7 @@ chrome.action?.setBadgeBackgroundColor?.({ color: '#315ca0' });
 $('#language').innerHTML = supportedLocales
   .map((locale) => `<option value="${locale.code}">${locale.name}</option>`)
   .join('');
+$('#language').value = getLocale();
 try {
   const saved = Number(localStorage.getItem(IDLE_KEY));
   if ([1, 5, 15, 30].includes(saved)) $('#idle').value = String(saved);

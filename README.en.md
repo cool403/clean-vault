@@ -80,7 +80,7 @@ Editing preserves unknown XML, attachments, images and history. Binary fields ar
 
 Compatibility requires PBKDF2-SHA1 and AES-CBC without body authentication. Browsers cannot guarantee cross-application transaction locks or provable memory erasure. Keep independent encrypted backups and avoid editing a file in two apps at once. Unsaved edits are retained encrypted in page memory while locked; closing or refreshing loses them. Downloading a copy cannot confirm the original file was updated.
 
-No independent security audit has been completed. The extension is not listed in browser stores. Start with synthetic data and a copy of your database. See [SECURITY.md](SECURITY.md) for design limitations and vulnerability reporting.
+No independent security audit has been completed. The extension is not listed in browser stores. Start with synthetic data and a copy of your database. See [SECURITY.md](SECURITY.md) for design limitations and vulnerability reporting, and the [privacy policy](https://clear-vault.app/privacy/) for data handling.
 
 ## GitHub Actions → Cloudflare
 

@@ -1,11 +1,24 @@
-import { cards, children, parseVault, serializeVault, title } from './vault.js';
+import { cards, children, fieldType, fields, parseVault, serializeVault, title } from './vault.js';
+import { t } from './i18n.js';
 
 const time = (card) => Number(card?.getAttribute('time_stamp') || 0);
-const same = (left, right) =>
+const sameNode = (left, right) =>
   Boolean(left) === Boolean(right) && (!left || serializeVault(left) === serializeVault(right));
 
 function cardMap(doc) {
   return new Map(doc ? cards(doc).map((card) => [card.getAttribute('id'), card]) : []);
+}
+function fieldMap(card) {
+  const counts = new Map();
+  const map = new Map();
+  if (!card) return map;
+  for (const field of fields(card)) {
+    const base = fieldType(field) + '\0' + (field.getAttribute('name') || '');
+    const index = counts.get(base) || 0;
+    counts.set(base, index + 1);
+    map.set(`${base}\0${index}`, field);
+  }
+  return map;
 }
 function labelNameMap(doc) {
   return new Map(
@@ -40,7 +53,163 @@ function sideLabelMap(doc, canonical) {
   }
   return map;
 }
-export function mergeVaults(baseDoc, localDoc, externalDoc) {
+function cardLabelIds(card, map) {
+  return [
+    ...new Set(
+      children(card, 'label_id')
+        .map((reference) => map.get(reference.textContent))
+        .filter(Boolean),
+    ),
+  ];
+}
+function chooseValue(baseValue, localValue, externalValue, localTime, externalTime, choice, meta) {
+  const localChanged = baseValue !== localValue;
+  const externalChanged = baseValue !== externalValue;
+  if (localChanged && externalChanged && localValue !== externalValue) {
+    const chosen =
+      choice === 'local' || choice === 'external'
+        ? choice
+        : localTime >= externalTime
+          ? 'local'
+          : 'external';
+    return {
+      value: chosen === 'local' ? localValue : externalValue,
+      conflict: { ...meta, local: localValue, external: externalValue, chosen },
+    };
+  }
+  if (localChanged) return { value: localValue };
+  if (externalChanged) return { value: externalValue };
+  return { value: localValue };
+}
+function chooseField(baseField, localField, externalField, localTime, externalTime, choice, meta) {
+  const localChanged = !sameNode(baseField, localField);
+  const externalChanged = !sameNode(baseField, externalField);
+  if (localChanged && externalChanged && !sameNode(localField, externalField)) {
+    const chosen =
+      choice === 'local' || choice === 'external'
+        ? choice
+        : localTime >= externalTime
+          ? 'local'
+          : 'external';
+    return {
+      value: chosen === 'local' ? localField : externalField,
+      conflict: {
+        ...meta,
+        local: localField?.textContent || '',
+        external: externalField?.textContent || '',
+        chosen,
+      },
+    };
+  }
+  if (localChanged) return { value: localField };
+  if (externalChanged) return { value: externalField };
+  return { value: localField };
+}
+function mergeChangedCard(
+  baseCard,
+  localCard,
+  externalCard,
+  localTime,
+  externalTime,
+  choiceMap,
+  labelMaps,
+) {
+  const skeleton = localTime >= externalTime ? localCard : externalCard;
+  const merged = skeleton.cloneNode(true);
+  const conflicts = [];
+  merged.setAttribute(
+    'time_stamp',
+    String(Math.max(localTime, externalTime, Number(baseCard?.getAttribute('time_stamp') || 0))),
+  );
+  const titleChoice = chooseValue(
+    baseCard?.getAttribute('title') || '',
+    localCard.getAttribute('title') || '',
+    externalCard.getAttribute('title') || '',
+    localTime,
+    externalTime,
+    choiceMap.title,
+    { key: 'title', label: t('条目名称'), type: 'text' },
+  );
+  merged.setAttribute('title', titleChoice.value || t('未命名条目'));
+  if (titleChoice.conflict) conflicts.push(titleChoice.conflict);
+  const notesOf = (card) => (card ? children(card, 'notes')[0]?.textContent || '' : '');
+  const notesChoice = chooseValue(
+    notesOf(baseCard),
+    notesOf(localCard),
+    notesOf(externalCard),
+    localTime,
+    externalTime,
+    choiceMap.notes,
+    { key: 'notes', label: t('备注'), type: 'text' },
+  );
+  const notes = children(merged, 'notes')[0];
+  if (notesChoice.value) {
+    if (notes) notes.textContent = notesChoice.value;
+    else {
+      const element = merged.ownerDocument.createElement('notes');
+      element.textContent = notesChoice.value;
+      merged.append(element);
+    }
+  } else notes?.remove();
+  if (notesChoice.conflict) conflicts.push(notesChoice.conflict);
+  const flagOf = (card, key) => (card?.getAttribute(key) === 'true' ? 'true' : 'false');
+  for (const [key, label] of [
+    ['deleted', t('回收站')],
+    ['archived', t('归档')],
+    ['star', t('收藏')],
+  ]) {
+    const choice = chooseValue(
+      flagOf(baseCard, key),
+      flagOf(localCard, key),
+      flagOf(externalCard, key),
+      localTime,
+      externalTime,
+      choiceMap[key],
+      { key, label, type: 'flag' },
+    );
+    if (choice.value === 'true') merged.setAttribute(key, 'true');
+    else merged.removeAttribute(key);
+    if (choice.conflict) conflicts.push(choice.conflict);
+  }
+  const baseFields = fieldMap(baseCard),
+    localFields = fieldMap(localCard),
+    externalFields = fieldMap(externalCard);
+  const keys = [
+    ...new Set([...localFields.keys(), ...externalFields.keys(), ...baseFields.keys()]),
+  ];
+  for (const field of fields(merged)) field.remove();
+  for (const key of keys) {
+    const baseField = baseFields.get(key),
+      localField = localFields.get(key),
+      externalField = externalFields.get(key);
+    const sample = localField || externalField || baseField;
+    const type = fieldType(sample);
+    const label = sample?.getAttribute('name') || type;
+    const choice = chooseField(
+      baseField,
+      localField,
+      externalField,
+      localTime,
+      externalTime,
+      choiceMap['field:' + key],
+      { key: 'field:' + key, label, type },
+    );
+    if (choice.value) merged.append(choice.value.cloneNode(true));
+    if (choice.conflict) conflicts.push(choice.conflict);
+  }
+  for (const reference of children(merged, 'label_id')) reference.remove();
+  return {
+    card: merged,
+    conflicts,
+    labelIds: [
+      ...new Set([
+        ...cardLabelIds(localCard, labelMaps.local),
+        ...cardLabelIds(externalCard, labelMaps.external),
+      ]),
+    ],
+  };
+}
+export function mergeVaults(baseDoc, localDoc, externalDoc, choices = {}) {
   const base = cardMap(baseDoc),
     local = cardMap(localDoc),
     external = cardMap(externalDoc);
@@ -52,7 +221,7 @@ export function mergeVaults(baseDoc, localDoc, externalDoc) {
   );
   for (const name of collectLabels([baseDoc, localDoc, externalDoc]))
     canonical.set(name, uniqueId(used));
-  const maps = {
+  const labelMaps = {
     local: sideLabelMap(localDoc, canonical),
     external: sideLabelMap(externalDoc, canonical),
   };
@@ -60,38 +229,75 @@ export function mergeVaults(baseDoc, localDoc, externalDoc) {
   const conflicts = [];
   const ids = [...new Set([...local.keys(), ...external.keys(), ...base.keys()])];
   for (const id of ids) {
-    const b = base.get(id),
-      l = local.get(id),
-      e = external.get(id);
-    const localChanged = !same(b, l),
-      externalChanged = !same(b, e);
-    let chosen = null,
-      side = null;
-    if (!b) {
-      if (l && e) {
-        if (same(l, e)) ((chosen = l), (side = 'local'));
+    const baseCard = base.get(id),
+      localCard = local.get(id),
+      externalCard = external.get(id);
+    const localChanged = !sameNode(baseCard, localCard),
+      externalChanged = !sameNode(baseCard, externalCard);
+    const localTime = time(localCard),
+      externalTime = time(externalCard);
+    const select = (card, map) => selected.push({ card, labelIds: cardLabelIds(card, map) });
+    if (!baseCard) {
+      if (localCard && externalCard) {
+        if (sameNode(localCard, externalCard)) select(localCard, labelMaps.local);
         else {
-          chosen = time(e) > time(l) ? e : l;
-          side = chosen === e ? 'external' : 'local';
-          conflicts.push({ id, title: title(chosen), chosen: side });
+          const merged = mergeChangedCard(
+            null,
+            localCard,
+            externalCard,
+            localTime,
+            externalTime,
+            choices[id] || {},
+            labelMaps,
+          );
+          selected.push({ card: merged.card, labelIds: merged.labelIds });
+          if (merged.conflicts.length)
+            conflicts.push({
+              id,
+              title: title(merged.card),
+              chosen: localTime >= externalTime ? 'local' : 'external',
+              fields: merged.conflicts,
+            });
         }
-      } else if (l) ((chosen = l), (side = 'local'));
-      else if (e) ((chosen = e), (side = 'external'));
+      } else if (localCard) select(localCard, labelMaps.local);
+      else if (externalCard) select(externalCard, labelMaps.external);
     } else if (localChanged && externalChanged) {
-      if (same(l, e)) ((chosen = l), (side = 'local'));
-      else if (!l || !e) {
-        chosen = l || e;
-        side = l ? 'local' : 'external';
-        conflicts.push({ id, title: title(chosen), chosen: side });
+      if (!localCard || !externalCard) {
+        const card = localCard || externalCard;
+        select(card, localCard ? labelMaps.local : labelMaps.external);
+        conflicts.push({
+          id,
+          title: title(card),
+          chosen: localCard ? 'local' : 'external',
+          fields: [],
+        });
+      } else if (sameNode(localCard, externalCard)) {
+        select(localCard, labelMaps.local);
       } else {
-        chosen = time(e) > time(l) ? e : l;
-        side = chosen === e ? 'external' : 'local';
-        conflicts.push({ id, title: title(chosen), chosen: side });
+        const merged = mergeChangedCard(
+          baseCard,
+          localCard,
+          externalCard,
+          localTime,
+          externalTime,
+          choices[id] || {},
+          labelMaps,
+        );
+        selected.push({ card: merged.card, labelIds: merged.labelIds });
+        if (merged.conflicts.length)
+          conflicts.push({
+            id,
+            title: title(merged.card),
+            chosen: localTime >= externalTime ? 'local' : 'external',
+            fields: merged.conflicts,
+          });
       }
-    } else if (localChanged) ((chosen = l), (side = l ? 'local' : null));
-    else if (externalChanged) ((chosen = e), (side = e ? 'external' : null));
-    else ((chosen = l), (side = l ? 'local' : null));
-    if (chosen && side) selected.push({ card: chosen, side });
+    } else if (localChanged) {
+      if (localCard) select(localCard, labelMaps.local);
+    } else if (externalChanged) {
+      if (externalCard) select(externalCard, labelMaps.external);
+    } else if (localCard) select(localCard, labelMaps.local);
+    else if (externalCard) select(externalCard, labelMaps.external);
   }
   const output = parseVault(serializeVault(localDoc));
   for (const card of children(output.documentElement, 'card'))
@@ -103,16 +309,10 @@ export function mergeVaults(baseDoc, localDoc, externalDoc) {
     label.setAttribute('name', name);
     output.documentElement.append(label);
   }
-  for (const { card, side } of selected) {
+  for (const { card, labelIds } of selected) {
     const clone = output.importNode(card, true);
-    const references = children(clone, 'label_id');
-    const mapped = [];
-    for (const reference of references) {
-      const target = maps[side].get(reference.textContent);
-      if (target && !mapped.includes(target)) mapped.push(target);
-      reference.remove();
-    }
-    for (const target of mapped) {
+    for (const reference of children(clone, 'label_id')) reference.remove();
+    for (const target of labelIds) {
       const reference = output.createElement('label_id');
       reference.textContent = target;
       clone.append(reference);

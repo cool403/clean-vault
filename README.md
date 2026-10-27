@@ -80,7 +80,7 @@ npm run test:release
 
 格式兼容沿用 PBKDF2-SHA1 和 AES-CBC，没有正文认证。浏览器无法提供跨应用事务锁或可证明的内存擦除，请保留独立加密备份并避免同时编辑。锁定时未保存修改仅加密保留在本页内存，刷新或关闭仍会丢失；下载导出无法确认原文件已更新。
 
-尚未经过独立安全审计，扩展尚未在浏览器商店上架。请先用合成数据和数据库副本验证。详细边界和漏洞报告方式见 [SECURITY.md](SECURITY.md)。
+尚未经过独立安全审计，扩展尚未在浏览器商店上架。请先用合成数据和数据库副本验证。详细边界和漏洞报告方式见 [SECURITY.md](SECURITY.md)，数据处理说明见[隐私政策](https://clear-vault.app/privacy/)。
 
 ## GitHub Actions → Cloudflare
 

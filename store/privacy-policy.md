@@ -2,6 +2,8 @@
 
 Last updated: 2026-10-27
 
+Published at: https://clear-vault.app/privacy/
+
 ClearVault is an independent, local-first password manager and TOTP companion for
 SafeInCloud-compatible `.db` files. It is not affiliated with SafeInCloud.
 

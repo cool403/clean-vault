@@ -707,3 +707,71 @@ export const security = {
     ],
   },
 };
+
+export const privacy = {
+  zh: {
+    title: '隐私政策',
+    description: 'ClearVault 如何处理密码库、主密码、本地存储、网络请求和浏览器扩展权限。',
+    intro:
+      'ClearVault 是本地优先的密码库与 TOTP 工具。本页说明应用和浏览器扩展处理哪些数据、保存在哪里、何时会产生网络请求，以及你如何删除本地记录。它不是独立安全审计的替代品。',
+    sections: [
+      [
+        '处理哪些数据',
+        '你选择的 SafeInCloud 兼容 .db 文件；解锁时输入的主密码；文件中的条目、备注、附件和 TOTP 密钥；界面语言、自动锁定、剪贴板清除、快照保留数量和新手清单等本地偏好；最近密码库的文件名、句柄、记录 ID、时间和可选目录文字标记；用于排序的最近使用条目 ID 和时间；浏览器 OPFS 中的加密 .db 快照。',
+      ],
+      [
+        '数据保存在哪里',
+        '主密码、解密 XML 和 TOTP 密钥只在解锁期间保留在页面内存，不写入 localStorage、IndexedDB、OPFS 或扩展存储，也不上传。localStorage 只保存非敏感偏好；IndexedDB 只保存最近密码库元数据；OPFS 快照只包含加密 .db 密文；复制到系统剪贴板的内容按设定时间尝试清除，但其他本地应用在清除前仍可能读取。',
+      ],
+      [
+        '网络与分析',
+        '网页是静态 PWA，没有账号或服务器端密码库。公开托管的 Cloudflare Pages 站点保留平台 Web Analytics，平台可能向 HTML 注入统计脚本，但它不会收到密码库内容；自行托管包不包含这项注入。托管服务仍能看到访问 IP 和 HTTP 元数据。浏览器扩展的 CSP 设置 `connect-src none`，不发起网络请求，也不包含分析或远程代码。',
+      ],
+      [
+        '扩展权限',
+        '`activeTab` 只在你点击扩展图标后临时访问当前标签页；`scripting` 在明确点击后向精确匹配的 HTTPS 来源填入所选账号或验证码；`sidePanel` 提供解锁和选择条目的侧栏。扩展不申请全站主机权限、不持久运行内容脚本、不申请 `storage` 权限，也不自动提交表单。',
+      ],
+      [
+        '共享、保留与删除',
+        'ClearVault 不出售、出租或转让用户数据。密码库文件、导出的 CSV、恢复工具包和备份由你控制。可以移除单条或清空最近密码库记录、清除最近使用记录、清除本地加密快照，或清除站点数据。关闭页面会释放内存中的密码库；未保存修改不会写入文件。',
+      ],
+      [
+        '联系与变更',
+        '请通过仓库 issue 报告隐私或安全问题，不要上传真实密码库、主密码、TOTP 密钥或可直接利用的敏感材料。项目尚未完成独立安全审计。隐私相关变更会记录在仓库中；本页内容与扩展商店提交材料保持一致。',
+      ],
+    ],
+  },
+  en: {
+    title: 'Privacy policy',
+    description:
+      'How ClearVault handles vault files, master passwords, local storage, network requests and browser extension permissions.',
+    intro:
+      'ClearVault is a local-first password vault and TOTP tool. This page explains what data the app and browser extension handle, where it is stored, when network requests occur, and how to delete local records. It is not a substitute for an independent security audit.',
+    sections: [
+      [
+        'Data ClearVault handles',
+        'The SafeInCloud-compatible .db file you select; the master password entered to unlock it; entries, notes, attachments and TOTP secrets inside the file; local preferences such as interface language, auto-lock, clipboard clearing, snapshot retention and getting-started checklist state; recent-vault file names, handles, record IDs, times and optional folder text labels; recent entry IDs and times used for ordering; and encrypted .db snapshots in browser OPFS.',
+      ],
+      [
+        'Where data is stored',
+        'The master password, decrypted XML and TOTP secrets stay in page memory while unlocked. They are not written to localStorage, IndexedDB, OPFS or extension storage and are not uploaded. localStorage stores only non-sensitive preferences; IndexedDB stores recent-vault metadata; OPFS snapshots contain only encrypted .db ciphertext; clipboard contents are cleared after the configured delay on a best-effort basis, and other local applications may read them before clearing.',
+      ],
+      [
+        'Network and analytics',
+        'The web app is a static PWA with no account or server-side vault. The public Cloudflare Pages deployment retains platform Web Analytics, which may inject a hosting script into HTML but does not receive vault contents; self-hosted packages do not contain this injection. The host can still see visit IP addresses and HTTP metadata. The browser extension CSP sets `connect-src none`; it makes no network requests and contains no analytics or remote code.',
+      ],
+      [
+        'Extension permissions',
+        '`activeTab` grants temporary access to the current tab only after you click the extension icon; `scripting` fills the selected login or code into an exact matching HTTPS origin after an explicit click; `sidePanel` provides the unlock and entry-selection UI. The extension requests no global host permissions, persistent content scripts or `storage` permission, and never submits forms automatically.',
+      ],
+      [
+        'Sharing, retention and deletion',
+        'ClearVault does not sell, rent or transfer user data. You control the vault file, exported CSV files, recovery kits and backups. You can remove or clear recent-vault records, clear recent usage, clear local encrypted snapshots or clear site data. Closing the page releases the in-memory vault; unsaved edits are not written to the file.',
+      ],
+      [
+        'Contact and changes',
+        'Report privacy or security issues through the repository issue tracker without uploading real vaults, master passwords, TOTP secrets or directly exploitable sensitive material. No independent security audit has been completed. Privacy-related changes are recorded in the repository; this page is kept consistent with the extension store submission materials.',
+      ],
+    ],
+  },
+};

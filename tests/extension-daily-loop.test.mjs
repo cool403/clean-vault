@@ -100,6 +100,7 @@ test('extension daily loop: site matching, search, copy, OTP, new entry and no l
   await element('#unlock').onsubmit(event());
 
   await wait(() => document.querySelectorAll('.entry').length === 3);
+  assert.equal(document.querySelector('#language').value, 'en');
   assert.deepEqual(
     [...document.querySelectorAll('.entry strong')].map((node) => node.textContent),
     ['Example', 'OTP only', 'Password only'],

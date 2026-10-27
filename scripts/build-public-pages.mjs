@@ -1,6 +1,6 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { format } from 'prettier';
-import { articles, security } from './public-content.mjs';
+import { articles, privacy, security } from './public-content.mjs';
 import { buildInfo } from './project.mjs';
 await writeFile(
   new URL('../dist/build-info.js', import.meta.url),
@@ -69,7 +69,7 @@ async function page(locale, route, other, title, description, body, kind = '') {
   const n = names[locale],
     p = prefix(locale),
     en = locale === 'en';
-  const html = `<!doctype html><html lang="${en ? 'en' : 'zh-CN'}"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" /><meta name="referrer" content="no-referrer" /><meta name="description" content="${escape(description)}" /><meta name="theme-color" content="#f5f1e7" /><title>${escape(title)} · ClearVault</title><link rel="canonical" href="${origin}${route}" />${alternates(en ? other : route, en ? route : other)}<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" /><link rel="stylesheet" href="/public.css" /><meta property="og:type" content="website" /><meta property="og:site_name" content="ClearVault" /><meta property="og:title" content="${escape(title)} · ClearVault" /><meta property="og:description" content="${escape(description)}" /><meta property="og:url" content="${origin}${route}" /><meta property="og:image" content="${origin}/icon-512.png" /></head><body><a class="skip" href="#main">${en ? 'Skip to content' : '跳到正文'}</a><header class="site-header"><a class="brand" href="${en ? '/en/' : '/'}"><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a><nav aria-label="${en ? 'Main navigation' : '主导航'}">${link(p + '/guides/', n.guides)}${link(p + '/security/', n.security)}${link(p + '/downloads/', n.downloads)}${link(other, n.language, 'language')}</nav></header><main id="main" class="${kind}">${body}</main><section class="end-note"><div><h2>${n.cta}</h2><p>${n.tip}</p></div>${link(app(locale), n.open + ' ↗', 'button')}</section><footer class="site-footer"><div class="brand">ClearVault.</div><p>${n.note}</p><nav>${link(p + '/guides/', n.guides)}${link(p + '/security/', n.security)}${link(p + '/downloads/', n.downloads)}${en ? link('https://ko-fi.com/lurefun', 'Support on Ko-fi ↗') : ''}</nav><small>© ClearVault · MIT · ${version} · ${link(repo, 'GitHub')} · ${link(workflowURL, en ? 'Build history' : '构建记录')}</small></footer></body></html>`;
+  const html = `<!doctype html><html lang="${en ? 'en' : 'zh-CN'}"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" /><meta name="referrer" content="no-referrer" /><meta name="description" content="${escape(description)}" /><meta name="theme-color" content="#f5f1e7" /><title>${escape(title)} · ClearVault</title><link rel="canonical" href="${origin}${route}" />${alternates(en ? other : route, en ? route : other)}<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" /><link rel="stylesheet" href="/public.css" /><meta property="og:type" content="website" /><meta property="og:site_name" content="ClearVault" /><meta property="og:title" content="${escape(title)} · ClearVault" /><meta property="og:description" content="${escape(description)}" /><meta property="og:url" content="${origin}${route}" /><meta property="og:image" content="${origin}/icon-512.png" /></head><body><a class="skip" href="#main">${en ? 'Skip to content' : '跳到正文'}</a><header class="site-header"><a class="brand" href="${en ? '/en/' : '/'}"><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a><nav aria-label="${en ? 'Main navigation' : '主导航'}">${link(p + '/guides/', n.guides)}${link(p + '/security/', n.security)}${link(p + '/downloads/', n.downloads)}${link(other, n.language, 'language')}</nav></header><main id="main" class="${kind}">${body}</main><section class="end-note"><div><h2>${n.cta}</h2><p>${n.tip}</p></div>${link(app(locale), n.open + ' ↗', 'button')}</section><footer class="site-footer"><div class="brand">ClearVault.</div><p>${n.note}</p><nav>${link(p + '/guides/', n.guides)}${link(p + '/security/', n.security)}${link(p + '/privacy/', en ? 'Privacy' : '隐私政策')}${link(p + '/downloads/', n.downloads)}${en ? link('https://ko-fi.com/lurefun', 'Support on Ko-fi ↗') : ''}</nav><small>© ClearVault · MIT · ${version} · ${link(repo, 'GitHub')} · ${link(workflowURL, en ? 'Build history' : '构建记录')}</small></footer></body></html>`;
   const path = new URL('.' + route + 'index.html', dist);
   await mkdir(new URL('./', path), { recursive: true });
   await writeFile(path, await format(html, { parser: 'html', printWidth: 100 }));
@@ -97,10 +97,14 @@ for (const locale of ['zh', 'en']) {
       : 'ClearVault 实用教程：打开 SafeInCloud DB、在 Linux 离线使用密码库、从 1Password / LastPass / Apple Passwords 导入、用自己的文件夹同步，以及设置 TOTP 双重验证与保存备份。',
     `<section class="hero"><span class="eyebrow">A LITTLE HELP, WHEN YOU NEED IT</span><h1>${en ? 'A calmer way<br>to get started.' : '从容开始，<br>安心使用。'}</h1><p>${en ? 'Practical guides for the files, passwords and codes you keep close.' : '从打开第一份数据库，到保存、备份和两步验证。每一步，都说清楚。'}</p></section><div class="guide-grid">${cards}</div><aside class="notice">${en ? 'Before you start: keep an independent encrypted backup and try a copy of your database.' : '开始前，请保留独立的加密备份，并先用数据库副本验证。'} ${link(p + '/security/', n.security + ' ↗')}</aside>`,
   );
-  for (const a of [...articles, { slug: null, ...security }]) {
+  for (const a of [
+    ...articles,
+    { slug: null, ...security, special: 'security' },
+    { slug: null, ...privacy, special: 'privacy' },
+  ]) {
     const item = a[locale];
-    const route = a.slug ? `${p}/guides/${a.slug}/` : `${p}/security/`;
-    const counterpart = a.slug ? `${otherP}/guides/${a.slug}/` : `${otherP}/security/`;
+    const route = a.slug ? `${p}/guides/${a.slug}/` : `${p}/${a.special}/`;
+    const counterpart = a.slug ? `${otherP}/guides/${a.slug}/` : `${otherP}/${a.special}/`;
     const sections = item.sections
       .map(
         ([h, text], i) =>
@@ -114,7 +118,7 @@ for (const locale of ['zh', 'en']) {
       counterpart,
       item.title,
       item.description,
-      `<div class="article-head">${link(p + '/guides/', '← ' + n.back, 'back')}<span class="eyebrow">${a.slug ? n.step : 'TRUST, WITH CLARITY'}</span><h1>${escape(item.title)}</h1><p class="lead">${escape(item.intro)}</p>${!a.slug ? `<span class="status-pill">${en ? 'Independent audit not completed' : '尚未经过独立安全审计'}</span>` : ''}</div><div class="reading-layout"><aside class="toc" aria-label="${n.contents}"><strong>${n.contents}</strong>${toc}</aside><article class="prose">${sections}<section class="related"><h2>${n.related}</h2>${articles
+      `<div class="article-head">${link(p + '/guides/', '← ' + n.back, 'back')}<span class="eyebrow">${a.slug ? n.step : a.special === 'privacy' ? (en ? 'PRIVACY, IN PLAIN WORDS' : '隐私，说清楚') : 'TRUST, WITH CLARITY'}</span><h1>${escape(item.title)}</h1><p class="lead">${escape(item.intro)}</p>${a.special === 'security' ? `<span class="status-pill">${en ? 'Independent audit not completed' : '尚未经过独立安全审计'}</span>` : ''}</div><div class="reading-layout"><aside class="toc" aria-label="${n.contents}"><strong>${n.contents}</strong>${toc}</aside><article class="prose">${sections}<section class="related"><h2>${n.related}</h2>${articles
         .filter((b) => b.slug !== a.slug)
         .map((b) => link(`${p}/guides/${b.slug}/`, b[locale].title + ' ↗'))
         .join(

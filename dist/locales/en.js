@@ -669,4 +669,11 @@ export default {
   '仅展示前 10 个冲突。': 'Showing the first 10 conflicts.',
   采用合并结果: 'Use merged result',
   '已合并外部更改，请保存数据库': 'External changes merged. Save your vault.',
+  显示冲突内容: 'Show conflict contents',
+  是: 'Yes',
+  否: 'No',
+  '冲突字段按较新的修改时间预选，可逐项更改。':
+    'Conflict fields default to the newer modification time; adjust each field as needed.',
+  '此条目在两边被删除或重建，默认保留较新版本。':
+    'This entry was deleted or recreated on both sides; the newer version is kept by default.',
 };

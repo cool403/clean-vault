@@ -99,3 +99,48 @@ test('a first merge without a base includes both sides and preserves unknown loc
   assert.equal(result.doc.querySelector('custom')?.getAttribute('keep'), 'yes');
   assert.equal(cards(result.doc).length, 2);
 });
+
+test('field-level conflicts can choose local or external values independently', () => {
+  const source = (title, stamp, password, notes) =>
+    parseVault(
+      `<database><label id="1" name="Work"/><card id="1" title="${title}" time_stamp="${stamp}"><field name="Account" type="login">user</field><field name="Password" type="password">${password}</field><notes>${notes}</notes></card></database>`,
+    );
+  const base = source('Base', 100, 'base-pass', 'base-note');
+  const local = source('Local', 200, 'local-pass', 'local-note');
+  const external = source('External', 300, 'external-pass', 'external-note');
+  const automatic = mergeVaults(base, local, external);
+  assert.equal(automatic.conflicts.length, 1);
+  const conflict = automatic.conflicts[0];
+  assert.ok(conflict.fields.some((field) => field.key === 'title' && field.type === 'text'));
+  assert.ok(conflict.fields.some((field) => field.key === 'notes' && field.type === 'text'));
+  assert.ok(conflict.fields.some((field) => field.type === 'password'));
+  assert.equal(cards(automatic.doc)[0].getAttribute('title'), 'External');
+  assert.equal(children(cards(automatic.doc)[0], 'notes')[0].textContent, 'external-note');
+  assert.equal(
+    fields(cards(automatic.doc)[0]).find((field) => field.getAttribute('type') === 'password')
+      .textContent,
+    'external-pass',
+  );
+
+  const titleKey = conflict.fields.find((field) => field.key === 'title').key;
+  const notesKey = conflict.fields.find((field) => field.key === 'notes').key;
+  const passwordKey = conflict.fields.find((field) => field.type === 'password').key;
+  const chosen = mergeVaults(base, local, external, {
+    1: {
+      [titleKey]: 'local',
+      [notesKey]: 'external',
+      [passwordKey]: 'local',
+    },
+  });
+  const card = cards(chosen.doc)[0];
+  assert.equal(card.getAttribute('title'), 'Local');
+  assert.equal(children(card, 'notes')[0].textContent, 'external-note');
+  assert.equal(
+    fields(card).find((field) => field.getAttribute('type') === 'password').textContent,
+    'local-pass',
+  );
+  assert.equal(
+    fields(card).find((field) => field.getAttribute('type') === 'login').textContent,
+    'user',
+  );
+});
