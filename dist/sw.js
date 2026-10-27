@@ -1,4 +1,4 @@
-const CACHE = 'clearvault-shell-v45';
+const CACHE = 'clearvault-shell-v46';
 const ASSETS = [
   './',
   './index.html',

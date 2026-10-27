@@ -44,6 +44,8 @@ Allow: /en/guides/sync-folder/$
 Allow: /en/guides/sync-folder/index.html$
 Allow: /en/guides/totp/$
 Allow: /en/guides/totp/index.html$
+Allow: /en/privacy/$
+Allow: /en/privacy/index.html$
 Allow: /en/security/$
 Allow: /en/security/index.html$
 Allow: /guides/$
@@ -68,6 +70,8 @@ Allow: /guides/sync-folder/$
 Allow: /guides/sync-folder/index.html$
 Allow: /guides/totp/$
 Allow: /guides/totp/index.html$
+Allow: /privacy/$
+Allow: /privacy/index.html$
 Allow: /security/$
 Allow: /security/index.html$
 Allow: /public.css$

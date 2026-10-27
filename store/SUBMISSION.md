@@ -4,6 +4,15 @@ Use this after the extension ZIP has been built and tested for a specific versio
 ClearVault is an independent SafeInCloud-compatible tool and is not affiliated with
 SafeInCloud. Do not claim an audit, code signature or store approval before they exist.
 
+## Ready in this repository
+
+- [x] English and Simplified Chinese listing copy, including reviewer steps.
+- [x] Permission and single-purpose justifications in `permissions.md`.
+- [x] Dedicated privacy policy text and generated Chinese/English `/privacy/` pages.
+- [x] Four synthetic 1280×800 screenshots and an optional 440×280 promotional tile.
+- [x] `npm test` and `npm run test:release` pass on the submission commit.
+- [ ] Developer-account setup, upload and store review (owner action).
+
 ## Preconditions
 
 - Chrome Web Store developer account with 2FA and the one-time registration fee.
@@ -81,6 +90,16 @@ Detailed description: copy `store/listing-en.md`.
   confirms this.
 - **Claim scope**: state that no independent audit or store approval is claimed until
   it actually exists.
+
+## Final package check
+
+- Rebuild with `npm run test:release` after the last source change and upload
+  `release/clearvault-<version>-extension.zip`.
+- Confirm `release/extension/manifest.json` version matches `package.json` and that
+  the ZIP loads unpacked with no host permissions and `connect-src 'none'`.
+- Confirm `https://clear-vault.app/privacy/` is live and covers the same data
+  handling as `store/privacy-policy.md` before entering the URL.
+- Recheck that every screenshot and reviewer file contains synthetic data only.
 
 ## After approval
 

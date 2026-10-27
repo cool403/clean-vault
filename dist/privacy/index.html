@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="ClearVault 如何处理密码库、主密码、本地存储、网络请求和浏览器扩展权限。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>隐私政策 · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/privacy/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://clear-vault.app/privacy/" />
+    <link rel="alternate" hreflang="en" href="https://clear-vault.app/en/privacy/" />
+    <link rel="alternate" hreflang="x-default" href="https://clear-vault.app/privacy/" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="隐私政策 · ClearVault" />
+    <meta
+      property="og:description"
+      content="ClearVault 如何处理密码库、主密码、本地存储、网络请求和浏览器扩展权限。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/privacy/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a><a href="/en/privacy/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">隐私，说清楚</span>
+        <h1>隐私政策</h1>
+        <p class="lead">
+          ClearVault 是本地优先的密码库与 TOTP
+          工具。本页说明应用和浏览器扩展处理哪些数据、保存在哪里、何时会产生网络请求，以及你如何删除本地记录。它不是独立安全审计的替代品。
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">处理哪些数据</a
+          ><a href="#section-2">数据保存在哪里</a><a href="#section-3">网络与分析</a
+          ><a href="#section-4">扩展权限</a><a href="#section-5">共享、保留与删除</a
+          ><a href="#section-6">联系与变更</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>处理哪些数据</h2>
+            <p>
+              你选择的 SafeInCloud 兼容 .db 文件；解锁时输入的主密码；文件中的条目、备注、附件和
+              TOTP
+              密钥；界面语言、自动锁定、剪贴板清除、快照保留数量和新手清单等本地偏好；最近密码库的文件名、句柄、记录
+              ID、时间和可选目录文字标记；用于排序的最近使用条目 ID 和时间；浏览器 OPFS 中的加密 .db
+              快照。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>数据保存在哪里</h2>
+            <p>
+              主密码、解密 XML 和 TOTP 密钥只在解锁期间保留在页面内存，不写入
+              localStorage、IndexedDB、OPFS 或扩展存储，也不上传。localStorage
+              只保存非敏感偏好；IndexedDB 只保存最近密码库元数据；OPFS 快照只包含加密 .db
+              密文；复制到系统剪贴板的内容按设定时间尝试清除，但其他本地应用在清除前仍可能读取。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>网络与分析</h2>
+            <p>
+              网页是静态 PWA，没有账号或服务器端密码库。公开托管的 Cloudflare Pages 站点保留平台 Web
+              Analytics，平台可能向 HTML
+              注入统计脚本，但它不会收到密码库内容；自行托管包不包含这项注入。托管服务仍能看到访问
+              IP 和 HTTP 元数据。浏览器扩展的 CSP 设置 `connect-src
+              none`，不发起网络请求，也不包含分析或远程代码。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>扩展权限</h2>
+            <p>
+              `activeTab` 只在你点击扩展图标后临时访问当前标签页；`scripting`
+              在明确点击后向精确匹配的 HTTPS 来源填入所选账号或验证码；`sidePanel`
+              提供解锁和选择条目的侧栏。扩展不申请全站主机权限、不持久运行内容脚本、不申请 `storage`
+              权限，也不自动提交表单。
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>共享、保留与删除</h2>
+            <p>
+              ClearVault 不出售、出租或转让用户数据。密码库文件、导出的
+              CSV、恢复工具包和备份由你控制。可以移除单条或清空最近密码库记录、清除最近使用记录、清除本地加密快照，或清除站点数据。关闭页面会释放内存中的密码库；未保存修改不会写入文件。
+            </p>
+          </section>
+          <section id="section-6">
+            <h2>联系与变更</h2>
+            <p>
+              请通过仓库 issue 报告隐私或安全问题，不要上传真实密码库、主密码、TOTP
+              密钥或可直接利用的敏感材料。项目尚未完成独立安全审计。隐私相关变更会记录在仓库中；本页内容与扩展商店提交材料保持一致。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
+            ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/guides/import-passwords/">从其他密码管理器导入密码 ↗</a
+            ><a href="/guides/import-1password/">从 1Password 导入到 ClearVault ↗</a
+            ><a href="/guides/import-lastpass/">从 LastPass 导入到 ClearVault ↗</a
+            ><a href="/guides/import-apple-passwords/">从 Apple Passwords 导入到 ClearVault ↗</a
+            ><a href="/guides/import-generic-csv/">导入任意 CSV 到 ClearVault ↗</a
+            ><a href="/guides/sync-folder/">用自己的同步文件夹同步密码库 ↗</a
+            ><a href="/guides/browser-extension/">扩展教程：填充、搜索、OTP 与新建条目 ↗</a
+            ><a href="/downloads/">下载与源码 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/privacy/">隐私政策</a><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.4 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>

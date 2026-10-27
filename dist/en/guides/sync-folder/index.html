@@ -74,20 +74,23 @@
           <section id="section-3">
             <h2>3. Merge rules</h2>
             <p>
-              Changes to different entries are both kept. If both sides change the same entry, the
-              newer modification time wins; ties keep the local version and are listed as conflicts.
-              Labels merge by name; unknown XML, attachments and images travel with the chosen entry
-              version. Confirming the preview still requires Save database to write the file.
+              Changes to different entries are both kept. When both sides change the same entry, the
+              preview lists the title, notes, trash / archive / favorite flags and every field,
+              preselects local or external values by the newer modification time, and lets you
+              change each one. If one side deleted the entry and the other changed it, choose
+              whether to keep or delete it. Labels merge by name; unknown XML, attachments and
+              images travel with the chosen entry version. Confirming the preview still requires
+              Save database to write the file.
             </p>
           </section>
           <section id="section-4">
             <h2>4. Boundaries</h2>
             <p>
               The external file must use the same format version and master password; different
-              passwords or versions cannot merge. There is no cross-device file lock, conflicts
-              resolve per entry by timestamp rather than per field, and sync tools can still roll
-              back or replace files. Keep independent backups and avoid editing on two devices at
-              once.
+              passwords or versions cannot merge. There is no cross-device file lock; field-level
+              choices cover the title, notes, flags and regular fields, and unknown database-level
+              XML is kept from the local side only. Sync tools can still roll back or replace files.
+              Keep independent backups and avoid editing on two devices at once.
             </p>
           </section>
           <section class="related">
@@ -122,7 +125,7 @@
       <p>An independent SafeInCloud-compatible tool · No account required</p>
       <nav>
         <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
-        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/en/privacy/">Privacy</a><a href="/en/downloads/">Downloads &amp; source</a
         ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
       </nav>
       <small

@@ -662,18 +662,15 @@ export default {
     'The external file is unlocked and merged with your current edits. Review conflicts before saving.',
   '共合并 {count} 个条目，{conflicts} 个冲突。':
     'Merged {count} entries with {conflicts} conflicts.',
-  '冲突按较新的修改时间选择，时间相同则保留本地。':
-    'Conflicts use the newer modification time; ties keep the local version.',
   本地: 'Local',
   外部: 'External',
-  '仅展示前 10 个冲突。': 'Showing the first 10 conflicts.',
   采用合并结果: 'Use merged result',
   '已合并外部更改，请保存数据库': 'External changes merged. Save your vault.',
   显示冲突内容: 'Show conflict contents',
   是: 'Yes',
   否: 'No',
+  条目状态: 'Entry status',
+  保留: 'Keep',
   '冲突字段按较新的修改时间预选，可逐项更改。':
     'Conflict fields default to the newer modification time; adjust each field as needed.',
-  '此条目在两边被删除或重建，默认保留较新版本。':
-    'This entry was deleted or recreated on both sides; the newer version is kept by default.',
 };

@@ -15,6 +15,7 @@
   <url><loc>https://clear-vault.app/en/guides/safeincloud-linux/</loc></url>
   <url><loc>https://clear-vault.app/en/guides/sync-folder/</loc></url>
   <url><loc>https://clear-vault.app/en/guides/totp/</loc></url>
+  <url><loc>https://clear-vault.app/en/privacy/</loc></url>
   <url><loc>https://clear-vault.app/en/security/</loc></url>
   <url><loc>https://clear-vault.app/guides/</loc></url>
   <url><loc>https://clear-vault.app/guides/browser-extension/</loc></url>
@@ -27,5 +28,6 @@
   <url><loc>https://clear-vault.app/guides/safeincloud-linux/</loc></url>
   <url><loc>https://clear-vault.app/guides/sync-folder/</loc></url>
   <url><loc>https://clear-vault.app/guides/totp/</loc></url>
+  <url><loc>https://clear-vault.app/privacy/</loc></url>
   <url><loc>https://clear-vault.app/security/</loc></url>
 </urlset>

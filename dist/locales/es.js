@@ -673,18 +673,15 @@ export default {
     'El archivo externo está desbloqueado y combinado con tus cambios. Revisa los conflictos antes de guardar.',
   '共合并 {count} 个条目，{conflicts} 个冲突。':
     'Se combinaron {count} entradas con {conflicts} conflictos.',
-  '冲突按较新的修改时间选择，时间相同则保留本地。':
-    'Los conflictos usan la fecha de modificación más reciente; si empatan, se mantiene la versión local.',
   本地: 'Local',
   外部: 'Externo',
-  '仅展示前 10 个冲突。': 'Mostrando los primeros 10 conflictos.',
   采用合并结果: 'Usar resultado combinado',
   '已合并外部更改，请保存数据库': 'Cambios externos combinados. Guarda tu bóveda.',
   显示冲突内容: 'Mostrar contenido del conflicto',
   是: 'Sí',
   否: 'No',
+  条目状态: 'Estado de la entrada',
+  保留: 'Conservar',
   '冲突字段按较新的修改时间预选，可逐项更改。':
     'Los campos en conflicto usan por defecto la fecha más reciente; ajusta cada campo.',
-  '此条目在两边被删除或重建，默认保留较新版本。':
-    'Esta entrada se eliminó o recreó en ambos lados; se conserva la versión más reciente de forma predeterminada.',
 };

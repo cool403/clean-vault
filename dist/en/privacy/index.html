@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="How ClearVault handles vault files, master passwords, local storage, network requests and browser extension permissions."
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>Privacy policy · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/en/privacy/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://clear-vault.app/privacy/" />
+    <link rel="alternate" hreflang="en" href="https://clear-vault.app/en/privacy/" />
+    <link rel="alternate" hreflang="x-default" href="https://clear-vault.app/privacy/" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="Privacy policy · ClearVault" />
+    <meta
+      property="og:description"
+      content="How ClearVault handles vault files, master passwords, local storage, network requests and browser extension permissions."
+    />
+    <meta property="og:url" content="https://clear-vault.app/en/privacy/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/en/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/privacy/" class="language">简体中文</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/en/guides/" class="back">← All guides</a
+        ><span class="eyebrow">PRIVACY, IN PLAIN WORDS</span>
+        <h1>Privacy policy</h1>
+        <p class="lead">
+          ClearVault is a local-first password vault and TOTP tool. This page explains what data the
+          app and browser extension handle, where it is stored, when network requests occur, and how
+          to delete local records. It is not a substitute for an independent security audit.
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="On this page">
+          <strong>On this page</strong><a href="#section-1">Data ClearVault handles</a
+          ><a href="#section-2">Where data is stored</a
+          ><a href="#section-3">Network and analytics</a
+          ><a href="#section-4">Extension permissions</a
+          ><a href="#section-5">Sharing, retention and deletion</a
+          ><a href="#section-6">Contact and changes</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>Data ClearVault handles</h2>
+            <p>
+              The SafeInCloud-compatible .db file you select; the master password entered to unlock
+              it; entries, notes, attachments and TOTP secrets inside the file; local preferences
+              such as interface language, auto-lock, clipboard clearing, snapshot retention and
+              getting-started checklist state; recent-vault file names, handles, record IDs, times
+              and optional folder text labels; recent entry IDs and times used for ordering; and
+              encrypted .db snapshots in browser OPFS.
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>Where data is stored</h2>
+            <p>
+              The master password, decrypted XML and TOTP secrets stay in page memory while
+              unlocked. They are not written to localStorage, IndexedDB, OPFS or extension storage
+              and are not uploaded. localStorage stores only non-sensitive preferences; IndexedDB
+              stores recent-vault metadata; OPFS snapshots contain only encrypted .db ciphertext;
+              clipboard contents are cleared after the configured delay on a best-effort basis, and
+              other local applications may read them before clearing.
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>Network and analytics</h2>
+            <p>
+              The web app is a static PWA with no account or server-side vault. The public
+              Cloudflare Pages deployment retains platform Web Analytics, which may inject a hosting
+              script into HTML but does not receive vault contents; self-hosted packages do not
+              contain this injection. The host can still see visit IP addresses and HTTP metadata.
+              The browser extension CSP sets `connect-src none`; it makes no network requests and
+              contains no analytics or remote code.
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>Extension permissions</h2>
+            <p>
+              `activeTab` grants temporary access to the current tab only after you click the
+              extension icon; `scripting` fills the selected login or code into an exact matching
+              HTTPS origin after an explicit click; `sidePanel` provides the unlock and
+              entry-selection UI. The extension requests no global host permissions, persistent
+              content scripts or `storage` permission, and never submits forms automatically.
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>Sharing, retention and deletion</h2>
+            <p>
+              ClearVault does not sell, rent or transfer user data. You control the vault file,
+              exported CSV files, recovery kits and backups. You can remove or clear recent-vault
+              records, clear recent usage, clear local encrypted snapshots or clear site data.
+              Closing the page releases the in-memory vault; unsaved edits are not written to the
+              file.
+            </p>
+          </section>
+          <section id="section-6">
+            <h2>Contact and changes</h2>
+            <p>
+              Report privacy or security issues through the repository issue tracker without
+              uploading real vaults, master passwords, TOTP secrets or directly exploitable
+              sensitive material. No independent security audit has been completed. Privacy-related
+              changes are recorded in the repository; this page is kept consistent with the
+              extension store submission materials.
+            </p>
+          </section>
+          <section class="related">
+            <h2>Keep reading</h2>
+            <a href="/en/guides/open-safeincloud-db/"
+              >How to open, edit and save a SafeInCloud DB file ↗</a
+            ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
+            ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
+            ><a href="/en/guides/import-passwords/"
+              >Import passwords from another password manager ↗</a
+            ><a href="/en/guides/import-1password/">Import from 1Password into ClearVault ↗</a
+            ><a href="/en/guides/import-lastpass/">Import from LastPass into ClearVault ↗</a
+            ><a href="/en/guides/import-apple-passwords/"
+              >Import from Apple Passwords into ClearVault ↗</a
+            ><a href="/en/guides/import-generic-csv/">Import any CSV into ClearVault ↗</a
+            ><a href="/en/guides/sync-folder/">Sync a vault with your own folder ↗</a
+            ><a href="/en/guides/browser-extension/"
+              >Extension guide: fill, search, OTP and new entries ↗</a
+            ><a href="/en/downloads/">Downloads &amp; source ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>Ready for a little more clarity?</h2>
+        <p>Try the demo, then test a copy of your database.</p>
+      </div>
+      <a href="/?lang=en" class="button">Open vault ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>An independent SafeInCloud-compatible tool · No account required</p>
+      <nav>
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/privacy/">Privacy</a><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.4 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">Build history</a></small
+      >
+    </footer>
+  </body>
+</html>

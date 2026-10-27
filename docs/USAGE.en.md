@@ -94,11 +94,12 @@ ClearVault does not provide cloud sync. Put the `.db` in a Syncthing, Nextcloud,
 When another device changes the external file, a banner appears on focus or when a save conflict is detected. Choose Merge changes to decrypt the external file with the current session's master password and combine unsaved local edits with the external version:
 
 - Entries changed on different sides are kept.
-- When both sides change the same entry, the newer `time_stamp` wins; ties keep the local version and are listed as conflicts.
+- When both sides change the same entry, the preview lists the title, notes, trash / archive / favorite flags and every field, preselects local or external values by the newer `time_stamp`, and lets you change each one; ties default to the local value.
+- If one side deleted the entry and the other changed it, choose whether to keep or delete it.
 - Labels merge by name; unknown XML, attachments and images travel with the chosen entry version.
 - The merged result is previewed first. Confirming it still requires Save database to write the file. If the external file changes again, saving stops to avoid overwriting it.
 
-Limits: the external file must use the same format version and master password; different passwords or versions cannot merge. Conflicts resolve per entry by timestamp, not as a field-level three-way merge. There is no cross-device file lock, and unknown database-level XML is kept from the local side only. Keep independent backups and avoid editing on two devices at once.
+Limits: the external file must use the same format version and master password; different passwords or versions cannot merge. Field-level choices cover the title, notes, flags and regular fields; there is no cross-device file lock, and unknown database-level XML is kept from the local side only. Keep independent backups and avoid editing on two devices at once.
 
 ## Local encrypted snapshots and save conflicts
 

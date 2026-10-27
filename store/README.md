@@ -24,7 +24,9 @@ SafeInCloud-compatible tool and is not affiliated with SafeInCloud.
 3. Use the copy in `listing-en.md` / `listing-zh.md`; category: Productivity.
 4. Set the privacy policy URL to `https://clear-vault.app/privacy/`. The policy
    text in this folder is the authoritative draft; keep it in sync with the
-   published page.
+   published page. After editing `privacy-policy.md` or `scripts/public-content.mjs`,
+   run `npm run build:public` and commit the generated `dist/privacy/` and
+   `dist/en/privacy/` pages.
 5. Complete the privacy practices form: no collection, sale or transfer of user data;
    single purpose; local processing only.
 6. Paste the permission justifications from `permissions.md`.

@@ -679,18 +679,15 @@ export default {
     'Die externe Datei ist entsperrt und mit Ihren Änderungen zusammengeführt. Prüfen Sie Konflikte vor dem Speichern.',
   '共合并 {count} 个条目，{conflicts} 个冲突。':
     '{count} Einträge zusammengeführt, {conflicts} Konflikte.',
-  '冲突按较新的修改时间选择，时间相同则保留本地。':
-    'Konflikte verwenden die neuere Änderungszeit; bei Gleichstand bleibt die lokale Version.',
   本地: 'Lokal',
   外部: 'Extern',
-  '仅展示前 10 个冲突。': 'Zeige die ersten 10 Konflikte.',
   采用合并结果: 'Zusammengeführtes Ergebnis verwenden',
   '已合并外部更改，请保存数据库': 'Externe Änderungen zusammengeführt. Speichern Sie Ihren Tresor.',
   显示冲突内容: 'Konfliktinhalte anzeigen',
   是: 'Ja',
   否: 'Nein',
+  条目状态: 'Eintragsstatus',
+  保留: 'Behalten',
   '冲突字段按较新的修改时间预选，可逐项更改。':
     'Konfliktfelder verwenden standardmäßig die neuere Änderungszeit; passen Sie jedes Feld an.',
-  '此条目在两边被删除或重建，默认保留较新版本。':
-    'Dieser Eintrag wurde auf beiden Seiten gelöscht oder neu erstellt; standardmäßig bleibt die neuere Version.',
 };

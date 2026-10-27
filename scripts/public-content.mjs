@@ -478,11 +478,11 @@ articles.push(
         ],
         [
           '3. 合并规则',
-          '双方修改不同条目时都保留；同一条目双方都修改时，按较新的修改时间选择，时间相同保留本地并列入冲突列表。标签按名称合并，未知 XML、附件和图片随选中的条目版本保留。确认预览后仍需点击“保存数据库”才写入文件。',
+          '双方修改不同条目时都保留；同一条目双方都修改时，冲突预览会列出标题、备注、回收站 / 归档 / 收藏状态和每个字段，按较新的修改时间预选本地或外部值，可逐项更改。一侧删除、另一侧修改时可选择保留或删除。标签按名称合并；未知 XML、附件和图片随选中的条目版本保留。确认预览后仍需点击“保存数据库”才写入文件。',
         ],
         [
           '4. 边界',
-          '外部文件必须使用相同格式版本和主密码；密码不同或版本不同时无法合并。没有跨设备文件锁，冲突按条目时间戳而不是逐字段解决；同步工具仍可能回滚或替换文件。请保留独立备份，避免两台设备同时编辑。',
+          '外部文件必须使用相同格式版本和主密码；密码不同或版本不同时无法合并。没有跨设备文件锁；字段级选择覆盖标题、备注、标记和普通字段，未知的数据库级 XML 只保留本地版本；同步工具仍可能回滚或替换文件。请保留独立备份，避免两台设备同时编辑。',
         ],
       ],
     },
@@ -503,11 +503,11 @@ articles.push(
         ],
         [
           '3. Merge rules',
-          'Changes to different entries are both kept. If both sides change the same entry, the newer modification time wins; ties keep the local version and are listed as conflicts. Labels merge by name; unknown XML, attachments and images travel with the chosen entry version. Confirming the preview still requires Save database to write the file.',
+          'Changes to different entries are both kept. When both sides change the same entry, the preview lists the title, notes, trash / archive / favorite flags and every field, preselects local or external values by the newer modification time, and lets you change each one. If one side deleted the entry and the other changed it, choose whether to keep or delete it. Labels merge by name; unknown XML, attachments and images travel with the chosen entry version. Confirming the preview still requires Save database to write the file.',
         ],
         [
           '4. Boundaries',
-          'The external file must use the same format version and master password; different passwords or versions cannot merge. There is no cross-device file lock, conflicts resolve per entry by timestamp rather than per field, and sync tools can still roll back or replace files. Keep independent backups and avoid editing on two devices at once.',
+          'The external file must use the same format version and master password; different passwords or versions cannot merge. There is no cross-device file lock; field-level choices cover the title, notes, flags and regular fields, and unknown database-level XML is kept from the local side only. Sync tools can still roll back or replace files. Keep independent backups and avoid editing on two devices at once.',
         ],
       ],
     },

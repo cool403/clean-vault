@@ -144,3 +144,59 @@ test('field-level conflicts can choose local or external values independently', 
     'user',
   );
 });
+
+test('both sides deleting the same entry removes it without a conflict', () => {
+  const base = vault(card(1, 100, 'Entry', 'base'));
+  const result = mergeVaults(base, vault(''), vault(''));
+  assert.equal(result.merged, 0);
+  assert.equal(result.conflicts.length, 0);
+  assert.equal(cards(result.doc).length, 0);
+});
+
+test('a deletion on one side is an explicit keep-or-delete conflict', () => {
+  const base = vault(card(1, 100, 'Entry', 'base'));
+  const deleted = vault('');
+  const changed = vault(card(1, 200, 'Entry', 'external'));
+  const automatic = mergeVaults(base, deleted, changed);
+  assert.equal(automatic.conflicts.length, 1);
+  const [presence] = automatic.conflicts[0].fields;
+  assert.equal(presence.key, 'card');
+  assert.equal(presence.type, 'existence');
+  assert.equal(presence.local, '删除');
+  assert.equal(presence.external, '保留');
+  assert.equal(automatic.conflicts[0].chosen, 'external');
+  assert.equal(cards(automatic.doc).length, 1);
+
+  const removed = mergeVaults(base, deleted, changed, { 1: { card: 'local' } });
+  assert.equal(cards(removed.doc).length, 0);
+  assert.equal(removed.conflicts[0].chosen, 'local');
+
+  const mirrored = mergeVaults(base, changed, deleted);
+  assert.equal(mirrored.conflicts[0].fields[0].local, '保留');
+  assert.equal(mirrored.conflicts[0].fields[0].external, '删除');
+  assert.equal(mirrored.conflicts[0].chosen, 'local');
+  assert.equal(cards(mirrored.doc).length, 1);
+
+  const removedExternal = mergeVaults(base, changed, deleted, { 1: { card: 'external' } });
+  assert.equal(cards(removedExternal.doc).length, 0);
+});
+
+test('card ids that collide with object prototype keys keep their choices', () => {
+  const source = (title, password, stamp) =>
+    parseVault(
+      `<database><card id="__proto__" title="${title}" time_stamp="${stamp}"><field type="password">${password}</field></card></database>`,
+    );
+  const choices = JSON.parse('{"__proto__":{"title":"local"}}');
+  const result = mergeVaults(
+    source('Base', 'base-pass', 100),
+    source('Local', 'local-pass', 200),
+    source('External', 'external-pass', 300),
+    choices,
+  );
+  const card = cards(result.doc)[0];
+  assert.equal(card.getAttribute('title'), 'Local');
+  assert.equal(
+    fields(card).find((field) => field.getAttribute('type') === 'password').textContent,
+    'external-pass',
+  );
+});

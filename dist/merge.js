@@ -210,6 +210,7 @@ function mergeChangedCard(
   };
 }
 export function mergeVaults(baseDoc, localDoc, externalDoc, choices = {}) {
+  const choiceFor = (id) => (choices && Object.hasOwn(choices, id) ? choices[id] : undefined);
   const base = cardMap(baseDoc),
     local = cardMap(localDoc),
     external = cardMap(externalDoc);
@@ -247,7 +248,7 @@ export function mergeVaults(baseDoc, localDoc, externalDoc, choices = {}) {
             externalCard,
             localTime,
             externalTime,
-            choices[id] || {},
+            choiceFor(id) || {},
             labelMaps,
           );
           selected.push({ card: merged.card, labelIds: merged.labelIds });
@@ -262,14 +263,28 @@ export function mergeVaults(baseDoc, localDoc, externalDoc, choices = {}) {
       } else if (localCard) select(localCard, labelMaps.local);
       else if (externalCard) select(externalCard, labelMaps.external);
     } else if (localChanged && externalChanged) {
+      if (!localCard && !externalCard) continue;
       if (!localCard || !externalCard) {
         const card = localCard || externalCard;
-        select(card, localCard ? labelMaps.local : labelMaps.external);
+        const natural = localCard ? 'local' : 'external';
+        const preferred = choiceFor(id)?.card;
+        const chosen = ['local', 'external'].includes(preferred) ? preferred : natural;
+        const kept = chosen === 'local' ? localCard : externalCard;
+        if (kept) select(kept, chosen === 'local' ? labelMaps.local : labelMaps.external);
         conflicts.push({
           id,
           title: title(card),
-          chosen: localCard ? 'local' : 'external',
-          fields: [],
+          chosen,
+          fields: [
+            {
+              key: 'card',
+              label: t('条目状态'),
+              type: 'existence',
+              local: localCard ? t('保留') : t('删除'),
+              external: externalCard ? t('保留') : t('删除'),
+              chosen,
+            },
+          ],
         });
       } else if (sameNode(localCard, externalCard)) {
         select(localCard, labelMaps.local);
@@ -280,7 +295,7 @@ export function mergeVaults(baseDoc, localDoc, externalDoc, choices = {}) {
           externalCard,
           localTime,
           externalTime,
-          choices[id] || {},
+          choiceFor(id) || {},
           labelMaps,
         );
         selected.push({ card: merged.card, labelIds: merged.labelIds });

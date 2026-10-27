@@ -23,6 +23,7 @@ What you can do:
 - Update a password after you change it on the website.
 - Import Chrome, Bitwarden, 1Password, LastPass, Apple Passwords and mapped generic CSV files.
 - Keep up to five recent vaults, with verified saves, encrypted backups and local encrypted snapshots.
+- Merge external edits when the vault is synced through your own folder, choosing local or external values field by field.
 - Use the web app as an offline PWA, in Chinese, English, German, Japanese or Spanish.
 
 Privacy and boundaries:
@@ -75,6 +76,8 @@ See `permissions.md`.
 
 ## Release notes
 
-<version> — extension: local vault search/copy, TOTP display and fill, new-entry flow,
-clipboard auto-clear, recovery kit and encrypted OPFS snapshots. Web app also
-adds save-conflict prompts.
+0.4.4 — Local `.db` vault search, copy and fill; TOTP codes; new-entry and
+password-update flows; multi-source imports; clipboard auto-clear; encrypted backups
+and OPFS snapshots; security overview and batch labels. Web app: merge external
+changes from folder-synced vaults with per-field conflict choices, including
+keep/delete resolution.
