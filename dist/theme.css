@@ -1338,3 +1338,84 @@ html[lang='ja'] .welcome-copy h1 {
   align-items: center;
   gap: 8px;
 }
+
+.onboarding-card {
+  margin: 0 0 14px;
+  padding: 14px 18px;
+  background: #e3ecff;
+  border: 1.5px solid #b0bfd8;
+  border-radius: 16px;
+}
+.onboarding-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.onboarding-head strong,
+.onboarding-head small {
+  display: block;
+}
+.onboarding-head small {
+  margin-top: 2px;
+  color: #31547f;
+  font-size: 12px;
+}
+.onboarding-progress {
+  height: 6px;
+  margin: 9px 0 10px;
+  overflow: hidden;
+  background: #c9d7ea;
+  border-radius: 99px;
+}
+.onboarding-progress i {
+  display: block;
+  height: 100%;
+  background: #315ca0;
+  border-radius: 99px;
+  transition: width 0.2s;
+}
+.onboarding-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.onboarding-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 13px;
+}
+.onboarding-manual {
+  display: flex;
+  flex: 1 1 220px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.onboarding-manual input {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  accent-color: #315ca0;
+}
+.onboarding-list li.done .onboarding-manual span {
+  color: #64635d;
+  text-decoration: line-through;
+}
+.onboarding-list li > small {
+  color: #31547f;
+  font-size: 12px;
+}
+.onboarding-list li > a {
+  color: #315ca0;
+  font-size: 12px;
+}
+.onboarding-list .text-button {
+  margin-left: auto;
+  padding: 2px 4px;
+  font-size: 12px;
+}

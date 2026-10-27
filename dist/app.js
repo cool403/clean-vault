@@ -147,6 +147,58 @@ try {
   /* Keep the default when storage is unavailable. */
 }
 const snapshotStore = createSnapshotStore({ retention: snapshotRetention });
+const ONBOARDING_KEY = 'clearvault.onboarding';
+let onboardingMemory = null;
+function onboardingData() {
+  if (onboardingMemory) return onboardingMemory;
+  try {
+    if (!globalThis.localStorage) throw new Error('Storage unavailable');
+    const data = JSON.parse(globalThis.localStorage.getItem(ONBOARDING_KEY) || '{}');
+    if (data && typeof data === 'object') return data;
+  } catch {
+    /* Fall through to in-memory state for private or blocked storage. */
+  }
+  onboardingMemory = {};
+  return onboardingMemory;
+}
+const onboardingDefaults = {
+  started: false,
+  dismissed: false,
+  extension: false,
+  fill: false,
+  backup: false,
+};
+function onboardingForVault() {
+  const data = onboardingData();
+  const saved = data[state.name || 'unnamed'];
+  return { ...onboardingDefaults, ...(saved && typeof saved === 'object' ? saved : {}) };
+}
+function updateOnboarding(partial) {
+  const data = onboardingData();
+  const key = state.name || 'unnamed';
+  const current = data[key] && typeof data[key] === 'object' ? data[key] : {};
+  data[key] = { ...onboardingDefaults, ...current, ...partial };
+  try {
+    if (!globalThis.localStorage) throw new Error('Storage unavailable');
+    globalThis.localStorage.setItem(ONBOARDING_KEY, JSON.stringify(data));
+  } catch {
+    onboardingMemory = data;
+  }
+  return data[key];
+}
+function moveOnboarding(from, to, remove = true) {
+  if (!from || !to || from === to) return;
+  const data = onboardingData();
+  if (!data[from]) return;
+  data[to] = { ...onboardingDefaults, ...(data[to] || {}), ...data[from] };
+  if (remove) delete data[from];
+  try {
+    if (!globalThis.localStorage) throw new Error('Storage unavailable');
+    globalThis.localStorage.setItem(ONBOARDING_KEY, JSON.stringify(data));
+  } catch {
+    onboardingMemory = data;
+  }
+}
 async function checkExternalChange() {
   if (!state.handle || !state.doc || state.busy) return;
   const generation = state.generation,
@@ -488,6 +540,20 @@ function render() {
   if (!visible.some((card) => card.getAttribute('id') === state.selected))
     state.selected = visible[0]?.getAttribute('id') || null;
   const selected = visible.find((card) => card.getAttribute('id') === state.selected);
+  const onboarding = onboardingForVault();
+  const showOnboarding =
+    !state.demo && !onboarding.dismissed && (live.length === 0 || onboarding.started);
+  if (showOnboarding && !onboarding.started)
+    onboarding.started = updateOnboarding({ started: true }).started;
+  const onboardingDone = {
+    entries: live.length > 0,
+    extension: Boolean(onboarding.extension),
+    fill: Boolean(onboarding.fill),
+    otp: otpCount > 0,
+    backup: Boolean(onboarding.backup),
+  };
+  const onboardingDoneCount = Object.values(onboardingDone).filter(Boolean).length;
+  const onboardingTotal = 5;
   const saveAttention = Boolean(state.dirty || state.saveError || state.demo);
   const saveStyle = saveAttention ? 'button primary' : 'button secondary';
   const newStyle = saveAttention ? 'button secondary' : 'button primary';
@@ -523,7 +589,7 @@ function render() {
     <main class="workspace">
       <header class="topbar"><div class="breadcrumb">个人空间 ${icon('chevron', 12)}<strong>${e(heading)}</strong></div><div class="top-actions"><span class="privacy-pill"><i></i> 本地加密</span>${state.demo ? t('<span class="demo-pill">演示</span>') : ''}${iconButton('open', t('打开其他密码库'), 'folder')}${iconButton('settings', t('偏好设置'), 'settings', 'mobile-top-action')}${iconButton('lock', t('锁定密码库'), 'lock', 'mobile-top-action')}${state.install ? iconButton('install', t('安装应用'), 'download') : ''}<div class="profile">我</div></div></header>
       <section class="page-heading"><div><div class="eyebrow">为你的数字生活，留一份安心。</div><h1>${e(heading)}<span>${visible.length}</span></h1><p>${e(subtitle)}</p></div><div class="heading-actions">${button('save', state.busy ? t('处理中…') : state.demo ? t('保存为我的密码库') : state.dirty || state.saveError ? t('保存更改') : t('保存数据库'), 'download', saveStyle)}${button('new', state.section === 'otp' ? t('添加验证器') : t('新建条目'), 'plus', newStyle)}</div></section>
-      <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span>${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>${state.externalChange ? html`<div class="conflict-banner" role="alert"><div><strong>${t('原文件已被其他应用修改')}</strong><span>${t('保存会停止，避免覆盖外部版本。')}</span></div><div class="conflict-banner-actions">${button('conflict-save-copy', t('另存为副本'), 'download', 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'text-button')}</div></div>` : ''}
+      <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span>${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>${state.externalChange ? html`<div class="conflict-banner" role="alert"><div><strong>${t('原文件已被其他应用修改')}</strong><span>${t('保存会停止，避免覆盖外部版本。')}</span></div><div class="conflict-banner-actions">${button('conflict-save-copy', t('另存为副本'), 'download', 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'text-button')}</div></div>` : ''}${showOnboarding ? html`<section class="onboarding-card" aria-label="${t('开始使用 ClearVault')}"><div class="onboarding-head"><div><strong>${t('开始使用 ClearVault')}</strong><small>${t('完成 {done}/{total} 步', { done: onboardingDoneCount, total: onboardingTotal })}</small></div>${button('onboarding-dismiss', t('稍后'), null, 'text-button')}</div><div class="onboarding-progress"><i style="width:${(onboardingDoneCount / onboardingTotal) * 100}%"></i></div><ul class="onboarding-list"><li class="${onboardingDone.entries ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.entries ? 'checked' : ''} disabled><span>${t('导入或新建第一条记录')}</span></label>${onboardingDone.entries ? `<small>${t('已完成')}</small>` : button('onboarding-import', t('导入密码'), null, 'text-button')}</li><li class="${onboardingDone.extension ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="extension" ${onboardingDone.extension ? 'checked' : ''}><span>${t('安装浏览器扩展')}</span></label><a href="./downloads/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.fill ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="fill" ${onboardingDone.fill ? 'checked' : ''}><span>${t('首次填充或复制验证码')}</span></label><a href="./guides/browser-extension/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.otp ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.otp ? 'checked' : ''} disabled><span>${t('添加一个验证器')}</span></label>${onboardingDone.otp ? `<small>${t('已完成')}</small>` : button('onboarding-otp', t('添加一个验证器'), null, 'text-button')}</li><li class="${onboardingDone.backup ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.backup ? 'checked' : ''} disabled><span>${t('保存并设置备份')}</span></label>${onboardingDone.backup ? `<small>${t('已完成')}</small>` : button('onboarding-backup', t('设置'), null, 'text-button')}</li></ul></section>` : ''}
       <button type="button" class="quick-launch" data-action="quick-search" aria-keyshortcuts="Control+k Meta+k"><span>${icon('search', 18)}<strong>${e(t('快速查找'))}</strong><kbd>${modifier} K</kbd></span><small>${e(t('↑ ↓ 选择'))} <span>·</span> ${modifier} ↵ ${e(t('复制密码'))} <span>·</span> ${modifier} ⇧ L ${e(t('锁定'))}</small>${icon('chevron', 16)}</button>
       <section class="vault-content ${state.section === 'otp' ? 'auth-view' : ''}">
         <div class="entry-pane"><div class="search-row"><label class="search-box">${icon('search', 18)}<input id="search" type="search" placeholder="搜索条目、账号或标签…" value="${e(state.search)}" autocomplete="off" aria-label="搜索条目"></label><button type="button" class="key-hint" data-action="quick-search" aria-label="${e(t('快速查找'))}">${modifier} K</button></div>
@@ -1028,7 +1094,8 @@ async function saveFile(asCopy = false) {
     showPassword('set-password');
     return;
   }
-  const shouldSnapshot = state.dirty;
+  const shouldSnapshot = state.dirty,
+    previousName = state.name;
   state.busy = true;
   render();
   try {
@@ -1074,6 +1141,7 @@ async function saveFile(asCopy = false) {
       if (!same) state.recentId = null;
       state.handle = handle;
       state.name = handle.name;
+      moveOnboarding(previousName, state.name, !asCopy);
       state.signature = result.hash;
       state.lastSaved = Date.now();
       state.lastExported = null;
@@ -1098,6 +1166,7 @@ async function saveFile(asCopy = false) {
     state.encrypted = bytes;
     state.dirty = !handle;
     state.saveError = false;
+    updateOnboarding({ backup: true });
     if (handle) {
       state.externalChange = false;
       channel?.postMessage({ type: 'saved', name: state.name, signature: state.signature });
@@ -1754,6 +1823,19 @@ async function action(name, target) {
       closeModal();
       await reloadFromDisk();
       break;
+    case 'onboarding-import':
+      if (state.doc) importWizard.open();
+      break;
+    case 'onboarding-otp':
+      showEditor(null, true);
+      break;
+    case 'onboarding-backup':
+      settings();
+      break;
+    case 'onboarding-dismiss':
+      updateOnboarding({ dismissed: true });
+      render();
+      break;
     case 'clear-search':
       state.search = '';
       state.listLimit = 200;
@@ -1870,6 +1952,10 @@ document.addEventListener('input', (event) => {
   }
 });
 document.addEventListener('change', (event) => {
+  if (event.target.dataset.onboarding) {
+    updateOnboarding({ [event.target.dataset.onboarding]: event.target.checked });
+    render();
+  }
   if (event.target.matches('[data-language]')) {
     const preferencesOpen = Boolean(modal.open && modal.querySelector('#idle-select'));
     setLanguage(event.target.value);

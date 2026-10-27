@@ -587,4 +587,23 @@ export default {
     'Das Speichern wird gestoppt, um die externe Version nicht zu überschreiben.',
   另存为副本: 'Als Kopie speichern',
   保留当前编辑: 'Aktuelle Änderungen behalten',
+  '（不使用）': '(Nicht verwendet)',
+  '通用 CSV（手动映射）': 'Generisches CSV (manuelle Zuordnung)',
+  '映射 CSV 字段': 'CSV-Spalten zuordnen',
+  '选择对应的列，未使用的列会忽略。':
+    'Wählen Sie für jedes Feld die passende Spalte; ungenutzte Spalten werden ignoriert.',
+  '请至少映射一个 CSV 字段': 'Ordnen Sie mindestens eine CSV-Spalte zu',
+  '请至少映射条目名称、账号、密码、网址或备注中的一列':
+    'Ordnen Sie mindestens Titel, Benutzername, Passwort, URL oder Notizen zu',
+  '支持 Chrome、Bitwarden、1Password、LastPass、Apple Passwords 以及带表头的通用 CSV。':
+    'Unterstützt Chrome, Bitwarden, 1Password, LastPass, Apple Passwords und generische CSV-Dateien mit Kopfzeile.',
+  '开始使用 ClearVault': 'Erste Schritte mit ClearVault',
+  '完成 {done}/{total} 步': '{done} von {total} Schritten erledigt',
+  稍后: 'Später',
+  导入或新建第一条记录: 'Ersten Eintrag importieren oder anlegen',
+  安装浏览器扩展: 'Browsererweiterung installieren',
+  首次填充或复制验证码: 'Einmal einen Login oder Code ausfüllen oder kopieren',
+  添加一个验证器: 'Einen Authenticator hinzufügen',
+  保存并设置备份: 'Speichern und Backups einrichten',
+  已完成: 'Erledigt',
 };

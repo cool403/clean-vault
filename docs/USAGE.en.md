@@ -8,6 +8,10 @@ The app and browser extension support 简体中文, English, Deutsch, 日本語 
 
 Open `/?lang=de`, `/?lang=ja` or `/?lang=es` to launch in a specific language; this parameter takes precedence over the saved choice. Interface text, messages, dates and installation metadata follow the selected language. Vault names, accounts, passwords and notes are never translated. Language switching also works offline. Public guides and security documentation remain available in Chinese and English; other interface languages link to the English documentation.
 
+## Getting-started checklist
+
+A new empty vault shows a dismissible checklist above the list: import or add the first entry, install the browser extension, fill or copy once, add an authenticator, and save with backups. Entry and authenticator steps complete automatically; extension and first-fill steps can be checked manually; choose Later to hide the checklist. Completion is stored per vault name and contains no vault contents.
+
 ## Quick search, pinyin and commands
 
 Quick search opens automatically after unlocking, or press Ctrl / ⌘ + K. It searches names, accounts, websites, labels and pinyin initials (for example, `wx` for 微信). Title-prefix matches rank first, followed by recently used entries. Ctrl / ⌘ + Enter copies the password, Ctrl / ⌘ + Shift + Enter copies the code, and Enter opens details.
@@ -34,15 +38,15 @@ Creating a vault shows a local strength estimate and requires acknowledging that
 
 Choose Recovery kit in the app's Preferences or the extension's More actions to download a plain-text sheet with blank lines for the master password and backup location, recovery steps and safety notes. It contains no passwords, TOTP secrets or vault contents. Print it, write the master password by hand and store it separately from vault backups. ClearVault cannot recover a lost master password.
 
-## Import Chrome or Bitwarden data
+## Import from another password manager
 
-1. Export Chrome passwords from Google Password Manager settings, completing system authentication. Export Bitwarden as unencrypted CSV or JSON; prefer JSON for multiple URLs and typed custom fields. See [Chrome export help](https://support.google.com/chrome/answer/13068232) and [Bitwarden file formats](https://bitwarden.com/help/condition-bitwarden-import/).
+1. Export a plaintext file first: Chrome from Google Password Manager as CSV; Bitwarden as unencrypted CSV or JSON; 1Password as CSV; LastPass from account settings as CSV; Apple Passwords from the Passwords app with Export All Passwords. Generic CSV files need a header row. See [Chrome export help](https://support.google.com/chrome/answer/13068232) and [Bitwarden file formats](https://bitwarden.com/help/condition-bitwarden-import/).
 2. Open or create a destination vault in the app, or open an existing `.db` in the extension, then unlock. Choose Import passwords from the app toolbar, preferences or extension.
-3. Select the matching format and original export file, then preview. The limit is 20 MB and 10,000 entries. Preview shows new, duplicate and unsupported counts and the first ten names and accounts, without displaying passwords.
-4. Check mapping: names become titles, usernames become accounts, URLs become website fields and folders become labels. Passwords, notes and favorites are retained. Identical entries are skipped; changed passwords or contents create separate entries without overwriting.
-5. Confirm and choose Save database. Select a separate encrypted backup directory before the first overwrite. Reopen the saved `.db` to check the results. Downloads only confirm export was started: check the file on disk. Carefully remove plain text source exports only after verifying the encrypted save and complete migration.
+3. Choose the source and file. Chrome, Bitwarden, 1Password, LastPass and Apple Passwords use built-in parsers. Generic CSV asks you to map columns to title, username, password, URL, notes, tags, TOTP and favorite. The limit is 20 MB and 10,000 entries. Preview shows new, duplicate and unsupported counts and the first ten names and accounts, without displaying passwords.
+4. Check the mapping: names become titles, usernames become accounts, URLs become website fields and folders/tags become labels. Passwords, notes and favorites are retained. 1Password and Apple OTPAuth values become TOTP codes; multiple 1Password tags become separate labels; LastPass `http://sn` secure notes import as notes without a website. Identical entries are skipped; changed passwords or contents create separate entries without overwriting.
+5. Confirm and choose Save database. Select a separate encrypted backup directory before the first overwrite. Reopen the saved `.db` to check the results. Downloads only confirm export was started: check the file on disk. Carefully remove plaintext source exports only after verifying the encrypted save and complete migration.
 
-Bitwarden login entries and secure notes are supported. JSON retains multiple URLs and custom text, boolean and hidden fields. CSV custom fields are kept together as a private field. Unsupported TOTP secrets are preserved as private fields. Unsupported types such as cards and identities are counted and skipped; attachments, passkeys and linked fields generate warnings. Bitwarden URI matching and reprompt policies are not migrated; extension matching always uses exact HTTPS origins. Keep your original data until verification is complete.
+Attachments, passkeys, archived flags, card/identity types and source URL-matching rules are not migrated. Unsupported TOTP secrets are preserved as private fields. Keep your original data until verification is complete.
 
 Cancel, Esc, locking and completing an import release preview references. Imports do not upload files or automatically save the vault.
 

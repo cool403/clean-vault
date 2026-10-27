@@ -197,23 +197,23 @@ articles.push(
   {
     slug: 'import-passwords',
     zh: {
-      title: '从 Chrome 或 Bitwarden 导入密码',
+      title: '从其他密码管理器导入密码',
       description:
-        '在网页和浏览器扩展中本地导入 Chrome CSV、Bitwarden CSV / JSON，预览重复条目并验证加密保存。',
+        '在网页和浏览器扩展中本地导入 Chrome、Bitwarden、1Password、LastPass、Apple Passwords 或通用 CSV，预览重复条目并验证加密保存。',
       intro:
-        '先打开或新建 ClearVault 密码库，再导入已有密码。网页与扩展共用相同的导入预览、字段对应和重复检测。',
+        '先打开或新建 ClearVault 密码库，再导入已有密码。网页与扩展共用相同的导入预览、字段映射和重复检测；通用 CSV 可以逐列指定含义。',
       sections: [
         [
           '1. 从原工具导出',
-          'Chrome：打开 Google 密码管理工具的设置，选择导出密码，按系统提示验证身份并保存 CSV。Bitwarden：在导出密码库中选择未加密 CSV 或 JSON，JSON 更适合保留多个网址与自定义字段。通行密钥不属于 Chrome 密码 CSV。本地导出文件可能包含明文密码，请妥善保管。',
+          'Chrome 从 Google 密码管理工具导出 CSV；Bitwarden 导出未加密 CSV 或 JSON；1Password 导出 CSV；LastPass 从账户设置导出 CSV；Apple Passwords 导出全部密码 CSV。通用 CSV 需要第一行为列名。导出文件可能包含明文密码，请妥善保管。',
         ],
         [
           '2. 选择来源并预览',
-          '解锁目标 .db 后，在网页顶栏、偏好设置或扩展中点击“导入密码”，选择 Chrome CSV、Bitwarden CSV 或 Bitwarden JSON，再选择文件并点击“预览导入”。文件最大 20 MB，一次最多 10000 个条目。预览展示新增、重复、不支持的数量及前 10 个条目的名称和账号，不展示密码。',
+          '解锁目标 .db 后，在网页顶栏、偏好设置或扩展中点击“导入密码”，选择来源并选择文件。内置来源直接预览；通用 CSV 先映射名称、账号、密码、网址、备注、标签、验证码和收藏。文件最大 20 MB，一次最多 10000 个条目。预览展示新增、重复、不支持的数量及前 10 个条目的名称和账号，不展示密码。',
         ],
         [
           '3. 核对字段与保留范围',
-          '名称对应条目名称，用户名对应账号，密码对应密码，网址对应网站，备注保留，Bitwarden 文件夹对应标签、收藏对应收藏。支持登录和安全笔记；JSON 支持多个网址、自定义文本、布尔值与隐藏字段。CSV 自定义字段整体保留为私密字段。不支持的验证码密钥原样保留为私密字段。卡片、身份等类型会计数跳过；附件、通行密钥与关联字段会提示未导入。Bitwarden 的网址匹配规则和再次验证策略不迁移，扩展始终按精确 HTTPS 来源匹配。',
+          '名称对应条目名称，用户名对应账号，密码对应密码，网址对应网站，文件夹或标签对应标签，备注和收藏保留。1Password / Apple 的 OTPAuth 会导入为 TOTP；1Password 多个标签分别创建；LastPass 的 http://sn 安全笔记按备注导入。支持 Bitwarden 登录、安全笔记、多个网址和自定义字段。不支持的验证码密钥原样保留为私密字段。卡片、身份、附件、通行密钥、归档标记和原产品网址匹配规则不迁移。',
         ],
         [
           '4. 确认并保存',
@@ -222,27 +222,239 @@ articles.push(
       ],
     },
     en: {
-      title: 'Import passwords from Chrome or Bitwarden',
+      title: 'Import passwords from another password manager',
       description:
-        'Import Chrome CSV and Bitwarden CSV / JSON locally in the app or extension, preview duplicates and verify your encrypted save.',
+        'Import Chrome, Bitwarden, 1Password, LastPass, Apple Passwords or mapped generic CSV locally in the app or extension, preview duplicates and verify your encrypted save.',
       intro:
-        'Open or create a ClearVault vault first. The app and extension share the same import preview, mapping and duplicate checks.',
+        'Open or create a ClearVault vault first. The app and extension share the import preview, field mapping and duplicate checks; generic CSV files can map each column explicitly.',
       sections: [
         [
           '1. Export from your previous tool',
-          'In Chrome, open Google Password Manager settings and export passwords as CSV, completing system authentication. In Bitwarden, export an unencrypted CSV or JSON file; JSON retains multiple URLs and typed custom fields more accurately. Chrome password CSV does not contain passkeys. Export files may contain plain text passwords: handle them carefully.',
+          'Chrome exports CSV from Google Password Manager; Bitwarden exports unencrypted CSV or JSON; 1Password exports CSV; LastPass exports CSV from account settings; Apple Passwords exports all passwords as CSV. Generic CSV files need a header row. Export files may contain plain text passwords: handle them carefully.',
         ],
         [
           '2. Select a source and preview',
-          'Unlock the destination .db and choose Import passwords in the app toolbar, preferences or extension. Select Chrome CSV, Bitwarden CSV or Bitwarden JSON, choose the file and preview. The limit is 20 MB and 10,000 entries per file. Preview shows new, duplicate and unsupported counts and the first ten names and accounts, without displaying passwords.',
+          'Unlock the destination .db and choose Import passwords in the app toolbar, preferences or extension. Select a source and file. Built-in sources preview directly; generic CSV first maps title, username, password, URL, notes, tags, TOTP and favorite columns. The limit is 20 MB and 10,000 entries per file. Preview shows new, duplicate and unsupported counts and the first ten names and accounts, without displaying passwords.',
         ],
         [
           '3. Check mapping and supported data',
-          'Names map to titles, usernames to accounts, URLs to website fields and folders to labels. Passwords, notes and favorites are retained. Login entries and secure notes are supported. JSON retains multiple URLs and custom text, boolean and hidden fields. CSV custom fields are kept together as a private field. Unsupported authenticator secrets are retained as private fields. Unsupported item types are counted and skipped; attachments, passkeys and linked fields show warnings. Bitwarden URI match rules and reprompt policies are not migrated; extension matching always uses exact HTTPS origins.',
+          'Names map to titles, usernames to accounts, URLs to website fields, and folders or tags to labels. Passwords, notes and favorites are retained. 1Password and Apple OTPAuth values become TOTP codes; multiple 1Password tags become separate labels; LastPass http://sn secure notes import as notes. Bitwarden login entries, secure notes, multiple URLs and custom fields are supported. Unsupported authenticator secrets are retained as private fields. Cards, identities, attachments, passkeys, archived flags and source URL-matching rules are not migrated.',
         ],
         [
           '4. Confirm and save',
           'Identical entries are skipped. Entries with different passwords or contents are kept separately, without overwriting. Only confirmation changes the vault; cancellation or locking clears the preview. Save the database afterwards, selecting a separate encrypted backup directory before the first overwrite. If the browser only downloads files, verify the download and reopen the encrypted .db before carefully removing plain text exports.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'import-1password',
+    zh: {
+      title: '从 1Password 导入到 ClearVault',
+      description:
+        '从 1Password 导出 CSV，在浏览器本地预览并导入 ClearVault。保留账号、密码、网址、备注、标签、收藏和 TOTP。',
+      intro:
+        '1Password 导出的 CSV 是未加密的明文文件。ClearVault 只在本地读取它，确认预览并加密保存密码库后，请妥善删除源文件。',
+      sections: [
+        [
+          '1. 在 1Password 中导出 CSV',
+          '在 1Password 8 的账户菜单或设置中选择导出，格式选择 CSV，并完成账户身份验证。旧版本可能只提供 1PIF 或 1PUX；当前导入向导支持 CSV。',
+        ],
+        [
+          '2. 在 ClearVault 中预览并导入',
+          '打开或新建一个 .db 密码库并解锁，点击“导入密码”，来源选择 1Password CSV，选择导出文件并预览。确认新增、重复和不支持的数量后导入，再点击“保存数据库”。',
+        ],
+        [
+          '3. 会保留哪些内容',
+          '名称、用户名、密码、网址、备注、标签、收藏和 OTPAuth 验证码会导入；多个标签会分别创建。附件、通行密钥、归档标记和 1Password 的网址匹配规则不会迁移。',
+        ],
+        [
+          '4. 核对并清理明文文件',
+          '导入后重新打开 .db 核对条目，确认加密保存成功，再删除 1Password 导出的 CSV。不要把真实 CSV、主密码或 OTP 密钥上传到公开 issue、网站或聊天工具。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import from 1Password into ClearVault',
+      description:
+        'Export a 1Password CSV, preview it locally in the browser and import it into ClearVault. Keep logins, notes, tags, favorites and TOTP codes.',
+      intro:
+        'A 1Password CSV export is unencrypted plaintext. ClearVault reads it locally; verify the preview, save the encrypted vault and then delete the source file.',
+      sections: [
+        [
+          '1. Export a CSV from 1Password',
+          'In 1Password 8, use the account menu or Settings to export, choose CSV and complete authentication. Older versions may offer only 1PIF or 1PUX; the current ClearVault wizard supports CSV.',
+        ],
+        [
+          '2. Preview and import in ClearVault',
+          'Open or create a .db vault and unlock it. Choose Import passwords, select 1Password CSV, pick the export and preview it. Review new, duplicate and unsupported counts, import, then choose Save database.',
+        ],
+        [
+          '3. What is preserved',
+          'Titles, usernames, passwords, URLs, notes, tags, favorites and OTPAuth codes are imported. Multiple tags become separate labels. Attachments, passkeys, archived flags and 1Password URL-matching rules are not migrated.',
+        ],
+        [
+          '4. Verify and remove the plaintext file',
+          'Reopen the .db to verify entries, confirm the encrypted save succeeded and then delete the 1Password CSV. Never upload a real CSV, master password or OTP secret to a public issue, website or chat.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'import-lastpass',
+    zh: {
+      title: '从 LastPass 导入到 ClearVault',
+      description:
+        '导出 LastPass CSV，在本地预览并导入 ClearVault。保留登录、备注、文件夹和收藏，安全笔记按备注导入。',
+      intro:
+        'LastPass 导出的 CSV 是未加密文件。导入过程不会上传它；完成加密保存和核对后请删除源文件。',
+      sections: [
+        [
+          '1. 从 LastPass 导出',
+          '打开 LastPass 账户设置中的高级选项，选择导出，输入主密码并确认导出 CSV。文件包含网址、用户名、密码、备注、名称、文件夹和收藏标记。',
+        ],
+        [
+          '2. 在 ClearVault 中导入',
+          '打开 .db 并解锁，选择“导入密码” → LastPass CSV，选择文件并预览。核对新增、重复和不支持的数量，确认后保存数据库。',
+        ],
+        [
+          '3. 安全笔记和文件夹',
+          'LastPass 用 http://sn 表示安全笔记；ClearVault 会把备注导入为条目备注，而不会创建虚假网站。文件夹会导入为标签，收藏标记保留。LastPass 附件、通行密钥和网址匹配规则不会迁移。',
+        ],
+        [
+          '4. 核对与清理',
+          '重新打开 .db 检查登录和安全笔记，确认加密保存成功后再删除 LastPass CSV。不要把真实导出文件或主密码发送给他人。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import from LastPass into ClearVault',
+      description:
+        'Export a LastPass CSV, preview it locally and import it into ClearVault. Keep logins, notes, folders and favorites; secure notes import as notes.',
+      intro:
+        'A LastPass CSV export is unencrypted. The import does not upload it; delete the source after verifying the encrypted save.',
+      sections: [
+        [
+          '1. Export from LastPass',
+          'Open LastPass account settings, choose Advanced Options and Export, enter the master password and confirm the CSV download. The file contains URLs, usernames, passwords, notes, names, folders and favorite flags.',
+        ],
+        [
+          '2. Import in ClearVault',
+          'Open and unlock a .db vault, choose Import passwords → LastPass CSV, select the file and preview. Review new, duplicate and unsupported counts, confirm and save the database.',
+        ],
+        [
+          '3. Secure notes and folders',
+          'LastPass uses http://sn for secure notes; ClearVault imports the note text without creating a fake website. Folders become labels and favorites are retained. LastPass attachments, passkeys and URL-matching rules are not migrated.',
+        ],
+        [
+          '4. Verify and clean up',
+          'Reopen the .db to check logins and secure notes, then delete the LastPass CSV after the encrypted save is verified. Never send a real export or master password to anyone.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'import-apple-passwords',
+    zh: {
+      title: '从 Apple Passwords 导入到 ClearVault',
+      description:
+        '从 Apple Passwords 导出 CSV，在本地导入 ClearVault。保留登录、备注和 OTPAuth 验证码，不上传导出文件。',
+      intro:
+        'Apple Passwords 的 CSV 导出是明文文件。ClearVault 在浏览器本地读取并预览，导入后请验证加密保存并删除源文件。',
+      sections: [
+        [
+          '1. 从 Apple Passwords 导出',
+          '在 macOS 15 / iOS 18 或更新版本的 Passwords App 中选择导出全部密码，完成系统身份验证并保存 CSV。不同系统版本的菜单名称可能略有差异。',
+        ],
+        [
+          '2. 在 ClearVault 中导入',
+          '打开 .db 并解锁，选择“导入密码” → Apple Passwords CSV，选择文件并预览。核对数量后确认导入，再保存数据库。',
+        ],
+        [
+          '3. 字段和验证码',
+          '标题、网址、用户名、密码、备注和 OTPAuth 会导入；OTPAuth 会生成 TOTP 验证码。附件、通行密钥和 Apple 的账户/设备绑定信息不会迁移。',
+        ],
+        [
+          '4. 删除明文导出',
+          '重新打开密码库核对结果，确认“已验证保存”后再删除 CSV。不要把真实导出、主密码或验证密钥上传到公开位置。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import from Apple Passwords into ClearVault',
+      description:
+        'Export a CSV from Apple Passwords and import it locally into ClearVault. Keep logins, notes and OTPAuth codes without uploading the export.',
+      intro:
+        'Apple Passwords CSV exports are plaintext. ClearVault reads and previews them locally; verify the encrypted save and delete the source afterwards.',
+      sections: [
+        [
+          '1. Export from Apple Passwords',
+          'In the Passwords app on macOS 15 / iOS 18 or later, choose Export All Passwords, complete system authentication and save the CSV. Menu names can differ slightly by OS version.',
+        ],
+        [
+          '2. Import in ClearVault',
+          'Open and unlock a .db vault, choose Import passwords → Apple Passwords CSV, select the file and preview. Confirm the counts, import and save the database.',
+        ],
+        [
+          '3. Fields and codes',
+          'Titles, URLs, usernames, passwords, notes and OTPAuth values are imported; OTPAuth creates TOTP codes. Attachments, passkeys and Apple account or device binding details are not migrated.',
+        ],
+        [
+          '4. Delete the plaintext export',
+          'Reopen the vault, verify the result and confirm the verified save, then delete the CSV. Never upload a real export, master password or OTP secret to a public location.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'import-generic-csv',
+    zh: {
+      title: '导入任意 CSV 到 ClearVault',
+      description:
+        '用字段映射把任意带表头的 CSV 导入 ClearVault，映射名称、账号、密码、网址、备注、标签、验证码和收藏。',
+      intro:
+        '如果其他密码管理器或自建表格导出的是普通 CSV，可以选择“通用 CSV（手动映射）”，逐列指定含义后预览导入。文件不会上传。',
+      sections: [
+        [
+          '1. 准备 CSV',
+          '确保第一行是列名，后续每行是一个条目。列名不需要固定；导入时会让你选择每一列对应什么字段。',
+        ],
+        [
+          '2. 选择文件并映射',
+          '在 ClearVault 中打开 .db，选择“导入密码” → 通用 CSV（手动映射），选择文件。为条目名称、账号、密码、网站、备注、标签、两步验证码和收藏选择对应列；未使用的列会忽略。',
+        ],
+        [
+          '3. 预览和重复检测',
+          '预览会显示新增、重复和不支持的数量，以及前 10 个名称和账号，不显示密码。完全相同的条目会跳过，内容不同的条目会分别保留。',
+        ],
+        [
+          '4. 保存与清理',
+          '确认导入后点击“保存数据库”，重新打开 .db 核对结果。CSV 是明文文件，验证加密保存后请删除。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import any CSV into ClearVault',
+      description:
+        'Map columns from any CSV with headers into ClearVault: title, account, password, URL, notes, tags, codes and favorites.',
+      intro:
+        'If another password manager or spreadsheet exports a plain CSV, choose Generic CSV (manual mapping), assign each column and preview the import. The file is never uploaded.',
+      sections: [
+        [
+          '1. Prepare the CSV',
+          'The first row must contain column names; each following row is an entry. Column names are flexible because you map them during import.',
+        ],
+        [
+          '2. Select and map the file',
+          'Open a .db in ClearVault, choose Import passwords → Generic CSV (manual mapping) and select the file. Map title, username, password, URL, notes, tags, TOTP and favorite columns; unused columns are ignored.',
+        ],
+        [
+          '3. Preview and duplicates',
+          'Preview shows new, duplicate and unsupported counts plus the first ten names and accounts, never passwords. Identical entries are skipped; differing entries are kept separately.',
+        ],
+        [
+          '4. Save and clean up',
+          'Confirm the import, choose Save database and reopen the .db to verify. The CSV is plaintext; delete it after the encrypted save is verified.',
         ],
       ],
     },
@@ -328,7 +540,7 @@ export const security = {
       ],
       [
         '浏览器保存什么',
-        'localStorage 仅保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量和最近使用条目 ID/时间等非敏感偏好与排序元数据；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。OPFS 本地快照只保存加密的 .db 密文。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+        'localStorage 仅保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量、最近使用条目 ID/时间和新手清单完成状态等非敏感偏好与排序元数据；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。OPFS 本地快照只保存加密的 .db 密文。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
       ],
       [
         '剪贴板清除是尽力而为',
@@ -381,7 +593,7 @@ export const security = {
       ],
       [
         'What the browser stores',
-        'localStorage stores only non-sensitive preferences and ordering metadata such as the interface language, auto-lock minutes, clipboard-clear delay, snapshot retention and recent entry IDs/times. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. OPFS local snapshots contain only encrypted .db ciphertext. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
+        'localStorage stores only non-sensitive preferences and ordering metadata such as the interface language, auto-lock minutes, clipboard-clear delay, snapshot retention, recent entry IDs/times and getting-started checklist completion. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. OPFS local snapshots contain only encrypted .db ciphertext. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
       ],
       [
         'Clipboard clearing is best effort',

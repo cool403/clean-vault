@@ -50,6 +50,44 @@ export function parseCSV(source) {
   });
 }
 const string = (value) => (typeof value === 'string' ? value : '');
+const aliases = {
+  title: ['title', 'name', 'entry', 'item'],
+  username: ['username', 'login_username', 'user', 'login', 'account'],
+  password: ['password', 'login_password', 'pass', 'secret'],
+  url: ['url', 'website', 'login_uri', 'uri', 'web site', 'site', 'link'],
+  notes: ['notes', 'note', 'extra', 'comments', 'memo'],
+  folder: ['folder', 'grouping', 'tags', 'group', 'category'],
+  otp: ['otpauth', 'otp', 'one-time password', 'one_time_password', 'totp', '2fa'],
+  favorite: ['favorite', 'fav', 'starred', 'star'],
+};
+export function guessCSVMapping(headers) {
+  const normalized = headers.map((header) => String(header).trim().toLowerCase());
+  const mapping = {};
+  for (const [key, candidates] of Object.entries(aliases)) {
+    const found = candidates.find((candidate) => normalized.includes(candidate));
+    if (found) mapping[key] = found;
+  }
+  return mapping;
+}
+function mappedValue(row, mapping, key) {
+  const header = mapping?.[key];
+  return header ? string(row[String(header).trim().toLowerCase()]) : '';
+}
+function mappedFolders(value) {
+  return [
+    ...new Set(
+      String(value || '')
+        .split(/[,;]/)
+        .map((folder) => folder.trim())
+        .filter(Boolean),
+    ),
+  ];
+}
+const mappedFavorite = (value) => ['1', 'true', 'yes', 'y'].includes(String(value).toLowerCase());
+function folderIdentity(item) {
+  const folders = item.folders?.filter(Boolean) || (item.folder ? [item.folder] : []);
+  return [...new Set(folders)].sort().join('\n');
+}
 const coreNames = () => ({
   login: t('账号'),
   password: t('密码'),
@@ -80,7 +118,7 @@ function basicFields(username, password, uris, otp, warnings) {
     .filter(([, value]) => value !== '')
     .map(([type, value]) => ({ type, value, name: names[type] || t('验证密钥') }));
 }
-export function parseImport(source, format) {
+export function parseImport(source, format, options = {}) {
   if (new TextEncoder().encode(source).length > 20 * 1024 * 1024)
     throw new Error(t('导入文件不能超过 20 MB'));
   let records = [],
@@ -143,8 +181,8 @@ export function parseImport(source, format) {
     }
   } else {
     const rows = parseCSV(source);
-    for (const row of rows) {
-      if (format === 'chrome-csv') {
+    if (format === 'chrome-csv') {
+      for (const row of rows) {
         if (!['name', 'url', 'username', 'password'].every((key) => Object.hasOwn(row, key)))
           throw new Error(t('文件列与所选来源不匹配，请检查导入格式'));
         records.push(
@@ -156,7 +194,9 @@ export function parseImport(source, format) {
             basicFields(row.username, row.password, [row.url].filter(Boolean), '', warnings),
           ),
         );
-      } else if (format === 'bitwarden-csv') {
+      }
+    } else if (format === 'bitwarden-csv') {
+      for (const row of rows) {
         if (
           !['type', 'name', 'login_uri', 'login_username', 'login_password'].every((key) =>
             Object.hasOwn(row, key),
@@ -185,7 +225,64 @@ export function parseImport(source, format) {
             values,
           ),
         );
+      }
+    } else {
+      const headers = rows.length ? Object.keys(rows[0]) : [];
+      let mapping;
+      if (format === 'lastpass-csv') {
+        if (!['name', 'url', 'username', 'password'].every((key) => headers.includes(key)))
+          throw new Error(t('文件列与所选来源不匹配，请检查导入格式'));
+        mapping = {
+          title: 'name',
+          username: 'username',
+          password: 'password',
+          url: 'url',
+          notes: 'extra',
+          folder: 'grouping',
+          favorite: 'fav',
+        };
+      } else if (format === '1password-csv' || format === 'apple-csv' || format === 'generic-csv') {
+        mapping =
+          format === 'generic-csv'
+            ? options.mapping || guessCSVMapping(headers)
+            : guessCSVMapping(headers);
+        if (format === 'generic-csv') {
+          if (!mapping || !Object.values(mapping).some(Boolean))
+            throw new Error(t('请至少映射一个 CSV 字段'));
+          if (!['title', 'username', 'password', 'url', 'notes'].some((key) => mapping[key]))
+            throw new Error(t('请至少映射条目名称、账号、密码、网址或备注中的一列'));
+        } else if (
+          !['title', 'name'].some((key) => headers.includes(key)) ||
+          !['username', 'password', 'url', 'website', 'otpauth', 'notes', 'note'].some((key) =>
+            headers.includes(key),
+          )
+        ) {
+          throw new Error(t('文件列与所选来源不匹配，请检查导入格式'));
+        }
       } else throw new Error(t('文件列与所选来源不匹配，请检查导入格式'));
+      for (const row of rows) {
+        const title = mappedValue(row, mapping, 'title');
+        const username = mappedValue(row, mapping, 'username');
+        const password = mappedValue(row, mapping, 'password');
+        const notes = mappedValue(row, mapping, 'notes');
+        const otp = mappedValue(row, mapping, 'otp').trim();
+        let url = mappedValue(row, mapping, 'url').trim();
+        if (format === 'lastpass-csv' && url.toLowerCase() === 'http://sn') url = '';
+        if (![title, username, password, url, notes, otp].some(Boolean)) {
+          skipped++;
+          continue;
+        }
+        const folders = mappedFolders(mappedValue(row, mapping, 'folder'));
+        const entry = record(
+          title,
+          notes,
+          mappedFavorite(mappedValue(row, mapping, 'favorite')),
+          folders.length === 1 ? folders[0] : '',
+          basicFields(username, password, url ? [url] : [], otp, warnings),
+        );
+        if (folders.length > 1) entry.folders = folders;
+        records.push(entry);
+      }
     }
   }
   if (!records.length && !skipped) throw new Error(t('导入文件中没有条目'));
@@ -196,7 +293,7 @@ function identity(item) {
     item.title,
     item.notes,
     item.favorite,
-    item.folder,
+    folderIdentity(item),
     item.fields
       .map((field) => [
         field.type,
@@ -269,14 +366,15 @@ export function applyImport(doc, plan) {
       notes.textContent = item.notes;
       card.append(notes);
     }
-    if (item.folder) {
-      let label = labels.get(item.folder);
+    const folders = item.folders?.filter(Boolean) || (item.folder ? [item.folder] : []);
+    for (const folderName of new Set(folders)) {
+      let label = labels.get(folderName);
       if (!label) {
         label = doc.createElement('label');
         label.setAttribute('id', newCard(doc, ids).getAttribute('id'));
-        label.setAttribute('name', item.folder);
+        label.setAttribute('name', folderName);
         doc.documentElement.append(label);
-        labels.set(item.folder, label);
+        labels.set(folderName, label);
       }
       const reference = doc.createElement('label_id');
       reference.textContent = label.getAttribute('id');

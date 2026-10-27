@@ -1,5 +1,5 @@
 import { t, getLocale } from './i18n.js';
-import { parseImport, planImport } from './import-data.js';
+import { parseCSV, guessCSVMapping, parseImport, planImport } from './import-data.js';
 
 export const escapeHTML = (value) =>
   String(value ?? '').replace(
@@ -58,7 +58,7 @@ export function createImportWizard({ dialog, getDoc, show, close, commit }) {
     opened = true;
     const version = generation;
     present(
-      `<form id="import-form">${heading(t('导入密码'))}<label class="form-label">${t('导入来源')}<select name="format"><option value="chrome-csv">Chrome CSV</option><option value="bitwarden-csv">Bitwarden CSV</option><option value="bitwarden-json">Bitwarden JSON</option></select></label><p class="form-help">${t('支持 Chrome 密码 CSV、Bitwarden 未加密 CSV / JSON 的登录和安全笔记。')}</p><label class="form-label">${t('选择导出文件')}<input name="file" type="file" accept=".csv,.json,text/csv,application/json" required></label><p class="workflow-notice">${t('导出文件可能含明文密码，请在完成导入并验证加密保存后妥善清理。')}</p><p class="form-error" role="alert"></p><div class="modal-footer">${cancel()}<button type="submit" class="button primary">${t('预览导入')}</button></div></form>`,
+      `<form id="import-form">${heading(t('导入密码'))}<label class="form-label">${t('导入来源')}<select name="format"><option value="chrome-csv">Chrome CSV</option><option value="bitwarden-csv">Bitwarden CSV</option><option value="bitwarden-json">Bitwarden JSON</option><option value="1password-csv">1Password CSV</option><option value="lastpass-csv">LastPass CSV</option><option value="apple-csv">Apple Passwords CSV</option><option value="generic-csv">${t('通用 CSV（手动映射）')}</option></select></label><p class="form-help">${t('支持 Chrome、Bitwarden、1Password、LastPass、Apple Passwords 以及带表头的通用 CSV。')}</p><label class="form-label">${t('选择导出文件')}<input name="file" type="file" accept=".csv,.json,text/csv,application/json" required></label><p class="workflow-notice">${t('导出文件可能含明文密码，请在完成导入并验证加密保存后妥善清理。')}</p><p class="form-error" role="alert"></p><div class="modal-footer">${cancel()}<button type="submit" class="button primary">${t('预览导入')}</button></div></form>`,
     );
     const form = dialog.querySelector('#import-form');
     form.elements.format.value = sourceFormat;
@@ -76,6 +76,14 @@ export function createImportWizard({ dialog, getDoc, show, close, commit }) {
         sourceFormat = form.elements.format.value;
         const source = await file.text();
         if (generation !== version || !form.isConnected || getDoc() !== doc || !doc) return;
+        if (sourceFormat === 'generic-csv') {
+          const rows = parseCSV(source);
+          const headers = rows.length ? Object.keys(rows[0]) : [];
+          if (!headers.length) throw new Error(t('导入文件中没有条目'));
+          form.elements.file.value = '';
+          mappingStep(doc, source, headers, version);
+          return;
+        }
         plan = planImport(doc, parseImport(source, sourceFormat));
         form.elements.file.value = '';
         preview(doc);
@@ -84,6 +92,50 @@ export function createImportWizard({ dialog, getDoc, show, close, commit }) {
           form.querySelector('.form-error').textContent = error.message || t('操作未完成，请重试');
       } finally {
         button.disabled = false;
+      }
+    };
+  }
+  function mappingStep(doc, source, headers, version) {
+    const guessed = guessCSVMapping(headers);
+    const options = (key) =>
+      `<option value="">${t('（不使用）')}</option>${headers
+        .map(
+          (header) =>
+            `<option value="${escapeHTML(header)}" ${guessed[key] === header ? 'selected' : ''}>${escapeHTML(header)}</option>`,
+        )
+        .join('')}`;
+    const field = (key, label) =>
+      `<label class="form-label">${label}<select name="${key}">${options(key)}</select></label>`;
+    present(
+      `<form id="import-map">${heading(t('映射 CSV 字段'))}<p class="form-help">${t('选择对应的列，未使用的列会忽略。')}</p>${field('title', t('条目名称'))}${field('username', t('账号'))}${field('password', t('密码'))}${field('url', t('网站'))}${field('notes', t('备注'))}${field('folder', t('标签'))}${field('otp', t('两步验证码'))}${field('favorite', t('收藏'))}<p class="form-error" role="alert"></p><div class="modal-footer"><button type="button" class="button secondary" data-import-back>${t('重新选择')}</button>${cancel()}<button type="submit" class="button primary">${t('预览导入')}</button></div></form>`,
+    );
+    dialog.querySelector('[data-import-back]').onclick = open;
+    const form = dialog.querySelector('#import-map');
+    form.onsubmit = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const mapping = {};
+      for (const key of [
+        'title',
+        'username',
+        'password',
+        'url',
+        'notes',
+        'folder',
+        'otp',
+        'favorite',
+      ]) {
+        const value = form.elements[key].value;
+        if (value) mapping[key] = value;
+      }
+      try {
+        const parsed = parseImport(source, 'generic-csv', { mapping });
+        if (generation !== version || !form.isConnected || getDoc() !== doc || !doc) return;
+        plan = planImport(doc, parsed);
+        preview(doc);
+      } catch (error) {
+        if (form.isConnected)
+          form.querySelector('.form-error').textContent = error.message || t('操作未完成，请重试');
       }
     };
   }

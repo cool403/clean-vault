@@ -51,7 +51,8 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 - Each save attempts to write encrypted `.db` ciphertext to a local OPFS snapshot, keeping 10 by default. External file changes prompt you to save a copy or reload instead of overwriting.
 - The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, searching all entries, copying usernames/passwords, creating an entry for the current website, showing/copying/filling TOTP codes, confirmed password updates, imports and verified saves, without submitting forms.
 - Recent vaults remembers up to five names and file handles. Select a containing directory to show its last confirmed folder name and relative location. The current session also unlocks through this list, preserving unsaved edits. Remove or clear history records anytime.
-- Import Chrome password CSV and unencrypted Bitwarden CSV / JSON with preview, field mapping and duplicate checks, without overwriting entries. The app and extension share this flow.
+- Import from Chrome, Bitwarden, 1Password, LastPass and Apple Passwords; map columns for generic CSV. Preview and duplicate checks never overwrite existing entries. The app and extension share this flow.
+- New empty vaults show a dismissible getting-started checklist: import/first entry, install the extension, first fill, TOTP and backups.
 
 Quick search opens automatically after unlocking an existing vault. It searches titles, usernames, emails, websites, labels and pinyin initials, excluding passwords, PINs, OTP secrets and notes.
 
@@ -70,7 +71,7 @@ Shortcuts work while the application has focus. Search supports IME input and do
 
 ## Data and security boundaries
 
-Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences and ordering metadata such as interface language, auto-lock minutes, clipboard-clear delay, snapshot retention and recent entry IDs/times. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. OPFS snapshots contain only encrypted `.db` ciphertext, never plaintext vault data. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
+Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences and ordering metadata such as interface language, auto-lock minutes, clipboard-clear delay, snapshot retention, recent entry IDs/times and getting-started checklist completion. IndexedDB stores recent file names, handles, record IDs, times and user-confirmed folder text labels, with removable history. OPFS snapshots contain only encrypted `.db` ciphertext, never plaintext vault data. Browsers do not expose full local paths; folder labels are historical and directory handles are not stored. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
 
 Editing preserves unknown XML, attachments, images and history. Binary fields are read-only. Attachment management, cloud sync, Passkeys, camera scanning, Firefox extensions and damaged XML repair are not supported. TOTP codes do not add another vault-unlock factor.
 
@@ -95,7 +96,7 @@ You can also store the secrets in the `production` Environment. Never commit tok
 
 Run `npm run build:extension`. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. Reload after updating. On the target website, click the icon and open your `.db` or a recent vault. Search all entries, copy usernames/passwords, create an entry for the current website, and copy or fill TOTP codes. New websites need authorization. External changes stop filling: save edits as a copy, reload the file and unlock. Hiding the sidebar no longer locks immediately; the selected idle timeout applies.
 
-See the [usage guide](docs/USAGE.en.md) for recent files, imports, multistep filling, multiple URLs, password updates and saving. Matching public guides are generated at `/en/guides/import-passwords/` and `/en/guides/browser-extension/`.
+See the [usage guide](docs/USAGE.en.md) for recent files, imports, multistep filling, multiple URLs, password updates and saving. Matching public guides are generated at `/en/guides/import-passwords/`, `/en/guides/import-1password/`, `/en/guides/import-lastpass/`, `/en/guides/import-apple-passwords/`, `/en/guides/import-generic-csv/` and `/en/guides/browser-extension/`.
 
 For self-hosting, run `npm run test:release` and serve `release/web/` from an HTTPS static host. See [self-hosting](docs/SELF-HOSTING.en.md) for Docker, backup and installation details.
 

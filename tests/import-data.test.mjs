@@ -130,3 +130,78 @@ test('Bitwarden CSV retains custom fields and unsupported TOTP as secrets', () =
     /10,000/,
   );
 });
+
+test('1Password, LastPass, Apple and mapped CSV imports preserve logins, notes, TOTP and tags', () => {
+  const onePassword =
+    'Title,Url,Username,Password,OTPAuth,Favorite,Archived,Tags,Notes\nGitHub,https://github.com,alice,secret,otpauth://totp/GitHub:alice?secret=JBSWY3DPEHPK3PXP&issuer=GitHub,true,false,"Work, Dev",memo\n';
+  const one = parseImport(onePassword, '1password-csv');
+  assert.equal(one.records.length, 1);
+  assert.equal(one.records[0].favorite, true);
+  assert.deepEqual(one.records[0].folders, ['Work', 'Dev']);
+  assert.equal(
+    one.records[0].fields
+      .find((field) => field.type === 'one_time_password')
+      .value.includes('otpauth://'),
+    true,
+  );
+  const doc = parseVault('<database/>');
+  applyImport(doc, planImport(doc, one));
+  assert.equal(cards(doc).length, 1);
+  assert.deepEqual(
+    children(doc.documentElement, 'label')
+      .map((label) => label.getAttribute('name'))
+      .sort(),
+    ['Dev', 'Work'],
+  );
+  assert.equal(planImport(doc, parseImport(onePassword, '1password-csv')).duplicates, 1);
+
+  const lastpass =
+    'url,username,password,extra,name,grouping,fav\nhttps://example.com,bob,secret,"line1\nline2",Example,Work\\Mail,1\nhttp://sn,,,A secure note,Note,Personal,0\n';
+  const last = parseImport(lastpass, 'lastpass-csv');
+  assert.equal(last.records.length, 2);
+  assert.equal(last.records[0].notes, 'line1\nline2');
+  assert.equal(last.records[0].folder, 'Work\\Mail');
+  assert.equal(last.records[0].favorite, true);
+  assert.equal(
+    last.records[1].fields.some((field) => field.type === 'website'),
+    false,
+    'LastPass secure notes do not import http://sn as a website',
+  );
+
+  const apple =
+    'Title,URL,Username,Password,Notes,OTPAuth\nApple,https://appleid.apple.com,alice,secret,memo,otpauth://totp/Apple:alice?secret=JBSWY3DPEHPK3PXP\n';
+  const appleParsed = parseImport(apple, 'apple-csv');
+  assert.equal(appleParsed.records.length, 1);
+  assert.equal(appleParsed.records[0].fields.filter((field) => field.type === 'website').length, 1);
+  assert.equal(
+    appleParsed.records[0].fields.some((field) => field.type === 'one_time_password'),
+    true,
+  );
+
+  const generic =
+    'Name,Login,Secret,Site,Memo,Group,Code,Star\nGeneric,carol,pass,https://example.com,note,Work,JBSWY3DPEHPK3PXP,1\n';
+  const mapping = {
+    title: 'name',
+    username: 'login',
+    password: 'secret',
+    url: 'site',
+    notes: 'memo',
+    folder: 'group',
+    otp: 'code',
+    favorite: 'star',
+  };
+  const mapped = parseImport(generic, 'generic-csv', { mapping });
+  assert.equal(mapped.records.length, 1);
+  assert.equal(mapped.records[0].title, 'Generic');
+  assert.equal(mapped.records[0].favorite, true);
+  assert.equal(mapped.records[0].folder, 'Work');
+  assert.equal(
+    mapped.records[0].fields.some((field) => field.type === 'one_time_password'),
+    true,
+  );
+  assert.throws(() => parseImport('Alpha,Beta\nx,y\n', 'generic-csv'), /Map at least/);
+  assert.throws(
+    () => parseImport('Title,Archived\nOnly title,false\n', '1password-csv'),
+    /columns/,
+  );
+});

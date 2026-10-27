@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="用字段映射把任意带表头的 CSV 导入 ClearVault，映射名称、账号、密码、网址、备注、标签、验证码和收藏。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>导入任意 CSV 到 ClearVault · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/guides/import-generic-csv/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/import-generic-csv/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/import-generic-csv/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/import-generic-csv/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="导入任意 CSV 到 ClearVault · ClearVault" />
+    <meta
+      property="og:description"
+      content="用字段映射把任意带表头的 CSV 导入 ClearVault，映射名称、账号、密码、网址、备注、标签、验证码和收藏。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/guides/import-generic-csv/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a
+        ><a href="/en/guides/import-generic-csv/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">使用指南</span>
+        <h1>导入任意 CSV 到 ClearVault</h1>
+        <p class="lead">
+          如果其他密码管理器或自建表格导出的是普通 CSV，可以选择“通用
+          CSV（手动映射）”，逐列指定含义后预览导入。文件不会上传。
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">1. 准备 CSV</a
+          ><a href="#section-2">2. 选择文件并映射</a><a href="#section-3">3. 预览和重复检测</a
+          ><a href="#section-4">4. 保存与清理</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. 准备 CSV</h2>
+            <p>
+              确保第一行是列名，后续每行是一个条目。列名不需要固定；导入时会让你选择每一列对应什么字段。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. 选择文件并映射</h2>
+            <p>
+              在 ClearVault 中打开 .db，选择“导入密码” → 通用
+              CSV（手动映射），选择文件。为条目名称、账号、密码、网站、备注、标签、两步验证码和收藏选择对应列；未使用的列会忽略。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. 预览和重复检测</h2>
+            <p>
+              预览会显示新增、重复和不支持的数量，以及前 10
+              个名称和账号，不显示密码。完全相同的条目会跳过，内容不同的条目会分别保留。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>4. 保存与清理</h2>
+            <p>
+              确认导入后点击“保存数据库”，重新打开 .db 核对结果。CSV
+              是明文文件，验证加密保存后请删除。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
+            ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/guides/import-passwords/">从其他密码管理器导入密码 ↗</a
+            ><a href="/guides/import-1password/">从 1Password 导入到 ClearVault ↗</a
+            ><a href="/guides/import-lastpass/">从 LastPass 导入到 ClearVault ↗</a
+            ><a href="/guides/import-apple-passwords/">从 Apple Passwords 导入到 ClearVault ↗</a
+            ><a href="/guides/browser-extension/">扩展教程：填充、搜索、OTP 与新建条目 ↗</a
+            ><a href="/security/">安全与隐私 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.4 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>

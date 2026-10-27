@@ -93,8 +93,8 @@ for (const locale of ['zh', 'en']) {
     otherP + '/guides/',
     en ? 'Guides for your local password vault' : '本地密码库使用指南',
     en
-      ? 'Practical ClearVault guides: open SafeInCloud DB files, use Linux and offline mode, and set up TOTP authentication codes.'
-      : 'ClearVault 实用教程：打开 SafeInCloud DB、在 Linux 离线使用密码库、设置 TOTP 双重验证与保存备份。',
+      ? 'Practical ClearVault guides: open SafeInCloud DB files, use Linux and offline mode, import from 1Password, LastPass or Apple Passwords, and set up TOTP codes.'
+      : 'ClearVault 实用教程：打开 SafeInCloud DB、在 Linux 离线使用密码库、从 1Password / LastPass / Apple Passwords 导入，以及设置 TOTP 双重验证与保存备份。',
     `<section class="hero"><span class="eyebrow">A LITTLE HELP, WHEN YOU NEED IT</span><h1>${en ? 'A calmer way<br>to get started.' : '从容开始，<br>安心使用。'}</h1><p>${en ? 'Practical guides for the files, passwords and codes you keep close.' : '从打开第一份数据库，到保存、备份和两步验证。每一步，都说清楚。'}</p></section><div class="guide-grid">${cards}</div><aside class="notice">${en ? 'Before you start: keep an independent encrypted backup and try a copy of your database.' : '开始前，请保留独立的加密备份，并先用数据库副本验证。'} ${link(p + '/security/', n.security + ' ↗')}</aside>`,
   );
   for (const a of [...articles, { slug: null, ...security }]) {

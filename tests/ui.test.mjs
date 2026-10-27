@@ -157,6 +157,14 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   document.querySelector('#password-form').elements.acknowledge.checked = true;
   submit('#password-form');
   await waitFor(() => !!document.querySelector('[data-action=new]'));
+  assert.ok(document.querySelector('.onboarding-card'), 'a new vault shows the checklist');
+  const extensionStep = document.querySelector('[data-onboarding=extension]');
+  assert.ok(extensionStep);
+  extensionStep.checked = true;
+  extensionStep.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  assert.match(document.querySelector('.onboarding-head small').textContent, /1\/5/);
+  click('[data-action=onboarding-dismiss]');
+  assert.equal(document.querySelector('.onboarding-card'), null);
   // Empty OTP template fields must not imply a configured authenticator.
   click('[data-action=new]');
   formValue('#editor-form', 'title', '没有双重验证的条目');

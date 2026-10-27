@@ -51,7 +51,8 @@ npm run test:release
 - 每次保存后尝试把加密 `.db` 密文写入浏览器 OPFS 本地快照，默认保留 10 份；外部文件变化会提示另存副本或重新加载，避免覆盖。
 - Chrome / Edge 扩展支持分步登录、多个明确添加的 HTTPS 地址、搜索所有条目、复制账号/密码、为当前网站新建条目、显示/复制/填入 TOTP 验证码、确认更新密码、导入与验证保存；不自动提交。
 - 最近 5 个密码库：记住名称和文件句柄，可选择包含文件的目录并显示上次确认的文件夹名及相对目录；当前会话也统一在列表中解锁并保留未保存修改；可移除或清空历史记录。
-- Chrome 密码 CSV、Bitwarden 未加密 CSV / JSON 导入：预览、字段对应、重复检测，不覆盖已有条目。网页与扩展共用导入流程。
+- Chrome、Bitwarden、1Password、LastPass、Apple Passwords 导入；通用 CSV 可手动映射列。预览、重复检测，不覆盖已有条目。网页与扩展共用导入流程。
+- 新建空密码库时显示可关闭的新手清单：导入/首条记录、安装扩展、首次填充、TOTP、备份。
 
 解锁已有库时自动打开快速查找，搜索标题、账号、邮箱、网站、标签和拼音首字母，不索引密码、PIN、OTP 或备注。
 
@@ -70,7 +71,7 @@ npm run test:release
 
 ## 数据与安全边界
 
-主密码、解密 XML 和 OTP 密钥不写入 localStorage / IndexedDB，不通过网络上传。localStorage 只保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量和最近使用条目 ID/时间等非敏感偏好与排序元数据；IndexedDB 只保存最近文件名称、句柄、记录 ID、时间和用户确认的目录文字标记，可清空。OPFS 本地快照只保存加密 `.db` 密文，不包含明文密码库。浏览器不提供完整本地路径，目录标记为历史信息，目录句柄不保存。网页与扩展的最近记录相互独立，权限可能过期；存储不可用时仅保留会话记录。Service Worker 只缓存应用资源，备份目录和保留设置仅在当前会话有效。托管服务器仍能看到访问 IP 和 HTTP 元数据。
+主密码、解密 XML 和 OTP 密钥不写入 localStorage / IndexedDB，不通过网络上传。localStorage 只保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量、最近使用条目 ID/时间和新手清单完成状态等非敏感偏好与排序元数据；IndexedDB 只保存最近文件名称、句柄、记录 ID、时间和用户确认的目录文字标记，可清空。OPFS 本地快照只保存加密 `.db` 密文，不包含明文密码库。浏览器不提供完整本地路径，目录标记为历史信息，目录句柄不保存。网页与扩展的最近记录相互独立，权限可能过期；存储不可用时仅保留会话记录。Service Worker 只缓存应用资源，备份目录和保留设置仅在当前会话有效。托管服务器仍能看到访问 IP 和 HTTP 元数据。
 
 编辑保留未知 XML、附件、图片和历史；二进制字段只读。当前不支持附件管理、云同步、Passkey、摄像头扫描、Firefox 扩展和损坏 XML 修复。TOTP 不是额外的密码库解锁认证。
 
@@ -95,7 +96,7 @@ npm run test:release
 
 运行 `npm run build:extension`，在 Chrome / Edge 扩展管理页面开启开发者模式，加载 `extension/`；也可下载扩展 ZIP 并解压加载。更新后在扩展管理页重新加载。目标网站点击扩展图标后打开 `.db` 或最近密码库，可搜索所有条目、复制账号/密码、为当前网站新建条目，并在条目含 TOTP 时复制或填入验证码。新网站需重新授权；PWA 修改原文件后，扩展在填充前检测变化并停止填充，先另存未保存编辑，再点击“重新加载文件”并解锁。侧栏隐藏不再立即锁定，默认按所选空闲时间锁定。
 
-完整步骤见 [导入教程](docs/USAGE.md)（[English](docs/USAGE.en.md)），涵盖最近文件、导入、分步填充、多网址、密码更新与保存。公开教程由同一源码生成：`/guides/import-passwords/`、`/guides/browser-extension/` 及对应英文页面。
+完整步骤见 [导入教程](docs/USAGE.md)（[English](docs/USAGE.en.md)），涵盖最近文件、导入、分步填充、多网址、密码更新与保存。公开教程由同一源码生成：`/guides/import-passwords/`、`/guides/import-1password/`、`/guides/import-lastpass/`、`/guides/import-apple-passwords/`、`/guides/import-generic-csv/`、`/guides/browser-extension/` 及对应英文页面。
 
 自行托管运行 `npm run test:release` 后上传 `release/web/` 到 HTTPS 静态服务器。Docker、备份与安装说明见[自托管文档](docs/SELF-HOSTING.md)。
 

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="从 Apple Passwords 导出 CSV，在本地导入 ClearVault。保留登录、备注和 OTPAuth 验证码，不上传导出文件。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>从 Apple Passwords 导入到 ClearVault · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/guides/import-apple-passwords/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/import-apple-passwords/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/import-apple-passwords/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/import-apple-passwords/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="从 Apple Passwords 导入到 ClearVault · ClearVault" />
+    <meta
+      property="og:description"
+      content="从 Apple Passwords 导出 CSV，在本地导入 ClearVault。保留登录、备注和 OTPAuth 验证码，不上传导出文件。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/guides/import-apple-passwords/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a
+        ><a href="/en/guides/import-apple-passwords/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">使用指南</span>
+        <h1>从 Apple Passwords 导入到 ClearVault</h1>
+        <p class="lead">
+          Apple Passwords 的 CSV 导出是明文文件。ClearVault
+          在浏览器本地读取并预览，导入后请验证加密保存并删除源文件。
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">1. 从 Apple Passwords 导出</a
+          ><a href="#section-2">2. 在 ClearVault 中导入</a><a href="#section-3">3. 字段和验证码</a
+          ><a href="#section-4">4. 删除明文导出</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. 从 Apple Passwords 导出</h2>
+            <p>
+              在 macOS 15 / iOS 18 或更新版本的 Passwords App
+              中选择导出全部密码，完成系统身份验证并保存 CSV。不同系统版本的菜单名称可能略有差异。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. 在 ClearVault 中导入</h2>
+            <p>
+              打开 .db 并解锁，选择“导入密码” → Apple Passwords
+              CSV，选择文件并预览。核对数量后确认导入，再保存数据库。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. 字段和验证码</h2>
+            <p>
+              标题、网址、用户名、密码、备注和 OTPAuth 会导入；OTPAuth 会生成 TOTP
+              验证码。附件、通行密钥和 Apple 的账户/设备绑定信息不会迁移。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>4. 删除明文导出</h2>
+            <p>
+              重新打开密码库核对结果，确认“已验证保存”后再删除
+              CSV。不要把真实导出、主密码或验证密钥上传到公开位置。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
+            ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/guides/import-passwords/">从其他密码管理器导入密码 ↗</a
+            ><a href="/guides/import-1password/">从 1Password 导入到 ClearVault ↗</a
+            ><a href="/guides/import-lastpass/">从 LastPass 导入到 ClearVault ↗</a
+            ><a href="/guides/import-generic-csv/">导入任意 CSV 到 ClearVault ↗</a
+            ><a href="/guides/browser-extension/">扩展教程：填充、搜索、OTP 与新建条目 ↗</a
+            ><a href="/security/">安全与隐私 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.4 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>
