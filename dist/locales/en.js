@@ -649,4 +649,24 @@ export default {
   '无需注册 · 无需上传文件 · 可拖放 .db': 'No account · No upload · Drop a .db file',
   '已加载本地快照，请输入主密码': 'Loaded local snapshot. Enter the master password.',
   '请先保存当前修改，再恢复本地快照': 'Save current changes before restoring a local snapshot.',
+  合并更改: 'Merge changes',
+  '外部文件已变化。可以先合并外部更改，或另存副本或重新加载。':
+    'The external file changed. Merge external changes, save a copy or reload.',
+  '保存会停止，避免覆盖外部版本。可合并外部更改。':
+    'Saving stops to avoid overwriting the external version. External changes can be merged.',
+  原文件没有新的外部更改: 'The original file has no new external changes.',
+  '外部文件版本不同，请重新打开并解锁后再合并':
+    'The external file uses a different format version. Reopen and unlock it before merging.',
+  合并外部更改: 'Merge external changes',
+  '外部文件已解锁并与当前编辑合并。请核对冲突后保存。':
+    'The external file is unlocked and merged with your current edits. Review conflicts before saving.',
+  '共合并 {count} 个条目，{conflicts} 个冲突。':
+    'Merged {count} entries with {conflicts} conflicts.',
+  '冲突按较新的修改时间选择，时间相同则保留本地。':
+    'Conflicts use the newer modification time; ties keep the local version.',
+  本地: 'Local',
+  外部: 'External',
+  '仅展示前 10 个冲突。': 'Showing the first 10 conflicts.',
+  采用合并结果: 'Use merged result',
+  '已合并外部更改，请保存数据库': 'External changes merged. Save your vault.',
 };

@@ -63,11 +63,12 @@
           ><a href="#section-6">Local snapshots contain ciphertext only</a
           ><a href="#section-7">Security overview is computed in memory only</a
           ><a href="#section-8">File association reads locally</a
-          ><a href="#section-9">Compatibility is not modern authenticated encryption</a
-          ><a href="#section-10">Saving, backups and recovery</a
-          ><a href="#section-11">The extension uses current-site access</a
-          ><a href="#section-12">What remains outside the protection boundary</a
-          ><a href="#section-13">Audit status and reporting</a>
+          ><a href="#section-9">Synced folders merge locally</a
+          ><a href="#section-10">Compatibility is not modern authenticated encryption</a
+          ><a href="#section-11">Saving, backups and recovery</a
+          ><a href="#section-12">The extension uses current-site access</a
+          ><a href="#section-13">What remains outside the protection boundary</a
+          ><a href="#section-14">Audit status and reporting</a>
         </aside>
         <article class="prose">
           <section id="section-1">
@@ -157,6 +158,17 @@
             </p>
           </section>
           <section id="section-9">
+            <h2>Synced folders merge locally</h2>
+            <p>
+              When the .db lives in Syncthing, Nextcloud, OneDrive or iCloud Drive, your tool
+              performs the sync. On external changes ClearVault reads and decrypts locally with the
+              current session credential; merging requires the same format version and master
+              password, and the preview must still be saved to write. Conflicts resolve per entry by
+              timestamp and labels merge by name. Sync providers can still roll back or replace
+              files; keep independent backups.
+            </p>
+          </section>
+          <section id="section-10">
             <h2>Compatibility is not modern authenticated encryption</h2>
             <p>
               The compatible format uses PBKDF2-SHA1 with 10,000 iterations and AES-256-CBC over
@@ -166,7 +178,7 @@
               the format to AEAD.
             </p>
           </section>
-          <section id="section-10">
+          <section id="section-11">
             <h2>Saving, backups and recovery</h2>
             <p>
               Before writing, the app compares the original file fingerprint, backs up and verifies
@@ -176,7 +188,7 @@
               confirm the file on disk and reopen it to verify.
             </p>
           </section>
-          <section id="section-11">
+          <section id="section-12">
             <h2>The extension uses current-site access</h2>
             <p>
               The extension uses activeTab, scripting and sidePanel, with no global host permissions
@@ -187,7 +199,7 @@
               read a password or code filled into it; that is an inherent boundary of filling.
             </p>
           </section>
-          <section id="section-12">
+          <section id="section-13">
             <h2>What remains outside the protection boundary</h2>
             <p>
               A compromised operating system, malicious browser or extension, access to unlocked
@@ -197,7 +209,7 @@
               audits.
             </p>
           </section>
-          <section id="section-13">
+          <section id="section-14">
             <h2>Audit status and reporting</h2>
             <p>
               Independent security auditing, code signing and browser store review have not been
@@ -221,6 +233,7 @@
             ><a href="/en/guides/import-apple-passwords/"
               >Import from Apple Passwords into ClearVault ↗</a
             ><a href="/en/guides/import-generic-csv/">Import any CSV into ClearVault ↗</a
+            ><a href="/en/guides/sync-folder/">Sync a vault with your own folder ↗</a
             ><a href="/en/guides/browser-extension/"
               >Extension guide: fill, search, OTP and new entries ↗</a
             ><a href="/en/downloads/">Downloads &amp; source ↗</a>

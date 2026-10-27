@@ -87,6 +87,19 @@ Verify the entry and that the website accepted the change, then confirm and Save
 
 After copying a username, password or code, ClearVault tries to clear the system clipboard after 30 seconds by default. Choose 15 / 60 seconds or off in app preferences or the extension's More actions menu. Clearing can fail when the browser window loses focus, the page closes or permission is restricted; clear the clipboard manually or lock immediately on shared devices. The setting is local and contains no vault contents.
 
+## Sync with your own folder (BYO sync)
+
+ClearVault does not provide cloud sync. Put the `.db` in a Syncthing, Nextcloud, OneDrive, iCloud Drive or other synced folder and open it in the web app. Your chosen file tool performs the sync; the vault is never uploaded.
+
+When another device changes the external file, a banner appears on focus or when a save conflict is detected. Choose Merge changes to decrypt the external file with the current session's master password and combine unsaved local edits with the external version:
+
+- Entries changed on different sides are kept.
+- When both sides change the same entry, the newer `time_stamp` wins; ties keep the local version and are listed as conflicts.
+- Labels merge by name; unknown XML, attachments and images travel with the chosen entry version.
+- The merged result is previewed first. Confirming it still requires Save database to write the file. If the external file changes again, saving stops to avoid overwriting it.
+
+Limits: the external file must use the same format version and master password; different passwords or versions cannot merge. Conflicts resolve per entry by timestamp, not as a field-level three-way merge. There is no cross-device file lock, and unknown database-level XML is kept from the local side only. Keep independent backups and avoid editing on two devices at once.
+
 ## Local encrypted snapshots and save conflicts
 
 The app and extension try to write encrypted `.db` ciphertext to a local OPFS snapshot after each save, keeping 10 by default. Choose 5 / 10 / 20 / 50. Snapshots contain no plaintext, require the master password used at that time to restore, and are deleted when site data is cleared. View and clear them in app Preferences or the extension's More actions; clearing removes only the current vault's snapshots.

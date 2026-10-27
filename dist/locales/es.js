@@ -660,4 +660,24 @@ export default {
   '已加载本地快照，请输入主密码': 'Instantánea local cargada. Introduce la contraseña maestra.',
   '请先保存当前修改，再恢复本地快照':
     'Guarda los cambios actuales antes de restaurar una instantánea local.',
+  合并更改: 'Combinar cambios',
+  '外部文件已变化。可以先合并外部更改，或另存副本或重新加载。':
+    'El archivo externo cambió. Combina los cambios externos, guarda una copia o recarga.',
+  '保存会停止，避免覆盖外部版本。可合并外部更改。':
+    'Se detiene el guardado para no sobrescribir la versión externa. Puedes combinar los cambios externos.',
+  原文件没有新的外部更改: 'El archivo original no tiene cambios externos nuevos.',
+  '外部文件版本不同，请重新打开并解锁后再合并':
+    'El archivo externo usa otra versión de formato. Vuelve a abrirlo y desbloquéalo antes de combinar.',
+  合并外部更改: 'Combinar cambios externos',
+  '外部文件已解锁并与当前编辑合并。请核对冲突后保存。':
+    'El archivo externo está desbloqueado y combinado con tus cambios. Revisa los conflictos antes de guardar.',
+  '共合并 {count} 个条目，{conflicts} 个冲突。':
+    'Se combinaron {count} entradas con {conflicts} conflictos.',
+  '冲突按较新的修改时间选择，时间相同则保留本地。':
+    'Los conflictos usan la fecha de modificación más reciente; si empatan, se mantiene la versión local.',
+  本地: 'Local',
+  外部: 'Externo',
+  '仅展示前 10 个冲突。': 'Mostrando los primeros 10 conflictos.',
+  采用合并结果: 'Usar resultado combinado',
+  '已合并外部更改，请保存数据库': 'Cambios externos combinados. Guarda tu bóveda.',
 };

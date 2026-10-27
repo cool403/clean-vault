@@ -62,12 +62,11 @@ async function transform(bytes, compress) {
     source.releaseLock();
   }
 }
-export async function decryptDatabase(bytes, password) {
+async function decryptBytes(bytes, credential) {
   const input = reader(bytes);
   const magic = input.take(2);
   if (magic[0] !== 5 || magic[1] !== 5) throw new Error(t('这不是兼容的 SafeInCloud .db 文件'));
   const version = input.take(1)[0];
-  const credential = passwordBytes(password, version);
   let userKey, header, dataKey;
   try {
     const salt = input.blob(),
@@ -101,13 +100,31 @@ export async function decryptDatabase(bytes, password) {
     } catch (error) {
       throw new Error(t('主密码不正确，或数据库文件已损坏'), { cause: error });
     }
-  } catch (error) {
-    credential.fill(0);
-    throw error;
   } finally {
     userKey?.fill(0);
     header?.fill(0);
     dataKey?.fill(0);
+  }
+}
+export async function decryptDatabase(bytes, password) {
+  if (!(bytes instanceof Uint8Array) || bytes.length < 3)
+    throw new Error(t('这不是兼容的 SafeInCloud .db 文件'));
+  const credential = passwordBytes(password, bytes[2]);
+  try {
+    return await decryptBytes(bytes, credential);
+  } catch (error) {
+    credential.fill(0);
+    throw error;
+  }
+}
+export async function decryptDatabaseWithCredential(bytes, credential) {
+  if (!(credential instanceof Uint8Array)) throw new Error(t('密码库不可用'));
+  const copy = credential.slice();
+  try {
+    return await decryptBytes(bytes, copy);
+  } catch (error) {
+    copy.fill(0);
+    throw error;
   }
 }
 export async function encryptDatabase(xml, credential, version = 2) {

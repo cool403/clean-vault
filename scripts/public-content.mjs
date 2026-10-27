@@ -460,6 +460,59 @@ articles.push(
     },
   },
   {
+    slug: 'sync-folder',
+    zh: {
+      title: '用自己的同步文件夹同步密码库',
+      description:
+        '把 ClearVault 的加密 .db 放进 Syncthing、Nextcloud、OneDrive 或 iCloud Drive，检测外部修改并在本地合并冲突。',
+      intro:
+        'ClearVault 不运营云同步服务。密码库始终是一个加密文件；你可以用自己信任的同步工具把它带到其他设备，并在出现外部修改时先合并、再保存。',
+      sections: [
+        [
+          '1. 把 .db 放进同步文件夹',
+          '选择 Syncthing、Nextcloud、OneDrive、iCloud Drive 或其他你信任的文件夹同步工具。先保留一份独立加密备份，再在网页端打开同步文件夹中的 .db 并解锁。',
+        ],
+        [
+          '2. 另一台设备修改后',
+          '回到 ClearVault 页面或尝试保存时，应用会检查原文件指纹并提示外部变化。点击“合并更改”会在本地读取外部文件，使用当前会话的主密码解密，并预览本地未保存编辑与外部版本的合并结果。',
+        ],
+        [
+          '3. 合并规则',
+          '双方修改不同条目时都保留；同一条目双方都修改时，按较新的修改时间选择，时间相同保留本地并列入冲突列表。标签按名称合并，未知 XML、附件和图片随选中的条目版本保留。确认预览后仍需点击“保存数据库”才写入文件。',
+        ],
+        [
+          '4. 边界',
+          '外部文件必须使用相同格式版本和主密码；密码不同或版本不同时无法合并。没有跨设备文件锁，冲突按条目时间戳而不是逐字段解决；同步工具仍可能回滚或替换文件。请保留独立备份，避免两台设备同时编辑。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Sync a vault with your own folder',
+      description:
+        'Keep the encrypted ClearVault .db in Syncthing, Nextcloud, OneDrive or iCloud Drive, detect external changes and merge conflicts locally.',
+      intro:
+        'ClearVault does not run a cloud sync service. Your vault remains an encrypted file; use a sync tool you trust to move it between devices, then merge external changes before saving.',
+      sections: [
+        [
+          '1. Put the .db in a synced folder',
+          'Choose Syncthing, Nextcloud, OneDrive, iCloud Drive or another folder-sync tool you trust. Keep an independent encrypted backup first, then open and unlock the .db from that folder in the web app.',
+        ],
+        [
+          '2. After another device changes it',
+          'When you return to the page or try to save, ClearVault checks the original file fingerprint and reports external changes. Choose Merge changes to read and decrypt the external file locally with the current session master password, then preview the merge of unsaved local edits and the external version.',
+        ],
+        [
+          '3. Merge rules',
+          'Changes to different entries are both kept. If both sides change the same entry, the newer modification time wins; ties keep the local version and are listed as conflicts. Labels merge by name; unknown XML, attachments and images travel with the chosen entry version. Confirming the preview still requires Save database to write the file.',
+        ],
+        [
+          '4. Boundaries',
+          'The external file must use the same format version and master password; different passwords or versions cannot merge. There is no cross-device file lock, conflicts resolve per entry by timestamp rather than per field, and sync tools can still roll back or replace files. Keep independent backups and avoid editing on two devices at once.',
+        ],
+      ],
+    },
+  },
+  {
     slug: 'browser-extension',
     zh: {
       title: '扩展教程：填充、搜索、OTP 与新建条目',
@@ -563,6 +616,10 @@ export const security = {
         'PWA 的 file_handlers、launchQueue 和页面拖放都只在用户选择或拖入 .db 后本地读取文件，不上传。安装、文件关联和权限由浏览器管理；外部应用仍可能同时读取源文件，不能替代独立备份。',
       ],
       [
+        '同步文件夹只在本地合并',
+        '把 .db 放进 Syncthing、Nextcloud、OneDrive 或 iCloud Drive 时，同步由你的工具完成。ClearVault 在检测到外部变化后本地读取并用当前会话内存中的凭据解密；只有格式版本和主密码一致时才合并，且确认预览后仍需保存才写入。冲突按条目时间戳选择，标签按名称合并；同步提供商仍可能回滚或替换文件，请保留独立备份。',
+      ],
+      [
         '加密兼容性不等于现代认证加密',
         '兼容格式沿用 PBKDF2-SHA1（10000 次）与 AES-256-CBC，正文是压缩 XML。CBC 正文没有现代 AEAD 提供的认证能力；文件 SHA-256 指纹用于检测变化，不是抗恶意篡改认证。新密码库使用支持 Unicode 的版本 2 密码编码，但不能因此宣称加密格式已升级为 AEAD。',
       ],
@@ -622,6 +679,10 @@ export const security = {
       [
         'File association reads locally',
         'PWA file_handlers, launchQueue and page drag-and-drop only read a .db file locally after the user selects or drops it; nothing is uploaded. Installation, file association and permissions are managed by the browser. External applications can still read the source file concurrently, so this is not a substitute for independent backups.',
+      ],
+      [
+        'Synced folders merge locally',
+        'When the .db lives in Syncthing, Nextcloud, OneDrive or iCloud Drive, your tool performs the sync. On external changes ClearVault reads and decrypts locally with the current session credential; merging requires the same format version and master password, and the preview must still be saved to write. Conflicts resolve per entry by timestamp and labels merge by name. Sync providers can still roll back or replace files; keep independent backups.',
       ],
       [
         'Compatibility is not modern authenticated encryption',

@@ -8,7 +8,12 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { JSDOM } from 'jsdom';
-import { decryptDatabase, encryptDatabase, passwordBytes } from '../dist/crypto.js';
+import {
+  decryptDatabase,
+  decryptDatabaseWithCredential,
+  encryptDatabase,
+  passwordBytes,
+} from '../dist/crypto.js';
 import { parseOTP, totp, decodeBase32 } from '../dist/totp.js';
 import {
   parseVault,
@@ -167,5 +172,20 @@ test('invalid/DTD XML fails closed; demo has four usable authenticators', () => 
       .flatMap(fields)
       .filter((field) => field.getAttribute('type') === 'one_time_password').length,
     4,
+  );
+});
+
+test('decrypting with an in-memory credential matches password decryption', async () => {
+  const password = 'merge-credential-test';
+  const bytes = await encryptDatabase('<database/>', passwordBytes(password));
+  const result = await decryptDatabaseWithCredential(bytes, passwordBytes(password));
+  assert.equal(result.xml, '<database/>');
+  const normal = await decryptDatabase(bytes, password);
+  assert.equal(normal.xml, result.xml);
+  result.credential.fill(0);
+  normal.credential.fill(0);
+  await assert.rejects(
+    decryptDatabaseWithCredential(bytes, passwordBytes('wrong')),
+    /主密码不正确/,
   );
 });

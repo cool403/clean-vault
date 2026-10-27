@@ -50,6 +50,7 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 - Quick search supports pinyin initials, recency ordering, TOTP copying and a command mode (new entry, generate password, lock, switch vault). Large lists render in batches and search results are capped at 50.
 - Each save in the app and extension attempts to write encrypted `.db` ciphertext to a local OPFS snapshot, keeping 10 by default. External file changes prompt you to save a copy or reload instead of overwriting.
 - Installed Chromium PWAs can open `.db` files from the file manager, and `.db` files can be dropped onto the page. Install guidance covers Chrome / Edge, Android and iOS. iOS Safari does not support file write-back or browser extensions.
+- Put the `.db` in a Syncthing, Nextcloud, OneDrive or iCloud Drive folder. When an external change is detected, merge unsaved local edits with the external version; timestamp-based conflicts are listed for review.
 - The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, searching all entries, copying usernames/passwords, creating an entry for the current website, showing/copying/filling TOTP codes, confirmed password updates, imports and verified saves, without submitting forms.
 - Recent vaults remembers up to five names and file handles. Select a containing directory to show its last confirmed folder name and relative location. The current session also unlocks through this list, preserving unsaved edits. Remove or clear history records anytime.
 - Import from Chrome, Bitwarden, 1Password, LastPass and Apple Passwords; map columns for generic CSV. Preview and duplicate checks never overwrite existing entries. The app and extension share this flow.
@@ -98,9 +99,13 @@ You can also store the secrets in the `production` Environment. Never commit tok
 
 Run `npm run build:extension`. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. Reload after updating. On the target website, click the icon and open your `.db` or a recent vault. Search all entries, copy usernames/passwords, create an entry for the current website, and copy or fill TOTP codes. New websites need authorization. External changes stop filling: save edits as a copy, reload the file and unlock. Hiding the sidebar no longer locks immediately; the selected idle timeout applies.
 
-See the [usage guide](docs/USAGE.en.md) for recent files, imports, multistep filling, multiple URLs, password updates and saving. Matching public guides are generated at `/en/guides/import-passwords/`, `/en/guides/import-1password/`, `/en/guides/import-lastpass/`, `/en/guides/import-apple-passwords/`, `/en/guides/import-generic-csv/` and `/en/guides/browser-extension/`.
+See the [usage guide](docs/USAGE.en.md) for recent files, imports, multistep filling, multiple URLs, password updates and saving. Matching public guides are generated at `/en/guides/import-passwords/`, `/en/guides/import-1password/`, `/en/guides/import-lastpass/`, `/en/guides/import-apple-passwords/`, `/en/guides/import-generic-csv/`, `/en/guides/sync-folder/` and `/en/guides/browser-extension/`.
 
 For self-hosting, run `npm run test:release` and serve `release/web/` from an HTTPS static host. See [self-hosting](docs/SELF-HOSTING.en.md) for Docker, backup and installation details.
+
+## Mobile and sync
+
+The project currently provides an installable PWA, `.db` file association, page drag-and-drop and per-platform install guidance. System-level Android AutoFill and the iOS Credential Provider are not implemented; the native shell, shared vault core, toolchain and phased acceptance criteria are in the [mobile native shell and AutoFill plan](docs/MOBILE-NATIVE.en.md). BYO sync and conflict merging are available; see the [usage guide](docs/USAGE.en.md).
 
 ## Development and contributing
 

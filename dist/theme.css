@@ -1556,3 +1556,52 @@ html[lang='ja'] .welcome-copy h1 {
   font-size: 13px;
   line-height: 1.5;
 }
+
+.conflict-list {
+  max-height: 220px;
+  margin: 10px 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+  border-block: 1px solid var(--line);
+}
+.conflict-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.conflict-list li:last-child {
+  border-bottom: 0;
+}
+.conflict-list strong {
+  overflow-wrap: anywhere;
+}
+.conflict-list small {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .topbar {
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .topbar .breadcrumb,
+  .topbar .profile {
+    display: none;
+  }
+  .top-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .top-actions .language-picker select {
+    max-width: 104px;
+  }
+  .shell {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

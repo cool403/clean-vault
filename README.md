@@ -50,6 +50,7 @@ npm run test:release
 - 快速查找支持拼音首字母、最近使用排序、TOTP 复制和命令模式（新建 / 生成密码 / 锁定 / 切换库）；大库列表分批渲染，搜索结果限制前 50 条。
 - 网页和扩展每次保存后尝试把加密 `.db` 密文写入浏览器 OPFS 本地快照，默认保留 10 份；外部文件变化会提示另存副本或重新加载，避免覆盖。
 - PWA 在 Chromium 安装后可从文件管理器打开 `.db`，也可以把 `.db` 拖到页面；安装引导覆盖 Chrome / Edge、Android 和 iOS。iOS Safari 不提供文件写回和浏览器扩展。
+- 可把 `.db` 放进 Syncthing、Nextcloud、OneDrive、iCloud Drive 等同步文件夹；检测到外部修改后可先合并本地未保存编辑与外部版本，按时间戳选择冲突并提示核对。
 - Chrome / Edge 扩展支持分步登录、多个明确添加的 HTTPS 地址、搜索所有条目、复制账号/密码、为当前网站新建条目、显示/复制/填入 TOTP 验证码、确认更新密码、导入与验证保存；不自动提交。
 - 最近 5 个密码库：记住名称和文件句柄，可选择包含文件的目录并显示上次确认的文件夹名及相对目录；当前会话也统一在列表中解锁并保留未保存修改；可移除或清空历史记录。
 - Chrome、Bitwarden、1Password、LastPass、Apple Passwords 导入；通用 CSV 可手动映射列。预览、重复检测，不覆盖已有条目。网页与扩展共用导入流程。
@@ -98,9 +99,13 @@ npm run test:release
 
 运行 `npm run build:extension`，在 Chrome / Edge 扩展管理页面开启开发者模式，加载 `extension/`；也可下载扩展 ZIP 并解压加载。更新后在扩展管理页重新加载。目标网站点击扩展图标后打开 `.db` 或最近密码库，可搜索所有条目、复制账号/密码、为当前网站新建条目，并在条目含 TOTP 时复制或填入验证码。新网站需重新授权；PWA 修改原文件后，扩展在填充前检测变化并停止填充，先另存未保存编辑，再点击“重新加载文件”并解锁。侧栏隐藏不再立即锁定，默认按所选空闲时间锁定。
 
-完整步骤见 [导入教程](docs/USAGE.md)（[English](docs/USAGE.en.md)），涵盖最近文件、导入、分步填充、多网址、密码更新与保存。公开教程由同一源码生成：`/guides/import-passwords/`、`/guides/import-1password/`、`/guides/import-lastpass/`、`/guides/import-apple-passwords/`、`/guides/import-generic-csv/`、`/guides/browser-extension/` 及对应英文页面。
+完整步骤见 [导入教程](docs/USAGE.md)（[English](docs/USAGE.en.md)），涵盖最近文件、导入、分步填充、多网址、密码更新与保存。公开教程由同一源码生成：`/guides/import-passwords/`、`/guides/import-1password/`、`/guides/import-lastpass/`、`/guides/import-apple-passwords/`、`/guides/import-generic-csv/`、`/guides/sync-folder/`、`/guides/browser-extension/` 及对应英文页面。
 
 自行托管运行 `npm run test:release` 后上传 `release/web/` 到 HTTPS 静态服务器。Docker、备份与安装说明见[自托管文档](docs/SELF-HOSTING.md)。
+
+## 移动端与同步
+
+当前提供可安装 PWA、`.db` 文件关联、页面拖放和分平台安装引导。系统级 Android AutoFill / iOS Credential Provider 尚未实现；原生壳、共享 vault core、工具链和分阶段验收见[移动端原生壳与 AutoFill 方案](docs/MOBILE-NATIVE.md)。BYO 同步与冲突合并已可用，步骤见[使用教程](docs/USAGE.md)。
 
 ## 开发与贡献
 

@@ -666,4 +666,24 @@ export default {
   '已加载本地快照，请输入主密码': 'Lokaler Snapshot geladen. Geben Sie das Master-Passwort ein.',
   '请先保存当前修改，再恢复本地快照':
     'Speichern Sie zuerst die aktuellen Änderungen, bevor Sie einen lokalen Snapshot wiederherstellen.',
+  合并更改: 'Änderungen zusammenführen',
+  '外部文件已变化。可以先合并外部更改，或另存副本或重新加载。':
+    'Die externe Datei wurde geändert. Sie können externe Änderungen zusammenführen, eine Kopie speichern oder neu laden.',
+  '保存会停止，避免覆盖外部版本。可合并外部更改。':
+    'Das Speichern wird gestoppt, um die externe Version nicht zu überschreiben. Externe Änderungen können zusammengeführt werden.',
+  原文件没有新的外部更改: 'Die Originaldatei hat keine neuen externen Änderungen.',
+  '外部文件版本不同，请重新打开并解锁后再合并':
+    'Die externe Datei verwendet eine andere Formatversion. Öffnen und entsperren Sie sie vor dem Zusammenführen.',
+  合并外部更改: 'Externe Änderungen zusammenführen',
+  '外部文件已解锁并与当前编辑合并。请核对冲突后保存。':
+    'Die externe Datei ist entsperrt und mit Ihren Änderungen zusammengeführt. Prüfen Sie Konflikte vor dem Speichern.',
+  '共合并 {count} 个条目，{conflicts} 个冲突。':
+    '{count} Einträge zusammengeführt, {conflicts} Konflikte.',
+  '冲突按较新的修改时间选择，时间相同则保留本地。':
+    'Konflikte verwenden die neuere Änderungszeit; bei Gleichstand bleibt die lokale Version.',
+  本地: 'Lokal',
+  外部: 'Extern',
+  '仅展示前 10 个冲突。': 'Zeige die ersten 10 Konflikte.',
+  采用合并结果: 'Zusammengeführtes Ergebnis verwenden',
+  '已合并外部更改，请保存数据库': 'Externe Änderungen zusammengeführt. Speichern Sie Ihren Tresor.',
 };

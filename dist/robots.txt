@@ -40,6 +40,8 @@ Allow: /en/guides/open-safeincloud-db/$
 Allow: /en/guides/open-safeincloud-db/index.html$
 Allow: /en/guides/safeincloud-linux/$
 Allow: /en/guides/safeincloud-linux/index.html$
+Allow: /en/guides/sync-folder/$
+Allow: /en/guides/sync-folder/index.html$
 Allow: /en/guides/totp/$
 Allow: /en/guides/totp/index.html$
 Allow: /en/security/$
@@ -62,6 +64,8 @@ Allow: /guides/open-safeincloud-db/$
 Allow: /guides/open-safeincloud-db/index.html$
 Allow: /guides/safeincloud-linux/$
 Allow: /guides/safeincloud-linux/index.html$
+Allow: /guides/sync-folder/$
+Allow: /guides/sync-folder/index.html$
 Allow: /guides/totp/$
 Allow: /guides/totp/index.html$
 Allow: /security/$

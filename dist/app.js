@@ -3,13 +3,20 @@ import { createClipboardGuard } from './clipboard.js';
 import { passwordStrength } from './password-strength.js';
 import { pinyinSearch } from './pinyin.js';
 import { createSnapshotStore, snapshotsSupported } from './snapshots.js';
+import { mergeVaults } from './merge.js';
 import { t, html, getLocale, initializeLanguage, setLanguage, supportedLocales } from './i18n.js';
 import { buildInfo } from './build-info.js';
 import { mountSupportLinks } from './support.js';
 import { createRecentFiles, mergeRecentSession, allowFile, fileError } from './recent-files.js';
 import { recentMarkup, createImportWizard } from './workflow-ui.js';
 import { applyImport } from './import-data.js';
-import { decryptDatabase, encryptDatabase, passwordBytes, encode } from './crypto.js';
+import {
+  decryptDatabase,
+  decryptDatabaseWithCredential,
+  encryptDatabase,
+  passwordBytes,
+  encode,
+} from './crypto.js';
 import { parseOTP, totp } from './totp.js';
 import { generatePassword, defaultRules } from './password-generator.js';
 import { fingerprint, saveSafely, listBackups, readBytes } from './safe-save.js';
@@ -52,6 +59,7 @@ const state = {
   section: 'all',
   search: '',
   securityFilter: null,
+  baseXml: null,
   listLimit: 200,
   busy: false,
   generation: 0,
@@ -65,6 +73,7 @@ let editCard = null,
   searchTimer,
   batchMode = false,
   batchSelection = new Set(),
+  pendingMerge = null,
   otpGeneration = 0;
 let backupDirectory = null,
   backupRetention = 10,
@@ -227,9 +236,57 @@ function showSecurityOverview() {
     `${modalHeader(t('安全概览'), t('仅在本地根据解密后的条目计算，不上传密码。'))}<div class="security-grid">${card('weak', t('弱密码'), report.weak.length, t('长度不足 12 个字符或强度过低的密码。'))}${card('reused', t('重复使用'), report.reused.length, t('{entries} 个条目使用同一密码（{groups} 组）', { entries: report.reused.length, groups: report.reusedGroups.length }))}${card('old', t('长期未更新'), report.old.length, t('超过一年没有修改的条目。'))}${card('no-otp', t('未启用两步验证'), report.noOtp.length, t('有密码但尚未添加 TOTP。'))}</div><p class="form-help">${t('共 {count} 个条目，{withPassword} 个设置了密码。', { count: report.total, withPassword: report.withPassword })}</p><div class="modal-footer">${button('close-modal', t('关闭'), null, 'button primary')}</div>`,
   );
 }
+async function mergeExternalChanges() {
+  if (!state.doc || !state.handle || state.busy) return;
+  if (modal.open) closeModal();
+  try {
+    await allowFile(state.handle, 'read');
+    const file = await state.handle.getFile();
+    if (file.size > 64 * 1024 * 1024) throw new Error(t('文件超过 64 MB，请使用桌面客户端处理'));
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const hash = await fingerprint(bytes);
+    if (hash === state.signature) {
+      state.externalChange = false;
+      render();
+      toast(t('原文件没有新的外部更改'));
+      return;
+    }
+    if (bytes.length < 3 || bytes[0] !== 5 || bytes[1] !== 5)
+      throw new Error(t('这不是兼容的 SafeInCloud .db 文件'));
+    if (!state.credential || bytes[2] !== state.version) {
+      toast(t('外部文件版本不同，请重新打开并解锁后再合并'));
+      return;
+    }
+    const decrypted = await decryptDatabaseWithCredential(bytes, state.credential);
+    let externalDoc;
+    try {
+      externalDoc = parseVault(decrypted.xml);
+    } finally {
+      decrypted.credential.fill(0);
+    }
+    const baseDoc = state.baseXml ? parseVault(state.baseXml) : null;
+    const result = mergeVaults(baseDoc, state.doc, externalDoc);
+    pendingMerge = { result, externalDoc, bytes, hash };
+    showMergePreview(result);
+  } catch (error) {
+    toast(message(error));
+  }
+}
+function showMergePreview(result) {
+  const conflicts = result.conflicts
+    .slice(0, 10)
+    .map(
+      (conflict) =>
+        `<li><strong>${e(conflict.title)}</strong><small>${t(conflict.chosen === 'local' ? '本地' : '外部')}</small></li>`,
+    )
+    .join('');
+  showModal(
+    `${modalHeader(t('合并外部更改'), t('外部文件已解锁并与当前编辑合并。请核对冲突后保存。'))}<p>${t('共合并 {count} 个条目，{conflicts} 个冲突。', { count: result.merged, conflicts: result.conflicts.length })}</p>${result.conflicts.length ? `<p class="form-help">${t('冲突按较新的修改时间选择，时间相同则保留本地。')}</p><ul class="conflict-list">${conflicts}</ul>${result.conflicts.length > 10 ? `<p class="form-help">${t('仅展示前 10 个冲突。')}</p>` : ''}` : ''}<div class="modal-footer">${button('close-modal', t('取消'), null, 'button secondary')}<button class="button primary" type="button" data-action="merge-apply">${t('采用合并结果')}</button></div>`,
+  );
+}
 function showConflict() {
   showModal(
-    `${modalHeader(t('原文件已被其他应用修改'), t('当前编辑仍在页面内。请选择“另存为副本”或重新加载外部版本，避免覆盖。'))}<div class="modal-footer">${button('close-modal', t('保留当前编辑'), null, 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'button secondary')}${button('conflict-save-copy', t('另存为副本'), 'download', 'button primary')}</div>`,
+    `${modalHeader(t('原文件已被其他应用修改'), t('外部文件已变化。可以先合并外部更改，或另存副本或重新加载。'))}<div class="modal-footer">${button('close-modal', t('保留当前编辑'), null, 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'button secondary')}${button('conflict-save-copy', t('另存为副本'), 'download', 'button secondary')}${button('merge-external', t('合并更改'), 'edit', 'button primary')}</div>`,
   );
 }
 async function reloadFromDisk() {
@@ -609,7 +666,7 @@ function render() {
     <main class="workspace">
       <header class="topbar"><div class="breadcrumb">个人空间 ${icon('chevron', 12)}<strong>${e(heading)}</strong></div><div class="top-actions"><span class="privacy-pill"><i></i> 本地加密</span>${state.demo ? t('<span class="demo-pill">演示</span>') : ''}${iconButton('open', t('打开其他密码库'), 'folder')}${iconButton('settings', t('偏好设置'), 'settings', 'mobile-top-action')}${iconButton('lock', t('锁定密码库'), 'lock', 'mobile-top-action')}${state.install ? iconButton('install', t('安装应用'), 'download') : ''}<div class="profile">我</div></div></header>
       <section class="page-heading"><div><div class="eyebrow">为你的数字生活，留一份安心。</div><h1>${e(heading)}<span>${visible.length}</span></h1><p>${e(subtitle)}</p></div><div class="heading-actions">${button('save', state.busy ? t('处理中…') : state.demo ? t('保存为我的密码库') : state.dirty || state.saveError ? t('保存更改') : t('保存数据库'), 'download', saveStyle)}${button('new', state.section === 'otp' ? t('添加验证器') : t('新建条目'), 'plus', newStyle)}</div></section>
-      <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span>${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>${state.externalChange ? html`<div class="conflict-banner" role="alert"><div><strong>${t('原文件已被其他应用修改')}</strong><span>${t('保存会停止，避免覆盖外部版本。')}</span></div><div class="conflict-banner-actions">${button('conflict-save-copy', t('另存为副本'), 'download', 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'text-button')}</div></div>` : ''}${showOnboarding ? html`<section class="onboarding-card" aria-label="${t('开始使用 ClearVault')}"><div class="onboarding-head"><div><strong>${t('开始使用 ClearVault')}</strong><small>${t('完成 {done}/{total} 步', { done: onboardingDoneCount, total: onboardingTotal })}</small></div>${button('onboarding-dismiss', t('稍后'), null, 'text-button')}</div><div class="onboarding-progress"><i style="width:${(onboardingDoneCount / onboardingTotal) * 100}%"></i></div><ul class="onboarding-list"><li class="${onboardingDone.entries ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.entries ? 'checked' : ''} disabled><span>${t('导入或新建第一条记录')}</span></label>${onboardingDone.entries ? `<small>${t('已完成')}</small>` : button('onboarding-import', t('导入密码'), null, 'text-button')}</li><li class="${onboardingDone.extension ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="extension" ${onboardingDone.extension ? 'checked' : ''}><span>${t('安装浏览器扩展')}</span></label><a href="./downloads/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.fill ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="fill" ${onboardingDone.fill ? 'checked' : ''}><span>${t('首次填充或复制验证码')}</span></label><a href="./guides/browser-extension/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.otp ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.otp ? 'checked' : ''} disabled><span>${t('添加一个验证器')}</span></label>${onboardingDone.otp ? `<small>${t('已完成')}</small>` : button('onboarding-otp', t('添加一个验证器'), null, 'text-button')}</li><li class="${onboardingDone.backup ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.backup ? 'checked' : ''} disabled><span>${t('保存并设置备份')}</span></label>${onboardingDone.backup ? `<small>${t('已完成')}</small>` : button('onboarding-backup', t('设置'), null, 'text-button')}</li></ul></section>` : ''}
+      <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span>${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>${state.externalChange ? html`<div class="conflict-banner" role="alert"><div><strong>${t('原文件已被其他应用修改')}</strong><span>${t('保存会停止，避免覆盖外部版本。可合并外部更改。')}</span></div><div class="conflict-banner-actions">${button('merge-external', t('合并更改'), 'edit', 'button secondary')}${button('conflict-save-copy', t('另存为副本'), 'download', 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'text-button')}</div></div>` : ''}${showOnboarding ? html`<section class="onboarding-card" aria-label="${t('开始使用 ClearVault')}"><div class="onboarding-head"><div><strong>${t('开始使用 ClearVault')}</strong><small>${t('完成 {done}/{total} 步', { done: onboardingDoneCount, total: onboardingTotal })}</small></div>${button('onboarding-dismiss', t('稍后'), null, 'text-button')}</div><div class="onboarding-progress"><i style="width:${(onboardingDoneCount / onboardingTotal) * 100}%"></i></div><ul class="onboarding-list"><li class="${onboardingDone.entries ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.entries ? 'checked' : ''} disabled><span>${t('导入或新建第一条记录')}</span></label>${onboardingDone.entries ? `<small>${t('已完成')}</small>` : button('onboarding-import', t('导入密码'), null, 'text-button')}</li><li class="${onboardingDone.extension ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="extension" ${onboardingDone.extension ? 'checked' : ''}><span>${t('安装浏览器扩展')}</span></label><a href="./downloads/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.fill ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="fill" ${onboardingDone.fill ? 'checked' : ''}><span>${t('首次填充或复制验证码')}</span></label><a href="./guides/browser-extension/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.otp ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.otp ? 'checked' : ''} disabled><span>${t('添加一个验证器')}</span></label>${onboardingDone.otp ? `<small>${t('已完成')}</small>` : button('onboarding-otp', t('添加一个验证器'), null, 'text-button')}</li><li class="${onboardingDone.backup ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.backup ? 'checked' : ''} disabled><span>${t('保存并设置备份')}</span></label>${onboardingDone.backup ? `<small>${t('已完成')}</small>` : button('onboarding-backup', t('设置'), null, 'text-button')}</li></ul></section>` : ''}
       <button type="button" class="quick-launch" data-action="quick-search" aria-keyshortcuts="Control+k Meta+k"><span>${icon('search', 18)}<strong>${e(t('快速查找'))}</strong><kbd>${modifier} K</kbd></span><small>${e(t('↑ ↓ 选择'))} <span>·</span> ${modifier} ↵ ${e(t('复制密码'))} <span>·</span> ${modifier} ⇧ L ${e(t('锁定'))}</small>${icon('chevron', 16)}</button>
       <section class="vault-content ${state.section === 'otp' ? 'auth-view' : ''}">
         <div class="entry-pane"><div class="search-row"><label class="search-box">${icon('search', 18)}<input id="search" type="search" placeholder="搜索条目、账号或标签…" value="${e(state.search)}" autocomplete="off" aria-label="搜索条目"></label><button type="button" class="key-hint" data-action="quick-search" aria-label="${e(t('快速查找'))}">${modifier} K</button></div>${state.securityFilter ? `<div class="security-filter-chip"><span>${icon('shield', 14)} ${e(heading)} · ${visible.length}</span>${button('clear-security-filter', t('清除筛选'), 'close', 'text-button')}</div>` : ''}
@@ -1002,6 +1059,7 @@ function showModal(content) {
   modal.querySelector('input:not([type=hidden]),textarea,button')?.focus();
 }
 function closeModal() {
+  pendingMerge = null;
   importWizard.reset();
   closeGenerator();
   modal.close();
@@ -1117,6 +1175,7 @@ function wipeUnlocked() {
   state.doc = null;
   state.listLimit = 200;
   state.securityFilter = null;
+  state.baseXml = null;
   batchMode = false;
   batchSelection.clear();
   state.externalChange = false;
@@ -1170,6 +1229,7 @@ async function submitPassword(form) {
         result.credential.fill(0);
         throw error;
       }
+      state.baseXml = serializeVault(state.doc);
       state.credential = result.credential;
       state.version = result.version;
       if (state.handle || state.signature) void rememberFile();
@@ -1393,6 +1453,7 @@ async function saveFile(asCopy = false) {
       state.name = handle.name;
       moveOnboarding(previousName, state.name, !asCopy);
       state.signature = result.hash;
+      state.baseXml = serializeVault(state.doc);
       state.lastSaved = Date.now();
       state.lastExported = null;
       void rememberFile();
@@ -2078,6 +2139,29 @@ async function action(name, target) {
       closeModal();
       await reloadFromDisk();
       break;
+    case 'merge-external':
+      await mergeExternalChanges();
+      break;
+    case 'merge-apply': {
+      if (!pendingMerge) break;
+      const merge = pendingMerge;
+      pendingMerge = null;
+      state.doc = merge.result.doc;
+      state.encrypted = merge.bytes;
+      state.signature = merge.hash;
+      state.baseXml = serializeVault(merge.externalDoc);
+      state.dirty = true;
+      state.externalChange = false;
+      state.saveError = false;
+      state.lastSaved = null;
+      state.lastExported = null;
+      state.selected = null;
+      state.mobileDetail = false;
+      closeModal();
+      render();
+      toast(t('已合并外部更改，请保存数据库'));
+      break;
+    }
     case 'security-overview':
       showSecurityOverview();
       break;

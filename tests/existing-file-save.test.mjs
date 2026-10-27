@@ -182,6 +182,7 @@ test('existing .db: save entry writes back, backs up, and survives opening the f
     document.querySelector('#modal').textContent.includes('原文件已被其他应用修改'),
   );
   assert.ok(document.querySelector('.conflict-banner'));
+  assert.ok(document.querySelector('[data-action=merge-external]'));
   assert.deepEqual(content, original);
   assert.match(document.querySelector('[data-action=save]').textContent, /保存更改/);
   click('[data-action=close-modal]');

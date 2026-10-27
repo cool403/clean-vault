@@ -351,6 +351,7 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
     document.querySelector('#modal').textContent.includes('原文件已被其他应用修改'),
   );
   assert.ok(document.querySelector('.conflict-banner'));
+  assert.ok(document.querySelector('[data-action=merge-external]'));
   click('[data-action=close-modal]');
   switchLanguage('en');
   assert.equal(

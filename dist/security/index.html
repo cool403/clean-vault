@@ -54,10 +54,11 @@
           ><a href="#section-4">剪贴板清除是尽力而为</a><a href="#section-5">主密码无法找回</a
           ><a href="#section-6">本地快照只保存密文</a><a href="#section-7">安全概览只在内存中计算</a
           ><a href="#section-8">文件关联只在本地读取</a
-          ><a href="#section-9">加密兼容性不等于现代认证加密</a
-          ><a href="#section-10">保存、备份与恢复的边界</a
-          ><a href="#section-11">扩展仅获得当前网站授权</a><a href="#section-12">仍无法保护的情况</a
-          ><a href="#section-13">审计与问题报告</a>
+          ><a href="#section-9">同步文件夹只在本地合并</a
+          ><a href="#section-10">加密兼容性不等于现代认证加密</a
+          ><a href="#section-11">保存、备份与恢复的边界</a
+          ><a href="#section-12">扩展仅获得当前网站授权</a><a href="#section-13">仍无法保护的情况</a
+          ><a href="#section-14">审计与问题报告</a>
         </aside>
         <article class="prose">
           <section id="section-1">
@@ -130,6 +131,14 @@
             </p>
           </section>
           <section id="section-9">
+            <h2>同步文件夹只在本地合并</h2>
+            <p>
+              把 .db 放进 Syncthing、Nextcloud、OneDrive 或 iCloud Drive
+              时，同步由你的工具完成。ClearVault
+              在检测到外部变化后本地读取并用当前会话内存中的凭据解密；只有格式版本和主密码一致时才合并，且确认预览后仍需保存才写入。冲突按条目时间戳选择，标签按名称合并；同步提供商仍可能回滚或替换文件，请保留独立备份。
+            </p>
+          </section>
+          <section id="section-10">
             <h2>加密兼容性不等于现代认证加密</h2>
             <p>
               兼容格式沿用 PBKDF2-SHA1（10000 次）与 AES-256-CBC，正文是压缩 XML。CBC 正文没有现代
@@ -138,13 +147,13 @@
               密码编码，但不能因此宣称加密格式已升级为 AEAD。
             </p>
           </section>
-          <section id="section-10">
+          <section id="section-11">
             <h2>保存、备份与恢复的边界</h2>
             <p>
               写回前比较原文件指纹，覆盖前备份原密文并读回校验，写入后再次校验。浏览器不能提供跨应用的原子比较交换，仍应避免同时编辑。旧备份不会随主密码修改而重加密。下载只表示发起导出，需自行确认磁盘上的文件并重新打开检查。
             </p>
           </section>
-          <section id="section-11">
+          <section id="section-12">
             <h2>扩展仅获得当前网站授权</h2>
             <p>
               扩展使用
@@ -153,13 +162,13 @@
               验证码，不自动提交。搜索、复制和新建条目在解锁后的侧栏内本地处理；复制会写入系统剪贴板。目标网站能够读取填入它的密码或验证码；这属于填充的固有边界。
             </p>
           </section>
-          <section id="section-12">
+          <section id="section-13">
             <h2>仍无法保护的情况</h2>
             <p>
               受感染的操作系统、恶意浏览器或扩展、解锁时被读取的页面内存、主密码泄露以及被篡改的应用发布，都超出当前保护边界。安全使用依赖设备、浏览器和发布来源。可从下载页取得源码与自托管说明，校验值不能代替签名或审计。
             </p>
           </section>
-          <section id="section-13">
+          <section id="section-14">
             <h2>审计与问题报告</h2>
             <p>
               本项目尚未完成独立安全审计、代码签名或浏览器商店审核。目前没有公布专用私密漏洞报告渠道，请勿在公开
@@ -177,6 +186,7 @@
             ><a href="/guides/import-lastpass/">从 LastPass 导入到 ClearVault ↗</a
             ><a href="/guides/import-apple-passwords/">从 Apple Passwords 导入到 ClearVault ↗</a
             ><a href="/guides/import-generic-csv/">导入任意 CSV 到 ClearVault ↗</a
+            ><a href="/guides/sync-folder/">用自己的同步文件夹同步密码库 ↗</a
             ><a href="/guides/browser-extension/">扩展教程：填充、搜索、OTP 与新建条目 ↗</a
             ><a href="/downloads/">下载与源码 ↗</a>
           </section>

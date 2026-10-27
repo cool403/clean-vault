@@ -27,7 +27,7 @@ def digest(data):
 web = [p for p in files('dist') if 'downloads' not in p.relative_to(ROOT/'dist').parts
        or p.name == 'index.html']
 extension = files('extension')
-source = sorted(set(web + extension + files('scripts') + files('docs') + files('tests') + files('.github') + [
+source = sorted(set(web + extension + files('scripts') + files('docs') + files('store') + files('tests') + files('.github') + [
     ROOT / p for p in ['README.md', 'SECURITY.md', 'LICENSE', 'NOTICE', 'CONTRIBUTING.md',
                       'README.en.md', 'package.json', 'package-lock.json', '.prettierrc.json', '.prettierignore',
                       '.gitattributes', '.editorconfig', 'server.mjs', 'Dockerfile', 'nginx.conf',
