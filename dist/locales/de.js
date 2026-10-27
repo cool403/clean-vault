@@ -606,4 +606,64 @@ export default {
   添加一个验证器: 'Einen Authenticator hinzufügen',
   保存并设置备份: 'Speichern und Backups einrichten',
   已完成: 'Erledigt',
+  安全概览: 'Sicherheitsübersicht',
+  弱密码: 'Schwache Passwörter',
+  重复使用: 'Wiederverwendete Passwörter',
+  长期未更新: 'Alte Passwörter',
+  未启用两步验证: 'Kein TOTP',
+  '仅在本地根据解密后的条目计算，不上传密码。':
+    'Lokal aus entschlüsselten Einträgen berechnet; Passwörter werden nie hochgeladen.',
+  '长度不足 12 个字符或强度过低的密码。': 'Passwörter unter 12 Zeichen oder mit geringer Stärke.',
+  '{entries} 个条目使用同一密码（{groups} 组）':
+    '{entries} Einträge teilen ein Passwort ({groups} Gruppen)',
+  '超过一年没有修改的条目。': 'Einträge, die seit über einem Jahr nicht geändert wurden.',
+  '有密码但尚未添加 TOTP。': 'Einträge mit Passwort, aber ohne TOTP.',
+  '共 {count} 个条目，{withPassword} 个设置了密码。':
+    '{count} Einträge, {withPassword} mit Passwort.',
+  安全概览筛选结果: 'Ergebnisse des Sicherheitsfilters',
+  '本地安全筛选。': 'Lokaler Sicherheitsfilter.',
+  清除筛选: 'Filter löschen',
+  批量选择: 'Mehrfachauswahl',
+  '已选择 {count} 项': '{count} ausgewählt',
+  全选: 'Alle auswählen',
+  清除选择: 'Auswahl löschen',
+  添加标签: 'Label hinzufügen',
+  请先选择条目: 'Wählen Sie zuerst mindestens einen Eintrag aus',
+  '为选中的 {count} 个条目添加标签': '{count} ausgewählten Einträgen ein Label hinzufügen',
+  选择标签: 'Label auswählen',
+  或新建标签: 'Oder neues Label anlegen',
+  输入新标签名称: 'Neuen Labelnamen eingeben',
+  请选择或新建标签: 'Label auswählen oder anlegen',
+  '已为 {count} 个条目添加标签': '{count} Einträgen ein Label hinzugefügt',
+  '已归档 {count} 个条目': '{count} Einträge archiviert',
+  '已将 {count} 个条目移至回收站': '{count} Einträge in den Papierkorb verschoben',
+  保存: 'Speichern',
+  删除: 'Löschen',
+  重命名: 'Umbenennen',
+  合并: 'Zusammenführen',
+  管理标签: 'Labels verwalten',
+  还没有标签: 'Noch keine Labels',
+  重命名标签: 'Label umbenennen',
+  合并到: 'Zusammenführen in',
+  标签已重命名: 'Label umbenannt',
+  标签已删除: 'Label gelöscht',
+  标签已合并: 'Labels zusammengeführt',
+  '删除标签“{name}”？条目不会被删除，只会移除该标签。':
+    'Label „{name}“ löschen? Einträge werden nicht gelöscht; nur dieses Label wird entfernt.',
+  '重命名、合并或删除标签；不会删除条目。':
+    'Labels umbenennen, zusammenführen oder löschen; Einträge werden nicht gelöscht.',
+  '安装后可离线打开，并在支持的浏览器中从文件管理器打开 .db。':
+    'Nach der Installation funktioniert ClearVault offline, und unterstützte Browser können .db-Dateien aus dem Dateimanager öffnen.',
+  'Chrome / Edge 桌面：点击地址栏的安装图标，或打开浏览器菜单选择“安装 ClearVault”。':
+    'Chrome / Edge Desktop: Installationssymbol in der Adressleiste verwenden oder im Browsermenü „ClearVault installieren“ wählen.',
+  'Android Chrome：打开浏览器菜单，选择“安装应用”或“添加到主屏幕”。':
+    'Android Chrome: Browsermenü öffnen und „App installieren“ oder „Zum Startbildschirm hinzufügen“ wählen.',
+  'iPhone / iPad Safari：点击分享按钮，选择“添加到主屏幕”。':
+    'iPhone / iPad Safari: Teilen antippen und „Zum Home-Bildschirm“ wählen.',
+  'iOS Safari 不支持文件写回和浏览器扩展；请保留加密备份。':
+    'iOS Safari unterstützt kein Zurückschreiben von Dateien und keine Browsererweiterungen; behalten Sie verschlüsselte Backups.',
+  '无需注册 · 无需上传文件 · 可拖放 .db': 'Kein Konto · Kein Upload · .db-Datei ablegen',
+  '已加载本地快照，请输入主密码': 'Lokaler Snapshot geladen. Geben Sie das Master-Passwort ein.',
+  '请先保存当前修改，再恢复本地快照':
+    'Speichern Sie zuerst die aktuellen Änderungen, bevor Sie einen lokalen Snapshot wiederherstellen.',
 };

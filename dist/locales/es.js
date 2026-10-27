@@ -599,4 +599,65 @@ export default {
   添加一个验证器: 'Añade un autenticador',
   保存并设置备份: 'Guarda y configura copias de seguridad',
   已完成: 'Hecho',
+  安全概览: 'Resumen de seguridad',
+  弱密码: 'Contraseñas débiles',
+  重复使用: 'Contraseñas reutilizadas',
+  长期未更新: 'Contraseñas antiguas',
+  未启用两步验证: 'Sin TOTP',
+  '仅在本地根据解密后的条目计算，不上传密码。':
+    'Calculado localmente a partir de entradas descifradas; las contraseñas nunca se suben.',
+  '长度不足 12 个字符或强度过低的密码。':
+    'Contraseñas de menos de 12 caracteres o con poca seguridad.',
+  '{entries} 个条目使用同一密码（{groups} 组）':
+    '{entries} entradas comparten una contraseña ({groups} grupos)',
+  '超过一年没有修改的条目。': 'Entradas sin cambios durante más de un año.',
+  '有密码但尚未添加 TOTP。': 'Entradas con contraseña pero sin TOTP.',
+  '共 {count} 个条目，{withPassword} 个设置了密码。':
+    '{count} entradas, {withPassword} con contraseña.',
+  安全概览筛选结果: 'Resultados del filtro de seguridad',
+  '本地安全筛选。': 'Filtro de seguridad local.',
+  清除筛选: 'Borrar filtro',
+  批量选择: 'Seleccionar varios',
+  '已选择 {count} 项': '{count} seleccionados',
+  全选: 'Seleccionar todo',
+  清除选择: 'Borrar selección',
+  添加标签: 'Añadir etiqueta',
+  请先选择条目: 'Selecciona al menos una entrada primero',
+  '为选中的 {count} 个条目添加标签': 'Añadir una etiqueta a {count} entradas seleccionadas',
+  选择标签: 'Elegir una etiqueta',
+  或新建标签: 'O crear una etiqueta',
+  输入新标签名称: 'Introduce un nombre de etiqueta nuevo',
+  请选择或新建标签: 'Elige o crea una etiqueta',
+  '已为 {count} 个条目添加标签': 'Se añadió una etiqueta a {count} entradas',
+  '已归档 {count} 个条目': '{count} entradas archivadas',
+  '已将 {count} 个条目移至回收站': '{count} entradas movidas a la papelera',
+  保存: 'Guardar',
+  删除: 'Eliminar',
+  重命名: 'Renombrar',
+  合并: 'Combinar',
+  管理标签: 'Gestionar etiquetas',
+  还没有标签: 'Aún no hay etiquetas',
+  重命名标签: 'Renombrar etiqueta',
+  合并到: 'Combinar en',
+  标签已重命名: 'Etiqueta renombrada',
+  标签已删除: 'Etiqueta eliminada',
+  标签已合并: 'Etiquetas combinadas',
+  '删除标签“{name}”？条目不会被删除，只会移除该标签。':
+    '¿Eliminar la etiqueta {name}? Las entradas no se eliminan; solo se quita esta etiqueta.',
+  '重命名、合并或删除标签；不会删除条目。':
+    'Renombra, combina o elimina etiquetas; las entradas no se eliminan.',
+  '安装后可离线打开，并在支持的浏览器中从文件管理器打开 .db。':
+    'Tras instalarla, ClearVault funciona sin conexión y los navegadores compatibles pueden abrir archivos .db desde el gestor de archivos.',
+  'Chrome / Edge 桌面：点击地址栏的安装图标，或打开浏览器菜单选择“安装 ClearVault”。':
+    'Chrome / Edge de escritorio: usa el icono de instalación de la barra de direcciones o el menú del navegador para instalar ClearVault.',
+  'Android Chrome：打开浏览器菜单，选择“安装应用”或“添加到主屏幕”。':
+    'Android Chrome: abre el menú del navegador y elige Instalar aplicación o Añadir a la pantalla de inicio.',
+  'iPhone / iPad Safari：点击分享按钮，选择“添加到主屏幕”。':
+    'iPhone / iPad Safari: toca Compartir y elige Añadir a pantalla de inicio.',
+  'iOS Safari 不支持文件写回和浏览器扩展；请保留加密备份。':
+    'Safari en iOS no admite escritura de archivos ni extensiones del navegador; conserva copias cifradas.',
+  '无需注册 · 无需上传文件 · 可拖放 .db': 'Sin cuenta · Sin subida · Arrastra un archivo .db',
+  '已加载本地快照，请输入主密码': 'Instantánea local cargada. Introduce la contraseña maestra.',
+  '请先保存当前修改，再恢复本地快照':
+    'Guarda los cambios actuales antes de restaurar una instantánea local.',
 };

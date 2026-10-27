@@ -48,11 +48,13 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 - Saving an entry in an existing file automatically backs up and writes the database. Choose a separate backup directory before the first write. Cancellation, conflicts and failures preserve the unsaved state. New vaults and download mode require an explicit database save.
 - Backup preview and restoration as a new vault, automatic locking after 1 / 5 / 15 / 30 minutes, English / Simplified Chinese, and offline PWA use.
 - Quick search supports pinyin initials, recency ordering, TOTP copying and a command mode (new entry, generate password, lock, switch vault). Large lists render in batches and search results are capped at 50.
-- Each save attempts to write encrypted `.db` ciphertext to a local OPFS snapshot, keeping 10 by default. External file changes prompt you to save a copy or reload instead of overwriting.
+- Each save in the app and extension attempts to write encrypted `.db` ciphertext to a local OPFS snapshot, keeping 10 by default. External file changes prompt you to save a copy or reload instead of overwriting.
+- Installed Chromium PWAs can open `.db` files from the file manager, and `.db` files can be dropped onto the page. Install guidance covers Chrome / Edge, Android and iOS. iOS Safari does not support file write-back or browser extensions.
 - The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, searching all entries, copying usernames/passwords, creating an entry for the current website, showing/copying/filling TOTP codes, confirmed password updates, imports and verified saves, without submitting forms.
 - Recent vaults remembers up to five names and file handles. Select a containing directory to show its last confirmed folder name and relative location. The current session also unlocks through this list, preserving unsaved edits. Remove or clear history records anytime.
 - Import from Chrome, Bitwarden, 1Password, LastPass and Apple Passwords; map columns for generic CSV. Preview and duplicate checks never overwrite existing entries. The app and extension share this flow.
 - New empty vaults show a dismissible getting-started checklist: import/first entry, install the extension, first fill, TOTP and backups.
+- Local security overview for weak, reused and old passwords and entries without TOTP. Filter by category, batch-add labels, archive or trash entries, and rename, merge or delete labels.
 
 Quick search opens automatically after unlocking an existing vault. It searches titles, usernames, emails, websites, labels and pinyin initials, excluding passwords, PINs, OTP secrets and notes.
 

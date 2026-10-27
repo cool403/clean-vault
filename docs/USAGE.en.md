@@ -12,6 +12,12 @@ Open `/?lang=de`, `/?lang=ja` or `/?lang=es` to launch in a specific language; t
 
 A new empty vault shows a dismissible checklist above the list: import or add the first entry, install the browser extension, fill or copy once, add an authenticator, and save with backups. Entry and authenticator steps complete automatically; extension and first-fill steps can be checked manually; choose Later to hide the checklist. Completion is stored per vault name and contains no vault contents.
 
+## Security overview, batch actions and labels
+
+Security overview in the sidebar calculates four local issues: weak passwords (under 12 characters or low strength), passwords reused by multiple entries, entries not changed for over a year, and entries with a password but no TOTP. Choose a card to filter the list; clear the filter at the top. The report is calculated in memory from decrypted entries and never uploads passwords.
+
+Filtered results support batch selection: select all, clear, add a label, archive or move to trash. The gear beside Labels opens Manage labels for rename, merge and delete; deleting a label removes only that label from entries, not the entries themselves.
+
 ## Quick search, pinyin and commands
 
 Quick search opens automatically after unlocking, or press Ctrl / ⌘ + K. It searches names, accounts, websites, labels and pinyin initials (for example, `wx` for 微信). Title-prefix matches rank first, followed by recently used entries. Ctrl / ⌘ + Enter copies the password, Ctrl / ⌘ + Shift + Enter copies the code, and Enter opens details.
@@ -19,6 +25,12 @@ Quick search opens automatically after unlocking, or press Ctrl / ⌘ + K. It se
 Type `>` for command mode: new entry, add authenticator, generate password, lock vault, open another vault and preferences. Quick search shows at most 50 results for large vaults; keep typing to narrow them. The main list renders 200 entries first and offers Show more.
 
 Recent usage stores only entry IDs and times for ordering; clear them with Clear recent usage in Preferences. Passwords, OTP secrets and notes are not stored. Polyphonic characters use their primary reading for pinyin indexing.
+
+## Install, file association and drag-and-drop
+
+Chrome / Edge desktop: use the install icon in the address bar or the browser menu. Android Chrome: open the browser menu and choose Install app or Add to Home Screen. iPhone / iPad Safari: tap Share and choose Add to Home Screen. The first installed launch needs an online visit to cache app resources.
+
+Installed Chromium PWAs can open `.db` files from the system file manager, and `.db` files can be dropped directly onto the page. Files are decrypted locally and never uploaded. iOS Safari does not support file write-back or browser extensions; keep encrypted backups.
 
 ## Recent vaults
 
@@ -77,7 +89,7 @@ After copying a username, password or code, ClearVault tries to clear the system
 
 ## Local encrypted snapshots and save conflicts
 
-After each save, the app tries to write encrypted `.db` ciphertext to a local OPFS snapshot, keeping 10 by default. Choose 5 / 10 / 20 / 50 in Preferences. Snapshots contain no plaintext, require the master password used at that time to restore, and are deleted when site data is cleared. View local snapshots restores a preview; Clear local snapshots removes only the current vault's snapshots.
+The app and extension try to write encrypted `.db` ciphertext to a local OPFS snapshot after each save, keeping 10 by default. Choose 5 / 10 / 20 / 50. Snapshots contain no plaintext, require the master password used at that time to restore, and are deleted when site data is cleared. View and clear them in app Preferences or the extension's More actions; clearing removes only the current vault's snapshots.
 
 If another application or browser tab changes the original file, a banner appears. Saving stops and offers Save a copy / Reload file / Keep current edits, so the external version is not overwritten. Reloading discards unsaved edits after confirmation. External-change detection is best effort; saving still enforces the ciphertext SHA-256 check.
 

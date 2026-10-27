@@ -586,3 +586,13 @@ body:has(#unlocked:not([hidden])) main {
   min-height: 32px;
   font-size: 12px;
 }
+
+.backup-list {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+}
+.backup-list .button {
+  width: 100%;
+  margin: 0;
+}

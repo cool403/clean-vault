@@ -589,4 +589,64 @@ export default {
   添加一个验证器: 'Add an authenticator',
   保存并设置备份: 'Save and set up backups',
   已完成: 'Done',
+  安全概览: 'Security overview',
+  弱密码: 'Weak passwords',
+  重复使用: 'Reused passwords',
+  长期未更新: 'Old passwords',
+  未启用两步验证: 'No TOTP',
+  '仅在本地根据解密后的条目计算，不上传密码。':
+    'Calculated locally from decrypted entries; passwords are never uploaded.',
+  '长度不足 12 个字符或强度过低的密码。':
+    'Passwords shorter than 12 characters or with low strength.',
+  '{entries} 个条目使用同一密码（{groups} 组）':
+    '{entries} entries share a password ({groups} groups)',
+  '超过一年没有修改的条目。': 'Entries not changed in over a year.',
+  '有密码但尚未添加 TOTP。': 'Entries with a password but no TOTP.',
+  '共 {count} 个条目，{withPassword} 个设置了密码。':
+    '{count} entries, {withPassword} with a password.',
+  安全概览筛选结果: 'Security filter results',
+  '本地安全筛选。': 'Local security filter.',
+  清除筛选: 'Clear filter',
+  批量选择: 'Select multiple',
+  '已选择 {count} 项': '{count} selected',
+  全选: 'Select all',
+  清除选择: 'Clear selection',
+  添加标签: 'Add label',
+  请先选择条目: 'Select at least one entry first',
+  '为选中的 {count} 个条目添加标签': 'Add a label to {count} selected entries',
+  选择标签: 'Choose a label',
+  或新建标签: 'Or create a label',
+  输入新标签名称: 'Enter a new label name',
+  请选择或新建标签: 'Choose or create a label',
+  '已为 {count} 个条目添加标签': 'Added a label to {count} entries',
+  '已归档 {count} 个条目': 'Archived {count} entries',
+  '已将 {count} 个条目移至回收站': 'Moved {count} entries to trash',
+  保存: 'Save',
+  删除: 'Delete',
+  重命名: 'Rename',
+  合并: 'Merge',
+  管理标签: 'Manage labels',
+  还没有标签: 'No labels yet',
+  重命名标签: 'Rename label',
+  合并到: 'Merge into',
+  标签已重命名: 'Label renamed',
+  标签已删除: 'Label deleted',
+  标签已合并: 'Labels merged',
+  '删除标签“{name}”？条目不会被删除，只会移除该标签。':
+    'Delete label “{name}”? Entries are not deleted; only this label is removed.',
+  '重命名、合并或删除标签；不会删除条目。':
+    'Rename, merge or delete labels; entries are not deleted.',
+  '安装后可离线打开，并在支持的浏览器中从文件管理器打开 .db。':
+    'After installing, ClearVault works offline and supported browsers can open .db files from the file manager.',
+  'Chrome / Edge 桌面：点击地址栏的安装图标，或打开浏览器菜单选择“安装 ClearVault”。':
+    'Chrome / Edge desktop: use the install icon in the address bar, or open the browser menu and choose Install ClearVault.',
+  'Android Chrome：打开浏览器菜单，选择“安装应用”或“添加到主屏幕”。':
+    'Android Chrome: open the browser menu and choose Install app or Add to Home screen.',
+  'iPhone / iPad Safari：点击分享按钮，选择“添加到主屏幕”。':
+    'iPhone / iPad Safari: tap Share and choose Add to Home Screen.',
+  'iOS Safari 不支持文件写回和浏览器扩展；请保留加密备份。':
+    'iOS Safari does not support file write-back or browser extensions; keep encrypted backups.',
+  '无需注册 · 无需上传文件 · 可拖放 .db': 'No account · No upload · Drop a .db file',
+  '已加载本地快照，请输入主密码': 'Loaded local snapshot. Enter the master password.',
+  '请先保存当前修改，再恢复本地快照': 'Save current changes before restoring a local snapshot.',
 };

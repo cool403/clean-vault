@@ -22,7 +22,7 @@ What you can do:
 - Add an entry for the current website, generate a password and save it to the encrypted file.
 - Update a password after you change it on the website.
 - Import Chrome, Bitwarden, 1Password, LastPass, Apple Passwords and mapped generic CSV files.
-- Keep up to five recent vaults, with verified saves and encrypted backups.
+- Keep up to five recent vaults, with verified saves, encrypted backups and local encrypted snapshots.
 - Use the web app as an offline PWA, in Chinese, English, German, Japanese or Spanish.
 
 Privacy and boundaries:
@@ -76,5 +76,5 @@ See `permissions.md`.
 ## Release notes
 
 <version> — extension: local vault search/copy, TOTP display and fill, new-entry flow,
-clipboard auto-clear and recovery kit. Web app: encrypted OPFS snapshots and
-save-conflict prompts.
+clipboard auto-clear, recovery kit and encrypted OPFS snapshots. Web app also
+adds save-conflict prompts.

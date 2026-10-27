@@ -65,7 +65,20 @@
             <button id="recovery-kit" class="button secondary" data-t="恢复工具包">
               恢复工具包
             </button>
+            <button id="snapshots" class="button secondary" data-t="查看本地快照">
+              查看本地快照
+            </button>
+            <button id="clear-snapshots" class="button secondary" data-t="清除本地快照">
+              清除本地快照
+            </button>
           </div>
+          <label for="snapshot-retention" data-t="保留数量">保留数量</label
+          ><select id="snapshot-retention">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
           <label for="idle" data-i="idle">无操作自动锁定</label
           ><select id="idle">
             <option value="1">1 min</option>

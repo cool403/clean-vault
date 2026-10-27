@@ -552,7 +552,15 @@ export const security = {
       ],
       [
         '本地快照只保存密文',
-        '每次保存后会尝试把加密的 .db 密文写入浏览器 OPFS，默认保留 10 份，可配置。快照不含明文或密码，恢复时需要保存时的主密码；清除站点数据会删除，不能替代独立备份。外部文件变化时保存会停止并提示另存副本或重新加载；跨标签页广播用于协调，不是安全边界。',
+        '网页和扩展每次保存后都会尝试把加密的 .db 密文写入浏览器 OPFS，默认保留 10 份，可配置。快照不含明文或密码，恢复时需要保存时的主密码；清除站点数据会删除，不能替代独立备份。外部文件变化时保存会停止并提示另存副本或重新加载；跨标签页广播用于协调，不是安全边界。',
+      ],
+      [
+        '安全概览只在内存中计算',
+        '弱密码、重复使用、密码年龄和 TOTP 覆盖都在解锁后的页面内存中根据解密条目计算，不写入存储或上传。批量标签、归档和回收站操作与普通编辑一样，只有保存后才写入加密 .db。',
+      ],
+      [
+        '文件关联只在本地读取',
+        'PWA 的 file_handlers、launchQueue 和页面拖放都只在用户选择或拖入 .db 后本地读取文件，不上传。安装、文件关联和权限由浏览器管理；外部应用仍可能同时读取源文件，不能替代独立备份。',
       ],
       [
         '加密兼容性不等于现代认证加密',
@@ -605,7 +613,15 @@ export const security = {
       ],
       [
         'Local snapshots contain ciphertext only',
-        'After each save, ClearVault tries to write encrypted .db ciphertext to browser OPFS, keeping 10 snapshots by default (configurable). Snapshots contain no plaintext or passwords and require the master password used at that time to restore. Clearing site data deletes them; they are not a substitute for independent backups. External file changes stop saving and offer a copy or reload; cross-tab broadcasts are coordination, not a security boundary.',
+        'The app and extension try to write encrypted .db ciphertext to browser OPFS after each save, keeping 10 snapshots by default (configurable). Snapshots contain no plaintext or passwords and require the master password used at that time to restore. Clearing site data deletes them; they are not a substitute for independent backups. External file changes stop saving and offer a copy or reload; cross-tab broadcasts are coordination, not a security boundary.',
+      ],
+      [
+        'Security overview is computed in memory only',
+        'Weak passwords, reuse, password age and TOTP coverage are calculated in page memory from decrypted entries and are never stored or uploaded. Batch labels, archiving and trash changes behave like any edit and are written to the encrypted .db only after saving.',
+      ],
+      [
+        'File association reads locally',
+        'PWA file_handlers, launchQueue and page drag-and-drop only read a .db file locally after the user selects or drops it; nothing is uploaded. Installation, file association and permissions are managed by the browser. External applications can still read the source file concurrently, so this is not a substitute for independent backups.',
       ],
       [
         'Compatibility is not modern authenticated encryption',

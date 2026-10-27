@@ -1419,3 +1419,140 @@ html[lang='ja'] .welcome-copy h1 {
   padding: 2px 4px;
   font-size: 12px;
 }
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+.security-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  margin: 0;
+  padding: 14px;
+  color: var(--ink);
+  text-align: left;
+  background: #fffdf8;
+  border: 1.5px solid var(--line);
+  box-shadow: none;
+}
+.security-card:hover {
+  background: #e7edfa;
+}
+.security-card strong {
+  font-size: 13px;
+}
+.security-card b {
+  font-size: 28px;
+  line-height: 1.1;
+}
+.security-card small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.security-filter-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 7px 10px;
+  color: #31547f;
+  background: #e3ecff;
+  border: 1px solid #b0bfd8;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.security-filter-chip > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.security-filter-chip .text-button {
+  padding: 2px 4px;
+}
+
+.batch-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  color: #31547f;
+  background: #e3ecff;
+  border: 1px solid #b0bfd8;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.batch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+.batch-actions .text-button {
+  padding: 2px 4px;
+  font-size: 12px;
+}
+.batch-check {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 0 2px 0 0;
+  accent-color: #315ca0;
+}
+.entry-row.batch-selected {
+  background: #e3ecff;
+}
+
+.label-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.label-caption-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.label-manager {
+  display: grid;
+  gap: 2px;
+  margin: 10px 0;
+}
+.label-manage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.label-manage-row strong {
+  overflow-wrap: anywhere;
+}
+.label-manage-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+.label-manage-actions .text-button {
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.install-steps {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.5;
+}

@@ -1,6 +1,7 @@
 import { decryptDatabase, encryptDatabase } from './core/crypto.js';
 import { createClipboardGuard } from './core/clipboard.js';
 import { pinyinSearch } from './core/pinyin.js';
+import { createSnapshotStore, snapshotsSupported } from './core/snapshots.js';
 import {
   parseVault,
   serializeVault,
@@ -32,6 +33,7 @@ import { fillLogin, readNewPassword, fillOTP } from './fill.js';
 const $ = (selector) => document.querySelector(selector);
 const IDLE_KEY = 'clearvault.extension.idle';
 const CLIPBOARD_KEY = 'clearvault.clipboardTimeout';
+const SNAPSHOT_KEY = 'clearvault.snapshotRetention';
 initializeLanguage();
 const clipboardGuard = createClipboardGuard();
 try {
@@ -41,6 +43,15 @@ try {
 } catch {
   /* Extension storage can be unavailable in private contexts. */
 }
+let snapshotRetention = 10;
+try {
+  const stored = globalThis.localStorage?.getItem(SNAPSHOT_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([5, 10, 20, 50].includes(saved)) snapshotRetention = saved;
+} catch {
+  /* Keep the default when extension storage is unavailable. */
+}
+const snapshotStore = createSnapshotStore({ retention: snapshotRetention });
 const recentFiles = createRecentFiles();
 let recentEntries = [],
   doc = null,
@@ -123,7 +134,7 @@ function setBusy(value) {
   busy = value;
   document
     .querySelectorAll(
-      '#new-entry, #save, #save-copy, #reload, #import, #recovery-kit, #add-site, #lock, #open, #unlock-button, #entry-search, #clipboard-timeout',
+      '#new-entry, #save, #save-copy, #reload, #import, #recovery-kit, #snapshots, #clear-snapshots, #snapshot-retention, #add-site, #lock, #open, #unlock-button, #entry-search, #clipboard-timeout',
     )
     .forEach((button) => (button.disabled = value));
   $('#file').disabled = value;
@@ -397,6 +408,72 @@ async function copyText(value) {
   } catch {
     notify(t('复制失败，请检查浏览器剪贴板权限'));
   }
+}
+async function restoreSnapshot(item) {
+  if (busy) return;
+  if (dirty) {
+    notify(t('请先保存当前修改，再恢复本地快照'));
+    return;
+  }
+  const bytes = await snapshotStore.read(item.name);
+  if (!bytes) throw new Error(t('当前浏览器不支持本地快照'));
+  const original = name;
+  if (doc) await lock();
+  encrypted = bytes;
+  handle = null;
+  recentId = null;
+  name = original.replace(/\.db$/i, '') + '-snapshot.db';
+  signature = await fingerprint(bytes);
+  lastSaved = null;
+  saveError = false;
+  dirty = false;
+  $('#password').value = '';
+  $('#selected-file').textContent = name;
+  $('#locked').hidden = false;
+  $('#unlocked').hidden = true;
+  $('#vault-name').textContent = '';
+  $('#origin').textContent = '';
+  $('#entries').replaceChildren();
+  closeDialog();
+  status('已加载本地快照，请输入主密码');
+  $('#password').focus();
+  void refreshRecent();
+}
+async function showSnapshots() {
+  if (!snapshotsSupported()) {
+    notify(t('当前浏览器不支持本地快照'));
+    return;
+  }
+  const list = await snapshotStore.list(name);
+  showDialog(
+    `<form id="snapshots-form">${heading(t('本地加密快照'), t('快照是加密的 .db 密文，恢复时需要当时的主密码。'))}<div class="backup-list">${list.length ? list.map((item, index) => `<button type="button" class="button secondary" data-snapshot-index="${index}">${escape(new Date(item.time).toLocaleString(getLocale()))}</button>`).join('') : `<p>${t('暂无本地快照')}</p>`}</div><div class="modal-footer"><button type="button" class="button primary" data-close>${t('关闭')}</button></div></form>`,
+  );
+  $('#modal')
+    .querySelectorAll('[data-snapshot-index]')
+    .forEach((button) => {
+      button.onclick = () =>
+        restoreSnapshot(list[Number(button.dataset.snapshotIndex)]).catch(fail);
+    });
+}
+function clearSnapshots() {
+  if (!snapshotsSupported()) {
+    notify(t('当前浏览器不支持本地快照'));
+    return;
+  }
+  showDialog(
+    `<form id="clear-snapshots-form">${heading(t('清除本地快照'), t('这将删除当前密码库的本地加密快照，无法撤销。'))}<p class="form-error" role="alert"></p><div class="modal-footer"><button type="button" class="button secondary" data-close>${t('取消')}</button><button type="submit" class="button danger">${t('清除')}</button></div></form>`,
+  );
+  const form = $('#clear-snapshots-form');
+  form.onsubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const count = await snapshotStore.clear(name);
+      closeDialog();
+      notify(t('已清除 {count} 份本地快照', { count }));
+    } catch (error) {
+      form.querySelector('.form-error').textContent = fileError(error);
+    }
+  };
 }
 function downloadRecoveryKit() {
   const now = new Date();
@@ -860,6 +937,7 @@ async function addSite() {
 }
 async function save(asCopy = false) {
   if (!doc || busy) return;
+  const shouldSnapshot = dirty;
   setBusy(true);
   saveStatus();
   try {
@@ -921,6 +999,7 @@ async function save(asCopy = false) {
     encrypted = bytes;
     saveError = false;
     $('#vault-name').textContent = name;
+    if (shouldSnapshot) void snapshotStore.write(name, bytes, snapshotRetention).catch(() => {});
   } catch (error) {
     saveError = true;
     status('保存失败：', error);
@@ -1091,6 +1170,8 @@ $('#lock').onclick = () => lock();
 $('#refresh').onclick = () => refresh().catch(fail);
 $('#new-entry').onclick = () => newEntry();
 $('#recovery-kit').onclick = () => downloadRecoveryKit();
+$('#snapshots').onclick = () => showSnapshots().catch(fail);
+$('#clear-snapshots').onclick = () => clearSnapshots();
 $('#save').onclick = () => save();
 $('#save-copy').onclick = () => save(true);
 $('#reload').onclick = () => reload().catch(fail);
@@ -1216,6 +1297,21 @@ $('#clipboard-timeout').onchange = () => {
   clipboardGuard.setSeconds(seconds);
   try {
     localStorage.setItem(CLIPBOARD_KEY, String(seconds));
+  } catch {
+    /* The selection still applies to this side panel session. */
+  }
+};
+try {
+  const stored = localStorage.getItem(SNAPSHOT_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([5, 10, 20, 50].includes(saved)) $('#snapshot-retention').value = String(saved);
+} catch {
+  /* Keep the default when extension storage is unavailable. */
+}
+$('#snapshot-retention').onchange = () => {
+  snapshotRetention = Number($('#snapshot-retention').value);
+  try {
+    localStorage.setItem(SNAPSHOT_KEY, String(snapshotRetention));
   } catch {
     /* The selection still applies to this side panel session. */
   }
