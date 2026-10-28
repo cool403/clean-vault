@@ -36,6 +36,7 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   const handle = {
     name: '测试密码库.db',
     getFile: async () => ({
+      name: '测试密码库.db',
       size: saved?.length || 0,
       lastModified: 1,
       arrayBuffer: async () => (saved || new Uint8Array()).slice().buffer,
@@ -275,6 +276,25 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
     }),
   );
   await waitFor(() => !!document.querySelector('[data-action=recent-session]'));
+  assert.ok(document.querySelector('[data-action=demo]'), 'a saved locked vault allows a demo');
+  click('[data-action=demo]');
+  click('[data-action=lock]');
+  await waitFor(() => !!document.querySelector('[data-action=recent-open]'));
+  click('[data-action=recent-open]');
+  await waitFor(() => !!document.querySelector('#password-form'));
+  click('#password-form .modal-footer [data-action=close-modal]');
+  assert.equal(document.querySelector('#modal').open, false);
+  assert.ok(
+    document.querySelector('[data-action=demo]'),
+    'cancelling a recent vault unlock keeps the demo button visible without refreshing',
+  );
+  await waitFor(() => !!document.querySelector('[data-action=recent-session]'));
+  click('[data-action=recent-session]');
+  document
+    .querySelector('#modal')
+    .dispatchEvent(new dom.window.Event('cancel', { cancelable: true }));
+  assert.equal(document.querySelector('#modal').open, false);
+  assert.ok(document.querySelector('[data-action=demo]'), 'Escape also keeps the demo available');
   assert.deepEqual(footerLinks(), [
     '/guides/',
     '/security/',
@@ -326,6 +346,11 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   // Dirty snapshots survive lock in encrypted memory without writing the file.
   click('[data-action=lock]');
   await waitFor(() => !!document.querySelector('[data-action=recent-session]'));
+  assert.equal(
+    document.querySelector('[data-action=demo]'),
+    null,
+    'a dirty locked vault cannot be replaced by the demo',
+  );
   assert.equal(document.querySelector('[data-action=unlock]'), null);
   assert.match(
     document.querySelector('[data-action=recent-session]').textContent,
