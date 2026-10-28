@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { Script } from 'node:vm';
 
+// 验证在线时使用最新应用文件、离线时仍可启动，且不缓存导航查询参数。
 test('shell uses fresh online files, preserves offline launch and does not cache navigation queries', async () => {
   const origin = 'https://clear-vault.app';
   const handlers = {};

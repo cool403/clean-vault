@@ -15,6 +15,7 @@ const card = (id, stamp, title, password, label = '1', extra = '') =>
 const vault = (cardsXml, labels = '<label id="1" name="Work"/>') =>
   parseVault(`<database>${labels}${cardsXml}</database>`);
 
+// 验证三方合并保留本地和外部各自独立的修改，并合并标签。
 test('three-way merge keeps independent local and external changes and merges labels', () => {
   const base = vault(card(1, 100, 'One', 'old-one') + card(2, 100, 'Two', 'old-two'));
   const local = vault(
@@ -54,6 +55,7 @@ test('three-way merge keeps independent local and external changes and merges la
   assert.equal(children(byTitle.get('Local only'), 'label_id')[0].textContent, labelId('Personal'));
 });
 
+// 验证按时间戳合并时记录冲突并优先采用较新数据，较新的删除操作生效。
 test('timestamp merge records conflicts and prefers the newer side; deletions win when newer', () => {
   const base = vault(card(1, 100, 'Entry', 'base'));
   const localNewer = mergeVaults(
@@ -88,6 +90,7 @@ test('timestamp merge records conflicts and prefers the newer side; deletions wi
   assert.equal(cards(deleted.doc)[0].getAttribute('deleted'), 'true');
 });
 
+// 验证首次合并缺少共同基线时纳入双方条目，并保留本地未知 XML 节点。
 test('a first merge without a base includes both sides and preserves unknown local XML', () => {
   const local = parseVault(
     `<database><custom keep="yes"/>${card(1, 100, 'Local', 'one')}</database>`,
@@ -100,6 +103,7 @@ test('a first merge without a base includes both sides and preserves unknown loc
   assert.equal(cards(result.doc).length, 2);
 });
 
+// 验证同一条目的多个字段冲突可分别选择本地或外部值。
 test('field-level conflicts can choose local or external values independently', () => {
   const source = (title, stamp, password, notes) =>
     parseVault(
@@ -145,6 +149,7 @@ test('field-level conflicts can choose local or external values independently', 
   );
 });
 
+// 验证双方均删除同一条目时直接移除，不产生冲突。
 test('both sides deleting the same entry removes it without a conflict', () => {
   const base = vault(card(1, 100, 'Entry', 'base'));
   const result = mergeVaults(base, vault(''), vault(''));
@@ -153,6 +158,7 @@ test('both sides deleting the same entry removes it without a conflict', () => {
   assert.equal(cards(result.doc).length, 0);
 });
 
+// 验证仅一方删除条目时产生明确冲突，允许选择保留或删除。
 test('a deletion on one side is an explicit keep-or-delete conflict', () => {
   const base = vault(card(1, 100, 'Entry', 'base'));
   const deleted = vault('');
@@ -181,6 +187,7 @@ test('a deletion on one side is an explicit keep-or-delete conflict', () => {
   assert.equal(cards(removedExternal.doc).length, 0);
 });
 
+// 验证卡片 ID 与对象原型属性同名时，仍能正确保存并应用合并选择。
 test('card ids that collide with object prototype keys keep their choices', () => {
   const source = (title, password, stamp) =>
     parseVault(

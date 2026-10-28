@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 
+// 验证分享的演示链接直接打开演示库，并显示引导用户保存的按钮文案。
 test('a shared demo URL opens the demo vault with a conversion-focused save label', async () => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',

@@ -49,6 +49,7 @@ function directory() {
     all: entries,
   };
 }
+// 验证保存前备份原始密文、保存后校验内容，且备份保留策略仅作用于当前数据库。
 test('backs up original ciphertext, verifies save, scopes retention to this vault', async () => {
   const old = Uint8Array.of(5, 5, 2, 4),
     current = file('vault.db', old),
@@ -79,6 +80,7 @@ test('backs up original ciphertext, verifies save, scopes retention to this vaul
   assert.equal((await listBackups(dir, 'vault.db')).length, 1);
   assert.ok(dir.all.has('personal.db'));
 });
+// 验证文件大小和修改时间未变时，仍能根据内容发现外部修改冲突。
 test('content conflict is detected even when size and modification time match', async () => {
   const original = Uint8Array.of(1, 2, 3),
     current = file('vault.db', Uint8Array.of(1, 2, 4));
@@ -94,6 +96,7 @@ test('content conflict is detected even when size and modification time match', 
   );
   assert.deepEqual(current.bytes(), Uint8Array.of(1, 2, 4));
 });
+// 验证清理备份时不会删除其他来源的同名数据库备份。
 test('retention never removes another source with the same filename', async () => {
   const dir = directory(),
     a = file('SafeInCloud.db', Uint8Array.of(1)),
@@ -123,6 +126,7 @@ test('retention never removes another source with the same filename', async () =
   assert.equal(backups.length, 2);
   assert.ok(backups.some((item) => item.handle.bytes()[0] === 2));
 });
+// 验证备份失败时阻止覆盖原文件，目标写入失败时仍保留有效备份。
 test('backup failure prevents overwrite; target write failure keeps valid backup', async () => {
   const old = Uint8Array.of(1, 2),
     current = file('vault.db', old);
@@ -148,6 +152,7 @@ test('backup failure prevents overwrite; target write failure keeps valid backup
   );
   assert.deepEqual((await listBackups(dir, 'vault.db'))[0].handle.bytes(), old);
 });
+// 验证能够发现备份期间的外部修改及写入后的内容损坏。
 test('detects external changes during backup and corrupted writes', async () => {
   const current = file('vault.db', Uint8Array.of(1, 2)),
     dir = directory(),

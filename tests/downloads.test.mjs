@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
+// 验证下载目录页按语言展示并正确定位安装包，避免页面与同名目录的路径冲突。
 test('download directory page localizes and resolves packages without HTML/directory collision', async () => {
   const dom = new JSDOM(
     await readFile(new URL('../dist/downloads/index.html', import.meta.url), 'utf8'),

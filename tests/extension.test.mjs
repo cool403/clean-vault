@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 import { matchesSite, loginOrigin } from '../extension/matching.js';
 import { fillLogin, fillOTP, readNewPassword } from '../extension/fill.js';
 import { readFile } from 'node:fs/promises';
+// 验证站点匹配拒绝伪造域名后缀、HTTP、其他子域名和不同端口。
 test('extension matching rejects suffixes, HTTP, other subdomains and ports', () => {
   assert.ok(
     matchesSite(['https://accounts.example.com/login'], 'https://accounts.example.com/next'),
@@ -26,6 +27,7 @@ function page(body, url = 'https://example.com/login') {
   win.getComputedStyle = () => ({ display: 'block', visibility: 'visible', opacity: '1' });
   return { dom, win, run: win.eval('(' + fillLogin.toString() + ')') };
 }
+// 验证登录填充触发输入事件但不提交表单，并拒绝歧义表单和来源变化。
 test('fills one login with events without submitting; rejects ambiguity and changed origin', () => {
   const { dom, win, run } = page(
     '<form><input autocomplete="username"><input type="password"><button>Login</button></form>',
@@ -53,6 +55,7 @@ test('fills one login with events without submitting; rejects ambiguity and chan
   assert.equal(run('https://example.com', 'a', 'x'), 'ambiguous');
   dom.window.close();
 });
+// 验证扩展未申请全局站点、存储、外部消息或持久内容脚本权限。
 test('extension has no global host, storage, external message or persistent content permissions', async () => {
   const manifest = JSON.parse(
     await readFile(new URL('../extension/manifest.json', import.meta.url)),
@@ -64,6 +67,7 @@ test('extension has no global host, storage, external message or persistent cont
   assert.match(manifest.content_security_policy.extension_pages, /connect-src 'none'/);
 });
 
+// 验证分步登录只填充唯一用户名，不自动提交，也不误填验证码字段。
 test('multistep login fills only a unique username and never submits or fills OTP fields', () => {
   const { dom, win, run } = page(
     '<form><input autocomplete="username"><button>Continue</button></form>',
@@ -77,6 +81,7 @@ test('multistep login fills only a unique username and never submits or fills OT
   dom.window.close();
 });
 
+// 验证 Google 风格分步登录忽略隐藏诱饵字段，并触发完整的焦点和输入事件。
 test('Google-style username and password steps ignore hidden decoys and emit focus/input/change/blur', () => {
   const { dom, win, run } = page(
     '<form><input type="text" name="identifier" id="identifierId" autocomplete="username">' +
@@ -104,6 +109,7 @@ test('Google-style username and password steps ignore hidden decoys and emit foc
   dom.window.close();
 });
 
+// 验证用户名候选按 autocomplete 标记排序，并识别明确的账号字段名称。
 test('username selection ranks autocomplete tokens and supports explicit identifier names', () => {
   const { dom, win, run } = page(
     '<input type="email" name="newsletter"><form><input autocomplete="section-login username"></form>',
@@ -123,6 +129,7 @@ test('username selection ranks autocomplete tokens and supports explicit identif
   dom.window.close();
 });
 
+// 验证祖先元素隐藏的密码框不会被计入候选，避免产生虚假的多密码框歧义。
 test('hidden ancestors do not create multiple password candidates', () => {
   const { dom, win, run } = page('');
   for (const attribute of [
@@ -145,6 +152,7 @@ test('hidden ancestors do not create multiple password candidates', () => {
   dom.window.close();
 });
 
+// 验证注册表单、多个用户名候选、已移除输入框及聚焦时被替换的输入框均被拒绝。
 test('rejects registration, ambiguous users, removed inputs and focus-triggered replacements', () => {
   const { dom, win, run } = page('');
   for (const markup of [
@@ -171,6 +179,7 @@ test('rejects registration, ambiguous users, removed inputs and focus-triggered 
   dom.window.close();
 });
 
+// 验证网站将密码框切换为明文显示后，仍可依据明确的密码标记填充。
 test('fills an explicitly marked password after the website reveals it as text', () => {
   const { dom, win, run } = page(
     '<input type="text" autocomplete="section-login current-password">',
@@ -180,6 +189,7 @@ test('fills an explicitly marked password after the website reveals it as text',
   dom.window.close();
 });
 
+// 验证只填充唯一且明确的验证码输入框，不自动提交，也不误匹配普通 code 字段。
 test('fills one explicit verification-code input without submitting or matching generic code fields', () => {
   const { dom, win } = page(
     '<form><input name="postal-code" inputmode="numeric"><input autocomplete="one-time-code" inputmode="numeric"><button>Verify</button></form>',
@@ -206,6 +216,7 @@ test('fills one explicit verification-code input without submitting or matching 
   dom.window.close();
 });
 
+// 验证主动捕获密码时只读取预期来源中匹配的新密码字段。
 test('explicit password capture reads only matching new-password inputs from the expected origin', () => {
   const { dom, win } = page(
     '<form><input type="password" autocomplete="current-password" value="old"><input type="password" autocomplete="new-password" value="new"><input type="password" autocomplete="new-password" value="new"></form>',

@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
 
 const origin = 'https://clear-vault.app';
+// 验证公开页面在 JavaScript 执行前已有可读内容，并声明规范网址。
 test('public HTML is readable before JavaScript and declares canonical URLs', async () => {
   for (const [file, url] of [
     ['index.html', `${origin}/`],
@@ -43,6 +44,7 @@ test('public HTML is readable before JavaScript and declares canonical URLs', as
   }
 });
 
+// 验证站点地图仅收录公开规范页面，robots 文件保留爬虫访问限制。
 test('sitemap contains only public canonical pages; robots preserves crawler restrictions', async () => {
   const xml = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8');
   const dom = new JSDOM(xml, { contentType: 'application/xml' });
@@ -87,6 +89,7 @@ test('sitemap contains only public canonical pages; robots preserves crawler res
   dom.window.close();
 });
 
+// 验证 noindex 响应头仅作用于默认 Pages 域名及其预览域名。
 test('noindex headers are limited to the default Pages host and its previews', async () => {
   const headers = await readFile(new URL('../dist/_headers', import.meta.url), 'utf8');
   const blocks = headers

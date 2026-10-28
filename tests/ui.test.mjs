@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { decryptDatabase } from '../dist/crypto.js';
 
+// 验证从创建数据库、添加和编辑验证码到保存、锁定、解锁、删除及恢复条目的完整界面流程。
 test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore', async () => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',

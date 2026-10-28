@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
 import { encryptDatabase, decryptDatabase, passwordBytes } from '../dist/crypto.js';
 
+// 验证扩展日常操作中的站点匹配、搜索、复制、验证码和新增条目，以及面板隐藏后保持解锁。
 test('extension daily loop: site matching, search, copy, OTP, new entry and no lock on hide', async (context) => {
   const dom = new JSDOM(
     await readFile(new URL('../extension/panel.html', import.meta.url), 'utf8'),

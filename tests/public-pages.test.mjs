@@ -6,6 +6,7 @@ import { JSDOM } from 'jsdom';
 const origin = 'https://clear-vault.app';
 const dist = new URL('../dist/', import.meta.url);
 
+// 验证每个公开页面包含静态内容、互相对应的语言链接和有效的本地导航。
 test('every public page has static content, reciprocal languages and working local navigation', async () => {
   const sitemap = new JSDOM(await readFile(new URL('sitemap.xml', dist), 'utf8'), {
     contentType: 'application/xml',

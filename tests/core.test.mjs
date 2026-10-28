@@ -35,6 +35,7 @@ const passwords = ['test-ASCII-123!', '中文ab', '😀x'];
 const xml =
   '<?xml version="1.0" encoding="utf-8"?><database><card id="1"><field name="test">synthetic only</field></card></database>';
 
+// 验证不同字符密码下，SafeInCloud 原版与 Web Crypto 的数据库双向兼容，并拒绝错误密码和损坏文件。
 test('SafeInCloud original CIL writer -> Web Crypto; Web Crypto -> original CIL reader', async () => {
   const outputDirectory = await mkdtemp(path.join(os.tmpdir(), 'clearvault-compat-'));
   for (let i = 0; i < passwords.length; i++) {
@@ -87,6 +88,7 @@ test('SafeInCloud original CIL writer -> Web Crypto; Web Crypto -> original CIL 
   }
 });
 
+// 验证旧版密码编码保留 UTF-16 码元语义，新版使用不同编码，并拒绝未知版本。
 test('password encoding preserves version 1 UTF-16 code unit semantics', () => {
   assert.deepEqual([...passwordBytes('中😀', 1)], [45, 61, 0]);
   assert.deepEqual(passwordBytes('中', 1), passwordBytes('-', 1));
@@ -94,6 +96,7 @@ test('password encoding preserves version 1 UTF-16 code unit semantics', () => {
   assert.throws(() => passwordBytes('abc', 7));
 });
 
+// 验证三种哈希算法的 TOTP 结果符合 RFC 6238 的全部 18 组向量，并支持自定义周期。
 test('RFC 6238 all 18 SHA1/SHA256/SHA512 TOTP test vectors', async () => {
   const vectors = [
     [59, '94287082', '46119246', '90693936'],
@@ -127,6 +130,7 @@ test('RFC 6238 all 18 SHA1/SHA256/SHA512 TOTP test vectors', async () => {
   assert.equal(await totp(config, 59000), '755224');
 });
 
+// 验证 Base32 密钥可忽略空格和连字符，OTP 解析拒绝不支持的类型及非法参数。
 test('OTP parsing rejects ambiguous or unsupported parameters', () => {
   assert.deepEqual(decodeBase32('JBSW Y3DP-EHPK3PXP'), decodeBase32('JBSWY3DPEHPK3PXP'));
   for (const value of [
@@ -138,6 +142,7 @@ test('OTP parsing rejects ambiguous or unsupported parameters', () => {
     assert.throws(() => parseOTP(value));
 });
 
+// 验证编辑、序列化和加密重开 XML 后，附件、未知节点、模板及自定义属性仍被保留。
 test('editing known XML retains attachments, unknown elements, templates and attributes', async () => {
   const doc = parseVault(
     '<database custom="keep"><card id="8" title="Original" time_stamp="9999999999999"><field type="password" history="keep">secret</field><file name="x">eJwDAAAAAAE=</file><custom extension="keep"/><notes>旧备注</notes></card><card id="9" template="true"/><record id="10"><unknown/></record></database>',
@@ -162,6 +167,7 @@ test('editing known XML retains attachments, unknown elements, templates and att
   assert.ok(Number(newCard(reopened).getAttribute('id')) > 0);
 });
 
+// 验证非法 XML 和含 DTD 的 XML 被拒绝，演示库包含六张卡片及四个可用验证码字段。
 test('invalid/DTD XML fails closed; demo has four usable authenticators', () => {
   assert.throws(() => parseVault('<bad>'));
   assert.throws(() => parseVault('<!DOCTYPE database [<!ENTITY x "value">]><database/>'));
@@ -175,6 +181,7 @@ test('invalid/DTD XML fails closed; demo has four usable authenticators', () => 
   );
 });
 
+// 验证使用内存凭据解密与使用密码解密得到相同内容。
 test('decrypting with an in-memory credential matches password decryption', async () => {
   const password = 'merge-credential-test';
   const bytes = await encryptDatabase('<database/>', passwordBytes(password));

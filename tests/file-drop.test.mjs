@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { encryptDatabase, passwordBytes } from '../dist/crypto.js';
 
+// 验证拖入本地 .db 文件后显示解锁表单。
 test('dropping a .db file opens the unlock form locally', async () => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',

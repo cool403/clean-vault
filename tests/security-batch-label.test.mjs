@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 
+// 验证演示库中的安全概览、批量选择和标签管理流程。
 test('security overview, batch selection and label management work on the demo vault', async () => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',

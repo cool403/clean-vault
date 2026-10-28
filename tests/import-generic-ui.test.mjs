@@ -6,6 +6,7 @@ import { applyImport } from '../dist/import-data.js';
 import { parseVault, cards, fields } from '../dist/vault.js';
 import { setLanguage } from '../dist/i18n.js';
 
+// 验证通用 CSV 导入先要求映射列，再预览结果并确认写入。
 test('generic CSV import asks for column mapping before previewing and committing', async () => {
   const dom = new JSDOM('<dialog id="modal"></dialog>', { url: 'http://localhost/' });
   globalThis.DOMParser = dom.window.DOMParser;
