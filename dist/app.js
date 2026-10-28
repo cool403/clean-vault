@@ -61,6 +61,7 @@ const state = {
   securityFilter: null,
   baseXml: null,
   listLimit: 200,
+  listScrollTop: 0,
   busy: false,
   generation: 0,
   lastActivity: Date.now(),
@@ -769,6 +770,8 @@ function render() {
       <button type="button" class="mobile-tab ${moreTabActive ? 'active' : ''}" data-action="mobile-more" ${moreTabActive ? 'aria-current="page"' : ''}>${icon('menu', 20)}<span>${t('更多')}</span></button>
     </nav>
   </div>`;
+  const restoredList = document.querySelector('.entry-list');
+  if (restoredList) restoredList.scrollTop = state.listScrollTop;
   mountLanguagePickers();
   refreshCodes();
 }
@@ -1348,6 +1351,7 @@ function wipeUnlocked() {
   state.credential = null;
   state.doc = null;
   state.listLimit = 200;
+  state.listScrollTop = 0;
   state.securityFilter = null;
   state.baseXml = null;
   batchMode = false;
@@ -1466,6 +1470,10 @@ async function submitPassword(form) {
 }
 function selectedCard() {
   return state.doc && cards(state.doc).find((card) => card.getAttribute('id') === state.selected);
+}
+function rememberListScroll() {
+  const list = document.querySelector('.entry-list');
+  if (list) state.listScrollTop = list.scrollTop;
 }
 function markDirty() {
   state.dirty = true;
@@ -2414,6 +2422,7 @@ async function action(name, target) {
       batchMode = false;
       batchSelection.clear();
       state.selected = null;
+      state.listScrollTop = 0;
       resetMobileDetailHistory();
       render();
       break;
@@ -2421,6 +2430,7 @@ async function action(name, target) {
       state.securityFilter = null;
       batchMode = false;
       batchSelection.clear();
+      state.listScrollTop = 0;
       render();
       break;
     case 'batch-start':
@@ -2476,6 +2486,7 @@ async function action(name, target) {
     case 'clear-search':
       state.search = '';
       state.listLimit = 200;
+      state.listScrollTop = 0;
       render();
       break;
     case 'back-list':
@@ -2487,6 +2498,7 @@ async function action(name, target) {
       state.securityFilter = null;
       state.selected = null;
       state.listLimit = 200;
+      state.listScrollTop = 0;
       resetMobileDetailHistory();
       render();
       break;
@@ -2532,6 +2544,7 @@ document.addEventListener('click', (event) => {
     batchMode = false;
     batchSelection.clear();
     state.listLimit = 200;
+    state.listScrollTop = 0;
     state.selected = null;
     resetMobileDetailHistory();
     render();
@@ -2540,6 +2553,7 @@ document.addEventListener('click', (event) => {
     if (batchMode)
       setBatchSelected(target.dataset.select, !batchSelection.has(target.dataset.select));
     else {
+      rememberListScroll();
       recordRecent(target.dataset.select);
       state.selected = target.dataset.select;
       pushMobileDetail();
@@ -2571,6 +2585,7 @@ document.addEventListener('keydown', (event) => {
         !batchSelection.has(event.target.dataset.select),
       );
     else {
+      rememberListScroll();
       recordRecent(event.target.dataset.select);
       state.selected = event.target.dataset.select;
       pushMobileDetail();
@@ -2586,6 +2601,7 @@ function updateSearch(input) {
   const apply = () => {
     state.search = value;
     state.listLimit = 200;
+    state.listScrollTop = 0;
     render();
     const search = $('#search');
     if (!search) return;
