@@ -11,6 +11,11 @@ User-agent: 360Spider
 User-agent: Slurp
 Disallow: /
 Allow: /$
+Allow: /?lang=zh-CN$
+Allow: /?lang=en$
+Allow: /?lang=de$
+Allow: /?lang=ja$
+Allow: /?lang=es$
 Allow: /index.html$
 Allow: /sitemap.xml$
 Allow: /downloads$
@@ -97,7 +102,13 @@ Allow: /icon-512.png$
 Allow: /icon.svg$
 Allow: /locales/en.js$
 Allow: /locales/zh-CN.js$
+Allow: /locales/de.js$
+Allow: /locales/ja.js$
+Allow: /locales/es.js$
 Allow: /manifest.en.webmanifest$
+Allow: /manifest.de.webmanifest$
+Allow: /manifest.ja.webmanifest$
+Allow: /manifest.es.webmanifest$
 Allow: /manifest.webmanifest$
 Allow: /password-generator.js$
 Allow: /safe-save.js$
