@@ -35,7 +35,7 @@ const passwords = ['test-ASCII-123!', '中文ab', '😀x'];
 const xml =
   '<?xml version="1.0" encoding="utf-8"?><database><card id="1"><field name="test">synthetic only</field></card></database>';
 
-// 验证不同字符密码下，SafeInCloud 原版与 Web Crypto 的数据库双向兼容，并拒绝错误密码和损坏文件。
+// 验证不同字符密码下，SafeInCloud 原版与 Web Crypto 的密码库双向兼容，并拒绝错误密码和损坏文件。
 test('SafeInCloud original CIL writer -> Web Crypto; Web Crypto -> original CIL reader', async () => {
   const outputDirectory = await mkdtemp(path.join(os.tmpdir(), 'clearvault-compat-'));
   for (let i = 0; i < passwords.length; i++) {

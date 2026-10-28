@@ -48,8 +48,12 @@ test('security overview, batch selection and label management work on the demo v
     await import('../dist/app.js');
     await wait(() => document.querySelectorAll('.entry-row').length === 6);
 
-    document.querySelector('[data-action=security-overview]').click();
+    document.querySelector('[data-section=security]').click();
     await wait(() => document.querySelectorAll('.security-card').length === 4);
+    assert.equal(document.querySelector('#modal').open, false);
+    assert.match(document.querySelector('.page-heading h1').textContent, /安全概览/);
+    assert.ok(document.querySelector('.vault-content.security-view'));
+    assert.match(document.querySelector('.nav-item.active').textContent, /安全概览/);
     assert.match(document.querySelector('[data-security-filter=reused]').textContent, /6/);
     document.querySelector('[data-security-filter=reused]').click();
     await wait(() => !!document.querySelector('.security-filter-chip'));

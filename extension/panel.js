@@ -157,7 +157,7 @@ function saveStatus() {
   const save = $('#save');
   if (save) {
     const attention = Boolean(dirty || saveError);
-    save.textContent = busy ? t('处理中…') : attention ? t('保存更改') : t('保存数据库');
+    save.textContent = busy ? t('处理中…') : attention ? t('保存更改') : t('保存密码库');
     save.classList.toggle('primary', attention);
     save.classList.toggle('secondary', !attention);
   }
@@ -186,7 +186,7 @@ const importer = createImportWizard({
     dirty = true;
     closeDialog();
     saveStatus();
-    notify(t('已导入 {count} 个条目，请保存数据库', { count: added.length }));
+    notify(t('已导入 {count} 个条目，请保存密码库', { count: added.length }));
     await refresh();
   },
 });
@@ -237,7 +237,7 @@ async function chooseFile() {
     try {
       const [selected] = await window.showOpenFilePicker({
         types: [
-          { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },
+          { description: t('SafeInCloud 密码库'), accept: { 'application/octet-stream': ['.db'] } },
         ],
         multiple: false,
       });
@@ -484,7 +484,7 @@ function downloadRecoveryKit() {
     '',
     t('恢复步骤') + ': ' + t('打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。'),
     '',
-    t('本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。'),
+    t('本工具包不包含密码、动态验证码密钥或密码库内容。请妥善保管。'),
   ].join('\n');
   const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
   const link = document.createElement('a');
@@ -818,7 +818,7 @@ function newEntry() {
     closeDialog();
     saveStatus();
     void refresh();
-    notify(t('已添加条目，请保存数据库'));
+    notify(t('已添加条目，请保存密码库'));
   };
   form.querySelector('[name=title]')?.select();
 }
@@ -888,7 +888,7 @@ function updatePassword(card, tab) {
     dirty = true;
     closeDialog();
     saveStatus();
-    notify(t('密码已更新，请保存数据库'));
+    notify(t('密码已更新，请保存密码库'));
   };
 }
 async function addSite() {
@@ -937,7 +937,7 @@ async function addSite() {
     closeDialog();
     saveStatus();
     await refresh();
-    notify(t('已添加网站地址，请保存数据库'));
+    notify(t('已添加网站地址，请保存密码库'));
   };
 }
 async function save(asCopy = false) {
@@ -952,7 +952,7 @@ async function save(asCopy = false) {
       target = await window.showSaveFilePicker({
         suggestedName: name || 'SafeInCloud.db',
         types: [
-          { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },
+          { description: t('SafeInCloud 密码库'), accept: { 'application/octet-stream': ['.db'] } },
         ],
       });
     if (target) {
@@ -989,7 +989,7 @@ async function save(asCopy = false) {
       dirty = false;
       lastSaved = Date.now();
       notify(
-        t(result.retentionWarning ? '保存已验证，但旧备份清理失败' : '已加密保存并验证数据库文件'),
+        t(result.retentionWarning ? '保存已验证，但旧备份清理失败' : '已加密保存并验证密码库文件'),
       );
       void remember();
     } else {
@@ -1041,7 +1041,7 @@ async function performReload() {
       }
       [selected] = await window.showOpenFilePicker({
         types: [
-          { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },
+          { description: t('SafeInCloud 密码库'), accept: { 'application/octet-stream': ['.db'] } },
         ],
         multiple: false,
       });

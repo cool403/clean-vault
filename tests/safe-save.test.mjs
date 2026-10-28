@@ -49,7 +49,7 @@ function directory() {
     all: entries,
   };
 }
-// 验证保存前备份原始密文、保存后校验内容，且备份保留策略仅作用于当前数据库。
+// 验证保存前备份原始密文、保存后校验内容，且备份保留策略仅作用于当前密码库。
 test('backs up original ciphertext, verifies save, scopes retention to this vault', async () => {
   const old = Uint8Array.of(5, 5, 2, 4),
     current = file('vault.db', old),
@@ -96,7 +96,7 @@ test('content conflict is detected even when size and modification time match', 
   );
   assert.deepEqual(current.bytes(), Uint8Array.of(1, 2, 4));
 });
-// 验证清理备份时不会删除其他来源的同名数据库备份。
+// 验证清理备份时不会删除其他来源的同名密码库备份。
 test('retention never removes another source with the same filename', async () => {
   const dir = directory(),
     a = file('SafeInCloud.db', Uint8Array.of(1)),

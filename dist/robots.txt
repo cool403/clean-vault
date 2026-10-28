@@ -112,10 +112,9 @@ Allow: /manifest.es.webmanifest$
 Allow: /manifest.webmanifest$
 Allow: /password-generator.js$
 Allow: /safe-save.js$
-Allow: /styles.css$
+Allow: /app.css$
 Allow: /support.js$
 Allow: /sw.js$
-Allow: /theme.css$
 Allow: /totp.js$
 Allow: /vault.js$
 Allow: /vendor/jsQR.js$

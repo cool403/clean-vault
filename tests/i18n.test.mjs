@@ -128,7 +128,7 @@ test('all interface catalogs preserve parameters, literal user data, metadata an
     assert.equal(document.title, catalog['ClearVault · SafeInCloud 兼容密码管理器与双重验证器']);
     assert.equal(
       document.querySelector('meta[name=description]').content,
-      catalog['ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。'],
+      catalog['ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 密码库。'],
     );
     assert.equal(initializeLanguage(['fr']), code, 'saved selection survives restart');
     assert.equal(

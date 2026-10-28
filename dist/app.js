@@ -66,9 +66,12 @@ const state = {
   lastActivity: Date.now(),
   idleMinutes: 5,
   install: null,
+  lockWarning: false,
 };
 let editCard = null,
   editFields = [],
+  editorDirty = false,
+  lockWarningEl = null,
   toastTimer,
   searchTimer,
   batchMode = false,
@@ -228,13 +231,10 @@ async function checkExternalChange() {
     /* Permission or file availability can change; saving still checks the hash. */
   }
 }
-function showSecurityOverview() {
-  const report = securityReport();
+function securityOverviewMarkup(report) {
   const card = (key, label, count, detail) =>
     `<button type="button" class="security-card" data-action="security-filter" data-filter="${key}" data-security-filter="${key}"><strong>${label}</strong><b>${count}</b><small>${detail}</small></button>`;
-  showModal(
-    `${modalHeader(t('安全概览'), t('仅在本地根据解密后的条目计算，不上传密码。'))}<div class="security-grid">${card('weak', t('弱密码'), report.weak.length, t('长度不足 12 个字符或强度过低的密码。'))}${card('reused', t('重复使用'), report.reused.length, t('{entries} 个条目使用同一密码（{groups} 组）', { entries: report.reused.length, groups: report.reusedGroups.length }))}${card('old', t('长期未更新'), report.old.length, t('超过一年没有修改的条目。'))}${card('no-otp', t('未启用两步验证'), report.noOtp.length, t('有密码但尚未添加 TOTP。'))}</div><p class="form-help">${t('共 {count} 个条目，{withPassword} 个设置了密码。', { count: report.total, withPassword: report.withPassword })}</p><div class="modal-footer">${button('close-modal', t('关闭'), null, 'button primary')}</div>`,
-  );
+  return html`<div class="security-overview"><div class="security-grid security-grid-wide">${card('weak', t('弱密码'), report.weak.length, t('长度不足 12 个字符或强度过低的密码。'))}${card('reused', t('重复使用'), report.reused.length, t('{entries} 个条目使用同一密码（{groups} 组）', { entries: report.reused.length, groups: report.reusedGroups.length }))}${card('old', t('长期未更新'), report.old.length, t('超过一年没有修改的条目。'))}${card('no-otp', t('未启用双重验证'), report.noOtp.length, t('有密码但尚未添加动态验证码。'))}</div><p class="form-help">${t('共 {count} 个条目，{withPassword} 个设置了密码。', { count: report.total, withPassword: report.withPassword })} · ${t('仅在本地根据解密后的条目计算，不上传密码。')}</p><p class="security-hint">${icon('chevron', 14)} ${t('选择一张卡片，在条目列表中处理对应问题。')}</p></div>`;
 }
 async function mergeExternalChanges() {
   if (!state.doc || !state.handle || state.busy) return;
@@ -342,20 +342,9 @@ function languagePicker() {
 }
 function mountLanguagePickers() {
   document
-    .querySelectorAll('.welcome-header-actions, .top-actions')
+    .querySelectorAll('.welcome-header-actions')
     .forEach((container) => container.insertAdjacentHTML('afterbegin', languagePicker()));
   mountSupportLinks();
-  if (state.doc) {
-    document
-      .querySelector('.top-actions .profile')
-      ?.insertAdjacentHTML(
-        'beforebegin',
-        button('import', t('导入密码'), 'upload', 'button secondary import-trigger'),
-      );
-    const trigger = document.querySelector('.import-trigger');
-    trigger?.setAttribute('aria-label', t('导入密码'));
-    trigger?.setAttribute('title', t('导入密码'));
-  }
 }
 const paths = {
   shield: '<path d="M12 3 20 6v6c0 5-4 8-8 10-4-2-8-5-8-10V6z"/><path d="m8 12 3 3 5-6"/>',
@@ -371,6 +360,9 @@ const paths = {
   plus: '<path d="M12 5v14M5 12h14"/>',
   upload: '<path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/>',
   download: '<path d="M12 3v13m-5-5 5 5 5-5M4 17v4h16v-4"/>',
+  save: '<path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/>',
+  install:
+    '<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 7v7m-3-3 3 3 3-3M9 17h6"/>',
   copy: '<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V3H3v13h5"/>',
   eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12"/><circle cx="12" cy="12" r="3"/>',
   edit: '<path d="m15 4 5 5M4 20l5-1L21 7l-5-5L4 14z"/>',
@@ -382,27 +374,58 @@ const paths = {
   sparkle: '<path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>',
   bolt: '<path d="m13 2-9 12h7l-1 8 10-13h-7z"/>',
   back: '<path d="m14 5-7 7 7 7"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
 };
 const icon = (name, size = 20) =>
   `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.key}</svg>`;
-const button = (action, label, glyph, css = '') =>
-  `<button type="button" class="${css}" data-action="${action}">${glyph ? icon(glyph) : ''}<span>${label}</span></button>`;
+const button = (action, label, glyph, css = '', attrs = '') =>
+  `<button type="button" class="${css}" data-action="${action}" ${attrs}>${glyph ? icon(glyph) : ''}<span>${label}</span></button>`;
 const iconButton = (action, label, glyph, extra = '') =>
   `<button type="button" class="icon-button ${extra}" data-action="${action}" aria-label="${label}" title="${label}">${icon(glyph)}</button>`;
+function hideToast() {
+  const notification = $('#toast');
+  clearTimeout(toastTimer);
+  notification?.classList.remove('show');
+  notification?.hidePopover?.();
+}
+function ensureToastStructure(notification) {
+  if (notification.querySelector('.toast-message')) return;
+  notification.textContent = '';
+  const prompt = document.createElement('span');
+  prompt.className = 'toast-prompt';
+  prompt.setAttribute('aria-hidden', 'true');
+  prompt.textContent = '›';
+  const message = document.createElement('span');
+  message.className = 'toast-message';
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'toast-close';
+  close.dataset.toastClose = '';
+  close.textContent = '×';
+  notification.append(prompt, message, close);
+}
 function toast(message) {
   const notification = $('#toast');
+  if (!notification) return;
+  ensureToastStructure(notification);
+  const messageEl = notification.querySelector('.toast-message');
+  const close = notification.querySelector('.toast-close');
   // A manual popover places the shared toast above native modal dialogs without taking focus.
   notification.setAttribute('popover', 'manual');
-  notification.textContent = message;
+  messageEl.textContent = message;
+  if (close) {
+    close.setAttribute('aria-label', t('关闭'));
+    close.title = t('关闭');
+  }
   notification.hidePopover?.();
   notification.showPopover?.();
   notification.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    notification.classList.remove('show');
-    notification.hidePopover?.();
-  }, 3200);
+  toastTimer = setTimeout(hideToast, 4000);
 }
+$('#toast')?.addEventListener('click', (event) => {
+  if (event.target.closest('[data-toast-close]')) hideToast();
+});
 
 function message(error) {
   return fileError(error);
@@ -558,7 +581,7 @@ const quickSearch = createQuickSearch({
     batchMode = false;
     batchSelection.clear();
     state.selected = id;
-    state.mobileDetail = true;
+    pushMobileDetail();
     render();
     document.querySelector('.detail-pane h2')?.setAttribute('tabindex', '-1');
     document.querySelector('.detail-pane h2')?.focus();
@@ -588,7 +611,53 @@ function avatar(card, large = false) {
   return `<div class="avatar color-${index} ${large ? 'large' : ''}">${e(known[name] || [...name][0]?.toUpperCase() || 'K')}</div>`;
 }
 function navItem(id, text, glyph, count) {
-  return `<button class="nav-item ${state.section === id ? 'active' : ''}" data-section="${e(id)}" aria-label="${e(text)}">${icon(glyph)}<span>${e(text)}</span>${count === undefined ? '' : `<small>${count}</small>`}</button>`;
+  return `<button class="nav-item ${state.section === id ? 'active' : ''}" data-section="${e(id)}" aria-label="${e(text)}" title="${e(text)}">${icon(glyph)}<span>${e(text)}</span>${count === undefined ? '' : `<small>${count}</small>`}</button>`;
+}
+function mobileMoreItem(action, label, glyph) {
+  return `<button type="button" class="mobile-more-item" data-action="${e(action)}">${icon(glyph, 20)}<span>${e(label)}</span>${icon('chevron', 16)}</button>`;
+}
+function mobileMoreSection(section, label, glyph) {
+  return `<button type="button" class="mobile-more-item" data-section="${e(section)}">${icon(glyph, 20)}<span>${e(label)}</span>${icon('chevron', 16)}</button>`;
+}
+function showMobileMore() {
+  const labelItems = labels()
+    .map((label) =>
+      mobileMoreSection(
+        'label:' + label.getAttribute('id'),
+        label.getAttribute('name') || t('未命名标签'),
+        'folder',
+      ),
+    )
+    .join('');
+  showModal(
+    html`${modalHeader(t('更多操作'))}<div class="mobile-more-sheet"><div class="mobile-more-group">${mobileMoreSection('security', t('安全概览'), 'shield')}${mobileMoreSection('archive', t('归档'), 'archive')}${mobileMoreSection('trash', t('回收站'), 'trash')}</div><div class="mobile-more-caption">${t('我的标签')}</div><div class="mobile-more-group">${labelItems}${mobileMoreItem('add-label', t('新建标签'), 'plus')}${mobileMoreItem('manage-labels', t('管理标签'), 'settings')}</div><div class="mobile-more-group">${mobileMoreItem('open', t('打开其他密码库'), 'folder')}${mobileMoreItem('import', t('导入密码'), 'upload')}${mobileMoreItem('install', t('安装应用'), 'install')}${mobileMoreItem('settings', t('设置'), 'settings')}${mobileMoreItem('lock', t('锁定密码库'), 'lock')}</div></div><div class="modal-footer">${button('close-modal', t('关闭'), null, 'button secondary')}</div>`,
+  );
+}
+function pushMobileDetail() {
+  state.mobileDetail = true;
+  if (!globalThis.matchMedia?.('(max-width: 700px)').matches) return;
+  try {
+    if (!globalThis.history?.state?.mobileDetail)
+      globalThis.history?.pushState({ mobileDetail: true }, '');
+  } catch {
+    /* History is optional in embedded or restricted contexts. */
+  }
+}
+function resetMobileDetailHistory() {
+  state.mobileDetail = false;
+  try {
+    if (globalThis.history?.state?.mobileDetail) globalThis.history.replaceState({}, '');
+  } catch {
+    /* Ignore unavailable history. */
+  }
+}
+function backToMobileList() {
+  if (globalThis.history?.state?.mobileDetail) {
+    globalThis.history.back();
+    return;
+  }
+  state.mobileDetail = false;
+  render();
 }
 function render() {
   otpGeneration++;
@@ -603,6 +672,7 @@ function render() {
     all: [t('所有条目'), t('生活里的重要信息，在这里井井有条。')],
     otp: [t('双重验证'), t('每一次登录，多一份安心。')],
     starred: [t('我的收藏'), t('常用的账号，随时触手可及。')],
+    security: [t('安全概览'), t('仅在本地根据解密后的条目计算，不上传密码。')],
     archive: [t('归档'), t('暂时不用，依然妥善保管。')],
     trash: [t('回收站'), t('已删除的条目，随时可以恢复。')],
   };
@@ -613,15 +683,20 @@ function render() {
     weak: [t('弱密码'), t('长度不足或过于简单的密码。')],
     reused: [t('重复使用'), t('多个条目使用同一个密码。')],
     old: [t('长期未更新'), t('超过一年没有修改的密码。')],
-    'no-otp': [t('未启用两步验证'), t('有密码但尚未添加 TOTP 的条目。')],
+    'no-otp': [t('未启用双重验证'), t('有密码但尚未添加动态验证码的条目。')],
   };
   const [heading, subtitle] = state.securityFilter
     ? securityTitles[state.securityFilter] || [t('安全概览筛选结果'), t('本地安全筛选。')]
     : sectionTitles[state.section] || [labelTitle || t('标签'), t('用标签整理你的数字生活。')];
-  const visible = filteredCards();
-  if (!visible.some((card) => card.getAttribute('id') === state.selected))
+  const securityView = state.section === 'security';
+  const securityData = securityView ? securityReport() : null;
+  const visible = securityView ? [] : filteredCards();
+  if (securityView) state.selected = null;
+  else if (!visible.some((card) => card.getAttribute('id') === state.selected))
     state.selected = visible[0]?.getAttribute('id') || null;
-  const selected = visible.find((card) => card.getAttribute('id') === state.selected);
+  const selected = securityView
+    ? null
+    : visible.find((card) => card.getAttribute('id') === state.selected);
   const onboarding = onboardingForVault();
   const showOnboarding =
     !state.demo && !onboarding.dismissed && (live.length === 0 || onboarding.started);
@@ -644,16 +719,22 @@ function render() {
     state.listLimit = Math.ceil((selectedIndex + 1) / 200) * 200;
   const shownVisible = visible.slice(0, state.listLimit);
   const remaining = visible.length - shownVisible.length;
+  const moreTabActive =
+    Boolean(state.securityFilter) || !['all', 'otp', 'starred'].includes(state.section);
   app.innerHTML = html`<div class="shell ${state.selected ? 'has-selection' : ''} ${state.mobileDetail ? '' : 'mobile-list'}">
     <aside class="sidebar">
       <a class="brand" href="./" aria-label="ClearVault 首页"><img src="./icon.svg" alt="" width="29" height="29"><span>ClearVault<span class="brand-dot">.</span></span></a>
-      <button class="vault-switch" data-action="info"><span class="vault-glyph">${icon('lock', 19)}</span><span><strong>${state.demo ? t('体验密码库') : e(state.name.replace(/\.db$/i, '') || t('我的密码库'))}</strong><small>本地密码库 <span class="tiny-dot"></span></small></span>${icon('chevron', 15)}</button>
+      <div class="mobile-top-actions">${iconButton('quick-search', t('快速查找'), 'search', 'mobile-top-button')}${iconButton('mobile-more', t('更多'), 'menu', 'mobile-top-button')}</div>
+      <details class="vault-menu">
+        <summary class="vault-switch" title="${state.demo ? t('体验密码库') : e(state.name.replace(/\.db$/i, '') || t('我的密码库'))}"><span class="vault-glyph">${icon('lock', 19)}</span><span><strong>${state.demo ? t('体验密码库') : e(state.name.replace(/\.db$/i, '') || t('我的密码库'))}</strong><small>本地密码库 <span class="tiny-dot"></span></small></span>${icon('chevron', 15)}</summary>
+        <div class="vault-menu-panel">${button('open', t('打开其他密码库'), 'folder', 'text-button')}${button('import', t('导入密码'), 'upload', 'text-button')}${button('save-copy', t('另存为 .db 文件'), 'download', 'text-button')}${button('info', t('密码库信息'), 'shield', 'text-button')}${button('settings', t('偏好设置'), 'settings', 'text-button')}${button('lock', t('锁定密码库'), 'lock', 'text-button')}</div>
+      </details>
       <div class="nav-caption">工作空间</div>
       <nav aria-label="密码库导航">
         ${navItem('all', t('所有条目'), 'grid', live.length)}
         ${navItem('otp', t('双重验证'), 'clock', otpCount)}
         ${navItem('starred', t('我的收藏'), 'star', live.filter((card) => card.getAttribute('star') === 'true').length)}
-        <button class="nav-item" data-action="security-overview" aria-label="${t('安全概览')}">${icon('shield')}<span>${t('安全概览')}</span></button>
+        ${navItem('security', t('安全概览'), 'shield')}
         <div class="nav-divider"></div>
         ${navItem('archive', t('归档'), 'archive')}${navItem('trash', t('回收站'), 'trash')}
         <div class="nav-caption label-caption">我的标签 <span class="label-caption-actions">${iconButton('add-label', t('新建标签'), 'plus')}${iconButton('manage-labels', t('管理标签'), 'settings')}</span></div>
@@ -667,21 +748,27 @@ function render() {
           )
           .join('')}
       </nav>
-      <div class="sidebar-bottom"><div class="local-note">${icon('shield', 18)}<div><strong>你的数据，只属于你</strong><small>本地解密 · 离线可用</small></div></div><div class="sidebar-actions">${button('settings', t('设置'), 'settings')}${button('lock', t('锁定'), 'lock')}</div></div>
+      <div class="sidebar-bottom"><div class="local-note">${icon('shield', 18)}<div><strong>你的数据，只属于你</strong><small>本地解密 · 离线可用</small></div></div><div class="sidebar-actions">${button('settings', t('设置'), 'settings', '', `title="${t('设置')}"`)}${button('lock', t('锁定'), 'lock', '', `title="${t('锁定')}"`)}</div></div>
     </aside>
     <main class="workspace">
-      <header class="topbar"><div class="breadcrumb">个人空间 ${icon('chevron', 12)}<strong>${e(heading)}</strong></div><div class="top-actions"><span class="privacy-pill"><i></i> 本地加密</span>${state.demo ? t('<span class="demo-pill">演示</span>') : ''}${iconButton('open', t('打开其他密码库'), 'folder')}${iconButton('settings', t('偏好设置'), 'settings', 'mobile-top-action')}${iconButton('lock', t('锁定密码库'), 'lock', 'mobile-top-action')}${state.install ? iconButton('install', t('安装应用'), 'download') : ''}<div class="profile">我</div></div></header>
-      <section class="page-heading"><div><div class="eyebrow">为你的数字生活，留一份安心。</div><h1>${e(heading)}<span>${visible.length}</span></h1><p>${e(subtitle)}</p></div><div class="heading-actions">${button('save', state.busy ? t('处理中…') : state.demo ? t('保存为我的密码库') : state.dirty || state.saveError ? t('保存更改') : t('保存数据库'), 'download', saveStyle)}${button('new', state.section === 'otp' ? t('添加验证器') : t('新建条目'), 'plus', newStyle)}</div></section>
-      <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span>${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>${state.externalChange ? html`<div class="conflict-banner" role="alert"><div><strong>${t('原文件已被其他应用修改')}</strong><span>${t('保存会停止，避免覆盖外部版本。可合并外部更改。')}</span></div><div class="conflict-banner-actions">${button('merge-external', t('合并更改'), 'edit', 'button secondary')}${button('conflict-save-copy', t('另存为副本'), 'download', 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'text-button')}</div></div>` : ''}${showOnboarding ? html`<section class="onboarding-card" aria-label="${t('开始使用 ClearVault')}"><div class="onboarding-head"><div><strong>${t('开始使用 ClearVault')}</strong><small>${t('完成 {done}/{total} 步', { done: onboardingDoneCount, total: onboardingTotal })}</small></div>${button('onboarding-dismiss', t('稍后'), null, 'text-button')}</div><div class="onboarding-progress"><i style="width:${(onboardingDoneCount / onboardingTotal) * 100}%"></i></div><ul class="onboarding-list"><li class="${onboardingDone.entries ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.entries ? 'checked' : ''} disabled><span>${t('导入或新建第一条记录')}</span></label>${onboardingDone.entries ? `<small>${t('已完成')}</small>` : button('onboarding-import', t('导入密码'), null, 'text-button')}</li><li class="${onboardingDone.extension ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="extension" ${onboardingDone.extension ? 'checked' : ''}><span>${t('安装浏览器扩展')}</span></label><a href="./downloads/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.fill ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="fill" ${onboardingDone.fill ? 'checked' : ''}><span>${t('首次填充或复制验证码')}</span></label><a href="./guides/browser-extension/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.otp ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.otp ? 'checked' : ''} disabled><span>${t('添加一个验证器')}</span></label>${onboardingDone.otp ? `<small>${t('已完成')}</small>` : button('onboarding-otp', t('添加一个验证器'), null, 'text-button')}</li><li class="${onboardingDone.backup ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.backup ? 'checked' : ''} disabled><span>${t('保存并设置备份')}</span></label>${onboardingDone.backup ? `<small>${t('已完成')}</small>` : button('onboarding-backup', t('设置'), null, 'text-button')}</li></ul></section>` : ''}
-      <button type="button" class="quick-launch" data-action="quick-search" aria-keyshortcuts="Control+k Meta+k"><span>${icon('search', 18)}<strong>${e(t('快速查找'))}</strong><kbd>${modifier} K</kbd></span><small>${e(t('↑ ↓ 选择'))} <span>·</span> ${modifier} ↵ ${e(t('复制密码'))} <span>·</span> ${modifier} ⇧ L ${e(t('锁定'))}</small>${icon('chevron', 16)}</button>
-      <section class="vault-content ${state.section === 'otp' ? 'auth-view' : ''}">
-        <div class="entry-pane"><div class="search-row"><label class="search-box">${icon('search', 18)}<input id="search" type="search" placeholder="搜索条目、账号或标签…" value="${e(state.search)}" autocomplete="off" aria-label="搜索条目"></label><button type="button" class="key-hint" data-action="quick-search" aria-label="${e(t('快速查找'))}">${modifier} K</button></div>${state.securityFilter ? `<div class="security-filter-chip"><span>${icon('shield', 14)} ${e(heading)} · ${visible.length}</span>${button('clear-security-filter', t('清除筛选'), 'close', 'text-button')}</div>` : ''}
-        ${batchMode ? `<div class="batch-bar"><span class="batch-count">${t('已选择 {count} 项', { count: batchSelection.size })}</span><div class="batch-actions">${button('batch-select-all', t('全选'), null, 'text-button')}${button('batch-clear', t('清除选择'), null, 'text-button')}${button('batch-label', t('添加标签'), 'plus', 'text-button')}${button('batch-archive', t('归档'), 'archive', 'text-button')}${button('batch-trash', t('移至回收站'), 'trash', 'text-button')}${button('batch-cancel', t('取消'), 'close', 'text-button')}</div></div>` : `<div class="list-meta"><span>${state.section === 'otp' ? t('你的验证器') : t('名称')}</span><span>${state.section === 'otp' ? t('动态验证码') : t('按名称排列')} ${button('batch-start', t('批量选择'), null, 'text-button')}</span></div>`}
-        <div class="entry-list">${visible.length ? shownVisible.map((card) => renderRow(card)).join('') + (remaining ? button('more', t('显示更多（还有 {count} 条）', { count: remaining }), null, 'button secondary more-entries') : '') : `<div class="empty-state">${icon(state.section === 'otp' ? 'clock' : 'search', 34)}<h3>${state.search ? t('没有找到相关条目') : t('这里还是空的')}</h3><p>${state.search ? t('试试其他关键词') : t('添加一个账号，开始整理你的数字生活。')}</p>${state.search ? button('clear-search', t('清除搜索'), null, 'text-button') : button('new', t('添加第一个条目'), 'plus', 'button secondary')}</div>`}</div>
+      <header class="topbar"><div class="breadcrumb">个人空间 ${icon('chevron', 12)}<strong>${e(heading)}</strong></div><div class="top-actions"><span class="privacy-pill"><i></i> 本地加密</span>${state.demo ? t('<span class="demo-pill">演示</span>') : ''}${iconButton('open', t('打开其他密码库'), 'folder')}${iconButton('settings', t('偏好设置'), 'settings', 'mobile-top-action')}${iconButton('lock', t('锁定密码库'), 'lock', 'mobile-top-action')}</div></header>
+      <section class="page-heading"><div><div class="eyebrow">为你的数字生活，留一份安心。</div><h1>${e(heading)}<span>${securityView ? securityData.total : visible.length}</span></h1><p>${e(subtitle)}</p></div><div class="heading-actions">${button('save', state.busy ? t('处理中…') : state.demo ? t('保存为我的密码库') : state.dirty || state.saveError ? t('保存更改') : t('保存密码库'), 'save', saveStyle)}${securityView ? '' : button('new', state.section === 'otp' ? t('添加验证器') : t('新建条目'), 'plus', newStyle)}</div></section>
+      <div class="status-line" role="status"><span><i class="${state.dirty || state.saveError ? 'unsaved-dot' : 'saved-dot'}"></i>${e(saveStatus())}</span><span class="idle-hint">${icon('lock', 13)} ${state.idleMinutes} 分钟无操作自动锁定</span></div>${state.externalChange ? html`<div class="conflict-banner" role="alert"><div><strong>${t('原文件已被其他应用修改')}</strong><span>${t('保存会停止，避免覆盖外部版本。可合并外部更改。')}</span></div><div class="conflict-banner-actions">${button('merge-external', t('合并更改'), 'edit', 'button secondary')}${button('conflict-save-copy', t('另存为副本'), 'download', 'button secondary')}${button('conflict-reload', t('重新加载文件'), 'upload', 'text-button')}</div></div>` : ''}${showOnboarding ? html`<section class="onboarding-card" aria-label="${t('开始使用 ClearVault')}"><div class="onboarding-head"><div><strong>${t('开始使用 ClearVault')}</strong><small>${t('完成 {done}/{total} 步', { done: onboardingDoneCount, total: onboardingTotal })}</small></div>${button('onboarding-dismiss', t('稍后'), null, 'text-button')}</div><div class="onboarding-progress"><i style="width:${(onboardingDoneCount / onboardingTotal) * 100}%"></i></div><ul class="onboarding-list"><li class="${onboardingDone.entries ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.entries ? 'checked' : ''} disabled><span>${t('导入或新建第一个条目')}</span></label>${onboardingDone.entries ? `<small>${t('已完成')}</small>` : button('onboarding-import', t('导入密码'), null, 'text-button')}</li><li class="${onboardingDone.extension ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="extension" ${onboardingDone.extension ? 'checked' : ''}><span>${t('安装浏览器扩展')}</span></label><a href="./downloads/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.fill ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" data-onboarding="fill" ${onboardingDone.fill ? 'checked' : ''}><span>${t('首次填充或复制验证码')}</span></label><a href="./guides/browser-extension/" target="_blank" rel="noopener">${t('使用指南')}</a></li><li class="${onboardingDone.otp ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.otp ? 'checked' : ''} disabled><span>${t('添加一个验证器')}</span></label>${onboardingDone.otp ? `<small>${t('已完成')}</small>` : button('onboarding-otp', t('添加一个验证器'), null, 'text-button')}</li><li class="${onboardingDone.backup ? 'done' : ''}"><label class="onboarding-manual"><input type="checkbox" ${onboardingDone.backup ? 'checked' : ''} disabled><span>${t('保存并设置备份')}</span></label>${onboardingDone.backup ? `<small>${t('已完成')}</small>` : button('onboarding-backup', t('设置'), null, 'text-button')}</li></ul></section>` : ''}
+      <section class="vault-content ${state.section === 'otp' ? 'auth-view' : ''} ${securityView ? 'security-view' : ''}">${securityView ? securityOverviewMarkup(securityData) : ''}
+        <div class="entry-pane"><div class="search-row"><label class="search-box">${icon('search', 18)}<input id="search" type="search" placeholder="搜索条目、账号或标签…" value="${e(state.search)}" autocomplete="off" aria-label="搜索条目"></label><button type="button" class="key-hint" data-action="quick-search" aria-label="${e(t('快速查找'))}" title="${e(t('快速查找'))}">${modifier} K</button></div>${state.securityFilter ? `<div class="security-filter-chip"><span>${icon('shield', 14)} ${e(heading)} · ${visible.length}</span>${button('clear-security-filter', t('清除筛选'), 'close', 'text-button')}</div>` : ''}
+        ${batchMode ? `<div class="batch-bar"><span class="batch-count">${t('已选择 {count} 项', { count: batchSelection.size })}</span><div class="batch-actions">${button('batch-select-all', t('全选'), null, 'text-button')}${button('batch-clear', t('清除选择'), null, 'text-button')}${button('batch-label', t('添加标签'), 'plus', 'text-button')}${button('batch-archive', t('归档'), 'archive', 'text-button')}${button('batch-trash', t('移至回收站'), 'trash', 'text-button')}${button('batch-cancel', t('取消'), 'close', 'text-button')}</div></div>` : `<div class="list-meta"><span>${state.section === 'otp' ? t('你的验证器') : t('名称')}</span><span>${state.section === 'otp' ? t('动态验证码') : t('按名称排列')} ${visible.length ? button('batch-start', t('批量选择'), null, 'text-button') : ''}</span></div>`}
+        <div class="entry-list">${visible.length ? shownVisible.map((card) => renderRow(card)).join('') + (remaining ? button('more', t('显示更多（还有 {count} 条）', { count: remaining }), null, 'button secondary more-entries') : '') : `<div class="empty-state">${icon(state.section === 'otp' ? 'clock' : 'search', 34)}<h3>${state.search ? t('没有找到相关条目') : t('这里还是空的')}</h3><p>${state.search ? t('试试其他关键词') : t('添加一个账号，开始整理你的数字生活。')}</p>${state.search ? button('clear-search', t('清除搜索'), null, 'text-button') : ['archive', 'trash', 'starred'].includes(state.section) ? button('view-all', t('查看所有条目'), null, 'button secondary') : button('new', t('添加第一个条目'), 'plus', 'button secondary')}</div>`}</div>
         <div class="list-footer">${icon('shield', 14)} 数据在此设备上解密，不上传密码库</div></div>
         <div class="detail-pane">${selected ? renderDetail(selected) : html`<div class="empty-state detail-empty">${icon('shield', 48)}<h3>留一点空间，给安心</h3><p>选择一个条目查看详情</p></div>`}</div>
       </section><footer class="page-footer"><span>少一点担忧，多一点从容。</span><span>ClearVault <span class="footer-dot">·</span> SafeInCloud 兼容</span></footer>
-    </main></div>`;
+    </main>
+    <nav class="mobile-tabbar" aria-label="${t('工作空间')}">
+      <button type="button" class="mobile-tab ${state.section === 'all' && !state.securityFilter ? 'active' : ''}" data-section="all" ${state.section === 'all' && !state.securityFilter ? 'aria-current="page"' : ''}>${icon('grid', 20)}<span>${t('所有条目')}</span></button>
+      <button type="button" class="mobile-tab ${state.section === 'otp' ? 'active' : ''}" data-section="otp" aria-label="${t('双重验证')}" ${state.section === 'otp' ? 'aria-current="page"' : ''}>${icon('clock', 20)}<span>2FA</span></button>
+      <button type="button" class="mobile-tab ${state.section === 'starred' ? 'active' : ''}" data-section="starred" ${state.section === 'starred' ? 'aria-current="page"' : ''}>${icon('star', 20)}<span>${t('我的收藏')}</span></button>
+      <button type="button" class="mobile-tab ${moreTabActive ? 'active' : ''}" data-action="mobile-more" ${moreTabActive ? 'aria-current="page"' : ''}>${icon('menu', 20)}<span>${t('更多')}</span></button>
+    </nav>
+  </div>`;
   mountLanguagePickers();
   refreshCodes();
 }
@@ -964,26 +1051,44 @@ function renderDetail(card) {
     deleted = isDeleted(card);
   const basic = fields(card).filter((field) => !isOTP(field));
   const otps = fields(card).filter(hasOTP);
-  return html`<div class="detail-toolbar">${iconButton('back-list', t('返回列表'), 'back', 'mobile-back')}<span>条目详情</span><div>${iconButton('star', card.getAttribute('star') === 'true' ? t('取消收藏') : t('收藏'), 'star', card.getAttribute('star') === 'true' ? 'is-starred' : '')}${iconButton('edit', t('编辑条目'), 'edit')}</div></div>
-    <div class="detail-scroll"><div class="identity">${avatar(card, true)}<h2>${e(title(card))}</h2><p>${e(account(card))}</p><div class="tag-list">${
+  const passwordField = basic.find((field) => fieldType(field) === 'password');
+  const passwordIndex = passwordField ? fields(card).indexOf(passwordField) : -1;
+  return html`<div class="detail-toolbar">${iconButton('back-list', t('返回列表'), 'back', 'mobile-back')}<span>条目详情</span><div>${state.dirty || state.demo ? iconButton('save', state.demo ? t('保存为我的密码库') : t('保存更改'), 'save', 'mobile-detail-save') : ''}${iconButton('star', card.getAttribute('star') === 'true' ? t('取消收藏') : t('收藏'), 'star', card.getAttribute('star') === 'true' ? 'is-starred' : '')}${iconButton('edit', t('编辑条目'), 'edit')}<details class="detail-overflow"><summary class="icon-button" aria-label="${t('更多操作')}" title="${t('更多操作')}">${icon('menu', 17)}</summary><div class="detail-overflow-menu">${
+    deleted
+      ? button('restore', t('恢复条目'), 'archive', 'text-button')
+      : `${button('archive', isArchived(card) ? t('取消归档') : t('归档条目'), 'archive', 'text-button')}${button('delete', t('移至回收站'), 'trash', 'text-button danger')}`
+  }</div></details></div></div>
+    <div class="detail-scroll"><div class="identity">${avatar(card, true)}<h2>${e(title(card))}</h2><div class="tag-list">${
       cardLabels(card)
         .map((label) => `<span>${e(label.getAttribute('name'))}</span>`)
         .join('') || t('<span>个人账号</span>')
-    }</div></div>
+    }</div>${
+      passwordIndex >= 0
+        ? `<button type="button" class="button primary detail-copy" data-action="copy-field" data-index="${passwordIndex}">${icon('copy')}<span>${t('复制密码')}</span></button>`
+        : ''
+    }</div>
     <div class="detail-section-title">账号信息</div><div class="field-group">${
       basic
         .map((field) => {
           const index = fields(card).indexOf(field),
             type = fieldType(field),
-            secret = ['password', 'pin', 'secret'].includes(type);
-          return `<div class="data-field"><div><label>${e(field.getAttribute('name') || type)}</label><div class="field-value ${secret ? 'secret-value' : ''}" data-value-index="${index}">${secret ? '••••••••••••' : type === 'binary' ? t('二进制字段（原样保留）') : e(field.textContent || '—')}</div></div><div class="field-actions">${secret ? html`<button class="icon-button" data-action="reveal" data-index="${index}" aria-label="显示或隐藏 ${e(field.getAttribute('name'))}">${icon('eye', 17)}</button>` : ''}${type !== 'binary' ? html`<button class="icon-button" data-action="copy-field" data-index="${index}" aria-label="复制 ${e(field.getAttribute('name'))}">${icon('copy', 17)}</button>` : ''}</div></div>`;
+            secret = ['password', 'pin', 'secret'].includes(type),
+            raw = field.textContent || '';
+          const value = secret
+            ? '••••••••••••'
+            : type === 'binary'
+              ? t('二进制字段（原样保留）')
+              : type === 'website' && /^https?:\/\//i.test(raw.trim())
+                ? `<a class="field-value field-link" href="${e(raw.trim())}" target="_blank" rel="noopener noreferrer">${e(raw.trim())}</a>`
+                : e(raw || '—');
+          return `<div class="data-field"><div><label>${e(field.getAttribute('name') || type)}</label><div class="field-value ${secret ? 'secret-value' : ''}" data-value-index="${index}">${value}</div></div><div class="field-actions">${secret ? html`<button class="icon-button" data-action="reveal" data-index="${index}" aria-label="显示或隐藏 ${e(field.getAttribute('name'))}">${icon('eye', 17)}</button>` : ''}${type !== 'binary' ? html`<button class="icon-button" data-action="copy-field" data-index="${index}" aria-label="复制 ${e(field.getAttribute('name'))}">${icon('copy', 17)}</button>` : ''}</div></div>`;
         })
         .join('') || t('<p class="muted padded">暂未添加字段</p>')
     }</div>
-    ${otps.map((field) => html`<div class="detail-section-title">${icon('shield', 15)} ${e(field.getAttribute('name') || t('双重验证'))}</div><div class="auth-card"><div class="auth-card-heading"><span>一次性验证码</span><span class="live-label"><i></i> 实时更新</span></div>${otpWidget(card, field)}<p>验证码仅在本地生成，请确保设备时间准确。</p></div>`).join('')}
+    ${otps.map((field) => html`<div class="detail-section-title">${icon('shield', 15)} ${e(field.getAttribute('name') || t('动态验证码'))}</div><div class="auth-card"><div class="auth-card-heading"><span>一次性验证码</span><span class="live-label"><i></i> 实时更新</span></div>${otpWidget(card, field)}<p>验证码仅在本地生成，请确保设备时间准确。</p></div>`).join('')}
     ${children(card, 'notes')[0]?.textContent ? html`<div class="detail-section-title">备注</div><p class="notes">${e(children(card, 'notes')[0].textContent)}</p>` : ''}
     ${children(card, 'file').length || children(card, 'image').length ? t('<div class="preserved-note">此条目含附件或图片。保存时会原样保留。</div>') : ''}
-    <div class="detail-bottom"><span>更新于 ${formatDate(card.getAttribute('time_stamp'))}</span>${deleted ? button('restore', t('恢复条目'), 'archive', 'text-button') : `<div>${iconButton('archive', isArchived(card) ? t('取消归档') : t('归档条目'), 'archive')}${iconButton('delete', t('移至回收站'), 'trash')}</div>`}</div></div>`;
+    <div class="detail-bottom"><span>更新于 ${formatDate(card.getAttribute('time_stamp'))}</span></div></div>`;
 }
 function formatDate(stamp) {
   const num = Number(stamp);
@@ -1001,17 +1106,17 @@ function welcomeNavigation() {
   return `<nav class="welcome-links" aria-label="${t('帮助与资源')}"><a href="${prefix}/guides/">${t('使用指南')}</a><a href="${prefix}/security/">${t('安全与隐私')}</a><a href="/en/" lang="en">${t('英文网站')}</a><a href="${prefix}/downloads/">${t('下载与源代码')}</a><a href="${buildInfo.repository || './downloads/'}" target="_blank" rel="noopener noreferrer">GitHub · MIT ↗</a></nav>`;
 }
 function renderWelcome() {
-  app.innerHTML = html`<div class="welcome"><header class="welcome-header"><a class="brand" href="./"><img src="./icon.svg" alt="" width="29" height="29"><span>ClearVault<span class="brand-dot">.</span></span></a><div class="welcome-header-actions"><span class="privacy-pill"><i></i> 你的设备，你的密码库</span>${state.install ? button('install', t('安装应用'), 'download', 'button secondary') : ''}</div></header>
-    <main class="welcome-main"><div class="welcome-copy"><span class="overline">为安心留一点空间</span><h1>重要的，<br>安心放在这里<span>。</span></h1><p>密码、账号和两步验证码，井井有条。<br>打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。</p><div class="welcome-buttons">${button('open', t('打开 .db 密码库'), 'folder', 'button primary large-button')}${state.dirty ? '' : button('demo', t('先体验一下'), 'sparkle', 'button secondary large-button')}</div><div class="welcome-secondary">${button('create', t('创建新密码库'), 'plus', 'text-button')}<span>无需注册 · 无需上传文件 · 可拖放 .db</span></div></div>
+  app.innerHTML = html`<div class="welcome"><header class="welcome-header"><a class="brand" href="./"><img src="./icon.svg" alt="" width="29" height="29"><span>ClearVault<span class="brand-dot">.</span></span></a><div class="welcome-header-actions"><span class="privacy-pill"><i></i> 你的设备，你的密码库</span>${state.install ? button('install', t('安装应用'), 'install', 'button secondary') : ''}</div></header>
+    <main class="welcome-main"><div class="welcome-copy"><span class="overline">为安心留一点空间</span><h1>重要的，<br>安心放在这里<span>。</span></h1><p>密码、账号和动态验证码，井井有条。<br>打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。</p><div class="welcome-buttons">${button('open', t('打开 .db 密码库'), 'folder', 'button primary large-button')}${state.dirty ? '' : button('demo', t('先体验一下'), 'sparkle', 'button secondary large-button')}</div><div class="welcome-secondary">${button('create', t('创建新密码库'), 'plus', 'text-button')}<span>无需注册 · 无需上传文件 · 可拖放 .db</span></div></div>
     <div class="welcome-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="floating-tag tag-top">${icon('check', 15)} 一切井井有条。</div><div class="vault-illustration"><div class="vault-face">${icon('shield', 92)}<span>你的私密空间</span></div><div class="vault-foot"></div></div><div class="floating-otp"><div class="mini-brand">G</div><div><small>双重验证 · Google</small><strong>482 <span>916</span></strong></div><div class="illustration-ring">24</div></div><div class="art-sparkle">✦</div></div></main>
-    <section class="welcome-features"><article>${icon('lock', 23)}<h3>只在本地，安心解锁</h3><p>主密码解密，文件始终由你掌握。</p></article><article>${icon('clock', 23)}<h3>两步验证，一眼即得</h3><p>实时动态验证码，轻点即可复制。</p></article><article>${icon('download', 23)}<h3>随时保存，自由带走</h3><p>读写兼容 .db 格式，离线也能使用。</p></article></section><footer class="welcome-footer"><div class="welcome-footer-copy"><span>少一点担忧，多一点从容。</span><span>为你的数字生活，留一份安心。</span></div>${welcomeNavigation()}</footer></div>`;
+    <section class="welcome-features"><article>${icon('lock', 23)}<h3>只在本地，安心解锁</h3><p>主密码解密，文件始终由你掌握。</p></article><article>${icon('clock', 23)}<h3>双重验证，一眼即得</h3><p>实时动态验证码，轻点即可复制。</p></article><article>${icon('download', 23)}<h3>随时保存，自由带走</h3><p>读写兼容 .db 格式，离线也能使用。</p></article></section><footer class="welcome-footer"><div class="welcome-footer-copy"><span>少一点担忧，多一点从容。</span><span>为你的数字生活，留一份安心。</span></div>${welcomeNavigation()}</footer></div>`;
   mountLanguagePickers();
   document
     .querySelector('.welcome-secondary')
     ?.insertAdjacentHTML(
       'beforeend',
       button('restore-file', t('从文件恢复'), 'clock', 'text-button') +
-        button('install', t('安装到设备'), 'download', 'text-button'),
+        button('install', t('安装到设备'), 'install', 'text-button'),
     );
   document
     .querySelector('.welcome-copy')
@@ -1059,8 +1164,11 @@ async function refreshCodes() {
 function showModal(content) {
   quickSearch.close(false);
   modal.innerHTML = content;
-  if (modal.querySelector('#idle-select'))
-    modal.querySelector('.modal-heading').insertAdjacentHTML('afterend', languagePicker());
+  if (modal.querySelector('#idle-select')) {
+    const languageSlot = modal.querySelector('.settings-language');
+    if (languageSlot) languageSlot.insertAdjacentHTML('afterbegin', languagePicker());
+    else modal.querySelector('.modal-heading').insertAdjacentHTML('afterend', languagePicker());
+  }
   if (!modal.open) modal.showModal();
   modal.querySelector('input:not([type=hidden]),textarea,button')?.focus();
 }
@@ -1072,8 +1180,48 @@ function closeModal() {
   modal.innerHTML = '';
   editCard = null;
   editFields = [];
+  editorDirty = false;
   restorePreview?.credential?.fill(0);
   restorePreview = null;
+}
+function showEditorDiscardPrompt() {
+  const form = $('#editor-form');
+  if (!form || form.querySelector('.editor-discard-bar')) return;
+  form
+    .querySelector('.modal-heading')
+    ?.insertAdjacentHTML(
+      'afterend',
+      `<div class="editor-discard-bar" role="alert"><span>${t('关闭编辑器会丢弃尚未保存的修改。')}</span><div>${button('editor-keep-editing', t('继续编辑'), null, 'text-button')}${button('editor-discard', t('丢弃修改'), null, 'button danger')}</div></div>`,
+    );
+  form.querySelector('.editor-discard-bar [data-action=editor-keep-editing]')?.focus();
+}
+function lockWarningPopup() {
+  if (lockWarningEl?.isConnected) return lockWarningEl;
+  lockWarningEl = document.createElement('div');
+  lockWarningEl.id = 'lock-warning';
+  lockWarningEl.className = 'lock-warning';
+  lockWarningEl.setAttribute('role', 'alert');
+  lockWarningEl.setAttribute('popover', 'manual');
+  lockWarningEl.innerHTML = `<div class="lock-warning-copy"><strong>${t('将在 {seconds} 秒后自动锁定', { seconds: 30 })}</strong></div>${button('keep-unlocked', t('继续使用'), null, 'button secondary')}`;
+  document.body.append(lockWarningEl);
+  return lockWarningEl;
+}
+function showLockWarning() {
+  const popup = lockWarningPopup();
+  try {
+    popup.showPopover?.();
+  } catch {
+    /* Fall back to the fixed-position element when popover is unavailable. */
+  }
+  popup.classList.add('show');
+}
+function hideLockWarning() {
+  lockWarningEl?.classList.remove('show');
+  try {
+    lockWarningEl?.hidePopover?.();
+  } catch {
+    /* Ignore popovers that are already closed. */
+  }
 }
 const modalHeader = (title, caption = '') =>
   `<div class="modal-heading"><div><h2 id="modal-title">${title}</h2>${caption ? `<p>${caption}</p>` : ''}</div>${iconButton('close-modal', t('关闭'), 'close')}</div>`;
@@ -1090,7 +1238,7 @@ const importWizard = createImportWizard({
     state.selected = imported[0]?.getAttribute('id') || null;
     closeModal();
     render();
-    toast(t('已导入 {count} 个条目，请保存数据库', { count: imported.length }));
+    toast(t('已导入 {count} 个条目，请保存密码库', { count: imported.length }));
   },
 });
 function showPassword(mode) {
@@ -1109,12 +1257,30 @@ function showPassword(mode) {
       : t('输入主密码，在此设备上解锁你的密码库。');
   const passwordLabel = mode === 'set-password' ? t('新主密码') : t('主密码');
   showModal(
-    html`<form id="password-form" data-mode="${mode}">${modalHeader(title, caption)}<div class="password-vault">${icon('lock', 26)}<div><strong>${e(state.name || t('新密码库'))}</strong><small>SafeInCloud 兼容数据库</small></div></div>${mode === 'create' ? t('<label class="form-label">密码库名称<input name="name" value="我的密码库" maxlength="100" required></label>') : ''}${change ? `<label class="form-label">${t('当前主密码')}<input name="current" type="password" autocomplete="current-password" required></label>` : ''}<label class="form-label">${passwordLabel}<div class="password-input"><input name="password" type="password" autocomplete="${create ? 'new-password' : 'current-password'}" ${create ? 'minlength="8"' : ''} required autofocus>${iconButton('toggle-master', t('显示或隐藏主密码'), 'eye')}</div></label>${create ? html`<div class="strength-meter" id="master-strength" data-score="0"><span><i></i></span><small></small></div><p class="form-help">${t('主密码无法找回，请务必妥善保管。')}</p><label class="form-label">${t('确认主密码')}<input name="confirm" type="password" autocomplete="new-password" minlength="8" required></label><p class="form-help">${t('至少 8 个字符。新密码库使用支持完整 Unicode 的版本 2 格式。')}</p>` : ''}${acknowledge ? html`<label class="checkbox-row"><input type="checkbox" name="acknowledge" required>${t('我确认主密码无法找回')}</label>` : ''}${acknowledge ? html`<p class="form-help">${t('创建后可在偏好设置下载恢复工具包。')}</p>` : ''}<p class="form-error" id="password-error" role="alert"></p><div class="modal-footer">${button('close-modal', t('取消'), null, 'button secondary')}<button class="button primary" type="submit">${icon(create ? 'check' : 'lock')}<span>${create ? t('确认并继续') : t('解锁密码库')}</span></button></div></form>`,
+    html`<form id="password-form" data-mode="${mode}">${modalHeader(title, caption)}<div class="password-vault">${icon('lock', 26)}<div><strong>${e(state.name || t('新密码库'))}</strong><small>SafeInCloud 兼容密码库</small></div></div>${mode === 'create' ? t('<label class="form-label">密码库名称<input name="name" value="我的密码库" maxlength="100" required></label>') : ''}${change ? `<label class="form-label">${t('当前主密码')}<input name="current" type="password" autocomplete="current-password" required></label>` : ''}<label class="form-label">${passwordLabel}<div class="password-input"><input name="password" type="password" autocomplete="${create ? 'new-password' : 'current-password'}" ${create ? 'minlength="8"' : ''} required autofocus>${iconButton('toggle-master', t('显示或隐藏主密码'), 'eye')}</div></label>${create ? html`<div class="strength-meter" id="master-strength" data-score="empty"><span><i></i></span><small></small></div><p class="form-help">${t('主密码无法找回，请务必妥善保管。')}</p><label class="form-label">${t('确认主密码')}<input name="confirm" type="password" autocomplete="new-password" minlength="8" required></label><p class="form-help">${t('至少 8 个字符。新密码库使用支持完整 Unicode 的版本 2 格式。')}</p>` : ''}${acknowledge ? html`<label class="checkbox-row"><input type="checkbox" name="acknowledge" required>${t('我确认主密码无法找回')}</label>` : ''}${acknowledge ? html`<p class="form-help">${t('创建后可在偏好设置下载恢复工具包。')}</p>` : ''}<p class="form-error" id="password-error" role="alert"></p><div class="modal-footer">${button('close-modal', t('取消'), null, 'button secondary')}<button class="button primary" type="submit">${icon(create ? 'check' : 'lock')}<span>${create ? t('确认并继续') : t('解锁密码库')}</span></button></div></form>`,
   );
   const passwordInput = modal.querySelector('[name=password]');
+  const passwordError = modal.querySelector('#password-error');
+  const clearPasswordError = () => {
+    if (passwordError) passwordError.textContent = '';
+    modal.querySelectorAll('[aria-invalid="true"]').forEach((field) => {
+      field.removeAttribute('aria-invalid');
+      field.removeAttribute('aria-describedby');
+    });
+  };
+  passwordInput?.addEventListener('input', clearPasswordError);
+  modal.querySelector('[name=confirm]')?.addEventListener('input', clearPasswordError);
+  modal.querySelector('[name=current]')?.addEventListener('input', clearPasswordError);
+  modal.querySelector('[name=acknowledge]')?.addEventListener('change', clearPasswordError);
   const meter = modal.querySelector('#master-strength');
   if (meter && passwordInput) {
     const update = () => {
+      if (!passwordInput.value) {
+        meter.dataset.score = 'empty';
+        meter.querySelector('i').style.width = '0%';
+        meter.querySelector('small').textContent = '';
+        return;
+      }
       const result = passwordStrength(passwordInput.value);
       meter.dataset.score = String(result.score);
       meter.querySelector('i').style.width = `${(result.score + 1) * 20}%`;
@@ -1132,7 +1298,7 @@ async function openFile() {
     try {
       const [handle] = await window.showOpenFilePicker({
         types: [
-          { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },
+          { description: t('SafeInCloud 密码库'), accept: { 'application/octet-stream': ['.db'] } },
         ],
         multiple: false,
       });
@@ -1176,6 +1342,8 @@ async function acceptFile(file, handle = null, recentId = null) {
 function wipeUnlocked() {
   quickSearch.close(false);
   clearTimeout(searchTimer);
+  state.lockWarning = false;
+  hideLockWarning();
   state.credential?.fill(0);
   state.credential = null;
   state.doc = null;
@@ -1185,6 +1353,7 @@ function wipeUnlocked() {
   batchMode = false;
   batchSelection.clear();
   state.externalChange = false;
+  resetMobileDetailHistory();
   otpGeneration++;
 }
 async function submitPassword(form) {
@@ -1192,15 +1361,29 @@ async function submitPassword(form) {
     password = form.elements.password.value,
     confirm = form.elements.confirm?.value;
   const errorBox = $('#password-error');
+  const invalid = (field) => {
+    if (!field || !errorBox) return;
+    field.setAttribute('aria-invalid', 'true');
+    field.setAttribute('aria-describedby', errorBox.id);
+    field.focus();
+    field.select?.();
+  };
+  form.querySelectorAll('[aria-invalid="true"]').forEach((field) => {
+    field.removeAttribute('aria-invalid');
+    field.removeAttribute('aria-describedby');
+  });
+  if (errorBox) errorBox.textContent = '';
   if (confirm !== undefined && confirm !== password) {
-    errorBox.textContent = t('两次输入的密码不一致');
+    if (errorBox) errorBox.textContent = t('两次输入的密码不一致');
+    invalid(form.elements.confirm);
     return;
   }
   if (
     (mode === 'create' || (mode === 'set-password' && state.demo)) &&
     !form.elements.acknowledge?.checked
   ) {
-    errorBox.textContent = t('请确认主密码无法找回');
+    if (errorBox) errorBox.textContent = t('请确认主密码无法找回');
+    invalid(form.elements.acknowledge);
     return;
   }
   if (mode === 'set-password' && form.elements.current) {
@@ -1214,7 +1397,8 @@ async function submitPassword(form) {
     }
     current.fill(0);
     if (!valid) {
-      errorBox.textContent = t('当前主密码不正确');
+      if (errorBox) errorBox.textContent = t('当前主密码不正确');
+      invalid(form.elements.current);
       return;
     }
   }
@@ -1267,10 +1451,15 @@ async function submitPassword(form) {
     state.lastActivity = Date.now();
     closeModal();
     render();
-    if (mode === 'unlock') showQuickSearch();
+    if (
+      mode === 'unlock' &&
+      globalThis.matchMedia?.('(hover: hover) and (pointer: fine)').matches !== false
+    )
+      showQuickSearch();
     if (mode === 'set-password') await saveFile(false);
   } catch (error) {
-    errorBox.textContent = message(error);
+    if (errorBox) errorBox.textContent = message(error);
+    invalid(form.elements.password);
     submit.disabled = false;
     submit.textContent = t('重试');
   }
@@ -1294,7 +1483,7 @@ function showEditor(card = null, addOTP = false) {
   }
   if (addOTP) {
     const dummy = newCard(state.doc);
-    editFields.push(setField(dummy, t('两步验证码'), '', 'one_time_password'));
+    editFields.push(setField(dummy, t('动态验证码'), '', 'one_time_password'));
   }
   const chosenLabels = card
     ? children(card, 'label_id').map((el) => el.textContent)
@@ -1302,7 +1491,7 @@ function showEditor(card = null, addOTP = false) {
       ? [state.section.slice(6)]
       : [];
   showModal(
-    html`<form id="editor-form">${modalHeader(card ? t('编辑条目') : addOTP ? t('添加验证器') : t('新建条目'), t('把重要的信息，妥善收在一起。'))}<label class="form-label">条目名称<input name="title" required maxlength="200" value="${e(card ? title(card) : '')}" placeholder="例如 GitHub、Google"></label><div class="editor-section-heading"><span>字段</span>${button('generate', t('生成密码'), 'sparkle', 'text-button')}</div><div id="editor-fields">${editFields.map((field, index) => fieldEditor(field, index)).join('')}</div><div class="add-field-actions">${button('add-field', t('添加字段'), 'plus', 'text-button')}${button('editor-add-otp', t('添加双重验证'), 'shield', 'text-button')}</div><label class="form-label">备注<textarea name="notes" rows="3" placeholder="添加一些备注…">${e(card ? children(card, 'notes')[0]?.textContent || '' : '')}</textarea></label>${
+    html`<form id="editor-form">${modalHeader(card ? t('编辑条目') : addOTP ? t('添加验证器') : t('新建条目'), t('把重要的信息，妥善收在一起。'))}<label class="form-label">条目名称<input name="title" required maxlength="200" value="${e(card ? title(card) : '')}" placeholder="例如 GitHub、Google"></label><div class="editor-section-heading"><span>字段</span>${button('generate', t('生成密码'), 'sparkle', 'text-button')}</div><div id="editor-fields">${editFields.map((field, index) => fieldEditor(field, index)).join('')}</div><div class="add-field-actions">${button('add-field', t('添加字段'), 'plus', 'text-button')}${button('editor-add-otp', t('添加动态验证码'), 'shield', 'text-button')}</div><label class="form-label">备注<textarea name="notes" rows="3" placeholder="添加一些备注…">${e(card ? children(card, 'notes')[0]?.textContent || '' : '')}</textarea></label>${
       labels().length
         ? html`<div class="form-label">标签<div class="label-options">${labels()
             .map(
@@ -1325,6 +1514,14 @@ function showEditor(card = null, addOTP = false) {
       'beforeend',
       button('add-website', t('添加网站地址'), 'plus', 'text-button'),
     );
+  editorDirty = false;
+  const form = $('#editor-form');
+  form?.addEventListener('input', () => {
+    editorDirty = true;
+  });
+  form?.addEventListener('change', () => {
+    editorDirty = true;
+  });
   if (addOTP) modal.querySelector('.editor-field:last-child textarea')?.focus();
 }
 const types = () => ({
@@ -1333,7 +1530,7 @@ const types = () => ({
   website: t('网站'),
   email: t('邮箱'),
   text: t('文本'),
-  one_time_password: t('双重验证'),
+  one_time_password: t('动态验证码'),
   pin: 'PIN',
   secret: t('私密文本'),
   phone: t('电话'),
@@ -1355,7 +1552,7 @@ function fieldEditor(field, index) {
     )
     .join(
       '',
-    )}${types()[type] ? '' : `<option value="${e(type)}" selected>${e(type)}</option>`}</select>${iconButton('remove-field', t('删除字段'), 'close')}</div>${type === 'one_time_password' ? html`<textarea class="field-input" rows="2" aria-label="验证密钥" placeholder="Base32 密钥或 otpauth://totp/…" autocomplete="off">${e(field.textContent)}</textarea><small class="form-help">支持 SHA1 / SHA256 / SHA512、6 / 8 位及自定义周期。与 SafeInCloud 共用时请使用 30 秒周期。</small>` : html`<div class="password-input"><input class="field-input" aria-label="字段内容" type="${secret ? 'password' : 'text'}" autocomplete="off" value="${e(field.textContent)}" ${type === 'binary' ? 'readonly' : ''}>${secret ? iconButton('toggle-field', t('显示或隐藏内容'), 'eye') : ''}</div>`}</div>`;
+    )}${types()[type] ? '' : `<option value="${e(type)}" selected>${e(type)}</option>`}</select>${iconButton('remove-field', t('删除字段'), 'close')}</div>${type === 'one_time_password' ? html`<details class="otp-secret-editor" ${field.textContent ? '' : 'open'}><summary>${t('验证密钥')}</summary><textarea class="field-input" rows="2" aria-label="验证密钥" placeholder="Base32 密钥或 otpauth://totp/…" autocomplete="off">${e(field.textContent)}</textarea><small class="form-help">支持 SHA1 / SHA256 / SHA512、6 / 8 位及自定义周期。与 SafeInCloud 共用时请使用 30 秒周期。</small></details>` : html`<div class="password-input"><input class="field-input" aria-label="字段内容" type="${secret ? 'password' : 'text'}" autocomplete="off" value="${e(field.textContent)}" ${type === 'binary' ? 'readonly' : ''}>${secret ? iconButton('toggle-field', t('显示或隐藏内容'), 'eye') : ''}${type === 'password' ? iconButton('generate-field', t('生成密码'), 'sparkle') : ''}</div>`}</div>`;
 }
 function collectEditor(validate = true) {
   const form = $('#editor-form');
@@ -1400,7 +1597,7 @@ function collectEditor(validate = true) {
   touch(card);
   if (!editCard) state.doc.documentElement.append(card);
   state.selected = card.getAttribute('id');
-  state.mobileDetail = true;
+  pushMobileDetail();
   state.dirty = true;
   return card;
 }
@@ -1422,7 +1619,7 @@ async function saveFile(asCopy = false) {
       handle = await window.showSaveFilePicker({
         suggestedName: state.name || 'SafeInCloud.db',
         types: [
-          { description: t('SafeInCloud 数据库'), accept: { 'application/octet-stream': ['.db'] } },
+          { description: t('SafeInCloud 密码库'), accept: { 'application/octet-stream': ['.db'] } },
         ],
       });
     }
@@ -1436,7 +1633,7 @@ async function saveFile(asCopy = false) {
       ) {
         toast(t('首次写回需要选择加密备份目录，之后保存会自动备份'));
         if (!(await chooseBackupDirectory(false)))
-          throw new Error(t('未选择备份目录，更改尚未写入数据库'));
+          throw new Error(t('未选择备份目录，更改尚未写入密码库'));
       }
     }
     const bytes = await encryptDatabase(serializeVault(state.doc), state.credential, state.version);
@@ -1466,7 +1663,7 @@ async function saveFile(asCopy = false) {
       toast(
         result.retentionWarning
           ? t('保存已验证，但旧备份清理失败')
-          : t('已加密保存并验证数据库文件'),
+          : t('已加密保存并验证密码库文件'),
       );
     } else {
       const url = URL.createObjectURL(new Blob([bytes], { type: 'application/octet-stream' }));
@@ -1498,7 +1695,7 @@ async function saveFile(asCopy = false) {
     } else
       toast(
         t('保存失败：') +
-          (error.name === 'AbortError' ? t('保存已取消，更改尚未写入数据库') : message(error)),
+          (error.name === 'AbortError' ? t('保存已取消，更改尚未写入密码库') : message(error)),
       );
   } finally {
     state.busy = false;
@@ -1507,6 +1704,8 @@ async function saveFile(asCopy = false) {
 }
 async function lockVault() {
   if (!state.doc || state.busy) return;
+  state.lockWarning = false;
+  hideLockWarning();
   if ($('#editor-form')) collectEditor(false);
   state.busy = true;
   try {
@@ -1576,7 +1775,7 @@ function closeGenerator() {
   }
   generatorTargets = [];
 }
-function showGenerator() {
+function showGenerator(preferredTarget) {
   generatorTargets = [...modal.querySelectorAll('.editor-field')].filter(
     (row) => row.querySelector('select').value === 'password',
   );
@@ -1607,6 +1806,10 @@ function showGenerator() {
   });
   dialog.showModal();
   updateGeneratedPassword();
+  const preferredRow = preferredTarget?.closest?.('.editor-field');
+  const preferredIndex = preferredRow ? generatorTargets.indexOf(preferredRow) : -1;
+  const targetSelect = dialog.querySelector('[name=target]');
+  if (targetSelect && preferredIndex >= 0) targetSelect.value = String(preferredIndex);
   dialog.querySelector('[data-action=generator-refresh]').focus();
 }
 function updateGeneratedPassword() {
@@ -1815,7 +2018,7 @@ function downloadRecoveryKit() {
     '',
     t('恢复步骤') + ': ' + t('打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。'),
     '',
-    t('本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。'),
+    t('本工具包不包含密码、动态验证码密钥或密码库内容。请妥善保管。'),
   ].join('\n');
   const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
   const link = document.createElement('a');
@@ -1832,37 +2035,29 @@ function showInstallHelp() {
 }
 function settings() {
   showModal(
-    html`${modalHeader(t('偏好设置'), t('简单一点，安心一点。'))}<label class="form-label">无操作自动锁定<select id="idle-select">${[1, 5, 15, 30].map((n) => html`<option value="${n}" ${state.idleMinutes === n ? 'selected' : ''}>${n} 分钟</option>`).join('')}</select></label><label class="form-label">剪贴板自动清除<select id="clipboard-select">${[0, 15, 30, 60].map((n) => `<option value="${n}" ${clipboardGuard.seconds === n ? 'selected' : ''}>${n ? t('{seconds} 秒', { seconds: n }) : t('关闭')}</option>`).join('')}</select></label><p class="form-help">复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。</p><div class="settings-note">${icon('shield', 23)}<p>密码库只在内存中解密，不写入浏览器存储。离线缓存只包含应用文件。请将更改保存到 .db，关闭页面后需要重新打开文件。</p></div><div class="settings-buttons">${button('save-copy', t('另存为 .db 文件'), 'download', 'button secondary')}${button('recovery-kit', t('恢复工具包'), 'download', 'button secondary')}${button('change-master', t('更改主密码'), 'key', 'button secondary')}${button('clear-recents', t('清除最近使用记录'), 'trash', 'button secondary')}${button('install', t('安装到设备'), 'plus', 'button secondary')}</div><div class="modal-footer">${button('close-modal', t('完成'), null, 'button primary')}</div>`,
+    html`${modalHeader(t('偏好设置'), t('简单一点，安心一点。'))}
+      <section class="settings-section" aria-labelledby="settings-security">
+        <h3 id="settings-security">${t('安全')}</h3>
+        <div class="settings-row"><label for="idle-select">${t('无操作自动锁定')}</label><select id="idle-select">${[1, 5, 15, 30].map((n) => html`<option value="${n}" ${state.idleMinutes === n ? 'selected' : ''}>${n} 分钟</option>`).join('')}</select></div>
+        <div class="settings-row"><label for="clipboard-select">${t('剪贴板自动清除')}</label><select id="clipboard-select">${[0, 15, 30, 60].map((n) => `<option value="${n}" ${clipboardGuard.seconds === n ? 'selected' : ''}>${n ? t('{seconds} 秒', { seconds: n }) : t('关闭')}</option>`).join('')}</select></div>
+        <p class="form-help">${t('复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。')}</p>
+        <div class="settings-buttons">${button('change-master', t('更改主密码'), 'key', 'button secondary')}${button('clear-recents', t('清除最近使用记录'), 'trash', 'button secondary')}</div>
+        <div class="settings-note">${icon('shield', 23)}<p>${t('密码库只在内存中解密。最近文件记录只保存上次打开的文件名和文件访问权限，可随时清空；重新打开仍需主密码。')}</p></div>
+      </section>
+      <section class="settings-section" aria-labelledby="settings-data">
+        <h3 id="settings-data">${t('数据与备份')}</h3>
+        <div class="settings-buttons">${button('save-copy', t('另存为 .db 文件'), 'download', 'button secondary')}${button('import', t('导入密码'), 'upload', 'button secondary')}</div>
+        <section class="backup-settings"><h3>${t('保存与恢复')}</h3><p>${t('覆盖前自动保留原始加密文件。目录授权仅在当前页面保留，刷新后需重新选择。')}</p><p><strong>${e(backupDirectory?.name || t('尚未选择备份目录'))}</strong></p><label class="form-label">${t('当前会话保留备份数量')}<select id="backup-retention">${[5, 10, 20, 50].map((n) => `<option ${n === backupRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('backup-directory', t('选择加密备份目录'), 'folder', 'button secondary')}${button('backups', t('查看加密备份'), 'clock', 'button secondary')}${button('restore-file', t('从文件恢复'), 'upload', 'button secondary')}</div><p class="form-help">${t('仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。')}</p><h3>${t('本地加密快照')}</h3><p>${t('保存在浏览器本地，加密且不会上传；清除站点数据会删除。')}</p><label class="form-label">${t('保留数量')}<select id="snapshot-retention">${[5, 10, 20, 50].map((n) => `<option value="${n}" ${n === snapshotRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('snapshots', t('查看本地快照'), 'clock', 'button secondary')}${button('clear-snapshots', t('清除本地快照'), 'trash', 'button secondary')}</div><p class="form-help" id="snapshot-status"></p></section>
+        <div id="recent-files">${recentMarkup(recentEntries, recentFiles.persistent)}</div>
+      </section>
+      <section class="settings-section" aria-labelledby="settings-app">
+        <h3 id="settings-app">${t('应用')}</h3>
+        <div class="settings-language"></div>
+        <div class="settings-buttons">${button('recovery-kit', t('恢复工具包'), 'download', 'button secondary')}${button('install', t('安装到设备'), 'install', 'button secondary')}</div>
+        <p class="settings-links"><a href="./downloads/" target="_blank" rel="noopener">${t('下载与源代码')}</a> · <a href="${buildInfo.source || './downloads/'}" target="_blank" rel="noopener noreferrer">GitHub · MIT ↗</a></p>
+      </section>
+      <div class="modal-footer">${button('close-modal', t('完成'), null, 'button primary')}</div>`,
   );
-  modal
-    .querySelector('.settings-buttons')
-    .insertAdjacentHTML(
-      'afterend',
-      `<p><a href="./downloads/" target="_blank" rel="noopener">${t('下载与源代码')}</a> · <a href="${buildInfo.source || './downloads/'}" target="_blank" rel="noopener noreferrer">GitHub · MIT ↗</a></p>`,
-    );
-  modal
-    .querySelector('.settings-buttons')
-    .insertAdjacentHTML(
-      'afterend',
-      `<section class="backup-settings"><h3>${t('保存与恢复')}</h3><p>${t('覆盖前自动保留原始加密文件。目录授权仅在当前页面保留，刷新后需重新选择。')}</p><p><strong>${e(backupDirectory?.name || t('尚未选择备份目录'))}</strong></p><label class="form-label">${t('当前会话保留备份数量')}<select id="backup-retention">${[5, 10, 20, 50].map((n) => `<option ${n === backupRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('backup-directory', t('选择加密备份目录'), 'folder', 'button secondary')}${button('backups', t('查看加密备份'), 'clock', 'button secondary')}${button('restore-file', t('从文件恢复'), 'upload', 'button secondary')}</div><p class="form-help">${t('仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。')}</p><h3>${t('本地加密快照')}</h3><p>${t('保存在浏览器本地，加密且不会上传；清除站点数据会删除。')}</p><label class="form-label">${t('保留数量')}<select id="snapshot-retention">${[5, 10, 20, 50].map((n) => `<option value="${n}" ${n === snapshotRetention ? 'selected' : ''}>${n}</option>`).join('')}</select></label><div class="settings-buttons">${button('snapshots', t('查看本地快照'), 'clock', 'button secondary')}${button('clear-snapshots', t('清除本地快照'), 'trash', 'button secondary')}</div><p class="form-help" id="snapshot-status"></p></section>`,
-    );
-  const note = modal.querySelector('.settings-note p');
-  if (note)
-    note.textContent = t(
-      '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。',
-    );
-  modal
-    .querySelector('.settings-buttons')
-    ?.insertAdjacentHTML(
-      'beforeend',
-      button('import', t('导入密码'), 'upload', 'button secondary'),
-    );
-  modal
-    .querySelector('.modal-footer')
-    ?.insertAdjacentHTML(
-      'beforebegin',
-      `<div id="recent-files">${recentMarkup(recentEntries, recentFiles.persistent)}</div>`,
-    );
   const snapshotStatus = modal.querySelector('#snapshot-status');
   if (snapshotStatus) {
     if (!snapshotsSupported()) snapshotStatus.textContent = t('当前浏览器不支持本地快照');
@@ -1881,6 +2076,7 @@ function settings() {
         });
   }
 }
+
 async function action(name, target) {
   if (state.busy && !['copy-field', 'copy-otp'].includes(name)) return;
   const card = selectedCard();
@@ -1931,6 +2127,22 @@ async function action(name, target) {
       if (card) showEditor(card, true);
       break;
     case 'close-modal':
+      if ($('#editor-form') && editorDirty) showEditorDiscardPrompt();
+      else closeModal();
+      break;
+    case 'mobile-more':
+      showMobileMore();
+      break;
+    case 'keep-unlocked':
+      state.lastActivity = Date.now();
+      state.lockWarning = false;
+      hideLockWarning();
+      break;
+    case 'editor-keep-editing':
+      $('.editor-discard-bar')?.remove();
+      break;
+    case 'editor-discard':
+      editorDirty = false;
       closeModal();
       break;
     case 'toggle-master': {
@@ -1946,10 +2158,11 @@ async function action(name, target) {
     case 'add-field':
     case 'add-website':
     case 'editor-add-otp': {
+      editorDirty = true;
       const dummy = newCard(state.doc);
       const field = setField(
         dummy,
-        name === 'editor-add-otp' ? t('两步验证码') : name === 'add-website' ? t('网站') : '',
+        name === 'editor-add-otp' ? t('动态验证码') : name === 'add-website' ? t('网站') : '',
         '',
         name === 'editor-add-otp'
           ? 'one_time_password'
@@ -1966,6 +2179,7 @@ async function action(name, target) {
       break;
     }
     case 'remove-field':
+      editorDirty = true;
       target.closest('.editor-field').remove();
       break;
     case 'qr-import':
@@ -1974,6 +2188,9 @@ async function action(name, target) {
       break;
     case 'generate':
       showGenerator();
+      break;
+    case 'generate-field':
+      showGenerator(target);
       break;
     case 'generator-refresh':
       updateGeneratedPassword();
@@ -2165,15 +2382,12 @@ async function action(name, target) {
       state.lastSaved = null;
       state.lastExported = null;
       state.selected = null;
-      state.mobileDetail = false;
+      resetMobileDetailHistory();
       closeModal();
       render();
-      toast(t('已合并外部更改，请保存数据库'));
+      toast(t('已合并外部更改，请保存密码库'));
       break;
     }
-    case 'security-overview':
-      showSecurityOverview();
-      break;
     case 'manage-labels':
       showLabelManager();
       break;
@@ -2200,7 +2414,7 @@ async function action(name, target) {
       batchMode = false;
       batchSelection.clear();
       state.selected = null;
-      state.mobileDetail = false;
+      resetMobileDetailHistory();
       render();
       break;
     case 'clear-security-filter':
@@ -2213,7 +2427,7 @@ async function action(name, target) {
       batchMode = true;
       batchSelection.clear();
       state.selected = null;
-      state.mobileDetail = false;
+      resetMobileDetailHistory();
       render();
       break;
     case 'batch-cancel':
@@ -2265,7 +2479,15 @@ async function action(name, target) {
       render();
       break;
     case 'back-list':
-      state.mobileDetail = false;
+      backToMobileList();
+      break;
+    case 'view-all':
+      state.section = 'all';
+      state.search = '';
+      state.securityFilter = null;
+      state.selected = null;
+      state.listLimit = 200;
+      resetMobileDetailHistory();
       render();
       break;
     case 'add-label':
@@ -2284,7 +2506,20 @@ async function action(name, target) {
 }
 document.addEventListener('click', (event) => {
   const target = event.target.closest('[data-action], [data-section], [data-select]');
-  if (!target) return;
+  if (!target) {
+    if (!event.target.closest('details.vault-menu, details.detail-overflow'))
+      document
+        .querySelectorAll('details.vault-menu[open], details.detail-overflow[open]')
+        .forEach((details) => details.removeAttribute('open'));
+    return;
+  }
+  if (!event.target.closest('details.vault-menu, details.detail-overflow'))
+    document
+      .querySelectorAll('details.vault-menu[open], details.detail-overflow[open]')
+      .forEach((details) => details.removeAttribute('open'));
+  const openMenu = event.target.closest('.vault-menu-panel, .detail-overflow-menu');
+  if (openMenu) openMenu.closest('details')?.removeAttribute('open');
+  if (target.closest('.mobile-more-sheet')) closeModal();
   if (target.dataset.action) {
     event.preventDefault();
     if (['cancel-discard', 'confirm-discard'].includes(target.dataset.action)) return;
@@ -2298,7 +2533,7 @@ document.addEventListener('click', (event) => {
     batchSelection.clear();
     state.listLimit = 200;
     state.selected = null;
-    state.mobileDetail = false;
+    resetMobileDetailHistory();
     render();
   } else if (target.dataset.select) {
     clearTimeout(searchTimer);
@@ -2307,7 +2542,7 @@ document.addEventListener('click', (event) => {
     else {
       recordRecent(target.dataset.select);
       state.selected = target.dataset.select;
-      state.mobileDetail = true;
+      pushMobileDetail();
       render();
     }
   }
@@ -2338,7 +2573,7 @@ document.addEventListener('keydown', (event) => {
     else {
       recordRecent(event.target.dataset.select);
       state.selected = event.target.dataset.select;
-      state.mobileDetail = true;
+      pushMobileDetail();
       render();
     }
   }
@@ -2441,6 +2676,7 @@ document.addEventListener('submit', (event) => {
     const value = $('#generated-password').value;
     if (value && target?.isConnected && !form.querySelector('[type=submit]').disabled) {
       target.querySelector('.field-input').value = value;
+      editorDirty = true;
       closeGenerator();
       target.querySelector('.field-input').focus();
     }
@@ -2453,7 +2689,7 @@ document.addEventListener('submit', (event) => {
       closeModal();
       render();
       if (state.handle && !state.demo) void saveFile();
-      else toast(t('条目已更新，请保存数据库'));
+      else toast(t('条目已更新，请保存密码库'));
     } catch (error) {
       $('#editor-error').textContent = message(error);
     }
@@ -2474,7 +2710,14 @@ document.addEventListener('submit', (event) => {
 modal.addEventListener('cancel', (event) => {
   if (event.target !== modal) return;
   event.preventDefault();
-  if (!state.busy) closeModal();
+  if (state.busy) return;
+  if ($('#editor-form') && editorDirty) showEditorDiscardPrompt();
+  else closeModal();
+});
+window.addEventListener('popstate', () => {
+  if (!state.doc || !state.mobileDetail) return;
+  state.mobileDetail = false;
+  render();
 });
 $('#file-input').addEventListener('change', (event) => {
   const file = event.target.files[0];
@@ -2500,7 +2743,7 @@ $('#qr-input').addEventListener('change', async (event) => {
     canvas.width = 0;
     canvas.height = 0;
     if (!result || !/^otpauth:\/\/totp\//i.test(result.data))
-      throw new Error(t('没有识别到 TOTP 二维码，请尝试更清晰的图片或手动粘贴密钥'));
+      throw new Error(t('没有识别到验证器二维码，请尝试更清晰的图片或手动粘贴密钥'));
     const config = parseOTP(result.data);
     config.secret.fill(0);
     if (!$('#editor-form')) return;
@@ -2511,7 +2754,7 @@ $('#qr-input').addEventListener('change', async (event) => {
     );
     if (!row) {
       const dummy = newCard(state.doc),
-        field = setField(dummy, t('两步验证码'), '', 'one_time_password');
+        field = setField(dummy, t('动态验证码'), '', 'one_time_password');
       editFields.push(field);
       $('#editor-fields').insertAdjacentHTML(
         'beforeend',
@@ -2520,6 +2763,7 @@ $('#qr-input').addEventListener('change', async (event) => {
       row = modal.querySelector('.editor-field:last-child');
     }
     row.querySelector('.field-input').value = result.data;
+    editorDirty = true;
     const form = $('#editor-form');
     if (!form.elements.title.value.trim())
       form.elements.title.value = config.issuer || config.account || t('验证器');
@@ -2548,10 +2792,20 @@ for (const name of ['pointerdown', 'keydown', 'touchstart'])
     { passive: true },
   );
 setInterval(() => {
-  if (state.doc) {
-    if (Date.now() - state.lastActivity > state.idleMinutes * 60000 && !state.busy) lockVault();
-    else refreshCodes();
+  if (!state.doc) return;
+  const remaining = state.idleMinutes * 60000 - (Date.now() - state.lastActivity);
+  if (remaining <= 0 && !state.busy) {
+    void lockVault();
+    return;
   }
+  if (remaining <= 30000 && !state.lockWarning) {
+    state.lockWarning = true;
+    showLockWarning();
+  } else if (remaining > 30000 && state.lockWarning) {
+    state.lockWarning = false;
+    hideLockWarning();
+  }
+  refreshCodes();
 }, 500);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && state.doc && Date.now() - state.lastActivity > state.idleMinutes * 60000)

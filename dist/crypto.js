@@ -5,7 +5,7 @@ export function passwordBytes(password, version = 2) {
   if (version === 1)
     return Uint8Array.from({ length: password.length }, (_, i) => password.charCodeAt(i) & 255);
   if (version === 2) return encode(password);
-  throw new Error(t('不支持此数据库版本'));
+  throw new Error(t('不支持此密码库版本'));
 }
 export function concat(...parts) {
   const result = new Uint8Array(parts.reduce((n, part) => n + part.length, 0));
@@ -53,7 +53,7 @@ async function transform(bytes, compress) {
       size += value.length;
       if (size > 128 * 1024 * 1024) {
         await source.cancel();
-        throw new Error(t('数据库解压后超过 128 MB 限制'));
+        throw new Error(t('密码库解压后超过 128 MB 限制'));
       }
       chunks.push(value);
     }
@@ -98,7 +98,7 @@ async function decryptBytes(bytes, credential) {
       );
       return { xml, credential, version };
     } catch (error) {
-      throw new Error(t('主密码不正确，或数据库文件已损坏'), { cause: error });
+      throw new Error(t('主密码不正确，或密码库文件已损坏'), { cause: error });
     }
   } finally {
     userKey?.fill(0);
@@ -128,7 +128,7 @@ export async function decryptDatabaseWithCredential(bytes, credential) {
   }
 }
 export async function encryptDatabase(xml, credential, version = 2) {
-  if (![1, 2].includes(version)) throw new Error(t('不支持此数据库版本'));
+  if (![1, 2].includes(version)) throw new Error(t('不支持此密码库版本'));
   const salt = random(64),
     iv = random(16),
     checkSalt = random(64),

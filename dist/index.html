@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#f5f1e7" />
     <meta
       name="description"
-      content="ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。"
+      content="ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 密码库。"
     />
     <meta
       http-equiv="Content-Security-Policy"
@@ -16,8 +16,7 @@
     <link rel="icon" href="./icon-192.png" type="image/png" sizes="192x192" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./icon-192.png" />
-    <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="./theme.css" />
+    <link rel="stylesheet" href="./app.css" />
     <link rel="stylesheet" href="./workflow.css" />
     <meta name="google-site-verification" content="RdjE1E_5d01y9Y_JT5HVCNZygc78QumxlmMfIw2T0BU" />
     <link rel="canonical" href="https://clear-vault.app/" />
@@ -50,7 +49,7 @@
             <span class="overline">A LITTLE SPACE FOR PEACE OF MIND</span>
             <h1>重要的，<br />安心放在这里。</h1>
             <p>
-              密码、账号和两步验证码，井井有条。<br />打开你的 SafeInCloud
+              密码、账号和动态验证码，井井有条。<br />打开你的 SafeInCloud
               密码库，开始更轻盈的数字生活。
             </p>
             <div class="welcome-buttons">
@@ -73,7 +72,7 @@
             <p>主密码解密，文件始终由你掌握。</p>
           </article>
           <article>
-            <h3>两步验证，一眼即得</h3>
+            <h3>双重验证，一眼即得</h3>
             <p>实时动态验证码，轻点即可复制。</p>
           </article>
           <article>
@@ -92,7 +91,13 @@
       </div>
     </div>
     <dialog id="modal" aria-labelledby="modal-title"></dialog>
-    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="toast" role="status" aria-live="polite">
+      <span class="toast-prompt" aria-hidden="true">›</span>
+      <span class="toast-message"></span>
+      <button type="button" class="toast-close" data-toast-close aria-label="关闭" title="关闭">
+        ×
+      </button>
+    </div>
     <input type="file" id="file-input" accept=".db" hidden />
     <input type="file" id="qr-input" accept="image/*" hidden />
     <script src="./vendor/jsQR.js"></script>

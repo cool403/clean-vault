@@ -195,7 +195,7 @@ test('extension daily loop: site matching, search, copy, OTP, new entry and no l
   assert.match(result.xml, /name="Work"/);
   result.credential.fill(0);
   assert.match(element('#save-status').textContent, /saved/i);
-  assert.match(element('#save').textContent, /save database/i);
+  assert.match(element('#save').textContent, /save vault/i);
 
   Object.defineProperty(document, 'hidden', { configurable: true, value: true });
   document.dispatchEvent(new dom.window.Event('visibilitychange'));

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { encryptDatabase, decryptDatabase, passwordBytes } from '../dist/crypto.js';
 
-// 验证应用导入数据并保存后，可通过最近数据库列表恢复已锁定的会话。
+// 验证应用导入数据并保存后，可通过最近密码库列表恢复已锁定的会话。
 test('app imports, saves and resumes its locked session through the recent vault list', async (context) => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',

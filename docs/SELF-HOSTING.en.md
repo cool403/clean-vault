@@ -30,7 +30,7 @@ docker build -t clearvault:0.4.4 .
 docker run --rm -p 127.0.0.1:8080:80 clearvault:0.4.4
 ```
 
-Open http://localhost:8080 locally. Remote access requires an HTTPS reverse proxy; otherwise Web Crypto, file APIs and the Service Worker may be unavailable. For production, validate and pin the Nginx base image to a digest. This is a general template, not a claim that the image build has been verified.
+Open http://localhost:8080 locally. Remote access requires an HTTPS reverse proxy; otherwise Web Crypto, file access and the Service Worker may be unavailable. For production, validate and pin the Nginx base image to a digest. This is a general template, not a claim that the image build has been verified.
 
 ## Browser extension: developer installation
 

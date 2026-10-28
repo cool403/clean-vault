@@ -68,7 +68,7 @@ function updateMetadata() {
     .querySelector('meta[name=description]')
     ?.setAttribute(
       'content',
-      t('ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。'),
+      t('ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 密码库。'),
     );
 }
 export function initializeLanguage(

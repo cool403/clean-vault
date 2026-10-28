@@ -34,8 +34,8 @@ export default {
   解锁并继续未保存的修改: 'Unlock and continue unsaved changes',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'This session has unsaved changes. Unlock and save them before refreshing or closing the page.',
-  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Only the last opened file name and handle are remembered, never master passwords or vault contents. The app and extension keep separate records.',
+  '仅记住上次打开的文件名和文件访问权限，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Only the last opened file name and file access are remembered, never master passwords or vault contents. The app and extension keep separate records.',
   从当前网页读取新密码: 'Read new password from this website',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
     'Reads the new-password fields on this website only after you click. Your entry changes only after confirmation.',
@@ -47,8 +47,8 @@ export default {
   移除记录: 'Remove from history',
   重新打开并解锁: 'Reopen and unlock',
   需要重新选择文件: 'Select the file again',
-  '仅记住文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Only file names and handles are remembered, never master passwords or vault contents. The app and extension keep separate histories.',
+  '仅记住文件名和文件访问权限，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Only file names and file access are remembered, never master passwords or vault contents. The app and extension keep separate histories.',
   '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。':
     'This browser cannot persist file history. History is available for this page session only.',
   '打开或保存密码库后，会在这里显示。': 'Opened or saved vaults will appear here.',
@@ -93,7 +93,7 @@ export default {
   '附件、通行密钥和关联字段未导入，请保留源数据':
     'Attachments, passkeys and linked fields were not imported. Keep the source data.',
   导入的自定义字段: 'Imported custom fields',
-  '已导入 {count} 个条目，请保存数据库': 'Imported {count} entries. Save your vault.',
+  '已导入 {count} 个条目，请保存密码库': 'Imported {count} entries. Save your vault.',
   最近文件记录已清空: 'Recent file history cleared.',
   '保存的文件授权可能过期，点击最近密码库可重新授权。':
     'Saved file access may expire. Select a recent vault to grant access again.',
@@ -106,21 +106,21 @@ export default {
   '将当前 HTTPS 网站添加到此条目，保存后即可在这里匹配。':
     'Add the current HTTPS website to this entry and save to enable matching here.',
   选择条目: 'Choose an entry',
-  '已添加网站地址，请保存数据库': 'Website address added. Save your vault.',
+  '已添加网站地址，请保存密码库': 'Website address added. Save your vault.',
   更新密码: 'Update password',
   输入新密码: 'Enter a new password',
   确认新密码: 'Confirm new password',
   '确认后更新此条目，再保存到加密文件。':
     'Confirm to update this entry, then save the encrypted file.',
-  '密码已更新，请保存数据库': 'Password updated. Save your vault.',
+  '密码已更新，请保存密码库': 'Password updated. Save your vault.',
   查看所有条目: 'Show all entries',
   '重新加载会放弃当前未保存修改，是否继续？': 'Reloading discards your unsaved changes. Continue?',
   确认重新加载: 'Confirm reload',
   '已重新加载文件，请输入主密码': 'File reloaded. Enter your master password.',
   '请先保存当前修改，再导入或重新加载文件':
     'Save your current changes before importing or reloading a file.',
-  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
-    'Vaults are decrypted in memory only. Recent history stores only the last opened file name and handle and can be cleared anytime. Reopening still requires your master password.',
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名和文件访问权限，可随时清空；重新打开仍需主密码。':
+    'Vaults are decrypted in memory only. Recent history stores only the last opened file name and file access and can be cleared anytime. Reopening still requires your master password.',
   '在 GitHub 查看源码': 'View source on GitHub',
   查看构建记录: 'View build history',
   核对线上版本: 'Verify this deployment',
@@ -146,9 +146,9 @@ export default {
 
   '首次写回需要选择加密备份目录，之后保存会自动备份':
     'Choose an encrypted backup folder for the first write; subsequent saves will back up automatically',
-  '未选择备份目录，更改尚未写入数据库':
-    'No backup folder selected; changes have not been written to the database',
-  '保存已取消，更改尚未写入数据库': 'Save cancelled; changes have not been written to the database',
+  '未选择备份目录，更改尚未写入密码库':
+    'No backup folder selected; changes have not been written to the vault',
+  '保存已取消，更改尚未写入密码库': 'Save cancelled; changes have not been written to the vault',
   当前会话保留备份数量: 'Backups to keep per session',
   '仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。':
     'Only excess backups created for this source file in this page are removed. Other sources and earlier sessions are kept. Copy backups to a separate device and confirm downloads.',
@@ -185,7 +185,7 @@ export default {
   '覆盖前请先在设置中选择加密备份目录，或另存到一个新文件':
     'Choose an encrypted backup folder in Preferences before overwriting, or save to a new file.',
   '保存已验证，但旧备份清理失败': 'Save verified, but older backups could not be removed.',
-  已加密保存并验证数据库文件: 'Encrypted vault saved and verified.',
+  已加密保存并验证密码库文件: 'Encrypted vault saved and verified.',
   '已发起加密导出，请确认下载成功；原文件未被写回':
     'Encrypted export requested. Check the download; the original file was not updated.',
   '当前浏览器不支持目录备份，请下载加密副本并独立保管':
@@ -221,7 +221,7 @@ export default {
   暂无账号: 'No account',
   所有条目: 'All items',
   '生活里的重要信息，在这里井井有条。': 'Keep the important parts of your digital life in order.',
-  双重验证: 'Two-factor authentication',
+  双重验证: 'Two-factor',
   '每一次登录，多一份安心。': 'A little more peace of mind with every sign-in.',
   我的收藏: 'Favorites',
   '常用的账号，随时触手可及。': 'Your everyday accounts, always within reach.',
@@ -240,11 +240,13 @@ export default {
   演示: 'Demo',
   打开其他密码库: 'Open another vault',
   偏好设置: 'Preferences',
+  安全: 'Security',
+  数据与备份: 'Data & backups',
   锁定密码库: 'Lock vault',
   安装应用: 'Install app',
   '处理中…': 'Processing…',
   保存更改: 'Save changes',
-  保存数据库: 'Save database',
+  保存密码库: 'Save vault',
   添加验证器: 'Add authenticator',
   新建条目: 'New item',
   '有未保存的更改，记得保存到 .db 文件': 'You have unsaved changes. Save them to your .db file.',
@@ -268,6 +270,7 @@ export default {
   本地密码库: 'Local vault',
   工作空间: 'Workspace',
   密码库导航: 'Vault navigation',
+  密码库信息: 'Vault information',
   我的标签: 'My tags',
   '你的数据，只属于你': 'Your data belongs to you',
   '本地解密 · 离线可用': 'Local decryption · Works offline',
@@ -314,14 +317,14 @@ export default {
   '你的设备，你的密码库': 'Your device. Your vault.',
   '重要的，': 'Keep what matters,',
   安心放在这里: 'safe right here',
-  '密码、账号和两步验证码，井井有条。': 'Passwords, accounts and verification codes, all in order.',
+  '密码、账号和动态验证码，井井有条。': 'Passwords, accounts and verification codes, all in order.',
   '打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。':
     'Open your SafeInCloud vault for a calmer digital life.',
   '无需注册 · 无需上传文件': 'No registration · No file uploads',
   '双重验证 · Google': 'Two-factor authentication · Google',
   '只在本地，安心解锁': 'Unlock locally, with confidence',
   '主密码解密，文件始终由你掌握。': 'Your master password decrypts a file you control.',
-  '两步验证，一眼即得': 'Two-step codes, at a glance',
+  '双重验证，一眼即得': 'Two-factor codes, at a glance',
   '实时动态验证码，轻点即可复制。': 'Live verification codes. Just tap to copy.',
   '随时保存，自由带走': 'Save anytime. Take it anywhere.',
   '读写兼容 .db 格式，离线也能使用。': 'Read and write compatible .db files, even offline.',
@@ -343,9 +346,9 @@ export default {
   取消: 'Cancel',
   确认并继续: 'Confirm and continue',
   解锁密码库: 'Unlock vault',
-  'SafeInCloud 兼容数据库': 'SafeInCloud-compatible database',
+  'SafeInCloud 兼容密码库': 'SafeInCloud-compatible vault',
   主密码: 'Master password',
-  'SafeInCloud 数据库': 'SafeInCloud database',
+  'SafeInCloud 密码库': 'SafeInCloud vault',
   '文件超过 64 MB，请使用桌面客户端处理': 'This file exceeds 64 MB. Please use the desktop client.',
   '请选择 SafeInCloud 格式的 .db 文件': 'Choose a SafeInCloud .db file.',
   两次输入的密码不一致: 'The passwords do not match.',
@@ -354,11 +357,10 @@ export default {
   账号: 'Account',
   密码: 'Password',
   网站: 'Website',
-  两步验证码: 'Two-step verification code',
   '把重要的信息，妥善收在一起。': 'Keep the important details together.',
   生成密码: 'Generate password',
   添加字段: 'Add field',
-  添加双重验证: 'Add two-factor authentication',
+  添加动态验证码: 'Add verification code',
   条目名称: 'Item name',
   '例如 GitHub、Google': 'For example, GitHub or Google',
   字段: 'Fields',
@@ -386,8 +388,8 @@ export default {
   未命名条目: 'Untitled item',
   '原文件已被其他应用修改，请在设置中另存为副本，避免覆盖':
     'The original file was changed by another app. Save a copy in Settings to avoid overwriting it.',
-  已加密保存到数据库文件: 'Encrypted database saved.',
-  '已下载加密数据库，请保留下载文件': 'Encrypted database downloaded. Keep the downloaded file.',
+  已加密保存到密码库文件: 'Encrypted vault saved.',
+  '已下载加密密码库，请保留下载文件': 'Encrypted vault downloaded. Keep the downloaded file.',
   '保存失败：': 'Save failed: ',
   '已锁定；未保存更改已加密保留在当前页面内，关闭页面会丢失':
     'Locked. Unsaved changes are encrypted in this page’s memory and will be lost if you close it.',
@@ -442,29 +444,29 @@ export default {
   创建标签: 'Create tag',
   '在浏览器菜单中选择“安装应用”或“添加到主屏幕”':
     'Choose “Install app” or “Add to Home Screen” in your browser menu.',
-  '条目已更新，请保存数据库': 'Item updated. Remember to save the database.',
+  '条目已更新，请保存密码库': 'Item updated. Remember to save the vault.',
   '请使用小于 20 MB 的二维码图片': 'Use a QR image smaller than 20 MB.',
-  '没有识别到 TOTP 二维码，请尝试更清晰的图片或手动粘贴密钥':
-    'No TOTP QR code found. Try a clearer image or paste the secret manually.',
+  '没有识别到验证器二维码，请尝试更清晰的图片或手动粘贴密钥':
+    'No authenticator QR code found. Try a clearer image or paste the secret manually.',
   验证器: 'Authenticator',
   '已识别验证密钥，保存条目即可生成验证码':
     'Verification secret recognized. Save the item to generate codes.',
   '离线缓存未启用，仍可在线使用': 'Offline cache is unavailable. You can still use the app online.',
   '请使用支持 Web Crypto 和 CompressionStream 的现代浏览器，并通过 HTTPS 或 localhost 打开':
     'Use a modern browser supporting Web Crypto and CompressionStream, over HTTPS or localhost.',
-  不支持此数据库版本: 'Unsupported database version',
+  不支持此密码库版本: 'Unsupported vault version',
   文件不完整: 'Incomplete file',
-  '数据库解压后超过 128 MB 限制': 'The decompressed database exceeds the 128 MB limit.',
+  '密码库解压后超过 128 MB 限制': 'The decompressed vault exceeds the 128 MB limit.',
   '这不是兼容的 SafeInCloud .db 文件': 'This is not a compatible SafeInCloud .db file.',
-  '主密码不正确，或数据库文件已损坏': 'Incorrect master password or damaged database file.',
+  '主密码不正确，或密码库文件已损坏': 'Incorrect master password or damaged vault file.',
   '请输入有效的 Base32 密钥或 otpauth:// 链接': 'Enter a valid Base32 secret or otpauth:// link.',
   'Base32 密钥末尾无效': 'Invalid Base32 secret ending',
-  '仅支持基于时间的 TOTP 链接': 'Only time-based TOTP links are supported.',
+  仅支持基于时间的验证器链接: 'Only time-based authenticator links are supported.',
   '仅支持 SHA1、SHA256 和 SHA512': 'Only SHA1, SHA256 and SHA512 are supported.',
   '验证码位数应为 6 或 8': 'Verification codes must have 6 or 8 digits.',
   '验证码周期应为 1–300 秒': 'The verification period must be 1–300 seconds.',
-  '不支持包含 DTD 的数据库': 'Databases containing a DTD are not supported.',
-  '数据库 XML 无效': 'Invalid database XML',
+  '不支持包含 DTD 的密码库': 'Vaults containing a DTD are not supported.',
+  '密码库 XML 无效': 'Invalid vault XML',
   开发与协作: 'Development & collaboration',
   日常生活: 'Personal life',
   '这是演示条目，可以自由编辑。真实密码库仅在你的设备上解密。':
@@ -478,16 +480,22 @@ export default {
   界面语言: 'Interface language',
   选择语言: 'Choose language',
   'ClearVault · 密码与验证器': 'ClearVault · Passwords & Authenticator',
-  'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。':
-    'ClearVault: a local-first password vault and authenticator. Open, manage and save SafeInCloud databases.',
+  'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 密码库。':
+    'ClearVault: a local-first password vault and authenticator. Open, manage and save SafeInCloud vaults.',
   '。': '.',
   显示: 'Show',
   隐藏: 'Hide',
   复制账号: 'Copy username',
   填入验证码: 'Fill code',
-  '已添加条目，请保存数据库': 'Entry added. Save your vault.',
+  '已添加条目，请保存密码库': 'Entry added. Save your vault.',
   为此网站新建条目: 'Add an entry for this website',
   更多操作: 'More actions',
+  更多: 'More',
+  继续编辑: 'Keep editing',
+  丢弃修改: 'Discard changes',
+  '关闭编辑器会丢弃尚未保存的修改。': 'Closing the editor discards unsaved changes.',
+  '将在 {seconds} 秒后自动锁定': 'Auto-lock in {seconds} seconds',
+  继续使用: 'Keep using',
   保存为我的密码库: 'Save as my vault',
   '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
     'An encrypted copy was exported; the original file is not updated. Changes are still unsaved on this page.',
@@ -524,8 +532,8 @@ export default {
   恢复步骤: 'Recovery steps',
   '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
     'Open ClearVault, choose Open .db vault and enter the master password.',
-  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
-    'This kit contains no passwords, TOTP secrets or vault contents. Keep it safe.',
+  '本工具包不包含密码、动态验证码密钥或密码库内容。请妥善保管。':
+    'This kit contains no passwords, authenticator secrets or vault contents. Keep it safe.',
   '恢复工具包已下载，请打印并妥善保管': 'Recovery kit downloaded. Print and keep it safe.',
   尚未保存的密码库: 'Unsaved vault',
   命令模式: 'Command mode',
@@ -571,25 +579,28 @@ export default {
   '开始使用 ClearVault': 'Get started with ClearVault',
   '完成 {done}/{total} 步': '{done} of {total} steps complete',
   稍后: 'Later',
-  导入或新建第一条记录: 'Import or add your first entry',
+  导入或新建第一个条目: 'Import or add your first entry',
   安装浏览器扩展: 'Install the browser extension',
   首次填充或复制验证码: 'Fill or copy a login or code once',
   添加一个验证器: 'Add an authenticator',
   保存并设置备份: 'Save and set up backups',
   已完成: 'Done',
   安全概览: 'Security overview',
+  '选择一张卡片，在条目列表中处理对应问题。':
+    'Choose a card to review and fix the matching entries.',
   弱密码: 'Weak passwords',
   重复使用: 'Reused passwords',
   长期未更新: 'Old passwords',
-  未启用两步验证: 'No TOTP',
+  未启用双重验证: 'No 2FA',
+  '有密码但尚未添加动态验证码的条目。': 'Entries with a password but no verification code.',
   '仅在本地根据解密后的条目计算，不上传密码。':
     'Calculated locally from decrypted entries; passwords are never uploaded.',
   '长度不足 12 个字符或强度过低的密码。':
     'Passwords shorter than 12 characters or with low strength.',
   '{entries} 个条目使用同一密码（{groups} 组）':
-    '{entries} entries share a password ({groups} groups)',
+    '{entries} entries share a password (groups: {groups})',
   '超过一年没有修改的条目。': 'Entries not changed in over a year.',
-  '有密码但尚未添加 TOTP。': 'Entries with a password but no TOTP.',
+  '有密码但尚未添加动态验证码。': 'Entries with a password but no verification code.',
   '共 {count} 个条目，{withPassword} 个设置了密码。':
     '{count} entries, {withPassword} with a password.',
   安全概览筛选结果: 'Security filter results',
@@ -653,7 +664,7 @@ export default {
   本地: 'Local',
   外部: 'External',
   采用合并结果: 'Use merged result',
-  '已合并外部更改，请保存数据库': 'External changes merged. Save your vault.',
+  '已合并外部更改，请保存密码库': 'External changes merged. Save your vault.',
   显示冲突内容: 'Show conflict contents',
   是: 'Yes',
   否: 'No',

@@ -43,8 +43,8 @@ function storage() {
   };
 }
 
-// 验证历史记录只持久化名称和句柄、按句柄去重，并只保留最后打开的数据库。
-test('history persists names and handles only, deduplicates by handle and keeps only the last opened vault', async () => {
+// 验证历史记录只持久化名称和访问权限、按访问权限去重，并只保留最后打开的密码库。
+test('history persists names and file access only, deduplicates by file access and keeps only the last opened vault', async () => {
   const factory = storage(),
     history = createRecentFiles(factory);
   const handle = { isSameEntry: async (other) => other === handle };
