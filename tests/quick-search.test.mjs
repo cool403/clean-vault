@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { createQuickSearch } from '../dist/quick-search.js';
 
+// 验证快速搜索支持输入法、键盘选择和复制，并正确处理错误、退出及敏感数据清理。
 test('quick search supports IME, keyboard selection, copying, errors, escape and secret cleanup', async () => {
   const dom = new JSDOM('<button id="launcher">Open</button>', { url: 'http://localhost/' });
   globalThis.document = dom.window.document;
@@ -133,6 +134,7 @@ test('quick search supports IME, keyboard selection, copying, errors, escape and
   dom.window.close();
 });
 
+// 验证快速搜索按最近使用排序，支持复制验证码和执行命令，并限制长列表数量。
 test('quick search orders by recency, copies OTP, runs commands and caps long lists', async () => {
   const dom = new JSDOM('<button id="launcher">Open</button>', { url: 'http://localhost/' });
   globalThis.document = dom.window.document;

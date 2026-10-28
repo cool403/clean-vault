@@ -93,7 +93,7 @@
               website, then click Fill again on the password page. If redirected to another origin,
               click the extension icon to grant access there. After unlocking you can also search
               all entries and copy a username or password; New entry prefills the current HTTPS
-              origin, and the entry is written only after Save database. Entries with TOTP show the
+              origin, and the entry is written only after Save vault. Entries with TOTP show the
               current code: Copy copies it, and Fill code fills only a unique, explicit
               verification-code input. Ambiguous inputs, OTP inputs you did not explicitly click,
               multiple password fields and new-password forms are rejected.
@@ -123,11 +123,11 @@
           <section id="section-5">
             <h2>5. Save, reload and lock</h2>
             <p>
-              Choose Save database and select a separate encrypted backup directory before the first
+              Choose Save vault and select a separate encrypted backup directory before the first
               overwrite. The extension checks file fingerprints, backs up existing ciphertext and
               verifies writes. Before filling an associated file is checked for external changes; a
               change stops filling. Save your edits as a copy, reload and enter the master password.
-              Ordinary file input or missing handle support requires selecting the file again.
+              Ordinary file input or missing file access support requires selecting the file again.
               Downloads only confirm export was started. Hiding the sidebar does not lock
               immediately; the selected 1 / 5 / 15 / 30 minute idle timeout applies. After copying a
               username, password or code, ClearVault tries to clear the clipboard after 30 seconds
@@ -140,7 +140,7 @@
             <h2>Keep reading</h2>
             <a href="/en/guides/open-safeincloud-db/"
               >How to open, edit and save a SafeInCloud DB file ↗</a
-            ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
+            ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud vault on Linux ↗</a
             ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
             ><a href="/en/guides/import-passwords/"
               >Import passwords from another password manager ↗</a

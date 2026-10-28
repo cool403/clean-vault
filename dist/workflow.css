@@ -49,7 +49,7 @@
   margin-top: 4px;
 }
 .recent-open small {
-  color: #66645f;
+  color: var(--text-muted);
   font-weight: 400;
   font-size: 12px;
 }
@@ -62,11 +62,12 @@
   width: 36px;
 }
 .workflow-notice {
+  margin: 12px 0 0;
   padding: 12px 14px;
-  border: 1px solid #c4a673;
-  background: #fff2d7;
+  border: 1px solid var(--warning);
+  background: var(--warning-surface);
   border-radius: 12px;
-  color: #714e25;
+  color: var(--warning-text);
   font-size: 13px;
 }
 .workflow-summary {
@@ -77,11 +78,11 @@
   padding: 0;
   max-height: 230px;
   overflow: auto;
-  border-block: 1px solid #dedbd3;
+  border-block: 1px solid var(--line);
 }
 .import-preview li {
   padding: 10px 0;
-  border-bottom: 1px solid #dedbd3;
+  border-bottom: 1px solid var(--line);
   overflow-wrap: anywhere;
 }
 .import-preview strong,
@@ -89,7 +90,7 @@
   display: block;
 }
 .import-preview small {
-  color: #66645f;
+  color: var(--text-muted);
 }
 .import-preview li:last-child {
   border-bottom: 0;

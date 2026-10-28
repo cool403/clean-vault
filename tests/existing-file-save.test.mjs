@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { decryptDatabase, encryptDatabase, passwordBytes } from '../dist/crypto.js';
 
+// 验证已有密码库编辑后备份并写回、重开后保留修改，以及取消备份、写入失败、外部冲突和仅能导出时的处理。
 test('existing .db: save entry writes back, backs up, and survives opening the file again', async (t) => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',

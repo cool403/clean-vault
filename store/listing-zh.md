@@ -35,7 +35,7 @@ ClearVault 是离线优先的 SafeInCloud 兼容密码库与 TOTP 验证器。�
 - 暂不支持 Firefox、Safari、iframe 填充和 Passkey provider。
 - 尚未完成独立安全审计。请阅读安全页面并保留独立备份。
 
-网页端在 Chromium 浏览器中可直接写回原文件；其他浏览器使用加密下载副本。请先用合成数据和数据库副本验证。
+网页端在 Chromium 浏览器中可直接写回原文件；其他浏览器使用加密下载副本。请先用合成数据和密码库副本验证。
 
 ## 分类
 

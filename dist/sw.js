@@ -1,9 +1,8 @@
-const CACHE = 'clearvault-shell-v47';
+const CACHE = 'clearvault-shell-v48';
 const ASSETS = [
   './',
   './index.html',
-  './styles.css',
-  './theme.css',
+  './app.css',
   './app.js',
   './build-info.js',
   './quick-search.js',

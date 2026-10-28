@@ -47,6 +47,7 @@ function fakeFileSystem() {
   };
 }
 
+// 验证快照存储以加密字节写入，并支持列出、读取、按策略清理和全部清空。
 test('snapshot store writes encrypted bytes, lists, reads, prunes and clears', async () => {
   const { files, root } = fakeFileSystem();
   let time = 1700000000000,
@@ -70,6 +71,7 @@ test('snapshot store writes encrypted bytes, lists, reads, prunes and clears', a
   assert.equal(files.size, 0);
 });
 
+// 验证浏览器不支持 OPFS 时，快照功能可平稳降级。
 test('snapshot store degrades gracefully without OPFS', async () => {
   const store = createSnapshotStore({ getDirectory: async () => null });
   assert.equal(await store.write('vault.db', new Uint8Array([1])), false);

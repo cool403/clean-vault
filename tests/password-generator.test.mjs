@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generatePassword, defaultRules } from '../dist/password-generator.js';
 
+// 验证生成密码遵守长度、字符类别和排除字符规则。
 test('password generator obeys length, character classes and exclusions', () => {
   for (const length of [4, 20, 128]) {
     for (let i = 0; i < 30; i++) {
@@ -32,6 +33,7 @@ test('password generator obeys length, character classes and exclusions', () => 
   }
 });
 
+// 验证无效或无法满足的密码规则不会生成可用于填充的密码。
 test('invalid password rules cannot produce a fillable password', () => {
   for (const length of [0, 3, 129, 4.5, NaN])
     assert.throws(() => generatePassword({ ...defaultRules, length }));

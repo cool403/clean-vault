@@ -4,7 +4,7 @@ English · [简体中文](USAGE.md)
 
 ## Interface languages
 
-The app and browser extension support 简体中文, English, Deutsch, 日本語 and Español. On first use they match the browser's preferred languages, with English as the fallback. Use the language selector at the top of the page or sidebar, or in the app's Preferences. The choice is remembered locally, separately for the app and extension. Switching closes the current dialog, so finish editing first; unsaved changes already applied in the main interface are retained.
+The app and browser extension support 简体中文, English, Deutsch, 日本語 and Español. On first use they match the browser's preferred languages, with English as the fallback. Use the language selector on the welcome page or in the app's Preferences; the extension keeps it at the top of the sidebar. The choice is remembered locally, separately for the app and extension. Switching closes the current dialog, so finish editing first; unsaved changes already applied in the main interface are retained.
 
 Open `/?lang=de`, `/?lang=ja` or `/?lang=es` to launch in a specific language; this parameter takes precedence over the saved choice. Interface text, messages, dates and installation metadata follow the selected language. Vault names, accounts, passwords and notes are never translated. Language switching also works offline. Public guides and security documentation remain available in Chinese and English; other interface languages link to the English documentation.
 
@@ -20,7 +20,7 @@ Filtered results support batch selection: select all, clear, add a label, archiv
 
 ## Quick search, pinyin and commands
 
-Quick search opens automatically after unlocking, or press Ctrl / ⌘ + K. It searches names, accounts, websites, labels and pinyin initials (for example, `wx` for 微信). Title-prefix matches rank first, followed by recently used entries. Ctrl / ⌘ + Enter copies the password, Ctrl / ⌘ + Shift + Enter copies the code, and Enter opens details.
+On desktop, quick search opens automatically after unlocking, or press Ctrl / ⌘ + K. On touch devices, tap the search icon at the top of the page. It searches names, accounts, websites, labels and pinyin initials (for example, `wx` for 微信). Title-prefix matches rank first, followed by recently used entries. Ctrl / ⌘ + Enter copies the password, Ctrl / ⌘ + Shift + Enter copies the code, and Enter opens details.
 
 Type `>` for command mode: new entry, add authenticator, generate password, lock vault, open another vault and preferences. Quick search shows at most 50 results for large vaults; keep typing to narrow them. The main list renders 200 entries first and offers Show more.
 
@@ -34,9 +34,9 @@ Installed Chromium PWAs can open `.db` files from the system file manager, and `
 
 ## Recent vaults
 
-After successfully unlocking or saving a file, the app or extension remembers only the last opened vault. Records contain only the file name, handle, record ID and time, never master passwords, entries or vault contents. The app and extension keep separate histories.
+After successfully unlocking or saving a file, the app or extension remembers only the last opened vault. Records contain only the file name, file access, record ID and time, never master passwords, entries or vault contents. The app and extension keep separate histories.
 
-Use history on the app home screen, in preferences or on the extension lock screen. Grant file access again if requested, then enter the master password. Moved or deleted files must be selected again. Ordinary file input supplies no reusable handle and is marked accordingly. Unavailable storage falls back to current page session history.
+Use history on the app home screen, in preferences or on the extension lock screen. Grant file access again if requested, then enter the master password. Moved or deleted files must be selected again. Ordinary file input supplies no reusable file access permission and is marked accordingly. Unavailable storage falls back to current page session history.
 
 Selected files and locked vaults now use this same list, without a separate reopen link. The current session merges with its history record and shows Unlock current session, or Unlock and continue unsaved changes when edits are pending. It resumes the encrypted copy in this page instead of reopening a disk file. A file not yet unlocked or a new unsaved vault appears as a temporary entry, which replaces the stored record in the display so only one entry is shown. Clearing history keeps the current encrypted session. Refreshing or closing still loses unsaved edits.
 
@@ -51,10 +51,10 @@ Choose Recovery kit in the app's Preferences or the extension's More actions to 
 ## Import from another password manager
 
 1. Export a plaintext file first: Chrome from Google Password Manager as CSV; Bitwarden as unencrypted CSV or JSON; 1Password as CSV; LastPass from account settings as CSV; Apple Passwords from the Passwords app with Export All Passwords. Generic CSV files need a header row. See [Chrome export help](https://support.google.com/chrome/answer/13068232) and [Bitwarden file formats](https://bitwarden.com/help/condition-bitwarden-import/).
-2. Open or create a destination vault in the app, or open an existing `.db` in the extension, then unlock. Choose Import passwords from the app toolbar, preferences or extension.
+2. Open or create a destination vault in the app, or open an existing `.db` in the extension, then unlock. Choose Import passwords from the vault menu, Preferences or the extension.
 3. Choose the source and file. Chrome, Bitwarden, 1Password, LastPass and Apple Passwords use built-in parsers. Generic CSV asks you to map columns to title, username, password, URL, notes, tags, TOTP and favorite. The limit is 20 MB and 10,000 entries. Preview shows new, duplicate and unsupported counts and the first ten names and accounts, without displaying passwords.
 4. Check the mapping: names become titles, usernames become accounts, URLs become website fields and folders/tags become labels. Passwords, notes and favorites are retained. 1Password and Apple OTPAuth values become TOTP codes; multiple 1Password tags become separate labels; LastPass `http://sn` secure notes import as notes without a website. Identical entries are skipped; changed passwords or contents create separate entries without overwriting.
-5. Confirm and choose Save database. Select a separate encrypted backup directory before the first overwrite. Reopen the saved `.db` to check the results. Downloads only confirm export was started: check the file on disk. Carefully remove plaintext source exports only after verifying the encrypted save and complete migration.
+5. Confirm and choose Save vault. Select a separate encrypted backup directory before the first overwrite. Reopen the saved `.db` to check the results. Downloads only confirm export was started: check the file on disk. Carefully remove plaintext source exports only after verifying the encrypted save and complete migration.
 
 Attachments, passkeys, archived flags, card/identity types and source URL-matching rules are not migrated. Unsupported TOTP secrets are preserved as private fields. Keep your original data until verification is complete.
 
@@ -74,14 +74,14 @@ For Gmail, the sign-in page is at `https://accounts.google.com`. An entry contai
 After unlocking you can also:
 
 - Search all entries by name, account, website or label. Search results can copy a username or password; filling stays disabled for nonmatching websites.
-- Choose New entry to save a login for the current website. The HTTPS origin is prefilled and a password can be generated. The entry stays in the current session until you choose Save database.
+- Choose New entry to save a login for the current website. The HTTPS origin is prefilled and a password can be generated. The entry stays in the current session until you choose Save vault.
 - Entries with TOTP show the current code and remaining time in the list. Choose Copy to copy it, or Fill code to fill a unique, explicit verification-code input on the matching website. Nothing is submitted automatically; enter the code manually if no unique input is found.
 
 ## Confirm password updates
 
 Choose Update password for the entry while changing its website password. Enter the new value twice, or explicitly click Read new password from this website. Reading accepts only visible `new-password` fields on the currently matching HTTPS origin, with equal values for confirmation fields. Enter it manually if identification fails. Reading only populates the extension confirmation form. When an entry has multiple password fields, choose the intended field.
 
-Verify the entry and that the website accepted the change, then confirm and Save database. The extension does not monitor website input or submissions or collect passwords in the background. Unsaved status remains visible after updates and imports.
+Verify the entry and that the website accepted the change, then confirm and Save vault. The extension does not monitor website input or submissions or collect passwords in the background. Unsaved status remains visible after updates and imports.
 
 ## Clipboard auto-clear
 
@@ -97,9 +97,9 @@ When another device changes the external file, a banner appears on focus or when
 - When both sides change the same entry, the preview lists the title, notes, trash / archive / favorite flags and every field, preselects local or external values by the newer `time_stamp`, and lets you change each one; ties default to the local value.
 - If one side deleted the entry and the other changed it, choose whether to keep or delete it.
 - Labels merge by name; unknown XML, attachments and images travel with the chosen entry version.
-- The merged result is previewed first. Confirming it still requires Save database to write the file. If the external file changes again, saving stops to avoid overwriting it.
+- The merged result is previewed first. Confirming it still requires Save vault to write the file. If the external file changes again, saving stops to avoid overwriting it.
 
-Limits: the external file must use the same format version and master password; different passwords or versions cannot merge. Field-level choices cover the title, notes, flags and regular fields; there is no cross-device file lock, and unknown database-level XML is kept from the local side only. Keep independent backups and avoid editing on two devices at once.
+Limits: the external file must use the same format version and master password; different passwords or versions cannot merge. Field-level choices cover the title, notes, flags and regular fields; there is no cross-device file lock, and unknown vault-level XML is kept from the local side only. Keep independent backups and avoid editing on two devices at once.
 
 ## Local encrypted snapshots and save conflicts
 
@@ -109,8 +109,8 @@ If another application or browser tab changes the original file, a banner appear
 
 ## Save, handle conflicts and lock
 
-The app and extension share SHA-256 conflict checking, verified original-ciphertext backup, a second source check and read-back write verification. Select a separate backup directory before the first overwrite. The extension keeps the ten most recent backups made for that handle in the current page session; other-session backups are not removed by name. Browsers without file writing support use encrypted downloads, which require manual verification.
+The app and extension share SHA-256 conflict checking, verified original-ciphertext backup, a second source check and read-back write verification. Select a separate backup directory before the first overwrite. The extension keeps the ten most recent backups made for that file in the current page session; other-session backups are not removed by name. Browsers without file writing support use encrypted downloads, which require manual verification.
 
-The extension checks an associated file before filling. If the PWA changed it, filling stops. Save any edits as a copy, choose Reload file and enter the master password. Reloading with unsaved edits requires explicit confirmation to discard; cancel keeps them. Ordinary file input supplies no handle for change detection and must be selected again. Avoid editing one file in two applications simultaneously.
+The extension checks an associated file before filling. If the PWA changed it, filling stops. Save any edits as a copy, choose Reload file and enter the master password. Reloading with unsaved edits requires explicit confirmation to discard; cancel keeps them. Ordinary file input supplies no file access permission for change detection and must be selected again. Avoid editing one file in two applications simultaneously.
 
 Hiding the sidebar does not lock it immediately; it locks after the selected 1 / 5 / 15 / 30 minutes of inactivity, and the auto-lock choice is remembered by the extension. Unsaved edits remain encrypted in current sidebar memory and can be unlocked again. Closing, refreshing or reloading the extension loses them. Names and history reveal usage metadata on a shared device; clear history when appropriate. They never bypass the master password.

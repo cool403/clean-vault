@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 
+// 验证搜索在输入法组词期间保留输入状态，并在中文上屏、粘贴或拉丁文本输入后正确筛选。
 test('search preserves IME composition and filters committed Chinese, pasted text and Latin input', async (t) => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',

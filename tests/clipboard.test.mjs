@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createClipboardGuard } from '../dist/clipboard.js';
 
+// 验证复制敏感信息后按时清空剪贴板，重复复制会重置计时，且可关闭自动清空。
 test('clipboard guard clears secrets after the timeout, resets and can be disabled', async () => {
   let now = 0,
     nextId = 0;
@@ -65,6 +66,7 @@ test('clipboard guard clears secrets after the timeout, resets and can be disabl
   assert.equal(guard.pending, false);
 });
 
+// 验证剪贴板写入失败时不会安排清空操作，避免误清除原有内容。
 test('a failed clipboard write does not schedule a misleading clear', async () => {
   let timers = 0;
   const guard = createClipboardGuard({

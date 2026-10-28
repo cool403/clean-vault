@@ -15,6 +15,7 @@ setLanguage('en');
 const chromeCSV =
   '\uFEFFname,url,username,password,note\r\n"中文, Demo",https://example.com,alice,"secret""quoted","line 1\r\nline 2"\r\n';
 
+// 验证 CSV 正确解析 BOM、Unicode、转义引号和多行备注，且不裁剪密码中的空白。
 test('CSV parses BOM, Unicode, escaped quotes and multiline notes without trimming secrets', () => {
   const rows = parseCSV(chromeCSV);
   assert.equal(rows[0].password, 'secret"quoted');
@@ -25,6 +26,7 @@ test('CSV parses BOM, Unicode, escaped quotes and multiline notes without trimmi
   assert.throws(() => parseImport(chromeCSV, 'bitwarden-csv'), /columns/);
 });
 
+// 验证导入不覆盖已有条目，重复内容被跳过，密码变化的条目仍被保留。
 test('imports never overwrite; repeated imports skip identical content and keep changed passwords', async () => {
   const doc = parseVault('<database><unknown keep="yes"/></database>');
   const parsed = parseImport(
@@ -53,6 +55,7 @@ test('imports never overwrite; repeated imports skip identical content and keep 
   result.credential.fill(0);
 });
 
+// 验证 Bitwarden JSON 导入保留文件夹、多网址、备注、收藏、自定义秘密字段和 TOTP。
 test('Bitwarden JSON preserves folders, multiple URIs, notes, favorites, custom secrets and TOTP', () => {
   const source = JSON.stringify({
     encrypted: false,
@@ -107,6 +110,7 @@ test('Bitwarden JSON preserves folders, multiple URIs, notes, favorites, custom 
   assert.throws(() => parseImport('null', 'bitwarden-json'), /unencrypted/);
 });
 
+// 验证 Bitwarden CSV 导入保留自定义字段，并将不支持的 TOTP 作为秘密数据保存。
 test('Bitwarden CSV retains custom fields and unsupported TOTP as secrets', () => {
   const source =
     'folder,favorite,type,name,notes,fields,reprompt,login_uri,login_username,login_password,login_totp\nWork,1,login,Example,Note,"custom: private",0,https://example.com,alice,password,steam://secret\n,,note,Note,Keep,,,,,,\n';
@@ -131,6 +135,7 @@ test('Bitwarden CSV retains custom fields and unsupported TOTP as secrets', () =
   );
 });
 
+// 验证 1Password、LastPass、Apple 和自定义映射 CSV 导入保留账号、备注、验证码及标签。
 test('1Password, LastPass, Apple and mapped CSV imports preserve logins, notes, TOTP and tags', () => {
   const onePassword =
     'Title,Url,Username,Password,OTPAuth,Favorite,Archived,Tags,Notes\nGitHub,https://github.com,alice,secret,otpauth://totp/GitHub:alice?secret=JBSWY3DPEHPK3PXP&issuer=GitHub,true,false,"Work, Dev",memo\n';

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { passwordStrength, strengthLabels } from '../dist/password-strength.js';
 
+// 验证常见密码、重复字符和连续字符的主密码强度评分保持保守。
 test('master password strength is conservative for common, repeated and sequential values', () => {
   assert.equal(strengthLabels.length, 5);
   assert.equal(passwordStrength('').score, 0);

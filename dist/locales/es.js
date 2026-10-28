@@ -3,8 +3,8 @@ export default {
   解锁并继续未保存的修改: 'Desbloquear y continuar con los cambios sin guardar',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'Esta sesión tiene cambios sin guardar. Desbloquéela y guárdelos antes de recargar o cerrar la página.',
-  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Solo se recuerdan el nombre y el identificador del último archivo abierto, nunca contraseñas maestras ni contenido de la bóveda. La aplicación y la extensión mantienen registros separados.',
+  '仅记住上次打开的文件名和文件访问权限，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Solo se recuerdan el nombre y el permiso de acceso del último archivo abierto, nunca contraseñas maestras ni contenido de la bóveda. La aplicación y la extensión mantienen registros separados.',
   从当前网页读取新密码: 'Leer la nueva contraseña de este sitio',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
     'Los campos de nueva contraseña solo se leen al hacer clic. La entrada cambia únicamente tras su confirmación.',
@@ -16,8 +16,8 @@ export default {
   移除记录: 'Eliminar del historial',
   重新打开并解锁: 'Volver a abrir y desbloquear',
   需要重新选择文件: 'Seleccionar el archivo de nuevo',
-  '仅记住文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Solo se recuerdan nombres e identificadores de acceso a archivos, nunca contraseñas maestras ni contenido de la bóveda. La aplicación y la extensión mantienen historiales separados.',
+  '仅记住文件名和文件访问权限，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Solo se recuerdan nombres y permisos de acceso a archivos, nunca contraseñas maestras ni contenido de la bóveda. La aplicación y la extensión mantienen historiales separados.',
   '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。':
     'Este navegador no puede conservar el historial de archivos. Solo estará disponible durante esta sesión.',
   '打开或保存密码库后，会在这里显示。': 'Las bóvedas abiertas o guardadas aparecerán aquí.',
@@ -63,7 +63,7 @@ export default {
   '附件、通行密钥和关联字段未导入，请保留源数据':
     'No se importaron adjuntos, claves de acceso ni campos vinculados. Conserve los datos originales.',
   导入的自定义字段: 'Campos personalizados importados',
-  '已导入 {count} 个条目，请保存数据库': 'Se importaron {count} entradas. Guarde la bóveda.',
+  '已导入 {count} 个条目，请保存密码库': 'Se importaron {count} entradas. Guarde la bóveda.',
   最近文件记录已清空: 'Historial de archivos borrado.',
   '保存的文件授权可能过期，点击最近密码库可重新授权。':
     'El permiso guardado puede caducar. Seleccione una bóveda reciente para volver a conceder acceso.',
@@ -76,13 +76,13 @@ export default {
   '将当前 HTTPS 网站添加到此条目，保存后即可在这里匹配。':
     'Añada el sitio HTTPS actual a esta entrada y guarde para que aparezca como coincidencia.',
   选择条目: 'Seleccionar entrada',
-  '已添加网站地址，请保存数据库': 'Dirección web añadida. Guarde la bóveda.',
+  '已添加网站地址，请保存密码库': 'Dirección web añadida. Guarde la bóveda.',
   更新密码: 'Actualizar contraseña',
   输入新密码: 'Introducir nueva contraseña',
   确认新密码: 'Confirmar nueva contraseña',
   '确认后更新此条目，再保存到加密文件。':
     'Confirme para actualizar la entrada y después guarde el archivo cifrado.',
-  '密码已更新，请保存数据库': 'Contraseña actualizada. Guarde la bóveda.',
+  '密码已更新，请保存密码库': 'Contraseña actualizada. Guarde la bóveda.',
   查看所有条目: 'Mostrar todas las entradas',
   '重新加载会放弃当前未保存修改，是否继续？':
     'Al recargar se perderán los cambios sin guardar. ¿Continuar?',
@@ -90,8 +90,8 @@ export default {
   '已重新加载文件，请输入主密码': 'Archivo recargado. Introduzca la contraseña maestra.',
   '请先保存当前修改，再导入或重新加载文件':
     'Guarde los cambios actuales antes de importar o recargar un archivo.',
-  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
-    'Las bóvedas solo se descifran en memoria. El historial guarda solo el nombre y el identificador del último archivo abierto y puede borrarse en cualquier momento. Para volver a abrirlo se requiere la contraseña maestra.',
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名和文件访问权限，可随时清空；重新打开仍需主密码。':
+    'Las bóvedas solo se descifran en memoria. El historial guarda solo el nombre y el permiso de acceso del último archivo abierto y puede borrarse en cualquier momento. Para volver a abrirlo se requiere la contraseña maestra.',
   '在 GitHub 查看源码': 'Ver código en GitHub',
   查看构建记录: 'Ver historial de compilaciones',
   核对线上版本: 'Verificar esta versión publicada',
@@ -114,10 +114,10 @@ export default {
   '↑ ↓ 选择': '↑ ↓ Seleccionar',
   '首次写回需要选择加密备份目录，之后保存会自动备份':
     'Elija una carpeta de copias cifradas antes de la primera escritura; las siguientes se harán automáticamente.',
-  '未选择备份目录，更改尚未写入数据库':
-    'No se eligió carpeta de copias; los cambios no se escribieron en la base de datos.',
-  '保存已取消，更改尚未写入数据库':
-    'Guardado cancelado; los cambios no se escribieron en la base de datos.',
+  '未选择备份目录，更改尚未写入密码库':
+    'No se eligió carpeta de copias; los cambios no se escribieron en la bóveda.',
+  '保存已取消，更改尚未写入密码库':
+    'Guardado cancelado; los cambios no se escribieron en la bóveda.',
   当前会话保留备份数量: 'Copias que conservar por sesión',
   '仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。':
     'Solo se eliminan las copias sobrantes creadas para este archivo en esta página. Se conservan las de otros archivos y sesiones. Copie las copias a otro dispositivo y compruebe las descargas.',
@@ -153,7 +153,7 @@ export default {
     'Elija una carpeta de copias cifradas en Preferencias antes de sobrescribir, o guarde en un archivo nuevo.',
   '保存已验证，但旧备份清理失败':
     'Guardado verificado, pero no se pudieron eliminar las copias antiguas.',
-  已加密保存并验证数据库文件: 'Bóveda cifrada guardada y verificada.',
+  已加密保存并验证密码库文件: 'Bóveda cifrada guardada y verificada.',
   '已发起加密导出，请确认下载成功；原文件未被写回':
     'Exportación cifrada iniciada. Compruebe la descarga; el archivo original no se actualizó.',
   '当前浏览器不支持目录备份，请下载加密副本并独立保管':
@@ -188,7 +188,7 @@ export default {
   暂无账号: 'Sin cuenta',
   所有条目: 'Todas las entradas',
   '生活里的重要信息，在这里井井有条。': 'Organice lo importante de su vida digital.',
-  双重验证: 'Autenticación de dos factores',
+  双重验证: 'Dos factores',
   '每一次登录，多一份安心。': 'Más tranquilidad en cada inicio de sesión.',
   我的收藏: 'Favoritos',
   '常用的账号，随时触手可及。': 'Sus cuentas habituales, siempre a mano.',
@@ -208,11 +208,13 @@ export default {
   演示: 'Demostración',
   打开其他密码库: 'Abrir otra bóveda',
   偏好设置: 'Preferencias',
+  安全: 'Seguridad',
+  数据与备份: 'Datos y copias',
   锁定密码库: 'Bloquear bóveda',
   安装应用: 'Instalar aplicación',
   '处理中…': 'Procesando…',
   保存更改: 'Guardar cambios',
-  保存数据库: 'Guardar base de datos',
+  保存密码库: 'Guardar bóveda',
   添加验证器: 'Añadir autenticador',
   新建条目: 'Nueva entrada',
   '有未保存的更改，记得保存到 .db 文件': 'Hay cambios sin guardar. Guárdelos en su archivo .db.',
@@ -237,6 +239,7 @@ export default {
   本地密码库: 'Bóveda local',
   工作空间: 'Espacio de trabajo',
   密码库导航: 'Navegación de la bóveda',
+  密码库信息: 'Información de la bóveda',
   我的标签: 'Mis etiquetas',
   '你的数据，只属于你': 'Sus datos le pertenecen',
   '本地解密 · 离线可用': 'Descifrado local · Disponible sin conexión',
@@ -284,7 +287,7 @@ export default {
   '你的设备，你的密码库': 'Su dispositivo. Su bóveda.',
   '重要的，': 'Lo importante,',
   安心放在这里: 'a salvo aquí',
-  '密码、账号和两步验证码，井井有条。':
+  '密码、账号和动态验证码，井井有条。':
     'Contraseñas, cuentas y códigos de verificación, todo en orden.',
   '打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。':
     'Abra su bóveda de SafeInCloud para una vida digital más tranquila.',
@@ -292,7 +295,7 @@ export default {
   '双重验证 · Google': 'Autenticación de dos factores · Google',
   '只在本地，安心解锁': 'Desbloquee localmente, con confianza',
   '主密码解密，文件始终由你掌握。': 'Su contraseña maestra descifra un archivo que usted controla.',
-  '两步验证，一眼即得': 'Códigos de verificación de un vistazo',
+  '双重验证，一眼即得': 'Códigos de verificación de un vistazo',
   '实时动态验证码，轻点即可复制。': 'Códigos actualizados. Un toque para copiar.',
   '随时保存，自由带走': 'Guarde cuando quiera. Llévelo a todas partes.',
   '读写兼容 .db 格式，离线也能使用。':
@@ -314,9 +317,9 @@ export default {
   取消: 'Cancelar',
   确认并继续: 'Confirmar y continuar',
   解锁密码库: 'Desbloquear bóveda',
-  'SafeInCloud 兼容数据库': 'Base de datos compatible con SafeInCloud',
+  'SafeInCloud 兼容密码库': 'Bóveda compatible con SafeInCloud',
   主密码: 'Contraseña maestra',
-  'SafeInCloud 数据库': 'Base de datos de SafeInCloud',
+  'SafeInCloud 密码库': 'Bóveda de SafeInCloud',
   '文件超过 64 MB，请使用桌面客户端处理':
     'El archivo supera los 64 MB. Use el cliente de escritorio.',
   '请选择 SafeInCloud 格式的 .db 文件': 'Elija un archivo .db de SafeInCloud.',
@@ -326,11 +329,10 @@ export default {
   账号: 'Cuenta',
   密码: 'Contraseña',
   网站: 'Sitio web',
-  两步验证码: 'Código de verificación en dos pasos',
   '把重要的信息，妥善收在一起。': 'Guarde juntos los detalles importantes.',
   生成密码: 'Generar contraseña',
   添加字段: 'Añadir campo',
-  添加双重验证: 'Añadir autenticación de dos factores',
+  添加动态验证码: 'Añadir código de verificación',
   条目名称: 'Nombre de la entrada',
   '例如 GitHub、Google': 'Por ejemplo, GitHub o Google',
   字段: 'Campos',
@@ -358,8 +360,8 @@ export default {
   未命名条目: 'Entrada sin título',
   '原文件已被其他应用修改，请在设置中另存为副本，避免覆盖':
     'Otra aplicación modificó el archivo original. Guarde una copia en Ajustes para evitar sobrescribirlo.',
-  已加密保存到数据库文件: 'Base de datos cifrada guardada.',
-  '已下载加密数据库，请保留下载文件': 'Base de datos cifrada descargada. Conserve el archivo.',
+  已加密保存到密码库文件: 'Bóveda cifrada guardada.',
+  '已下载加密密码库，请保留下载文件': 'Bóveda cifrada descargada. Conserve el archivo.',
   '保存失败：': 'Error al guardar: ',
   '已锁定；未保存更改已加密保留在当前页面内，关闭页面会丢失':
     'Bloqueada. Los cambios sin guardar permanecen cifrados en la memoria de esta página y se perderán al cerrarla.',
@@ -414,10 +416,10 @@ export default {
   创建标签: 'Crear etiqueta',
   '在浏览器菜单中选择“安装应用”或“添加到主屏幕”':
     'Elija «Instalar aplicación» o «Añadir a la pantalla de inicio» en el menú del navegador.',
-  '条目已更新，请保存数据库': 'Entrada actualizada. Guarde la base de datos.',
+  '条目已更新，请保存密码库': 'Entrada actualizada. Guarde la bóveda.',
   '请使用小于 20 MB 的二维码图片': 'Use una imagen QR de menos de 20 MB.',
-  '没有识别到 TOTP 二维码，请尝试更清晰的图片或手动粘贴密钥':
-    'No se detectó un QR TOTP. Pruebe una imagen más clara o pegue la clave manualmente.',
+  '没有识别到验证器二维码，请尝试更清晰的图片或手动粘贴密钥':
+    'No se detectó un QR de autenticador. Pruebe una imagen más clara o pegue la clave manualmente.',
   验证器: 'Autenticador',
   '已识别验证密钥，保存条目即可生成验证码':
     'Clave reconocida. Guarde la entrada para generar códigos.',
@@ -425,21 +427,20 @@ export default {
     'La caché sin conexión no está disponible. Puede seguir usando la aplicación en línea.',
   '请使用支持 Web Crypto 和 CompressionStream 的现代浏览器，并通过 HTTPS 或 localhost 打开':
     'Use un navegador moderno con Web Crypto y CompressionStream, mediante HTTPS o localhost.',
-  不支持此数据库版本: 'Versión de base de datos no admitida',
+  不支持此密码库版本: 'Versión de bóveda no admitida',
   文件不完整: 'Archivo incompleto',
-  '数据库解压后超过 128 MB 限制': 'La base de datos descomprimida supera el límite de 128 MB.',
+  '密码库解压后超过 128 MB 限制': 'La bóveda descomprimida supera el límite de 128 MB.',
   '这不是兼容的 SafeInCloud .db 文件': 'Este no es un archivo .db compatible con SafeInCloud.',
-  '主密码不正确，或数据库文件已损坏':
-    'Contraseña maestra incorrecta o archivo de base de datos dañado.',
+  '主密码不正确，或密码库文件已损坏': 'Contraseña maestra incorrecta o archivo de bóveda dañado.',
   '请输入有效的 Base32 密钥或 otpauth:// 链接':
     'Introduzca una clave Base32 o un enlace otpauth:// válido.',
   'Base32 密钥末尾无效': 'Final de clave Base32 no válido',
-  '仅支持基于时间的 TOTP 链接': 'Solo se admiten enlaces TOTP basados en tiempo.',
+  仅支持基于时间的验证器链接: 'Solo se admiten enlaces de autenticador basados en tiempo.',
   '仅支持 SHA1、SHA256 和 SHA512': 'Solo se admiten SHA1, SHA256 y SHA512.',
   '验证码位数应为 6 或 8': 'Los códigos deben tener 6 u 8 dígitos.',
   '验证码周期应为 1–300 秒': 'El periodo de verificación debe ser de 1 a 300 segundos.',
-  '不支持包含 DTD 的数据库': 'No se admiten bases de datos que contengan DTD.',
-  '数据库 XML 无效': 'XML de base de datos no válido',
+  '不支持包含 DTD 的密码库': 'No se admiten bases de datos que contengan DTD.',
+  '密码库 XML 无效': 'XML de bóveda no válido',
   开发与协作: 'Desarrollo y colaboración',
   日常生活: 'Vida personal',
   '这是演示条目，可以自由编辑。真实密码库仅在你的设备上解密。':
@@ -453,7 +454,7 @@ export default {
   界面语言: 'Idioma de la interfaz',
   选择语言: 'Elegir idioma',
   'ClearVault · 密码与验证器': 'ClearVault · Contraseñas y autenticador',
-  'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。':
+  'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 密码库。':
     'ClearVault: bóveda local de contraseñas y autenticador. Abra, gestione y guarde bases de datos de SafeInCloud.',
   '。': '.',
   '本地解密 · 按需填充': 'Descifrado local · Rellenado a petición',
@@ -491,9 +492,16 @@ export default {
   隐藏: 'Ocultar',
   复制账号: 'Copiar usuario',
   填入验证码: 'Rellenar código',
-  '已添加条目，请保存数据库': 'Entrada añadida. Guarda tu bóveda.',
+  '已添加条目，请保存密码库': 'Entrada añadida. Guarda tu bóveda.',
   为此网站新建条目: 'Añadir una entrada para este sitio',
   更多操作: 'Más acciones',
+  更多: 'Más',
+  继续编辑: 'Seguir editando',
+  丢弃修改: 'Descartar cambios',
+  '关闭编辑器会丢弃尚未保存的修改。':
+    'Al cerrar el editor se descartarán los cambios no guardados.',
+  '将在 {seconds} 秒后自动锁定': 'Bloqueo automático en {seconds} segundos',
+  继续使用: 'Seguir usando',
   保存为我的密码库: 'Guardar como mi bóveda',
   '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
     'Se exportó una copia cifrada; el archivo original no se ha actualizado. Los cambios siguen sin guardar en esta página.',
@@ -532,8 +540,8 @@ export default {
   恢复步骤: 'Pasos de recuperación',
   '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
     'Abra ClearVault, elija Abrir bóveda .db e introduzca la contraseña maestra.',
-  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
-    'Este kit no contiene contraseñas, secretos TOTP ni el contenido de la bóveda. Guárdelo de forma segura.',
+  '本工具包不包含密码、动态验证码密钥或密码库内容。请妥善保管。':
+    'Este kit no contiene contraseñas, secretos de autenticación ni el contenido de la bóveda. Guárdelo de forma segura.',
   '恢复工具包已下载，请打印并妥善保管':
     'Kit de recuperación descargado. Imprímalo y guárdelo de forma segura.',
   尚未保存的密码库: 'Bóveda sin guardar',
@@ -581,25 +589,28 @@ export default {
   '开始使用 ClearVault': 'Empezar con ClearVault',
   '完成 {done}/{total} 步': '{done} de {total} pasos completados',
   稍后: 'Más tarde',
-  导入或新建第一条记录: 'Importa o añade tu primera entrada',
+  导入或新建第一个条目: 'Importa o añade tu primera entrada',
   安装浏览器扩展: 'Instala la extensión del navegador',
   首次填充或复制验证码: 'Rellena o copia un inicio de sesión o código una vez',
   添加一个验证器: 'Añade un autenticador',
   保存并设置备份: 'Guarda y configura copias de seguridad',
   已完成: 'Hecho',
   安全概览: 'Resumen de seguridad',
+  '选择一张卡片，在条目列表中处理对应问题。':
+    'Elige una tarjeta para revisar las entradas correspondientes.',
   弱密码: 'Contraseñas débiles',
   重复使用: 'Contraseñas reutilizadas',
   长期未更新: 'Contraseñas antiguas',
-  未启用两步验证: 'Sin TOTP',
+  未启用双重验证: 'Sin 2FA',
+  '有密码但尚未添加动态验证码的条目。': 'Entradas con contraseña pero sin código de verificación.',
   '仅在本地根据解密后的条目计算，不上传密码。':
     'Calculado localmente a partir de entradas descifradas; las contraseñas nunca se suben.',
   '长度不足 12 个字符或强度过低的密码。':
     'Contraseñas de menos de 12 caracteres o con poca seguridad.',
   '{entries} 个条目使用同一密码（{groups} 组）':
-    '{entries} entradas comparten una contraseña ({groups} grupos)',
+    '{entries} entradas comparten una contraseña (grupos: {groups})',
   '超过一年没有修改的条目。': 'Entradas sin cambios durante más de un año.',
-  '有密码但尚未添加 TOTP。': 'Entradas con contraseña pero sin TOTP.',
+  '有密码但尚未添加动态验证码。': 'Entradas con contraseña pero sin código de verificación.',
   '共 {count} 个条目，{withPassword} 个设置了密码。':
     '{count} entradas, {withPassword} con contraseña.',
   安全概览筛选结果: 'Resultados del filtro de seguridad',
@@ -664,7 +675,7 @@ export default {
   本地: 'Local',
   外部: 'Externo',
   采用合并结果: 'Usar resultado combinado',
-  '已合并外部更改，请保存数据库': 'Cambios externos combinados. Guarda tu bóveda.',
+  '已合并外部更改，请保存密码库': 'Cambios externos combinados. Guarda tu bóveda.',
   显示冲突内容: 'Mostrar contenido del conflicto',
   是: 'Sí',
   否: 'No',

@@ -7,14 +7,14 @@ export const articles = [
       description:
         '使用 ClearVault 在浏览器本地打开 SafeInCloud .db 密码库，了解主密码、文件保存、备份与恢复步骤。',
       intro:
-        '已有 SafeInCloud 数据库？带上 .db 文件和主密码，就可以在浏览器中管理条目。文件在设备本地解密，无需注册账户。网页顶部和偏好设置支持简体中文、English、Deutsch、日本語和 Español；首次按浏览器偏好匹配，手动选择会本地记住，不翻译密码库内容。可用 /?lang=de、/?lang=ja、/?lang=es 指定启动语言，离线也能切换。公开教程继续提供中英文。',
+        '已有 SafeInCloud 密码库？带上 .db 文件和主密码，就可以在浏览器中管理条目。文件在设备本地解密，无需注册账户。网页顶部和偏好设置支持简体中文、English、Deutsch、日本語和 Español；首次按浏览器偏好匹配，手动选择会本地记住，不翻译密码库内容。可用 /?lang=de、/?lang=ja、/?lang=es 指定启动语言，离线也能切换。公开教程继续提供中英文。',
       sections: [
         [
           '开始前，留一份独立备份',
           '复制原始 .db 文件，保存在另一个位置。先用副本验证兼容性；不要同时在 ClearVault 和其他应用中编辑同一个文件。ClearVault 是独立的兼容工具，并非 SafeInCloud 官方产品。',
         ],
         [
-          '1. 选择数据库并解锁',
+          '1. 选择密码库并解锁',
           '打开 ClearVault，点击“打开 .db 密码库”，选择文件，再输入已有主密码。网站没有账户登录；主密码用于本地解密文件。若只是了解界面，可以点击“先体验一下”，使用合成演示数据。',
         ],
         [
@@ -27,7 +27,7 @@ export const articles = [
         ],
         [
           '4. 重新打开，确认保存结果',
-          '先保存，再锁定并重新打开数据库检查修改。首页“最近密码库”保留上次打开的一个文件的名称和句柄，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持句柄时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。当前页面已选择的文件和锁定后的密码库统一显示在列表中，不再另设重新解锁入口；有未保存更改时，点击“解锁并继续未保存的修改”恢复当前加密副本。清空历史不会丢弃当前会话。',
+          '先保存，再锁定并重新打开密码库检查修改。首页“最近密码库”保留上次打开的一个文件的名称和访问权限，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持访问权限时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。当前页面已选择的文件和锁定后的密码库统一显示在列表中，不再另设重新解锁入口；有未保存更改时，点击“解锁并继续未保存的修改”恢复当前加密副本。清空历史不会丢弃当前会话。',
         ],
         [
           '打不开文件时检查什么？',
@@ -47,7 +47,7 @@ export const articles = [
           'Copy the original .db file to another location and test a copy before using your real vault. Avoid editing the same file in ClearVault and another application at the same time. ClearVault is an independent compatible tool, not an official SafeInCloud product.',
         ],
         [
-          '1. Select and unlock the database',
+          '1. Select and unlock the vault',
           'Open ClearVault, choose “Open .db vault”, select your file and enter its existing master password. There is no website account login: the password decrypts the file locally. Use “Try a demo” to explore with synthetic data first.',
         ],
         [
@@ -60,7 +60,7 @@ export const articles = [
         ],
         [
           '4. Reopen to verify the result',
-          'Save, lock and reopen the database to verify changes. Recent vaults on the home screen remembers only the last opened file name and handle. Select one, grant access again if needed and enter your master password. If the file moved or handles are unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Selected files and locked vaults use this same list without a separate reopen link. Choose Unlock and continue unsaved changes to resume the current encrypted copy. Clearing history keeps this current session.',
+          'Save, lock and reopen the vault to verify changes. Recent vaults on the home screen remembers only the last opened file name and file access. Select one, grant access again if needed and enter your master password. If the file moved or file access is unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Selected files and locked vaults use this same list without a separate reopen link. Choose Unlock and continue unsaved changes to resume the current encrypted copy. Clearing history keeps this current session.',
         ],
         [
           'If the file will not open',
@@ -72,11 +72,11 @@ export const articles = [
   {
     slug: 'safeincloud-linux',
     zh: {
-      title: '在 Linux 上使用 SafeInCloud 数据库',
+      title: '在 Linux 上使用 SafeInCloud 密码库',
       description:
         '用 ClearVault PWA 在 Linux 浏览器中管理 SafeInCloud DB，了解离线使用、浏览器扩展与保存兼容性。',
       intro:
-        'ClearVault 提供浏览器中的本地密码库工作流。你可以在 Linux 上打开兼容数据库，也可以在支持安装的浏览器中将它作为 PWA 使用。',
+        'ClearVault 提供浏览器中的本地密码库工作流。你可以在 Linux 上打开兼容密码库，也可以在支持安装的浏览器中将它作为 PWA 使用。',
       sections: [
         [
           '先从副本开始',
@@ -88,11 +88,11 @@ export const articles = [
         ],
         [
           '安装与离线使用',
-          '支持 PWA 安装的浏览器会提供安装入口。先联网打开应用，让 Service Worker 完成应用资源缓存，再断网验证可以启动。首次访问、资源尚未缓存、缓存被清除或浏览器回收存储时仍需联网。数据库不会因为安装 PWA 而自动保存。',
+          '支持 PWA 安装的浏览器会提供安装入口。先联网打开应用，让 Service Worker 完成应用资源缓存，再断网验证可以启动。首次访问、资源尚未缓存、缓存被清除或浏览器回收存储时仍需联网。密码库不会因为安装 PWA 而自动保存。',
         ],
         [
           '可选：浏览器扩展',
-          '下载页提供 Chrome / Edge 扩展压缩包，尚未上架商店。解压加载后，在目标网站点击扩展授权，再打开最近密码库或选择文件并解锁。支持分步登录、为同一条目添加多个精确 HTTPS 地址、确认更新密码和导入。修改后点击保存数据库，覆盖前自动备份并验证。文件外部变化时先另存编辑结果，再重新加载并解锁。不支持 Firefox、iframe 或 Passkey，不自动提交表单。',
+          '下载页提供 Chrome / Edge 扩展压缩包，尚未上架商店。解压加载后，在目标网站点击扩展授权，再打开最近密码库或选择文件并解锁。支持分步登录、为同一条目添加多个精确 HTTPS 地址、确认更新密码和导入。修改后点击保存密码库，覆盖前自动备份并验证。文件外部变化时先另存编辑结果，再重新加载并解锁。不支持 Firefox、iframe 或 Passkey，不自动提交表单。',
         ],
         [
           '多设备使用时如何避免冲突',
@@ -101,11 +101,11 @@ export const articles = [
       ],
     },
     en: {
-      title: 'Use a SafeInCloud database on Linux',
+      title: 'Use a SafeInCloud vault on Linux',
       description:
         'Manage SafeInCloud DB files with ClearVault on Linux. Understand browser file saving, offline PWA use and the optional browser extension.',
       intro:
-        'ClearVault brings a local vault workflow to your browser. Open a compatible database on Linux, or install the PWA where your browser supports it.',
+        'ClearVault brings a local vault workflow to your browser. Open a compatible vault on Linux, or install the PWA where your browser supports it.',
       sections: [
         [
           'Start with a copy',
@@ -117,7 +117,7 @@ export const articles = [
         ],
         [
           'Installation and offline use',
-          'Browsers supporting PWA installation provide an install action. Open the app online first so its Service Worker can cache the application resources, then test launching offline. A first visit, incomplete cache, cleared storage or storage eviction still requires a connection. Installing the PWA does not automatically save your database.',
+          'Browsers supporting PWA installation provide an install action. Open the app online first so its Service Worker can cache the application resources, then test launching offline. A first visit, incomplete cache, cleared storage or storage eviction still requires a connection. Installing the PWA does not automatically save your vault.',
         ],
         [
           'Optional browser extension',
@@ -141,11 +141,11 @@ export const articles = [
       sections: [
         [
           '1. 在目标网站开启验证器验证',
-          '进入目标网站的安全设置，选择验证器应用。妥善保存网站提供的恢复码，避免丢失验证器后无法登录。不要将恢复码与未经备份的唯一数据库放在同一个失效点。',
+          '进入目标网站的安全设置，选择验证器应用。妥善保存网站提供的恢复码，避免丢失验证器后无法登录。不要将恢复码与未经备份的唯一密码库放在同一个失效点。',
         ],
         [
           '2. 把密钥加入对应条目',
-          '在 ClearVault 新建或编辑条目，添加双重验证字段，填入 Base32 密钥或 otpauth://totp/ 地址。也可以通过“导入二维码图片”选择图片；当前使用本地图片解析，不会开启摄像头。验证密钥和二维码都属于秘密。',
+          '在 ClearVault 新建或编辑条目，添加动态验证码字段，填入 Base32 密钥或 otpauth://totp/ 地址。也可以通过“导入二维码图片”选择图片；当前使用本地图片解析，不会开启摄像头。验证密钥和二维码都属于秘密。',
         ],
         [
           '3. 核对参数并在网站确认',
@@ -178,7 +178,7 @@ export const articles = [
         ],
         [
           '3. Match parameters and confirm on the website',
-          'SHA1, SHA256 and SHA512, 6- or 8-digit codes and custom periods are supported. Match the website’s parameters, and use a 30-second period when sharing the database with SafeInCloud. Confirm a generated code on the website, then save and reopen the .db file.',
+          'SHA1, SHA256 and SHA512, 6- or 8-digit codes and custom periods are supported. Match the website’s parameters, and use a 30-second period when sharing the vault with SafeInCloud. Confirm a generated code on the website, then save and reopen the .db file.',
         ],
         [
           'If a code is rejected',
@@ -217,7 +217,7 @@ articles.push(
         ],
         [
           '4. 确认并保存',
-          '完全相同的条目会跳过，密码或其他内容不同的条目分别保留，不覆盖已有条目。点击“确认导入”才修改当前密码库；取消或锁定会清除预览。导入后点击“保存数据库”，首次覆盖原文件时选择独立加密备份目录。浏览器只能下载时，请确认下载成功并重新打开加密 .db 核对，再妥善清理明文导出。',
+          '完全相同的条目会跳过，密码或其他内容不同的条目分别保留，不覆盖已有条目。点击“确认导入”才修改当前密码库；取消或锁定会清除预览。导入后点击“保存密码库”，首次覆盖原文件时选择独立加密备份目录。浏览器只能下载时，请确认下载成功并重新打开加密 .db 核对，再妥善清理明文导出。',
         ],
       ],
     },
@@ -242,7 +242,7 @@ articles.push(
         ],
         [
           '4. Confirm and save',
-          'Identical entries are skipped. Entries with different passwords or contents are kept separately, without overwriting. Only confirmation changes the vault; cancellation or locking clears the preview. Save the database afterwards, selecting a separate encrypted backup directory before the first overwrite. If the browser only downloads files, verify the download and reopen the encrypted .db before carefully removing plain text exports.',
+          'Identical entries are skipped. Entries with different passwords or contents are kept separately, without overwriting. Only confirmation changes the vault; cancellation or locking clears the preview. Save the vault afterwards, selecting a separate encrypted backup directory before the first overwrite. If the browser only downloads files, verify the download and reopen the encrypted .db before carefully removing plain text exports.',
         ],
       ],
     },
@@ -262,7 +262,7 @@ articles.push(
         ],
         [
           '2. 在 ClearVault 中预览并导入',
-          '打开或新建一个 .db 密码库并解锁，点击“导入密码”，来源选择 1Password CSV，选择导出文件并预览。确认新增、重复和不支持的数量后导入，再点击“保存数据库”。',
+          '打开或新建一个 .db 密码库并解锁，点击“导入密码”，来源选择 1Password CSV，选择导出文件并预览。确认新增、重复和不支持的数量后导入，再点击“保存密码库”。',
         ],
         [
           '3. 会保留哪些内容',
@@ -287,7 +287,7 @@ articles.push(
         ],
         [
           '2. Preview and import in ClearVault',
-          'Open or create a .db vault and unlock it. Choose Import passwords, select 1Password CSV, pick the export and preview it. Review new, duplicate and unsupported counts, import, then choose Save database.',
+          'Open or create a .db vault and unlock it. Choose Import passwords, select 1Password CSV, pick the export and preview it. Review new, duplicate and unsupported counts, import, then choose Save vault.',
         ],
         [
           '3. What is preserved',
@@ -315,7 +315,7 @@ articles.push(
         ],
         [
           '2. 在 ClearVault 中导入',
-          '打开 .db 并解锁，选择“导入密码” → LastPass CSV，选择文件并预览。核对新增、重复和不支持的数量，确认后保存数据库。',
+          '打开 .db 并解锁，选择“导入密码” → LastPass CSV，选择文件并预览。核对新增、重复和不支持的数量，确认后保存密码库。',
         ],
         [
           '3. 安全笔记和文件夹',
@@ -340,7 +340,7 @@ articles.push(
         ],
         [
           '2. Import in ClearVault',
-          'Open and unlock a .db vault, choose Import passwords → LastPass CSV, select the file and preview. Review new, duplicate and unsupported counts, confirm and save the database.',
+          'Open and unlock a .db vault, choose Import passwords → LastPass CSV, select the file and preview. Review new, duplicate and unsupported counts, confirm and save the vault.',
         ],
         [
           '3. Secure notes and folders',
@@ -368,7 +368,7 @@ articles.push(
         ],
         [
           '2. 在 ClearVault 中导入',
-          '打开 .db 并解锁，选择“导入密码” → Apple Passwords CSV，选择文件并预览。核对数量后确认导入，再保存数据库。',
+          '打开 .db 并解锁，选择“导入密码” → Apple Passwords CSV，选择文件并预览。核对数量后确认导入，再保存密码库。',
         ],
         [
           '3. 字段和验证码',
@@ -393,7 +393,7 @@ articles.push(
         ],
         [
           '2. Import in ClearVault',
-          'Open and unlock a .db vault, choose Import passwords → Apple Passwords CSV, select the file and preview. Confirm the counts, import and save the database.',
+          'Open and unlock a .db vault, choose Import passwords → Apple Passwords CSV, select the file and preview. Confirm the counts, import and save the vault.',
         ],
         [
           '3. Fields and codes',
@@ -421,7 +421,7 @@ articles.push(
         ],
         [
           '2. 选择文件并映射',
-          '在 ClearVault 中打开 .db，选择“导入密码” → 通用 CSV（手动映射），选择文件。为条目名称、账号、密码、网站、备注、标签、两步验证码和收藏选择对应列；未使用的列会忽略。',
+          '在 ClearVault 中打开 .db，选择“导入密码” → 通用 CSV（手动映射），选择文件。为条目名称、账号、密码、网站、备注、标签、动态验证码和收藏选择对应列；未使用的列会忽略。',
         ],
         [
           '3. 预览和重复检测',
@@ -429,7 +429,7 @@ articles.push(
         ],
         [
           '4. 保存与清理',
-          '确认导入后点击“保存数据库”，重新打开 .db 核对结果。CSV 是明文文件，验证加密保存后请删除。',
+          '确认导入后点击“保存密码库”，重新打开 .db 核对结果。CSV 是明文文件，验证加密保存后请删除。',
         ],
       ],
     },
@@ -454,7 +454,7 @@ articles.push(
         ],
         [
           '4. Save and clean up',
-          'Confirm the import, choose Save database and reopen the .db to verify. The CSV is plaintext; delete it after the encrypted save is verified.',
+          'Confirm the import, choose Save vault and reopen the .db to verify. The CSV is plaintext; delete it after the encrypted save is verified.',
         ],
       ],
     },
@@ -478,11 +478,11 @@ articles.push(
         ],
         [
           '3. 合并规则',
-          '双方修改不同条目时都保留；同一条目双方都修改时，冲突预览会列出标题、备注、回收站 / 归档 / 收藏状态和每个字段，按较新的修改时间预选本地或外部值，可逐项更改。一侧删除、另一侧修改时可选择保留或删除。标签按名称合并；未知 XML、附件和图片随选中的条目版本保留。确认预览后仍需点击“保存数据库”才写入文件。',
+          '双方修改不同条目时都保留；同一条目双方都修改时，冲突预览会列出标题、备注、回收站 / 归档 / 收藏状态和每个字段，按较新的修改时间预选本地或外部值，可逐项更改。一侧删除、另一侧修改时可选择保留或删除。标签按名称合并；未知 XML、附件和图片随选中的条目版本保留。确认预览后仍需点击“保存密码库”才写入文件。',
         ],
         [
           '4. 边界',
-          '外部文件必须使用相同格式版本和主密码；密码不同或版本不同时无法合并。没有跨设备文件锁；字段级选择覆盖标题、备注、标记和普通字段，未知的数据库级 XML 只保留本地版本；同步工具仍可能回滚或替换文件。请保留独立备份，避免两台设备同时编辑。',
+          '外部文件必须使用相同格式版本和主密码；密码不同或版本不同时无法合并。没有跨设备文件锁；字段级选择覆盖标题、备注、标记和普通字段，未知的密码库级 XML 只保留本地版本；同步工具仍可能回滚或替换文件。请保留独立备份，避免两台设备同时编辑。',
         ],
       ],
     },
@@ -503,11 +503,11 @@ articles.push(
         ],
         [
           '3. Merge rules',
-          'Changes to different entries are both kept. When both sides change the same entry, the preview lists the title, notes, trash / archive / favorite flags and every field, preselects local or external values by the newer modification time, and lets you change each one. If one side deleted the entry and the other changed it, choose whether to keep or delete it. Labels merge by name; unknown XML, attachments and images travel with the chosen entry version. Confirming the preview still requires Save database to write the file.',
+          'Changes to different entries are both kept. When both sides change the same entry, the preview lists the title, notes, trash / archive / favorite flags and every field, preselects local or external values by the newer modification time, and lets you change each one. If one side deleted the entry and the other changed it, choose whether to keep or delete it. Labels merge by name; unknown XML, attachments and images travel with the chosen entry version. Confirming the preview still requires Save vault to write the file.',
         ],
         [
           '4. Boundaries',
-          'The external file must use the same format version and master password; different passwords or versions cannot merge. There is no cross-device file lock; field-level choices cover the title, notes, flags and regular fields, and unknown database-level XML is kept from the local side only. Sync tools can still roll back or replace files. Keep independent backups and avoid editing on two devices at once.',
+          'The external file must use the same format version and master password; different passwords or versions cannot merge. There is no cross-device file lock; field-level choices cover the title, notes, flags and regular fields, and unknown vault-level XML is kept from the local side only. Sync tools can still roll back or replace files. Keep independent backups and avoid editing on two devices at once.',
         ],
       ],
     },
@@ -527,7 +527,7 @@ articles.push(
         ],
         [
           '2. 填充和分步登录',
-          '核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。解锁后还可以搜索所有条目并复制账号或密码；点击“新建条目”会预填当前 HTTPS 来源，保存数据库后才写入文件。条目含 TOTP 时列表直接显示验证码：点击“复制”复制，点击“填入验证码”只填唯一、明确的验证码输入框。多个密码框、未明确点击的验证码框、新密码表单或不明确的输入框会拒绝填充。',
+          '核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。解锁后还可以搜索所有条目并复制账号或密码；点击“新建条目”会预填当前 HTTPS 来源，保存密码库后才写入文件。条目含 TOTP 时列表直接显示验证码：点击“复制”复制，点击“填入验证码”只填唯一、明确的验证码输入框。多个密码框、未明确点击的验证码框、新密码表单或不明确的输入框会拒绝填充。',
         ],
         [
           '3. 为同一账号添加网址',
@@ -535,11 +535,11 @@ articles.push(
         ],
         [
           '4. 更新密码并确认',
-          '在网站修改密码时，选择扩展内对应条目的“更新密码”。可手动输入新密码两次，或明确点击“从当前网页读取新密码”，读取当前匹配网站标记为 new-password 的可见密码框；无法唯一识别时手动输入。读取只填入确认表单，确认后才修改条目。先确认网站修改成功，再保存数据库。扩展不监听全站输入，也不自动提交或自动采集密码。',
+          '在网站修改密码时，选择扩展内对应条目的“更新密码”。可手动输入新密码两次，或明确点击“从当前网页读取新密码”，读取当前匹配网站标记为 new-password 的可见密码框；无法唯一识别时手动输入。读取只填入确认表单，确认后才修改条目。先确认网站修改成功，再保存密码库。扩展不监听全站输入，也不自动提交或自动采集密码。',
         ],
         [
           '5. 保存、外部变化与锁定',
-          '点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏不会立即锁定；空闲达到所选的 1 / 5 / 15 / 30 分钟后锁定。复制账号、密码或验证码后默认 30 秒尝试清空剪贴板，可在“更多操作”中改为 15 / 60 秒或关闭。未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
+          '点击“保存密码库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件访问权限时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏不会立即锁定；空闲达到所选的 1 / 5 / 15 / 30 分钟后锁定。复制账号、密码或验证码后默认 30 秒尝试清空剪贴板，可在“更多操作”中改为 15 / 60 秒或关闭。未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
         ],
       ],
     },
@@ -556,7 +556,7 @@ articles.push(
         ],
         [
           '2. Fill and multistep login',
-          'Check the website and account, click Fill this login and submit yourself. On username-first sites, only a unique username or email input is filled. Continue on the website, then click Fill again on the password page. If redirected to another origin, click the extension icon to grant access there. After unlocking you can also search all entries and copy a username or password; New entry prefills the current HTTPS origin, and the entry is written only after Save database. Entries with TOTP show the current code: Copy copies it, and Fill code fills only a unique, explicit verification-code input. Ambiguous inputs, OTP inputs you did not explicitly click, multiple password fields and new-password forms are rejected.',
+          'Check the website and account, click Fill this login and submit yourself. On username-first sites, only a unique username or email input is filled. Continue on the website, then click Fill again on the password page. If redirected to another origin, click the extension icon to grant access there. After unlocking you can also search all entries and copy a username or password; New entry prefills the current HTTPS origin, and the entry is written only after Save vault. Entries with TOTP show the current code: Copy copies it, and Fill code fills only a unique, explicit verification-code input. Ambiguous inputs, OTP inputs you did not explicitly click, multiple password fields and new-password forms are rejected.',
         ],
         [
           '3. Add another website',
@@ -568,7 +568,7 @@ articles.push(
         ],
         [
           '5. Save, reload and lock',
-          'Choose Save database and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing handle support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar does not lock immediately; the selected 1 / 5 / 15 / 30 minute idle timeout applies. After copying a username, password or code, ClearVault tries to clear the clipboard after 30 seconds by default; choose 15 / 60 seconds or off in More actions. Unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
+          'Choose Save vault and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing file access support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar does not lock immediately; the selected 1 / 5 / 15 / 30 minute idle timeout applies. After copying a username, password or code, ClearVault tries to clear the clipboard after 30 seconds by default; choose 15 / 60 seconds or off in More actions. Unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
         ],
       ],
     },
@@ -585,7 +585,7 @@ export const security = {
     sections: [
       [
         '你的密码库在设备本地解密',
-        '数据库文件、主密码、条目和 TOTP 密钥不会由应用上传到服务器。解锁期间，解密后的数据库保留在页面内存中以供编辑；锁定时移除界面与引用并清零可控字节数组。JavaScript 字符串与垃圾回收无法保证物理内存被彻底擦除。',
+        '密码库文件、主密码、条目和 TOTP 密钥不会由应用上传到服务器。解锁期间，解密后的密码库保留在页面内存中以供编辑；锁定时移除界面与引用并清零可控字节数组。JavaScript 字符串与垃圾回收无法保证物理内存被彻底擦除。',
       ],
       [
         '访问网页仍有网络元数据',
@@ -593,7 +593,7 @@ export const security = {
       ],
       [
         '浏览器保存什么',
-        'localStorage 仅保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量、最近使用条目 ID/时间和新手清单完成状态等非敏感偏好与排序元数据；IndexedDB 仅保存上次打开的一个密码库的文件名、文件句柄、记录 ID、打开时间，不保存密码、条目或库内容，可随时移除或清空。OPFS 本地快照只保存加密的 .db 密文。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+        'localStorage 仅保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量、最近使用条目 ID/时间和新手清单完成状态等非敏感偏好与排序元数据；IndexedDB 仅保存上次打开的一个密码库的文件名、文件访问权限、记录 ID、打开时间，不保存密码、条目或库内容，可随时移除或清空。OPFS 本地快照只保存加密的 .db 密文。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
       ],
       [
         '剪贴板清除是尽力而为',
@@ -650,7 +650,7 @@ export const security = {
     sections: [
       [
         'Your vault is decrypted on your device',
-        'The application does not upload database files, master passwords, entries or TOTP secrets. While unlocked, decrypted data stays in page memory for editing. Locking removes the UI and references and clears controllable byte arrays. JavaScript strings and garbage collection cannot guarantee physical memory erasure.',
+        'The application does not upload vault files, master passwords, entries or TOTP secrets. While unlocked, decrypted data stays in page memory for editing. Locking removes the UI and references and clears controllable byte arrays. JavaScript strings and garbage collection cannot guarantee physical memory erasure.',
       ],
       [
         'Visiting the site still creates network metadata',
@@ -717,7 +717,7 @@ export const privacy = {
     sections: [
       [
         '处理哪些数据',
-        '你选择的 SafeInCloud 兼容 .db 文件；解锁时输入的主密码；文件中的条目、备注、附件和 TOTP 密钥；界面语言、自动锁定、剪贴板清除、快照保留数量和新手清单等本地偏好；最近密码库的文件名、句柄、记录 ID、时间；用于排序的最近使用条目 ID 和时间；浏览器 OPFS 中的加密 .db 快照。',
+        '你选择的 SafeInCloud 兼容 .db 文件；解锁时输入的主密码；文件中的条目、备注、附件和 TOTP 密钥；界面语言、自动锁定、剪贴板清除、快照保留数量和新手清单等本地偏好；最近密码库的文件名、文件访问权限、记录 ID、时间；用于排序的最近使用条目 ID 和时间；浏览器 OPFS 中的加密 .db 快照。',
       ],
       [
         '数据保存在哪里',

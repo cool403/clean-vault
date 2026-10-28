@@ -30,7 +30,7 @@ docker build -t clearvault:0.4.4 .
 docker run --rm -p 127.0.0.1:8080:80 clearvault:0.4.4
 ```
 
-本机访问 http://localhost:8080。远程访问必须加 HTTPS 反向代理，否则 Web Crypto、文件 API、Service Worker 可能不可用。生产环境应在验证后将 Nginx 基础镜像固定到 digest；这里提供通用模板，不声称镜像构建已验证。
+本机访问 http://localhost:8080。远程访问必须加 HTTPS 反向代理，否则 Web Crypto、文件读写、Service Worker 可能不可用。生产环境应在验证后将 Nginx 基础镜像固定到 digest；这里提供通用模板，不声称镜像构建已验证。
 
 ## 浏览器扩展（开发者安装）
 

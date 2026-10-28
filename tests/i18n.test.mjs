@@ -20,6 +20,7 @@ import {
 import { generatePassword, defaultRules } from '../dist/password-generator.js';
 import { parseOTP } from '../dist/totp.js';
 
+// 验证语言自动检测、偏好持久化和页面元数据更新，并兼容存储不可用的情况。
 test('language detection, persistence, metadata and unavailable storage', () => {
   assert.equal(detectLanguage(['fr-FR', 'en-GB']), 'en');
   assert.equal(detectLanguage(['zh-Hans-CN', 'en']), 'zh-CN');
@@ -65,6 +66,7 @@ test('language detection, persistence, metadata and unavailable storage', () => 
   setLanguage('zh-CN');
 });
 
+// 验证启动参数指定的语言优先于其他设置，且不接受未知语言代码。
 test('explicit app launch language takes precedence without accepting unknown locales', () => {
   const dom = new JSDOM('<html></html>', { url: 'https://example.test/?lang=en' });
   globalThis.document = dom.window.document;
@@ -75,6 +77,7 @@ test('explicit app launch language takes precedence without accepting unknown lo
   dom.window.close();
 });
 
+// 验证翻译词条完整且键名一致，只翻译静态界面片段而保留用户数据。
 test('complete matching catalogs and only static UI fragments are translated', () => {
   assert.deepEqual(Object.keys(en).sort(), Object.keys(zh).sort());
   for (const [key, value] of Object.entries(en)) {
@@ -97,6 +100,7 @@ test('complete matching catalogs and only static UI fragments are translated', (
   assert.equal(t('所有条目'), '所有条目');
 });
 
+// 验证所有界面语言保留插值参数和用户原文，并正确更新元数据及语言偏好。
 test('all interface catalogs preserve parameters, literal user data, metadata and preferences', async () => {
   const catalogs = { 'zh-CN': zh, en, de, ja, es };
   assert.deepEqual(
@@ -124,7 +128,7 @@ test('all interface catalogs preserve parameters, literal user data, metadata an
     assert.equal(document.title, catalog['ClearVault · SafeInCloud 兼容密码管理器与双重验证器']);
     assert.equal(
       document.querySelector('meta[name=description]').content,
-      catalog['ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。'],
+      catalog['ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 密码库。'],
     );
     assert.equal(initializeLanguage(['fr']), code, 'saved selection survives restart');
     assert.equal(
@@ -154,6 +158,7 @@ test('all interface catalogs preserve parameters, literal user data, metadata an
   setLanguage('zh-CN');
 });
 
+// 验证新增语言在应用、扩展和离线缓存中均被一致打包。
 test('new languages are packaged identically for the app, extension and offline cache', async () => {
   const worker = await readFile(new URL('../dist/sw.js', import.meta.url), 'utf8');
   for (const code of ['de', 'ja', 'es']) {

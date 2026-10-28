@@ -26,7 +26,7 @@ npm run test:release
 
 源码测试覆盖密码库格式、Unicode、TOTP、写入冲突、备份恢复、语言与 UI。正式产物检查还会解析 JavaScript、拒绝 eval / Function、确认可读核心文件一致、校验部署哈希并对生产副本运行完整测试。Windows 有对应原始安装时进行额外互通验证；Linux 使用随附合成样本。
 
-最近文件由 `dist/recent-files.js` 管理，IndexedDB 仅保存上次打开的一个文件的名称、句柄、记录 ID 和时间，禁止加入密文、解密数据或凭证。读取旧历史时只保留最新记录并移除目录标记。`dist/import-data.js` 负责 CSV / JSON 解析、去重与增量添加，`dist/workflow-ui.js` 和 `dist/workflow.css` 提供网页与扩展一致的预览和最近文件交互。共享文件由 `scripts/build-extension.mjs` 复制到 `extension/core/`，不要直接改生成副本。扩展写回复用 `safe-save.js`；填充与显式读取新密码保持可由 Chrome 序列化的独立函数。
+最近文件由 `dist/recent-files.js` 管理，IndexedDB 仅保存上次打开的一个文件名、文件访问权限、记录 ID 和时间，禁止加入密文、解密数据或凭证。读取旧历史时只保留最新记录并移除目录标记。`dist/import-data.js` 负责 CSV / JSON 解析、去重与增量添加，`dist/workflow-ui.js` 和 `dist/workflow.css` 提供网页与扩展一致的预览和最近文件交互。共享文件由 `scripts/build-extension.mjs` 复制到 `extension/core/`，不要直接改生成副本。扩展写回复用 `safe-save.js`；填充与显式读取新密码保持可由 Chrome 序列化的独立函数。
 
 修改这些流程需同时验证网页、侧栏、全部五种界面语言和窄屏。测试覆盖重复导入、差异密码保留、未知 XML 保留、元数据持久化、权限失败、保存备份、冲突停止填充及锁定后的异步请求。使用教程维护 `docs/USAGE*.md` 与 `scripts/public-content.mjs`，执行 `npm run build:public` 生成中英文教程、站点地图和 robots；新资源同步加入离线清单。
 
@@ -34,7 +34,7 @@ npm run test:release
 
 ## 构建
 
-`npm run release` 更新公开中英文页面和扩展共享代码，生成可读 Web / 扩展目录、三份 ZIP、源码与制品 SHA-256 清单。MIT 和第三方声明复制到部署目录。只使用明确列出的源码目录，不打包 .git、.openai、node_modules、真实数据库和账号配置。不要将工作区上层的分析目录或个人数据库发布到 GitHub。
+`npm run release` 更新公开中英文页面和扩展共享代码，生成可读 Web / 扩展目录、三份 ZIP、源码与制品 SHA-256 清单。MIT 和第三方声明复制到部署目录。只使用明确列出的源码目录，不打包 .git、.openai、node_modules、真实密码库和账号配置。不要将工作区上层的分析目录或个人密码库发布到 GitHub。
 
 `GITHUB_REPOSITORY`、`GITHUB_SHA` 和 `GITHUB_RUN_ID` 用于 Actions 构建信息，仓库默认值来自 package.json。线上 build-info.json 对应实际构建输入，ASSET-SHA256SUMS.json 包含部署文件哈希（不包含清单自身）。固定 ZIP 顺序和时间，压缩字节还依赖 Python/zlib；复现时元数据也必须一致。
 

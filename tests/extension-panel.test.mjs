@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { readFile } from 'node:fs/promises';
 import { encryptDatabase, passwordBytes } from '../dist/crypto.js';
+// 验证扩展面板解密密码库、匹配站点且仅填充选中账号，并阻止锁定后的过期请求。
 test('extension panel decrypts, matches, fills selected login only, and locks stale requests', async () => {
   const dom = new JSDOM(
     await readFile(new URL('../extension/panel.html', import.meta.url), 'utf8'),

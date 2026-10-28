@@ -36,7 +36,7 @@ npm test
 npm run test:release
 ```
 
-Deploy `release/web/`. The extension is built into `release/extension/`; `out/` is an identical web copy. Packaging uses explicit source directories, excluding local account configuration, secrets and personal databases. Only three explicitly listed synthetic compatibility fixtures are included.
+Deploy `release/web/`. The extension is built into `release/extension/`; `out/` is an identical web copy. Packaging uses explicit source directories, excluding local account configuration, secrets and personal vault files. Only three explicitly listed synthetic compatibility fixtures are included.
 
 ## Features
 
@@ -44,20 +44,20 @@ Deploy `release/web/`. The extension is built into `release/extension/`; `out/` 
 - Creating a vault shows a local master-password strength estimate and requires acknowledging that it cannot be recovered. Changing it requires the current password. Preferences or the extension's More actions can download a recovery kit without passwords or OTP secrets.
 - Entries, multiple fields, notes, labels, favorites, archiving, trash, restoration and a password generator.
 - TOTP import through Base32, `otpauth://totp` or local QR images. Supports SHA1 / SHA256 / SHA512, 6 / 8 digits and 1–300 second periods. Keep 30-second periods when sharing files with SafeInCloud 26.0.
-- Browsers supporting File System Access can write back to the original file. Saving checks the ciphertext SHA-256, verifies an encrypted backup and reads back the written file. Other browsers download encrypted copies.
-- Saving an entry in an existing file automatically backs up and writes the database. Choose a separate backup directory before the first write. Cancellation, conflicts and failures preserve the unsaved state. New vaults and download mode require an explicit database save.
+- Browsers that support writing files can save directly to the original file. Saving checks the ciphertext SHA-256, verifies an encrypted backup and reads back the written file. Other browsers download encrypted copies.
+- Saving an entry in an existing file automatically backs up and writes the vault. Choose a separate backup directory before the first write. Cancellation, conflicts and failures preserve the unsaved state. New vaults and download mode require an explicit vault save.
 - Backup preview and restoration as a new vault, automatic locking after 1 / 5 / 15 / 30 minutes, English / Simplified Chinese, and offline PWA use.
 - Quick search supports pinyin initials, recency ordering, TOTP copying and a command mode (new entry, generate password, lock, switch vault). Large lists render in batches and search results are capped at 50.
 - Each save in the app and extension attempts to write encrypted `.db` ciphertext to a local OPFS snapshot, keeping 10 by default. External file changes prompt you to save a copy or reload instead of overwriting.
 - Installed Chromium PWAs can open `.db` files from the file manager, and `.db` files can be dropped onto the page. Install guidance covers Chrome / Edge, Android and iOS. iOS Safari does not support file write-back or browser extensions.
 - Put the `.db` in a Syncthing, Nextcloud, OneDrive or iCloud Drive folder. When an external change is detected, merge unsaved local edits with the external version and choose local or external values for each conflicting field before saving.
 - The Chrome / Edge extension supports multistep login, multiple explicitly added HTTPS origins, searching all entries, copying usernames/passwords, creating an entry for the current website, showing/copying/filling TOTP codes, confirmed password updates, imports and verified saves, without submitting forms.
-- Recent vaults remembers only the last opened file name and handle. The current session also unlocks through this list, preserving unsaved edits. Remove or clear history records anytime.
+- Recent vaults remembers only the last opened file name and file access. The current session also unlocks through this list, preserving unsaved edits. Remove or clear history records anytime.
 - Import from Chrome, Bitwarden, 1Password, LastPass and Apple Passwords; map columns for generic CSV. Preview and duplicate checks never overwrite existing entries. The app and extension share this flow.
 - New empty vaults show a dismissible getting-started checklist: import/first entry, install the extension, first fill, TOTP and backups.
 - Local security overview for weak, reused and old passwords and entries without TOTP. Filter by category, batch-add labels, archive or trash entries, and rename, merge or delete labels.
 
-Quick search opens automatically after unlocking an existing vault. It searches titles, usernames, emails, websites, labels and pinyin initials, excluding passwords, PINs, OTP secrets and notes.
+On desktop, quick search opens automatically after unlocking an existing vault. It searches titles, usernames, emails, websites, labels and pinyin initials, excluding passwords, PINs, OTP secrets and notes.
 
 | Action            | Windows / Linux      | macOS             |
 | ----------------- | -------------------- | ----------------- |
@@ -74,13 +74,13 @@ Shortcuts work while the application has focus. Search supports IME input and do
 
 ## Data and security boundaries
 
-Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences and ordering metadata such as interface language, auto-lock minutes, clipboard-clear delay, snapshot retention, recent entry IDs/times and getting-started checklist completion. IndexedDB stores only the last opened file name, handle, record ID and time, with removable history. OPFS snapshots contain only encrypted `.db` ciphertext, never plaintext vault data. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
+Master passwords, decrypted XML and OTP secrets are not written to localStorage / IndexedDB or uploaded. localStorage stores only non-sensitive preferences and ordering metadata such as interface language, auto-lock minutes, clipboard-clear delay, snapshot retention, recent entry IDs/times and getting-started checklist completion. IndexedDB stores only the last opened file name, file access, record ID and time, with removable history. OPFS snapshots contain only encrypted `.db` ciphertext, never plaintext vault data. The app and extension keep separate histories; permissions may expire. Unavailable storage falls back to session history. The Service Worker caches app resources only. Backup directory permissions and retention settings last for the current session. The hosting server can still see your IP and HTTP metadata.
 
 Editing preserves unknown XML, attachments, images and history. Binary fields are read-only. Attachment management, cloud sync, Passkeys, camera scanning, Firefox extensions and damaged XML repair are not supported. TOTP codes do not add another vault-unlock factor.
 
 Compatibility requires PBKDF2-SHA1 and AES-CBC without body authentication. Browsers cannot guarantee cross-application transaction locks or provable memory erasure. Keep independent encrypted backups and avoid editing a file in two apps at once. Unsaved edits are retained encrypted in page memory while locked; closing or refreshing loses them. Downloading a copy cannot confirm the original file was updated.
 
-No independent security audit has been completed. The extension is not listed in browser stores. Start with synthetic data and a copy of your database. See [SECURITY.md](SECURITY.md) for design limitations and vulnerability reporting, and the [privacy policy](https://clear-vault.app/privacy/) for data handling.
+No independent security audit has been completed. The extension is not listed in browser stores. Start with synthetic data and a copy of your vault. See [SECURITY.md](SECURITY.md) for design limitations and vulnerability reporting, and the [privacy policy](https://clear-vault.app/privacy/) for data handling.
 
 ## GitHub Actions → Cloudflare
 
@@ -111,6 +111,6 @@ The project currently provides an installable PWA, `.db` file association, page 
 
 [Developer workflow](docs/DEVELOPER-WORKFLOW.en.md) · [Contributing](CONTRIBUTING.md)
 
-Update both `dist/locales/zh-CN.js` and `dist/locales/en.js` when adding UI text. Never translate user data. Tests cover database round trips, synthetic compatibility fixtures, Unicode, all 18 RFC 6238 vectors, save conflicts, backup restoration, quick search, languages and extension filling. Windows also checks interoperability against the original application when the expected installation is present; Linux CI uses synthetic fixtures and Web Crypto round trips.
+Update both `dist/locales/zh-CN.js` and `dist/locales/en.js` when adding UI text. Never translate user data. Tests cover vault round trips, synthetic compatibility fixtures, Unicode, all 18 RFC 6238 vectors, save conflicts, backup restoration, quick search, languages and extension filling. Windows also checks interoperability against the original application when the expected installation is present; Linux CI uses synthetic fixtures and Web Crypto round trips.
 
 QR decoding uses bundled jsQR 1.4.0. jsdom and Prettier are development tools. See [RFC 6238](https://www.rfc-editor.org/rfc/rfc6238.html).

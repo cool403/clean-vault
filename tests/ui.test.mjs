@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { decryptDatabase } from '../dist/crypto.js';
 
+// 验证从创建密码库、添加和编辑验证码到保存、锁定、解锁、删除及恢复条目的完整界面流程。
 test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore', async () => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',
@@ -102,9 +103,15 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
     document.querySelector(form).elements.namedItem(name).value = value;
   };
   const switchLanguage = (locale) => {
-    const picker = document.querySelector('[data-language]');
+    let picker = document.querySelector('[data-language]');
+    const openedSettings = !picker;
+    if (!picker) {
+      click('[data-action=settings]');
+      picker = document.querySelector('#modal [data-language]');
+    }
     picker.value = locale;
     picker.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+    if (openedSettings && document.querySelector('#modal').open) click('[data-action=close-modal]');
   };
   const footerLinks = () =>
     [...document.querySelectorAll('.welcome-links a')].map((a) => new URL(a.href).pathname);
@@ -245,7 +252,7 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   click('[data-action=save]');
   await waitFor(
     () =>
-      !!saved && document.querySelector('[data-action=save]').textContent.includes('保存数据库'),
+      !!saved && document.querySelector('[data-action=save]').textContent.includes('保存密码库'),
   );
   const opened = await decryptDatabase(saved, 'synthetic-中文😀-2026');
   assert.equal(opened.version, 2);
@@ -313,6 +320,13 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   formValue('#password-form', 'password', 'wrong');
   submit('#password-form');
   await waitFor(() => document.querySelector('#password-error')?.textContent.includes('不正确'));
+  const failedPassword = document.querySelector('#password-form [name=password]');
+  assert.equal(failedPassword.getAttribute('aria-invalid'), 'true');
+  assert.equal(failedPassword.getAttribute('aria-describedby'), 'password-error');
+  assert.equal(document.activeElement, failedPassword, 'failed unlock focuses the password field');
+  failedPassword.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+  assert.equal(document.querySelector('#password-error').textContent, '');
+  assert.equal(failedPassword.getAttribute('aria-invalid'), null);
   formValue('#password-form', 'password', 'synthetic-中文😀-2026');
   submit('#password-form');
   await waitFor(() => !!document.querySelector('[data-action=delete]'));
@@ -396,9 +410,9 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   assert.equal(document.querySelector('#editor-form').elements.title.value, '编辑后的验证器');
   assert.equal(
     document.querySelector('[aria-label="Field type"] option[value=one_time_password]').textContent,
-    'Two-factor authentication',
+    'Verification code',
   );
-  assert.equal(document.querySelector('[aria-label="Field name"]').value, '两步验证码');
+  assert.equal(document.querySelector('[aria-label="Field name"]').value, '动态验证码');
   click('[data-action=close-modal]');
   switchLanguage('zh-CN');
   click('[data-action=settings]');

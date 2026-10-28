@@ -92,7 +92,7 @@ const coreNames = () => ({
   login: t('账号'),
   password: t('密码'),
   website: t('网站'),
-  one_time_password: t('两步验证码'),
+  one_time_password: t('动态验证码'),
 });
 function record(name, notes, favorite, folder, values) {
   return { title: name || t('未命名条目'), notes, favorite, folder, fields: values };

@@ -3,7 +3,7 @@ export default {
   解锁并继续未保存的修改: 'Entsperren und ungespeicherte Änderungen fortsetzen',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'Diese Sitzung enthält ungespeicherte Änderungen. Entsperren und speichern Sie diese, bevor Sie die Seite neu laden oder schließen.',
-  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+  '仅记住上次打开的文件名和文件访问权限，不保存主密码或密码库内容。网页与扩展分别保留记录。':
     'Gespeichert werden nur Name und Dateizugriff der zuletzt geöffneten Datei, niemals Hauptpasswörter oder Tresorinhalte. App und Erweiterung führen getrennte Verläufe.',
   从当前网页读取新密码: 'Neues Passwort von dieser Website lesen',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
@@ -16,7 +16,7 @@ export default {
   移除记录: 'Aus Verlauf entfernen',
   重新打开并解锁: 'Erneut öffnen und entsperren',
   需要重新选择文件: 'Datei erneut auswählen',
-  '仅记住文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+  '仅记住文件名和文件访问权限，不保存主密码或密码库内容。网页与扩展分别保留记录。':
     'Gespeichert werden nur Dateinamen und Dateizugriffe, niemals Hauptpasswörter oder Tresorinhalte. App und Erweiterung führen getrennte Verläufe.',
   '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。':
     'Dieser Browser kann den Dateiverlauf nicht dauerhaft speichern. Er ist nur für diese Sitzung verfügbar.',
@@ -65,7 +65,7 @@ export default {
   '附件、通行密钥和关联字段未导入，请保留源数据':
     'Anhänge, Passkeys und verknüpfte Felder wurden nicht importiert. Bewahren Sie die Quelldaten auf.',
   导入的自定义字段: 'Importierte benutzerdefinierte Felder',
-  '已导入 {count} 个条目，请保存数据库': '{count} Einträge importiert. Speichern Sie Ihren Tresor.',
+  '已导入 {count} 个条目，请保存密码库': '{count} Einträge importiert. Speichern Sie Ihren Tresor.',
   最近文件记录已清空: 'Dateiverlauf gelöscht.',
   '保存的文件授权可能过期，点击最近密码库可重新授权。':
     'Gespeicherte Dateiberechtigungen können ablaufen. Wählen Sie einen zuletzt verwendeten Tresor, um den Zugriff erneut zu erlauben.',
@@ -78,13 +78,13 @@ export default {
   '将当前 HTTPS 网站添加到此条目，保存后即可在这里匹配。':
     'Fügen Sie die aktuelle HTTPS-Website zu diesem Eintrag hinzu und speichern Sie, um ihn hier zuzuordnen.',
   选择条目: 'Eintrag auswählen',
-  '已添加网站地址，请保存数据库': 'Website-Adresse hinzugefügt. Speichern Sie Ihren Tresor.',
+  '已添加网站地址，请保存密码库': 'Website-Adresse hinzugefügt. Speichern Sie Ihren Tresor.',
   更新密码: 'Passwort aktualisieren',
   输入新密码: 'Neues Passwort eingeben',
   确认新密码: 'Neues Passwort bestätigen',
   '确认后更新此条目，再保存到加密文件。':
     'Bestätigen Sie die Aktualisierung und speichern Sie anschließend die verschlüsselte Datei.',
-  '密码已更新，请保存数据库': 'Passwort aktualisiert. Speichern Sie Ihren Tresor.',
+  '密码已更新，请保存密码库': 'Passwort aktualisiert. Speichern Sie Ihren Tresor.',
   查看所有条目: 'Alle Einträge anzeigen',
   '重新加载会放弃当前未保存修改，是否继续？':
     'Beim Neuladen gehen ungespeicherte Änderungen verloren. Fortfahren?',
@@ -92,7 +92,7 @@ export default {
   '已重新加载文件，请输入主密码': 'Datei neu geladen. Geben Sie Ihr Hauptpasswort ein.',
   '请先保存当前修改，再导入或重新加载文件':
     'Speichern Sie Ihre Änderungen, bevor Sie importieren oder eine Datei neu laden.',
-  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名和文件访问权限，可随时清空；重新打开仍需主密码。':
     'Tresore werden nur im Arbeitsspeicher entschlüsselt. Der Verlauf speichert nur Name und Dateizugriff der zuletzt geöffneten Datei und kann jederzeit gelöscht werden. Zum erneuten Öffnen ist das Hauptpasswort erforderlich.',
   '在 GitHub 查看源码': 'Quellcode auf GitHub ansehen',
   查看构建记录: 'Build-Verlauf ansehen',
@@ -116,10 +116,10 @@ export default {
   '↑ ↓ 选择': '↑ ↓ Auswählen',
   '首次写回需要选择加密备份目录，之后保存会自动备份':
     'Wählen Sie vor dem ersten Überschreiben einen Ordner für verschlüsselte Backups. Weitere Sicherungen erfolgen automatisch.',
-  '未选择备份目录，更改尚未写入数据库':
-    'Kein Backup-Ordner gewählt. Änderungen wurden nicht in die Datenbank geschrieben.',
-  '保存已取消，更改尚未写入数据库':
-    'Speichern abgebrochen. Änderungen wurden nicht in die Datenbank geschrieben.',
+  '未选择备份目录，更改尚未写入密码库':
+    'Kein Backup-Ordner gewählt. Änderungen wurden nicht in den Tresor geschrieben.',
+  '保存已取消，更改尚未写入密码库':
+    'Speichern abgebrochen. Änderungen wurden nicht in den Tresor geschrieben.',
   当前会话保留备份数量: 'Aufbewahrte Backups pro Sitzung',
   '仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。':
     'Entfernt werden nur überzählige Backups dieser Quelldatei aus dieser Seite. Andere Quellen und frühere Sitzungen bleiben erhalten. Kopieren Sie Backups auf ein separates Gerät und prüfen Sie Downloads.',
@@ -156,7 +156,7 @@ export default {
     'Wählen Sie vor dem Überschreiben in den Einstellungen einen Ordner für verschlüsselte Backups oder speichern Sie in eine neue Datei.',
   '保存已验证，但旧备份清理失败':
     'Speichern geprüft, aber alte Backups konnten nicht entfernt werden.',
-  已加密保存并验证数据库文件: 'Verschlüsselter Tresor gespeichert und geprüft.',
+  已加密保存并验证密码库文件: 'Verschlüsselter Tresor gespeichert und geprüft.',
   '已发起加密导出，请确认下载成功；原文件未被写回':
     'Verschlüsselter Export angefordert. Prüfen Sie den Download; die Originaldatei wurde nicht aktualisiert.',
   '当前浏览器不支持目录备份，请下载加密副本并独立保管':
@@ -192,7 +192,7 @@ export default {
   暂无账号: 'Kein Konto',
   所有条目: 'Alle Einträge',
   '生活里的重要信息，在这里井井有条。': 'Ordnung für das Wichtige in Ihrem digitalen Leben.',
-  双重验证: 'Zwei-Faktor-Authentifizierung',
+  双重验证: 'Zwei-Faktor',
   '每一次登录，多一份安心。': 'Ein gutes Gefühl bei jeder Anmeldung.',
   我的收藏: 'Favoriten',
   '常用的账号，随时触手可及。': 'Ihre häufig genutzten Konten, immer griffbereit.',
@@ -211,11 +211,13 @@ export default {
   演示: 'Demo',
   打开其他密码库: 'Anderen Tresor öffnen',
   偏好设置: 'Einstellungen',
+  安全: 'Sicherheit',
+  数据与备份: 'Daten & Backups',
   锁定密码库: 'Tresor sperren',
   安装应用: 'App installieren',
   '处理中…': 'Verarbeitung…',
   保存更改: 'Änderungen speichern',
-  保存数据库: 'Datenbank speichern',
+  保存密码库: 'Tresor speichern',
   添加验证器: 'Authentifikator hinzufügen',
   新建条目: 'Neuer Eintrag',
   '有未保存的更改，记得保存到 .db 文件':
@@ -241,6 +243,7 @@ export default {
   本地密码库: 'Lokaler Tresor',
   工作空间: 'Arbeitsbereich',
   密码库导航: 'Tresornavigation',
+  密码库信息: 'Tresorinformationen',
   我的标签: 'Meine Tags',
   '你的数据，只属于你': 'Ihre Daten gehören Ihnen',
   '本地解密 · 离线可用': 'Lokal entschlüsselt · Offline nutzbar',
@@ -288,7 +291,7 @@ export default {
   '你的设备，你的密码库': 'Ihr Gerät. Ihr Tresor.',
   '重要的，': 'Was Ihnen wichtig ist,',
   安心放在这里: 'hier sicher verwahrt',
-  '密码、账号和两步验证码，井井有条。': 'Passwörter, Konten und Bestätigungscodes, alles geordnet.',
+  '密码、账号和动态验证码，井井有条。': 'Passwörter, Konten und Bestätigungscodes, alles geordnet.',
   '打开你的 SafeInCloud 密码库，开始更轻盈的数字生活。':
     'Öffnen Sie Ihren SafeInCloud-Tresor für ein entspannteres digitales Leben.',
   '无需注册 · 无需上传文件': 'Keine Registrierung · Keine Datei-Uploads',
@@ -296,7 +299,7 @@ export default {
   '只在本地，安心解锁': 'Lokal und sicher entsperren',
   '主密码解密，文件始终由你掌握。':
     'Ihr Hauptpasswort entschlüsselt eine Datei, die Sie selbst verwalten.',
-  '两步验证，一眼即得': 'Bestätigungscodes auf einen Blick',
+  '双重验证，一眼即得': '2FA-Codes auf einen Blick',
   '实时动态验证码，轻点即可复制。': 'Aktuelle Bestätigungscodes. Ein Klick zum Kopieren.',
   '随时保存，自由带走': 'Jederzeit speichern. Überall mitnehmen.',
   '读写兼容 .db 格式，离线也能使用。': 'Kompatible .db-Dateien lesen und schreiben, auch offline.',
@@ -318,9 +321,9 @@ export default {
   取消: 'Abbrechen',
   确认并继续: 'Bestätigen und fortfahren',
   解锁密码库: 'Tresor entsperren',
-  'SafeInCloud 兼容数据库': 'SafeInCloud-kompatible Datenbank',
+  'SafeInCloud 兼容密码库': 'SafeInCloud-kompatibler Tresor',
   主密码: 'Hauptpasswort',
-  'SafeInCloud 数据库': 'SafeInCloud-Datenbank',
+  'SafeInCloud 密码库': 'SafeInCloud-Tresor',
   '文件超过 64 MB，请使用桌面客户端处理':
     'Diese Datei ist größer als 64 MB. Verwenden Sie den Desktop-Client.',
   '请选择 SafeInCloud 格式的 .db 文件': 'Wählen Sie eine SafeInCloud-.db-Datei.',
@@ -330,11 +333,10 @@ export default {
   账号: 'Konto',
   密码: 'Passwort',
   网站: 'Website',
-  两步验证码: 'Zweistufiger Bestätigungscode',
   '把重要的信息，妥善收在一起。': 'Wichtige Informationen gut zusammen aufbewahren.',
   生成密码: 'Passwort erzeugen',
   添加字段: 'Feld hinzufügen',
-  添加双重验证: 'Zwei-Faktor-Authentifizierung hinzufügen',
+  添加动态验证码: 'Bestätigungscode hinzufügen',
   条目名称: 'Eintragsname',
   '例如 GitHub、Google': 'Zum Beispiel GitHub oder Google',
   字段: 'Felder',
@@ -362,9 +364,9 @@ export default {
   未命名条目: 'Unbenannter Eintrag',
   '原文件已被其他应用修改，请在设置中另存为副本，避免覆盖':
     'Die Originaldatei wurde von einer anderen App geändert. Speichern Sie in den Einstellungen eine Kopie, um sie nicht zu überschreiben.',
-  已加密保存到数据库文件: 'Verschlüsselte Datenbank gespeichert.',
-  '已下载加密数据库，请保留下载文件':
-    'Verschlüsselte Datenbank heruntergeladen. Bewahren Sie die Datei auf.',
+  已加密保存到密码库文件: 'Verschlüsselter Tresor gespeichert.',
+  '已下载加密密码库，请保留下载文件':
+    'Verschlüsselter Tresor heruntergeladen. Bewahren Sie die Datei auf.',
   '保存失败：': 'Speichern fehlgeschlagen: ',
   '已锁定；未保存更改已加密保留在当前页面内，关闭页面会丢失':
     'Gesperrt. Ungespeicherte Änderungen bleiben verschlüsselt im Arbeitsspeicher dieser Seite und gehen beim Schließen verloren.',
@@ -420,30 +422,30 @@ export default {
   创建标签: 'Tag erstellen',
   '在浏览器菜单中选择“安装应用”或“添加到主屏幕”':
     'Wählen Sie im Browsermenü „App installieren“ oder „Zum Startbildschirm hinzufügen“.',
-  '条目已更新，请保存数据库': 'Eintrag aktualisiert. Speichern Sie die Datenbank.',
+  '条目已更新，请保存密码库': 'Eintrag aktualisiert. Speichern Sie den Tresor.',
   '请使用小于 20 MB 的二维码图片': 'Verwenden Sie ein QR-Bild unter 20 MB.',
-  '没有识别到 TOTP 二维码，请尝试更清晰的图片或手动粘贴密钥':
-    'Kein TOTP-QR-Code erkannt. Versuchen Sie ein schärferes Bild oder fügen Sie den Schlüssel manuell ein.',
+  '没有识别到验证器二维码，请尝试更清晰的图片或手动粘贴密钥':
+    'Kein Authenticator-QR-Code erkannt. Versuchen Sie ein schärferes Bild oder fügen Sie den Schlüssel manuell ein.',
   验证器: 'Authentifikator',
   '已识别验证密钥，保存条目即可生成验证码':
     'Authentifizierungsschlüssel erkannt. Speichern Sie den Eintrag, um Codes zu erzeugen.',
   '离线缓存未启用，仍可在线使用': 'Offline-Cache nicht verfügbar. Die App bleibt online nutzbar.',
   '请使用支持 Web Crypto 和 CompressionStream 的现代浏览器，并通过 HTTPS 或 localhost 打开':
     'Verwenden Sie einen modernen Browser mit Web Crypto und CompressionStream über HTTPS oder localhost.',
-  不支持此数据库版本: 'Nicht unterstützte Datenbankversion',
+  不支持此密码库版本: 'Nicht unterstützte Tresorversion',
   文件不完整: 'Unvollständige Datei',
-  '数据库解压后超过 128 MB 限制': 'Die entpackte Datenbank überschreitet das Limit von 128 MB.',
+  '密码库解压后超过 128 MB 限制': 'Der entpackte Tresor überschreitet das Limit von 128 MB.',
   '这不是兼容的 SafeInCloud .db 文件': 'Dies ist keine kompatible SafeInCloud-.db-Datei.',
-  '主密码不正确，或数据库文件已损坏': 'Falsches Hauptpasswort oder beschädigte Datenbankdatei.',
+  '主密码不正确，或密码库文件已损坏': 'Falsches Hauptpasswort oder beschädigte Tresordatei.',
   '请输入有效的 Base32 密钥或 otpauth:// 链接':
     'Geben Sie einen gültigen Base32-Schlüssel oder otpauth://-Link ein.',
   'Base32 密钥末尾无效': 'Ungültiges Ende des Base32-Schlüssels',
-  '仅支持基于时间的 TOTP 链接': 'Nur zeitbasierte TOTP-Links werden unterstützt.',
+  仅支持基于时间的验证器链接: 'Nur zeitbasierte Authenticator-Links werden unterstützt.',
   '仅支持 SHA1、SHA256 和 SHA512': 'Nur SHA1, SHA256 und SHA512 werden unterstützt.',
   '验证码位数应为 6 或 8': 'Bestätigungscodes müssen 6 oder 8 Ziffern haben.',
   '验证码周期应为 1–300 秒': 'Das Zeitintervall muss 1–300 Sekunden betragen.',
-  '不支持包含 DTD 的数据库': 'Datenbanken mit DTD werden nicht unterstützt.',
-  '数据库 XML 无效': 'Ungültiges Datenbank-XML',
+  '不支持包含 DTD 的密码库': 'Tresore mit DTD werden nicht unterstützt.',
+  '密码库 XML 无效': 'Ungültiges Tresor-XML',
   开发与协作: 'Entwicklung und Zusammenarbeit',
   日常生活: 'Alltag',
   '这是演示条目，可以自由编辑。真实密码库仅在你的设备上解密。':
@@ -457,8 +459,8 @@ export default {
   界面语言: 'Oberflächensprache',
   选择语言: 'Sprache auswählen',
   'ClearVault · 密码与验证器': 'ClearVault · Passwörter und Authentifikator',
-  'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。':
-    'ClearVault: lokaler Passworttresor und Authentifikator. SafeInCloud-Datenbanken öffnen, verwalten und speichern.',
+  'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 密码库。':
+    'ClearVault: lokaler Passworttresor und Authentifikator. SafeInCloud-Tresoren öffnen, verwalten und speichern.',
   '。': '.',
   '本地解密 · 按需填充': 'Lokal entschlüsseln · Auf Wunsch ausfüllen',
   '你的密码，随手可用。': 'Ihre Passwörter, immer griffbereit.',
@@ -495,9 +497,16 @@ export default {
   隐藏: 'Ausblenden',
   复制账号: 'Benutzername kopieren',
   填入验证码: 'Code einfügen',
-  '已添加条目，请保存数据库': 'Eintrag hinzugefügt. Speichern Sie Ihren Tresor.',
+  '已添加条目，请保存密码库': 'Eintrag hinzugefügt. Speichern Sie Ihren Tresor.',
   为此网站新建条目: 'Eintrag für diese Website anlegen',
   更多操作: 'Weitere Aktionen',
+  更多: 'Mehr',
+  继续编辑: 'Weiter bearbeiten',
+  丢弃修改: 'Änderungen verwerfen',
+  '关闭编辑器会丢弃尚未保存的修改。':
+    'Beim Schließen des Editors werden nicht gespeicherte Änderungen verworfen.',
+  '将在 {seconds} 秒后自动锁定': 'Automatische Sperre in {seconds} Sekunden',
+  继续使用: 'Weiter verwenden',
   保存为我的密码库: 'Als meinen Tresor speichern',
   '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
     'Eine verschlüsselte Kopie wurde exportiert; die Originaldatei ist nicht aktualisiert. Änderungen sind weiterhin ungespeichert und bleiben auf dieser Seite.',
@@ -538,8 +547,8 @@ export default {
   恢复步骤: 'Wiederherstellungsschritte',
   '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
     'Öffnen Sie ClearVault, wählen Sie .db-Tresor öffnen und geben Sie das Master-Passwort ein.',
-  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
-    'Dieses Kit enthält keine Passwörter, TOTP-Geheimnisse oder Tresorinhalte. Bewahren Sie es sicher auf.',
+  '本工具包不包含密码、动态验证码密钥或密码库内容。请妥善保管。':
+    'Dieses Kit enthält keine Passwörter, Authenticator-Geheimnisse oder Tresorinhalte. Bewahren Sie es sicher auf.',
   '恢复工具包已下载，请打印并妥善保管':
     'Wiederherstellungs-Kit heruntergeladen. Drucken und sicher aufbewahren.',
   尚未保存的密码库: 'Nicht gespeicherter Tresor',
@@ -587,24 +596,27 @@ export default {
   '开始使用 ClearVault': 'Erste Schritte mit ClearVault',
   '完成 {done}/{total} 步': '{done} von {total} Schritten erledigt',
   稍后: 'Später',
-  导入或新建第一条记录: 'Ersten Eintrag importieren oder anlegen',
+  导入或新建第一个条目: 'Ersten Eintrag importieren oder anlegen',
   安装浏览器扩展: 'Browsererweiterung installieren',
   首次填充或复制验证码: 'Einmal einen Login oder Code ausfüllen oder kopieren',
   添加一个验证器: 'Einen Authenticator hinzufügen',
   保存并设置备份: 'Speichern und Backups einrichten',
   已完成: 'Erledigt',
   安全概览: 'Sicherheitsübersicht',
+  '选择一张卡片，在条目列表中处理对应问题。':
+    'Wählen Sie eine Karte, um die passenden Einträge zu prüfen.',
   弱密码: 'Schwache Passwörter',
   重复使用: 'Wiederverwendete Passwörter',
   长期未更新: 'Alte Passwörter',
-  未启用两步验证: 'Kein TOTP',
+  未启用双重验证: 'Ohne 2FA',
+  '有密码但尚未添加动态验证码的条目。': 'Einträge mit Passwort, aber ohne Bestätigungscode.',
   '仅在本地根据解密后的条目计算，不上传密码。':
     'Lokal aus entschlüsselten Einträgen berechnet; Passwörter werden nie hochgeladen.',
   '长度不足 12 个字符或强度过低的密码。': 'Passwörter unter 12 Zeichen oder mit geringer Stärke.',
   '{entries} 个条目使用同一密码（{groups} 组）':
-    '{entries} Einträge teilen ein Passwort ({groups} Gruppen)',
+    '{entries} Einträge verwenden dasselbe Passwort (Gruppen: {groups})',
   '超过一年没有修改的条目。': 'Einträge, die seit über einem Jahr nicht geändert wurden.',
-  '有密码但尚未添加 TOTP。': 'Einträge mit Passwort, aber ohne TOTP.',
+  '有密码但尚未添加动态验证码。': 'Einträge mit Passwort, aber ohne Bestätigungscode.',
   '共 {count} 个条目，{withPassword} 个设置了密码。':
     '{count} Einträge, {withPassword} mit Passwort.',
   安全概览筛选结果: 'Ergebnisse des Sicherheitsfilters',
@@ -669,7 +681,7 @@ export default {
   本地: 'Lokal',
   外部: 'Extern',
   采用合并结果: 'Zusammengeführtes Ergebnis verwenden',
-  '已合并外部更改，请保存数据库': 'Externe Änderungen zusammengeführt. Speichern Sie Ihren Tresor.',
+  '已合并外部更改，请保存密码库': 'Externe Änderungen zusammengeführt. Speichern Sie Ihren Tresor.',
   显示冲突内容: 'Konfliktinhalte anzeigen',
   是: 'Ja',
   否: 'Nein',

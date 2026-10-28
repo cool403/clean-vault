@@ -41,7 +41,7 @@ const names = {
     step: '使用指南',
     note: '独立的 SafeInCloud 兼容工具 · 无需注册',
     cta: '准备好开始了吗？',
-    tip: '先用演示数据体验，再用数据库副本验证。',
+    tip: '先用演示数据体验，再用密码库副本验证。',
   },
   en: {
     home: 'Home',
@@ -95,7 +95,7 @@ for (const locale of ['zh', 'en']) {
     en
       ? 'Practical ClearVault guides: open SafeInCloud DB files, use Linux and offline mode, import from 1Password, LastPass or Apple Passwords, sync with your own folder, and set up TOTP codes.'
       : 'ClearVault 实用教程：打开 SafeInCloud DB、在 Linux 离线使用密码库、从 1Password / LastPass / Apple Passwords 导入、用自己的文件夹同步，以及设置 TOTP 双重验证与保存备份。',
-    `<section class="hero"><span class="eyebrow">A LITTLE HELP, WHEN YOU NEED IT</span><h1>${en ? 'A calmer way<br>to get started.' : '从容开始，<br>安心使用。'}</h1><p>${en ? 'Practical guides for the files, passwords and codes you keep close.' : '从打开第一份数据库，到保存、备份和两步验证。每一步，都说清楚。'}</p></section><div class="guide-grid">${cards}</div><aside class="notice">${en ? 'Before you start: keep an independent encrypted backup and try a copy of your database.' : '开始前，请保留独立的加密备份，并先用数据库副本验证。'} ${link(p + '/security/', n.security + ' ↗')}</aside>`,
+    `<section class="hero"><span class="eyebrow">A LITTLE HELP, WHEN YOU NEED IT</span><h1>${en ? 'A calmer way<br>to get started.' : '从容开始，<br>安心使用。'}</h1><p>${en ? 'Practical guides for the files, passwords and codes you keep close.' : '从打开第一份密码库，到保存、备份和双重验证。每一步，都说清楚。'}</p></section><div class="guide-grid">${cards}</div><aside class="notice">${en ? 'Before you start: keep an independent encrypted backup and try a copy of your database.' : '开始前，请保留独立的加密备份，并先用密码库副本验证。'} ${link(p + '/security/', n.security + ' ↗')}</aside>`,
   );
   for (const a of [
     ...articles,

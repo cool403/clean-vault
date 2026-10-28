@@ -1,10 +1,10 @@
 import { t } from './i18n.js';
 export const children = (node, tag) => [...node.children].filter((el) => el.tagName === tag);
 export function parseVault(xml) {
-  if (/<!DOCTYPE|<!ENTITY/i.test(xml)) throw new Error(t('不支持包含 DTD 的数据库'));
+  if (/<!DOCTYPE|<!ENTITY/i.test(xml)) throw new Error(t('不支持包含 DTD 的密码库'));
   const doc = new DOMParser().parseFromString(xml, 'application/xml');
   if (doc.querySelector('parsererror') || doc.documentElement.tagName !== 'database')
-    throw new Error(t('数据库 XML 无效'));
+    throw new Error(t('密码库 XML 无效'));
   return doc;
 }
 export function serializeVault(doc) {
@@ -80,7 +80,7 @@ export function demoVault() {
     if (otp)
       setField(
         card,
-        t('两步验证码'),
+        t('动态验证码'),
         'otpauth://totp/' + name + ':demo?secret=JBSWY3DPEHPK3PXP&issuer=' + name,
         'one_time_password',
       );

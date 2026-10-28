@@ -23,7 +23,7 @@ export function recentMarkup(entries, persistent) {
   const unsaved = entries.some((entry) => entry.current && entry.unsaved)
     ? `<p class="workflow-notice">${t('当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。')}</p>`
     : '';
-  return `<section class="recent-files" aria-label="${t('最近密码库')}"><div class="workflow-heading"><h3>${t('最近密码库')}</h3>${entries.some((entry) => !entry.ephemeral) ? `<button type="button" class="text-button" data-action="recent-clear">${t('清空记录')}</button>` : ''}</div><p class="form-help">${t(persistent ? '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。' : '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。')}</p>${rows || `<p class="form-help">${t('打开或保存密码库后，会在这里显示。')}</p>`}${unsaved}</section>`;
+  return `<section class="recent-files" aria-label="${t('最近密码库')}"><div class="workflow-heading"><h3>${t('最近密码库')}</h3>${entries.some((entry) => !entry.ephemeral) ? `<button type="button" class="text-button" data-action="recent-clear">${t('清空记录')}</button>` : ''}</div><p class="form-help">${t(persistent ? '仅记住上次打开的文件名和文件访问权限，不保存主密码或密码库内容。网页与扩展分别保留记录。' : '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。')}</p>${rows || `<p class="form-help">${t('打开或保存密码库后，会在这里显示。')}</p>`}${unsaved}</section>`;
 }
 
 export function createImportWizard({ dialog, getDoc, show, close, commit }) {
@@ -98,7 +98,7 @@ export function createImportWizard({ dialog, getDoc, show, close, commit }) {
     const field = (key, label) =>
       `<label class="form-label">${label}<select name="${key}">${options(key)}</select></label>`;
     present(
-      `<form id="import-map">${heading(t('映射 CSV 字段'))}<p class="form-help">${t('选择对应的列，未使用的列会忽略。')}</p>${field('title', t('条目名称'))}${field('username', t('账号'))}${field('password', t('密码'))}${field('url', t('网站'))}${field('notes', t('备注'))}${field('folder', t('标签'))}${field('otp', t('两步验证码'))}${field('favorite', t('收藏'))}<p class="form-error" role="alert"></p><div class="modal-footer"><button type="button" class="button secondary" data-import-back>${t('重新选择')}</button>${cancel()}<button type="submit" class="button primary">${t('预览导入')}</button></div></form>`,
+      `<form id="import-map">${heading(t('映射 CSV 字段'))}<p class="form-help">${t('选择对应的列，未使用的列会忽略。')}</p>${field('title', t('条目名称'))}${field('username', t('账号'))}${field('password', t('密码'))}${field('url', t('网站'))}${field('notes', t('备注'))}${field('folder', t('标签'))}${field('otp', t('动态验证码'))}${field('favorite', t('收藏'))}<p class="form-error" role="alert"></p><div class="modal-footer"><button type="button" class="button secondary" data-import-back>${t('重新选择')}</button>${cancel()}<button type="submit" class="button primary">${t('预览导入')}</button></div></form>`,
     );
     dialog.querySelector('[data-import-back]').onclick = open;
     const form = dialog.querySelector('#import-map');

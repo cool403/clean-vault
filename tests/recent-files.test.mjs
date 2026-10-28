@@ -43,7 +43,8 @@ function storage() {
   };
 }
 
-test('history persists names and handles only, deduplicates by handle and keeps only the last opened vault', async () => {
+// 验证历史记录只持久化名称和访问权限、按访问权限去重，并只保留最后打开的密码库。
+test('history persists names and file access only, deduplicates by file access and keeps only the last opened vault', async () => {
   const factory = storage(),
     history = createRecentFiles(factory);
   const handle = { isSameEntry: async (other) => other === handle };
@@ -64,6 +65,7 @@ test('history persists names and handles only, deduplicates by handle and keeps 
   assert.equal((await history.list()).length, 0);
 });
 
+// 验证持久化存储不可用或被拒绝时，降级使用当前会话历史。
 test('unavailable or denied storage degrades to session history', async () => {
   for (const factory of [
     undefined,
@@ -82,6 +84,7 @@ test('unavailable or denied storage degrades to session history', async () => {
   }
 });
 
+// 验证当前会话按已核实的文件身份合并，且不修改持久化记录。
 test('current sessions merge with verified file identities without changing persisted records', async () => {
   const handle = { isSameEntry: async (other) => other === handle };
   const entries = [
@@ -100,6 +103,7 @@ test('current sessions merge with verified file identities without changing pers
   assert.deepEqual(await mergeRecentSession(entries, null), entries.slice(0, 1));
 });
 
+// 验证历史为空或被清空后，未保存和当前选中的会话仍可访问。
 test('unsaved and selected sessions remain accessible when recent history is empty or cleared', async () => {
   const merged = await mergeRecentSession([], { name: 'new.db', dirty: true });
   const dom = new JSDOM(recentMarkup(merged, true));
@@ -128,6 +132,7 @@ test('unsaved and selected sessions remain accessible when recent history is emp
   dom.window.close();
 });
 
+// 验证旧版历史迁移只保留最新记录，并移除已存储的文件夹标签。
 test('legacy history keeps the newest record and removes stored folder labels', async () => {
   const factory = storage();
   factory.data.set('old', { id: 'old', name: 'old.db', handle: null, time: 1 });
@@ -151,6 +156,7 @@ test('legacy history keeps the newest record and removes stored folder labels', 
   assert.deepEqual(await createRecentFiles(factory).list(), [], 'older history must not reappear');
 });
 
+// 验证最近文件界面只展示经过转义的文件名，不显示目录控件或目录标签。
 test('recent markup displays a single escaped name without directory controls or labels', () => {
   const entries = [
     {
@@ -173,6 +179,7 @@ test('recent markup displays a single escaped name without directory controls or
   dom.window.close();
 });
 
+// 验证重开文件仅在需要时申请权限，并报告权限拒绝或文件丢失。
 test('reopening requests permission only when needed and reports denied or missing files', async () => {
   let requested = 0;
   const handle = {

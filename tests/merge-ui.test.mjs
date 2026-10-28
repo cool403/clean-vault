@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { decryptDatabase, encryptDatabase, passwordBytes } from '../dist/crypto.js';
 
+// 验证合并预览允许逐字段独立选择来源，并将选择结果保存到密码库。
 test('merge preview applies independent field choices and saves the merged vault', async (t) => {
   const dom = new JSDOM(
     '<div id="app"></div><dialog id="modal"></dialog><div id="toast"></div><input id="file-input" type="file"><input id="qr-input" type="file">',

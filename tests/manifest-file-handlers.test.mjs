@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
+// 验证所有 PWA 清单关联 .db 文件，并配置复用已有窗口打开。
 test('all PWA manifests associate .db files and reuse an existing window', async () => {
   for (const name of [
     'manifest.webmanifest',

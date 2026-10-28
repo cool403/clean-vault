@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
 import { encryptDatabase, decryptDatabase, passwordBytes } from '../dist/crypto.js';
 
+// 验证扩展更新和导入须经确认、备份可验证，并在请求过期或重新加载时阻止错误填充。
 test('extension updates/imports with confirmation, verifies backups, stops stale fills and reloads', async (context) => {
   const dom = new JSDOM(
     await readFile(new URL('../extension/panel.html', import.meta.url), 'utf8'),
