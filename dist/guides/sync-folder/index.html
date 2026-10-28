@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="把 ClearVault 的加密 .db 放进 Syncthing、Nextcloud、OneDrive 或 iCloud Drive，检测外部修改并在本地合并冲突。"
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>用自己的同步文件夹同步密码库 · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/guides/sync-folder/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://clear-vault.app/guides/sync-folder/" />
+    <link rel="alternate" hreflang="en" href="https://clear-vault.app/en/guides/sync-folder/" />
+    <link rel="alternate" hreflang="x-default" href="https://clear-vault.app/guides/sync-folder/" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="用自己的同步文件夹同步密码库 · ClearVault" />
+    <meta
+      property="og:description"
+      content="把 ClearVault 的加密 .db 放进 Syncthing、Nextcloud、OneDrive 或 iCloud Drive，检测外部修改并在本地合并冲突。"
+    />
+    <meta property="og:url" content="https://clear-vault.app/guides/sync-folder/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/downloads/">下载与源码</a
+        ><a href="/en/guides/sync-folder/" class="language">English</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/guides/" class="back">← 所有指南</a><span class="eyebrow">使用指南</span>
+        <h1>用自己的同步文件夹同步密码库</h1>
+        <p class="lead">
+          ClearVault
+          不运营云同步服务。密码库始终是一个加密文件；你可以用自己信任的同步工具把它带到其他设备，并在出现外部修改时先合并、再保存。
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="本页内容">
+          <strong>本页内容</strong><a href="#section-1">1. 把 .db 放进同步文件夹</a
+          ><a href="#section-2">2. 另一台设备修改后</a><a href="#section-3">3. 合并规则</a
+          ><a href="#section-4">4. 边界</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. 把 .db 放进同步文件夹</h2>
+            <p>
+              选择 Syncthing、Nextcloud、OneDrive、iCloud Drive
+              或其他你信任的文件夹同步工具。先保留一份独立加密备份，再在网页端打开同步文件夹中的 .db
+              并解锁。
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. 另一台设备修改后</h2>
+            <p>
+              回到 ClearVault
+              页面或尝试保存时，应用会检查原文件指纹并提示外部变化。点击“合并更改”会在本地读取外部文件，使用当前会话的主密码解密，并预览本地未保存编辑与外部版本的合并结果。
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. 合并规则</h2>
+            <p>
+              双方修改不同条目时都保留；同一条目双方都修改时，冲突预览会列出标题、备注、回收站 /
+              归档 /
+              收藏状态和每个字段，按较新的修改时间预选本地或外部值，可逐项更改。一侧删除、另一侧修改时可选择保留或删除。标签按名称合并；未知
+              XML、附件和图片随选中的条目版本保留。确认预览后仍需点击“保存数据库”才写入文件。
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>4. 边界</h2>
+            <p>
+              外部文件必须使用相同格式版本和主密码；密码不同或版本不同时无法合并。没有跨设备文件锁；字段级选择覆盖标题、备注、标记和普通字段，未知的数据库级
+              XML
+              只保留本地版本；同步工具仍可能回滚或替换文件。请保留独立备份，避免两台设备同时编辑。
+            </p>
+          </section>
+          <section class="related">
+            <h2>继续阅读</h2>
+            <a href="/guides/open-safeincloud-db/">如何打开、编辑和保存 SafeInCloud DB 文件 ↗</a
+            ><a href="/guides/safeincloud-linux/">在 Linux 上使用 SafeInCloud 数据库 ↗</a
+            ><a href="/guides/totp/">设置 TOTP 双重验证与动态验证码 ↗</a
+            ><a href="/guides/import-passwords/">从其他密码管理器导入密码 ↗</a
+            ><a href="/guides/import-1password/">从 1Password 导入到 ClearVault ↗</a
+            ><a href="/guides/import-lastpass/">从 LastPass 导入到 ClearVault ↗</a
+            ><a href="/guides/import-apple-passwords/">从 Apple Passwords 导入到 ClearVault ↗</a
+            ><a href="/guides/import-generic-csv/">导入任意 CSV 到 ClearVault ↗</a
+            ><a href="/guides/browser-extension/">扩展教程：填充、搜索、OTP 与新建条目 ↗</a
+            ><a href="/security/">安全与隐私 ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>准备好开始了吗？</h2>
+        <p>先用演示数据体验，再用数据库副本验证。</p>
+      </div>
+      <a href="/?lang=zh-CN" class="button">打开密码库 ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>独立的 SafeInCloud 兼容工具 · 无需注册</p>
+      <nav>
+        <a href="/guides/">使用指南</a><a href="/security/">安全与隐私</a
+        ><a href="/privacy/">隐私政策</a><a href="/downloads/">下载与源码</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.4 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">构建记录</a></small
+      >
+    </footer>
+  </body>
+</html>

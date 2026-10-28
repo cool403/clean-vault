@@ -1,4 +1,4 @@
-const CACHE = 'clearvault-shell-v41';
+const CACHE = 'clearvault-shell-v47';
 const ASSETS = [
   './',
   './index.html',
@@ -17,6 +17,12 @@ const ASSETS = [
   './downloads.css',
   './downloads.js',
   './crypto.js',
+  './clipboard.js',
+  './password-strength.js',
+  './pinyin.js',
+  './snapshots.js',
+  './merge.js',
+  './vendor/pinyin-initials.js',
   './totp.js',
   './vault.js',
   './password-generator.js',

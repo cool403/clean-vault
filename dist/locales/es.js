@@ -3,20 +3,8 @@ export default {
   解锁并继续未保存的修改: 'Desbloquear y continuar con los cambios sin guardar',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'Esta sesión tiene cambios sin guardar. Desbloquéela y guárdelos antes de recargar o cerrar la página.',
-  '上次确认的目录：{folder}': 'Última carpeta confirmada: {folder}',
-  所在目录尚未确认: 'Carpeta aún sin confirmar',
-  确认所在目录: 'Confirmar carpeta contenedora',
-  所选文件夹: 'Carpeta seleccionada',
-  '记录已失效，请重新打开密码库': 'Este registro ya no está disponible. Vuelva a abrir la bóveda.',
-  '所选文件夹不包含此密码库，请重新选择':
-    'La carpeta seleccionada no contiene esta bóveda. Elija la carpeta que la contiene.',
-  已确认密码库所在目录: 'Carpeta de la bóveda confirmada.',
-  '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。':
-    'El navegador no proporciona la ruta local completa. Use el icono de carpeta para elegir la carpeta contenedora y verificar su nombre y ruta relativa.',
-  '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。':
-    'El navegador no proporciona la ruta local completa. Compruebe la carpeta en el selector de archivos al volver a elegir el archivo.',
-  '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Solo se recuerdan nombres, identificadores de acceso a archivos y carpetas confirmadas, nunca contraseñas maestras ni contenido de la bóveda. La aplicación y la extensión mantienen historiales separados.',
+  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Solo se recuerdan el nombre y el identificador del último archivo abierto, nunca contraseñas maestras ni contenido de la bóveda. La aplicación y la extensión mantienen registros separados.',
   从当前网页读取新密码: 'Leer la nueva contraseña de este sitio',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
     'Los campos de nueva contraseña solo se leen al hacer clic. La entrada cambia únicamente tras su confirmación.',
@@ -102,8 +90,8 @@ export default {
   '已重新加载文件，请输入主密码': 'Archivo recargado. Introduzca la contraseña maestra.',
   '请先保存当前修改，再导入或重新加载文件':
     'Guarde los cambios actuales antes de importar o recargar un archivo.',
-  '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。':
-    'Las bóvedas solo se descifran en memoria. El historial guarda nombres, identificadores de acceso y carpetas confirmadas; puede borrarlo cuando quiera. Para volver a abrir se requiere la contraseña maestra.',
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
+    'Las bóvedas solo se descifran en memoria. El historial guarda solo el nombre y el identificador del último archivo abierto y puede borrarse en cualquier momento. Para volver a abrirlo se requiere la contraseña maestra.',
   '在 GitHub 查看源码': 'Ver código en GitHub',
   查看构建记录: 'Ver historial de compilaciones',
   核对线上版本: 'Verificar esta versión publicada',
@@ -499,4 +487,189 @@ export default {
   你的私密空间: 'SU ESPACIO PRIVADO',
   '少一点担忧，多一点从容。': 'Menos preocupación. Más claridad.',
   '为你的数字生活，留一份安心。': 'Para su tranquilidad digital.',
+  显示: 'Mostrar',
+  隐藏: 'Ocultar',
+  复制账号: 'Copiar usuario',
+  填入验证码: 'Rellenar código',
+  '已添加条目，请保存数据库': 'Entrada añadida. Guarda tu bóveda.',
+  为此网站新建条目: 'Añadir una entrada para este sitio',
+  更多操作: 'Más acciones',
+  保存为我的密码库: 'Guardar como mi bóveda',
+  '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
+    'Se exportó una copia cifrada; el archivo original no se ha actualizado. Los cambios siguen sin guardar en esta página.',
+  剪贴板自动清除: 'Borrar el portapapeles automáticamente',
+  '{seconds} 秒': '{seconds} segundos',
+  '已复制到剪贴板，{seconds} 秒后自动清除':
+    'Copiado al portapapeles. Se borrará en {seconds} segundos.',
+  '复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。':
+    'Tras copiar un usuario, contraseña o código, se intentará borrar el portapapeles después del tiempo elegido; puede fallar si la página pierde el foco.',
+  '无法识别唯一的验证码输入框，请手动填写':
+    'No se pudo identificar un campo único para el código de verificación. Introdúcelo manualmente.',
+  主密码强度: 'Seguridad de la contraseña maestra',
+  太弱: 'Muy débil',
+  弱: 'Débil',
+  一般: 'Aceptable',
+  强: 'Fuerte',
+  很强: 'Muy fuerte',
+  '建议至少 12 个字符': 'Use al menos 12 caracteres',
+  '混合大小写、数字和符号': 'Combine mayúsculas, minúsculas, números y símbolos',
+  '避免常见单词、重复或连续字符': 'Evite palabras comunes, repeticiones o secuencias',
+  '主密码无法找回，请务必妥善保管。':
+    'La contraseña maestra no se puede recuperar. Guárdela de forma segura.',
+  我确认主密码无法找回: 'Entiendo que la contraseña maestra no se puede recuperar',
+  请确认主密码无法找回: 'Confirme que la contraseña maestra no se puede recuperar',
+  当前主密码: 'Contraseña maestra actual',
+  当前主密码不正确: 'La contraseña maestra actual es incorrecta',
+  新主密码: 'Nueva contraseña maestra',
+  '创建后可在偏好设置下载恢复工具包。':
+    'Después de crear la bóveda, descargue un kit de recuperación en Preferencias.',
+  恢复工具包: 'Kit de recuperación',
+  生成时间: 'Creado',
+  密码库文件: 'Archivo de la bóveda',
+  '主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。':
+    'ClearVault no puede recuperar su contraseña maestra. Escríbala aquí a mano y guárdela por separado de las copias de seguridad.',
+  备份位置: 'Ubicación de la copia de seguridad',
+  恢复步骤: 'Pasos de recuperación',
+  '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
+    'Abra ClearVault, elija Abrir bóveda .db e introduzca la contraseña maestra.',
+  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
+    'Este kit no contiene contraseñas, secretos TOTP ni el contenido de la bóveda. Guárdelo de forma segura.',
+  '恢复工具包已下载，请打印并妥善保管':
+    'Kit de recuperación descargado. Imprímalo y guárdelo de forma segura.',
+  尚未保存的密码库: 'Bóveda sin guardar',
+  命令模式: 'Modo de comandos',
+  没有找到命令: 'No se encontraron comandos',
+  '输入 > 查看命令': 'Escriba > para ver comandos',
+  运行命令: 'Ejecutar comando',
+  '{count} 个命令': '{count} comandos',
+  '显示前 {count} 条': 'Mostrando los primeros {count}',
+  清除最近使用记录: 'Borrar uso reciente',
+  最近使用记录已清除: 'Uso reciente borrado',
+  '显示更多（还有 {count} 条）': 'Mostrar más (quedan {count})',
+  本地加密快照: 'Instantáneas cifradas locales',
+  '保存在浏览器本地，加密且不会上传；清除站点数据会删除。':
+    'Se guardan localmente en el navegador, cifradas y sin subirse; borrar los datos del sitio las elimina.',
+  保留数量: 'Cantidad a conservar',
+  查看本地快照: 'Ver instantáneas locales',
+  清除本地快照: 'Borrar instantáneas locales',
+  '当前 {count} 份本地快照': '{count} instantáneas locales',
+  暂无本地快照: 'No hay instantáneas locales',
+  当前浏览器不支持本地快照: 'Este navegador no admite instantáneas locales',
+  '快照是加密的 .db 密文，恢复时需要当时的主密码。':
+    'Las instantáneas son .db cifrados; para restaurarlas se necesita la contraseña maestra de ese momento.',
+  '这将删除当前密码库的本地加密快照，无法撤销。':
+    'Esto elimina las instantáneas cifradas locales de la bóveda actual y no se puede deshacer.',
+  清除: 'Borrar',
+  '已清除 {count} 份本地快照': 'Se borraron {count} instantáneas locales',
+  原文件已被其他应用修改: 'Otra aplicación modificó el archivo original',
+  '当前编辑仍在页面内。请选择“另存为副本”或重新加载外部版本，避免覆盖。':
+    'Tus cambios siguen en esta página. Guarda una copia o recarga la versión externa para no sobrescribirla.',
+  '保存会停止，避免覆盖外部版本。':
+    'Se detiene el guardado para no sobrescribir la versión externa.',
+  另存为副本: 'Guardar una copia',
+  保留当前编辑: 'Mantener los cambios actuales',
+  '（不使用）': '(No usar)',
+  '通用 CSV（手动映射）': 'CSV genérico (asignación manual)',
+  '映射 CSV 字段': 'Asignar columnas CSV',
+  '选择对应的列，未使用的列会忽略。':
+    'Elija la columna correspondiente para cada campo; las columnas sin usar se ignoran.',
+  '请至少映射一个 CSV 字段': 'Asigne al menos una columna CSV',
+  '请至少映射条目名称、账号、密码、网址或备注中的一列':
+    'Asigne al menos la columna de título, usuario, contraseña, URL o notas',
+  '支持 Chrome、Bitwarden、1Password、LastPass、Apple Passwords 以及带表头的通用 CSV。':
+    'Compatible con Chrome, Bitwarden, 1Password, LastPass, Apple Passwords y CSV genéricos con encabezados.',
+  '开始使用 ClearVault': 'Empezar con ClearVault',
+  '完成 {done}/{total} 步': '{done} de {total} pasos completados',
+  稍后: 'Más tarde',
+  导入或新建第一条记录: 'Importa o añade tu primera entrada',
+  安装浏览器扩展: 'Instala la extensión del navegador',
+  首次填充或复制验证码: 'Rellena o copia un inicio de sesión o código una vez',
+  添加一个验证器: 'Añade un autenticador',
+  保存并设置备份: 'Guarda y configura copias de seguridad',
+  已完成: 'Hecho',
+  安全概览: 'Resumen de seguridad',
+  弱密码: 'Contraseñas débiles',
+  重复使用: 'Contraseñas reutilizadas',
+  长期未更新: 'Contraseñas antiguas',
+  未启用两步验证: 'Sin TOTP',
+  '仅在本地根据解密后的条目计算，不上传密码。':
+    'Calculado localmente a partir de entradas descifradas; las contraseñas nunca se suben.',
+  '长度不足 12 个字符或强度过低的密码。':
+    'Contraseñas de menos de 12 caracteres o con poca seguridad.',
+  '{entries} 个条目使用同一密码（{groups} 组）':
+    '{entries} entradas comparten una contraseña ({groups} grupos)',
+  '超过一年没有修改的条目。': 'Entradas sin cambios durante más de un año.',
+  '有密码但尚未添加 TOTP。': 'Entradas con contraseña pero sin TOTP.',
+  '共 {count} 个条目，{withPassword} 个设置了密码。':
+    '{count} entradas, {withPassword} con contraseña.',
+  安全概览筛选结果: 'Resultados del filtro de seguridad',
+  '本地安全筛选。': 'Filtro de seguridad local.',
+  清除筛选: 'Borrar filtro',
+  批量选择: 'Seleccionar varios',
+  '已选择 {count} 项': '{count} seleccionados',
+  全选: 'Seleccionar todo',
+  清除选择: 'Borrar selección',
+  添加标签: 'Añadir etiqueta',
+  请先选择条目: 'Selecciona al menos una entrada primero',
+  '为选中的 {count} 个条目添加标签': 'Añadir una etiqueta a {count} entradas seleccionadas',
+  选择标签: 'Elegir una etiqueta',
+  或新建标签: 'O crear una etiqueta',
+  输入新标签名称: 'Introduce un nombre de etiqueta nuevo',
+  请选择或新建标签: 'Elige o crea una etiqueta',
+  '已为 {count} 个条目添加标签': 'Se añadió una etiqueta a {count} entradas',
+  '已归档 {count} 个条目': '{count} entradas archivadas',
+  '已将 {count} 个条目移至回收站': '{count} entradas movidas a la papelera',
+  保存: 'Guardar',
+  删除: 'Eliminar',
+  重命名: 'Renombrar',
+  合并: 'Combinar',
+  管理标签: 'Gestionar etiquetas',
+  还没有标签: 'Aún no hay etiquetas',
+  重命名标签: 'Renombrar etiqueta',
+  合并到: 'Combinar en',
+  标签已重命名: 'Etiqueta renombrada',
+  标签已删除: 'Etiqueta eliminada',
+  标签已合并: 'Etiquetas combinadas',
+  '删除标签“{name}”？条目不会被删除，只会移除该标签。':
+    '¿Eliminar la etiqueta {name}? Las entradas no se eliminan; solo se quita esta etiqueta.',
+  '重命名、合并或删除标签；不会删除条目。':
+    'Renombra, combina o elimina etiquetas; las entradas no se eliminan.',
+  '安装后可离线打开，并在支持的浏览器中从文件管理器打开 .db。':
+    'Tras instalarla, ClearVault funciona sin conexión y los navegadores compatibles pueden abrir archivos .db desde el gestor de archivos.',
+  'Chrome / Edge 桌面：点击地址栏的安装图标，或打开浏览器菜单选择“安装 ClearVault”。':
+    'Chrome / Edge de escritorio: usa el icono de instalación de la barra de direcciones o el menú del navegador para instalar ClearVault.',
+  'Android Chrome：打开浏览器菜单，选择“安装应用”或“添加到主屏幕”。':
+    'Android Chrome: abre el menú del navegador y elige Instalar aplicación o Añadir a la pantalla de inicio.',
+  'iPhone / iPad Safari：点击分享按钮，选择“添加到主屏幕”。':
+    'iPhone / iPad Safari: toca Compartir y elige Añadir a pantalla de inicio.',
+  'iOS Safari 不支持文件写回和浏览器扩展；请保留加密备份。':
+    'Safari en iOS no admite escritura de archivos ni extensiones del navegador; conserva copias cifradas.',
+  '无需注册 · 无需上传文件 · 可拖放 .db': 'Sin cuenta · Sin subida · Arrastra un archivo .db',
+  '已加载本地快照，请输入主密码': 'Instantánea local cargada. Introduce la contraseña maestra.',
+  '请先保存当前修改，再恢复本地快照':
+    'Guarda los cambios actuales antes de restaurar una instantánea local.',
+  合并更改: 'Combinar cambios',
+  '外部文件已变化。可以先合并外部更改，或另存副本或重新加载。':
+    'El archivo externo cambió. Combina los cambios externos, guarda una copia o recarga.',
+  '保存会停止，避免覆盖外部版本。可合并外部更改。':
+    'Se detiene el guardado para no sobrescribir la versión externa. Puedes combinar los cambios externos.',
+  原文件没有新的外部更改: 'El archivo original no tiene cambios externos nuevos.',
+  '外部文件版本不同，请重新打开并解锁后再合并':
+    'El archivo externo usa otra versión de formato. Vuelve a abrirlo y desbloquéalo antes de combinar.',
+  合并外部更改: 'Combinar cambios externos',
+  '外部文件已解锁并与当前编辑合并。请核对冲突后保存。':
+    'El archivo externo está desbloqueado y combinado con tus cambios. Revisa los conflictos antes de guardar.',
+  '共合并 {count} 个条目，{conflicts} 个冲突。':
+    'Se combinaron {count} entradas con {conflicts} conflictos.',
+  本地: 'Local',
+  外部: 'Externo',
+  采用合并结果: 'Usar resultado combinado',
+  '已合并外部更改，请保存数据库': 'Cambios externos combinados. Guarda tu bóveda.',
+  显示冲突内容: 'Mostrar contenido del conflicto',
+  是: 'Sí',
+  否: 'No',
+  条目状态: 'Estado de la entrada',
+  保留: 'Conservar',
+  '冲突字段按较新的修改时间预选，可逐项更改。':
+    'Los campos en conflicto usan por defecto la fecha más reciente; ajusta cada campo.',
 };

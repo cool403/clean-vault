@@ -6,10 +6,10 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       name="description"
-      content="Import Chrome CSV and Bitwarden CSV / JSON locally in the app or extension, preview duplicates and verify your encrypted save."
+      content="Import Chrome, Bitwarden, 1Password, LastPass, Apple Passwords or mapped generic CSV locally in the app or extension, preview duplicates and verify your encrypted save."
     />
     <meta name="theme-color" content="#f5f1e7" />
-    <title>Import passwords from Chrome or Bitwarden · ClearVault</title>
+    <title>Import passwords from another password manager · ClearVault</title>
     <link rel="canonical" href="https://clear-vault.app/en/guides/import-passwords/" />
     <link
       rel="alternate"
@@ -30,10 +30,13 @@
     <link rel="stylesheet" href="/public.css" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ClearVault" />
-    <meta property="og:title" content="Import passwords from Chrome or Bitwarden · ClearVault" />
+    <meta
+      property="og:title"
+      content="Import passwords from another password manager · ClearVault"
+    />
     <meta
       property="og:description"
-      content="Import Chrome CSV and Bitwarden CSV / JSON locally in the app or extension, preview duplicates and verify your encrypted save."
+      content="Import Chrome, Bitwarden, 1Password, LastPass, Apple Passwords or mapped generic CSV locally in the app or extension, preview duplicates and verify your encrypted save."
     />
     <meta property="og:url" content="https://clear-vault.app/en/guides/import-passwords/" />
     <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
@@ -53,10 +56,10 @@
     <main id="main" class="article-page">
       <div class="article-head">
         <a href="/en/guides/" class="back">← All guides</a><span class="eyebrow">GUIDES</span>
-        <h1>Import passwords from Chrome or Bitwarden</h1>
+        <h1>Import passwords from another password manager</h1>
         <p class="lead">
-          Open or create a ClearVault vault first. The app and extension share the same import
-          preview, mapping and duplicate checks.
+          Open or create a ClearVault vault first. The app and extension share the import preview,
+          field mapping and duplicate checks; generic CSV files can map each column explicitly.
         </p>
       </div>
       <div class="reading-layout">
@@ -70,34 +73,32 @@
           <section id="section-1">
             <h2>1. Export from your previous tool</h2>
             <p>
-              In Chrome, open Google Password Manager settings and export passwords as CSV,
-              completing system authentication. In Bitwarden, export an unencrypted CSV or JSON
-              file; JSON retains multiple URLs and typed custom fields more accurately. Chrome
-              password CSV does not contain passkeys. Export files may contain plain text passwords:
-              handle them carefully.
+              Chrome exports CSV from Google Password Manager; Bitwarden exports unencrypted CSV or
+              JSON; 1Password exports CSV; LastPass exports CSV from account settings; Apple
+              Passwords exports all passwords as CSV. Generic CSV files need a header row. Export
+              files may contain plain text passwords: handle them carefully.
             </p>
           </section>
           <section id="section-2">
             <h2>2. Select a source and preview</h2>
             <p>
               Unlock the destination .db and choose Import passwords in the app toolbar, preferences
-              or extension. Select Chrome CSV, Bitwarden CSV or Bitwarden JSON, choose the file and
-              preview. The limit is 20 MB and 10,000 entries per file. Preview shows new, duplicate
-              and unsupported counts and the first ten names and accounts, without displaying
-              passwords.
+              or extension. Select a source and file. Built-in sources preview directly; generic CSV
+              first maps title, username, password, URL, notes, tags, TOTP and favorite columns. The
+              limit is 20 MB and 10,000 entries per file. Preview shows new, duplicate and
+              unsupported counts and the first ten names and accounts, without displaying passwords.
             </p>
           </section>
           <section id="section-3">
             <h2>3. Check mapping and supported data</h2>
             <p>
-              Names map to titles, usernames to accounts, URLs to website fields and folders to
-              labels. Passwords, notes and favorites are retained. Login entries and secure notes
-              are supported. JSON retains multiple URLs and custom text, boolean and hidden fields.
-              CSV custom fields are kept together as a private field. Unsupported authenticator
-              secrets are retained as private fields. Unsupported item types are counted and
-              skipped; attachments, passkeys and linked fields show warnings. Bitwarden URI match
-              rules and reprompt policies are not migrated; extension matching always uses exact
-              HTTPS origins.
+              Names map to titles, usernames to accounts, URLs to website fields, and folders or
+              tags to labels. Passwords, notes and favorites are retained. 1Password and Apple
+              OTPAuth values become TOTP codes; multiple 1Password tags become separate labels;
+              LastPass http://sn secure notes import as notes. Bitwarden login entries, secure
+              notes, multiple URLs and custom fields are supported. Unsupported authenticator
+              secrets are retained as private fields. Cards, identities, attachments, passkeys,
+              archived flags and source URL-matching rules are not migrated.
             </p>
           </section>
           <section id="section-4">
@@ -117,8 +118,14 @@
               >How to open, edit and save a SafeInCloud DB file ↗</a
             ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
             ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
+            ><a href="/en/guides/import-1password/">Import from 1Password into ClearVault ↗</a
+            ><a href="/en/guides/import-lastpass/">Import from LastPass into ClearVault ↗</a
+            ><a href="/en/guides/import-apple-passwords/"
+              >Import from Apple Passwords into ClearVault ↗</a
+            ><a href="/en/guides/import-generic-csv/">Import any CSV into ClearVault ↗</a
+            ><a href="/en/guides/sync-folder/">Sync a vault with your own folder ↗</a
             ><a href="/en/guides/browser-extension/"
-              >Extension guide: fill, update passwords and reload ↗</a
+              >Extension guide: fill, search, OTP and new entries ↗</a
             ><a href="/en/security/">Security &amp; privacy ↗</a>
           </section>
         </article>
@@ -136,7 +143,7 @@
       <p>An independent SafeInCloud-compatible tool · No account required</p>
       <nav>
         <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
-        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/en/privacy/">Privacy</a><a href="/en/downloads/">Downloads &amp; source</a
         ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
       </nav>
       <small

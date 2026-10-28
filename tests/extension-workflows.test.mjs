@@ -157,24 +157,17 @@ test('extension updates/imports with confirmation, verifies backups, stops stale
   assert.ok(!result.xml.includes('hash="old"'));
   result.credential.fill(0);
   await element('#lock').onclick();
-  await wait(() => document.querySelector('[data-action=recent-directory]'));
-  dom.window.showDirectoryPicker = async (options) => {
-    assert.equal(options.mode, 'read');
-    return {
-      name: 'Vaults',
-      resolve: async (source) => {
-        assert.equal(source, file);
-        return ['Work', 'synthetic.db'];
-      },
-    };
-  };
-  element('[data-action=recent-directory]').click();
-  await wait(() => element('.recent-directory').textContent.includes('Vaults/Work'));
+  await wait(() => document.querySelector('[data-action=recent-session]'));
+  assert.equal(document.querySelector('[data-action=recent-directory]'), null);
+  assert.equal(document.querySelectorAll('.recent-row').length, 1);
   await wait(() => !element('#unlock-button').disabled);
   element('#password').value = password;
   await element('#unlock').onsubmit(event());
   current = { id: 5, url: 'https://accounts.example.com/login' };
-  await element('#add-site').onclick();
+  await element('#refresh').onclick();
+  assert.equal(document.querySelector('.entry .primary'), null);
+  await element('[data-add-current-site]').onclick();
+  assert.match(element('#add-site-form').textContent, /https:\/\/accounts.example.com/);
   await element('#add-site-form').onsubmit(event());
   await wait(() => document.querySelector('.entry .primary'));
   assert.equal(element('.entry .primary').disabled, false);

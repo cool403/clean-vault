@@ -2393,3 +2393,57 @@ html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .generator-rules lab
 .welcome-secondary {
   flex-wrap: wrap;
 }
+
+.strength-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+}
+.strength-meter > span {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #dedbd3;
+}
+.strength-meter > span > i {
+  display: block;
+  width: 20%;
+  height: 100%;
+  border-radius: 99px;
+  background: #ff6659;
+  transition:
+    width 0.2s,
+    background 0.2s;
+}
+.strength-meter[data-score='1'] > span > i {
+  background: #d98a2b;
+}
+.strength-meter[data-score='2'] > span > i {
+  background: #c3a63a;
+}
+.strength-meter[data-score='3'] > span > i {
+  background: #5f8d52;
+}
+.strength-meter[data-score='4'] > span > i {
+  background: #2f6b3a;
+}
+.strength-meter small {
+  color: #66645f;
+  font-size: 12px;
+}
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 14px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.checkbox-row input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: #719ff1;
+}

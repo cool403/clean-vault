@@ -6,10 +6,10 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       name="description"
-      content="Use the ClearVault Chrome / Edge extension for multistep logins, multiple URLs, confirmed password updates and verified encrypted saves."
+      content="Use the ClearVault Chrome / Edge extension for multistep logins, search and copy, TOTP codes, new entries, multiple URLs, confirmed password updates and verified encrypted saves."
     />
     <meta name="theme-color" content="#f5f1e7" />
-    <title>Extension guide: fill, update passwords and reload · ClearVault</title>
+    <title>Extension guide: fill, search, OTP and new entries · ClearVault</title>
     <link rel="canonical" href="https://clear-vault.app/en/guides/browser-extension/" />
     <link
       rel="alternate"
@@ -32,11 +32,11 @@
     <meta property="og:site_name" content="ClearVault" />
     <meta
       property="og:title"
-      content="Extension guide: fill, update passwords and reload · ClearVault"
+      content="Extension guide: fill, search, OTP and new entries · ClearVault"
     />
     <meta
       property="og:description"
-      content="Use the ClearVault Chrome / Edge extension for multistep logins, multiple URLs, confirmed password updates and verified encrypted saves."
+      content="Use the ClearVault Chrome / Edge extension for multistep logins, search and copy, TOTP codes, new entries, multiple URLs, confirmed password updates and verified encrypted saves."
     />
     <meta property="og:url" content="https://clear-vault.app/en/guides/browser-extension/" />
     <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
@@ -56,13 +56,14 @@
     <main id="main" class="article-page">
       <div class="article-head">
         <a href="/en/guides/" class="back">← All guides</a><span class="eyebrow">GUIDES</span>
-        <h1>Extension guide: fill, update passwords and reload</h1>
+        <h1>Extension guide: fill, search, OTP and new entries</h1>
         <p class="lead">
           The sidebar decrypts .db files locally and acts on the website after your explicit click.
-          The app and extension open files separately: check save status before switching. Choose
-          Chinese, English, German, Japanese or Spanish at the top of the sidebar. Language
-          preferences are remembered locally, separately from the app, without translating vault
-          contents.
+          After unlocking, search all entries, copy usernames or passwords, create an entry for the
+          current website, and copy or fill TOTP codes. The app and extension open files separately:
+          check save status before switching. Choose Chinese, English, German, Japanese or Spanish
+          at the top of the sidebar. Language preferences are remembered locally, separately from
+          the app, without translating vault contents.
         </p>
       </div>
       <div class="reading-layout">
@@ -80,8 +81,8 @@
               Download and unpack the extension ZIP. Enable developer mode in Chrome / Edge
               extensions and load the unpacked directory. Reload the extension after updating it. On
               the target HTTPS website, click its toolbar icon to grant access, choose a .db file or
-              recent vault and enter your master password. Up to five recent records can be removed
-              or cleared; they contain no passwords or vault contents.
+              recent vault and enter your master password. The last opened vault record can be
+              removed or cleared; it contains no passwords or vault contents.
             </p>
           </section>
           <section id="section-2">
@@ -90,8 +91,12 @@
               Check the website and account, click Fill this login and submit yourself. On
               username-first sites, only a unique username or email input is filled. Continue on the
               website, then click Fill again on the password page. If redirected to another origin,
-              click the extension icon to grant access there. Ambiguous inputs, OTP inputs, multiple
-              password fields and new-password forms are rejected.
+              click the extension icon to grant access there. After unlocking you can also search
+              all entries and copy a username or password; New entry prefills the current HTTPS
+              origin, and the entry is written only after Save database. Entries with TOTP show the
+              current code: Copy copies it, and Fill code fills only a unique, explicit
+              verification-code input. Ambiguous inputs, OTP inputs you did not explicitly click,
+              multiple password fields and new-password forms are rejected.
             </p>
           </section>
           <section id="section-3">
@@ -100,8 +105,8 @@
               Grant access on the new website, unlock and choose Add website address. Check the full
               HTTPS origin, select an entry, confirm and save. The app editor also has an Add
               website address button. Each host and port is matched exactly; subdomains are not
-              automatically included. Show all entries allows updating other entries, but filling
-              remains disabled for nonmatching websites.
+              automatically included. Show all entries or search lets you view nonmatching entries;
+              copying remains available, but filling stays disabled for nonmatching websites.
             </p>
           </section>
           <section id="section-4">
@@ -123,9 +128,12 @@
               verifies writes. Before filling an associated file is checked for external changes; a
               change stops filling. Save your edits as a copy, reload and enter the master password.
               Ordinary file input or missing handle support requires selecting the file again.
-              Downloads only confirm export was started. Hiding the sidebar or inactivity locks it;
-              unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or
-              reloading the extension loses them, so save first.
+              Downloads only confirm export was started. Hiding the sidebar does not lock
+              immediately; the selected 1 / 5 / 15 / 30 minute idle timeout applies. After copying a
+              username, password or code, ClearVault tries to clear the clipboard after 30 seconds
+              by default; choose 15 / 60 seconds or off in More actions. Unsaved edits remain
+              encrypted in current sidebar memory. Closing, refreshing or reloading the extension
+              loses them, so save first.
             </p>
           </section>
           <section class="related">
@@ -134,7 +142,14 @@
               >How to open, edit and save a SafeInCloud DB file ↗</a
             ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
             ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
-            ><a href="/en/guides/import-passwords/">Import passwords from Chrome or Bitwarden ↗</a
+            ><a href="/en/guides/import-passwords/"
+              >Import passwords from another password manager ↗</a
+            ><a href="/en/guides/import-1password/">Import from 1Password into ClearVault ↗</a
+            ><a href="/en/guides/import-lastpass/">Import from LastPass into ClearVault ↗</a
+            ><a href="/en/guides/import-apple-passwords/"
+              >Import from Apple Passwords into ClearVault ↗</a
+            ><a href="/en/guides/import-generic-csv/">Import any CSV into ClearVault ↗</a
+            ><a href="/en/guides/sync-folder/">Sync a vault with your own folder ↗</a
             ><a href="/en/security/">Security &amp; privacy ↗</a>
           </section>
         </article>
@@ -152,7 +167,7 @@
       <p>An independent SafeInCloud-compatible tool · No account required</p>
       <nav>
         <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
-        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/en/privacy/">Privacy</a><a href="/en/downloads/">Downloads &amp; source</a
         ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
       </nav>
       <small

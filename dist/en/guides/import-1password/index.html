@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="Export a 1Password CSV, preview it locally in the browser and import it into ClearVault. Keep logins, notes, tags, favorites and TOTP codes."
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>Import from 1Password into ClearVault · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/en/guides/import-1password/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/import-1password/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/import-1password/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/import-1password/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="Import from 1Password into ClearVault · ClearVault" />
+    <meta
+      property="og:description"
+      content="Export a 1Password CSV, preview it locally in the browser and import it into ClearVault. Keep logins, notes, tags, favorites and TOTP codes."
+    />
+    <meta property="og:url" content="https://clear-vault.app/en/guides/import-1password/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/en/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/guides/import-1password/" class="language">简体中文</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/en/guides/" class="back">← All guides</a><span class="eyebrow">GUIDES</span>
+        <h1>Import from 1Password into ClearVault</h1>
+        <p class="lead">
+          A 1Password CSV export is unencrypted plaintext. ClearVault reads it locally; verify the
+          preview, save the encrypted vault and then delete the source file.
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="On this page">
+          <strong>On this page</strong><a href="#section-1">1. Export a CSV from 1Password</a
+          ><a href="#section-2">2. Preview and import in ClearVault</a
+          ><a href="#section-3">3. What is preserved</a
+          ><a href="#section-4">4. Verify and remove the plaintext file</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. Export a CSV from 1Password</h2>
+            <p>
+              In 1Password 8, use the account menu or Settings to export, choose CSV and complete
+              authentication. Older versions may offer only 1PIF or 1PUX; the current ClearVault
+              wizard supports CSV.
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. Preview and import in ClearVault</h2>
+            <p>
+              Open or create a .db vault and unlock it. Choose Import passwords, select 1Password
+              CSV, pick the export and preview it. Review new, duplicate and unsupported counts,
+              import, then choose Save database.
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. What is preserved</h2>
+            <p>
+              Titles, usernames, passwords, URLs, notes, tags, favorites and OTPAuth codes are
+              imported. Multiple tags become separate labels. Attachments, passkeys, archived flags
+              and 1Password URL-matching rules are not migrated.
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>4. Verify and remove the plaintext file</h2>
+            <p>
+              Reopen the .db to verify entries, confirm the encrypted save succeeded and then delete
+              the 1Password CSV. Never upload a real CSV, master password or OTP secret to a public
+              issue, website or chat.
+            </p>
+          </section>
+          <section class="related">
+            <h2>Keep reading</h2>
+            <a href="/en/guides/open-safeincloud-db/"
+              >How to open, edit and save a SafeInCloud DB file ↗</a
+            ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
+            ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
+            ><a href="/en/guides/import-passwords/"
+              >Import passwords from another password manager ↗</a
+            ><a href="/en/guides/import-lastpass/">Import from LastPass into ClearVault ↗</a
+            ><a href="/en/guides/import-apple-passwords/"
+              >Import from Apple Passwords into ClearVault ↗</a
+            ><a href="/en/guides/import-generic-csv/">Import any CSV into ClearVault ↗</a
+            ><a href="/en/guides/sync-folder/">Sync a vault with your own folder ↗</a
+            ><a href="/en/guides/browser-extension/"
+              >Extension guide: fill, search, OTP and new entries ↗</a
+            ><a href="/en/security/">Security &amp; privacy ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>Ready for a little more clarity?</h2>
+        <p>Try the demo, then test a copy of your database.</p>
+      </div>
+      <a href="/?lang=en" class="button">Open vault ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>An independent SafeInCloud-compatible tool · No account required</p>
+      <nav>
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/privacy/">Privacy</a><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.4 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">Build history</a></small
+      >
+    </footer>
+  </body>
+</html>

@@ -58,11 +58,17 @@
           ><a href="#section-1">Your vault is decrypted on your device</a
           ><a href="#section-2">Visiting the site still creates network metadata</a
           ><a href="#section-3">What the browser stores</a
-          ><a href="#section-4">Compatibility is not modern authenticated encryption</a
-          ><a href="#section-5">Saving, backups and recovery</a
-          ><a href="#section-6">The extension uses current-site access</a
-          ><a href="#section-7">What remains outside the protection boundary</a
-          ><a href="#section-8">Audit status and reporting</a>
+          ><a href="#section-4">Clipboard clearing is best effort</a
+          ><a href="#section-5">The master password cannot be recovered</a
+          ><a href="#section-6">Local snapshots contain ciphertext only</a
+          ><a href="#section-7">Security overview is computed in memory only</a
+          ><a href="#section-8">File association reads locally</a
+          ><a href="#section-9">Synced folders merge locally</a
+          ><a href="#section-10">Compatibility is not modern authenticated encryption</a
+          ><a href="#section-11">Saving, backups and recovery</a
+          ><a href="#section-12">The extension uses current-site access</a
+          ><a href="#section-13">What remains outside the protection boundary</a
+          ><a href="#section-14">Audit status and reporting</a>
         </aside>
         <article class="prose">
           <section id="section-1">
@@ -89,16 +95,80 @@
           <section id="section-3">
             <h2>What the browser stores</h2>
             <p>
-              localStorage stores only the interface language. IndexedDB stores up to five recent
-              vault names, file handles, record IDs, opening times and optional confirmed folder
-              labels, never passwords, entries or vault contents. Remove or clear history anytime.
-              The app and extension have separate storage, subject to browser permissions and
-              storage clearing. The Service Worker caches app resources only; backup directory
-              access and retention settings last for the current session. Closing a page does not
-              save changes.
+              localStorage stores only non-sensitive preferences and ordering metadata such as the
+              interface language, auto-lock minutes, clipboard-clear delay, snapshot retention,
+              recent entry IDs/times and getting-started checklist completion. IndexedDB stores only
+              the last opened vault name, file handle, record ID and opening time, never passwords,
+              entries or vault contents. OPFS local snapshots contain only encrypted .db ciphertext.
+              Remove or clear history anytime. The app and extension have separate storage, subject
+              to browser permissions and storage clearing. The Service Worker caches app resources
+              only; backup directory access and retention settings last for the current session.
+              Closing a page does not save changes.
             </p>
           </section>
           <section id="section-4">
+            <h2>Clipboard clearing is best effort</h2>
+            <p>
+              Copying a username, password or code writes plaintext to the system clipboard.
+              ClearVault tries to write an empty value after 30 seconds by default; choose 15 / 60
+              seconds or off in settings. Clearing can fail when the window loses focus, the browser
+              restricts access or the page closes; other local applications can read the clipboard
+              before it is cleared. On shared devices, clear it manually or lock immediately.
+            </p>
+          </section>
+          <section id="section-5">
+            <h2>The master password cannot be recovered</h2>
+            <p>
+              The master password is not written to persistent storage and ClearVault cannot recover
+              it. Creating a new vault or saving the demo as a real vault shows a local strength
+              estimate and requires acknowledging this; changing the master password requires the
+              current one. Preferences or the extension's More actions can download a recovery kit
+              containing blank lines and recovery steps, never passwords, TOTP secrets or vault
+              contents. The strength estimate is a heuristic, not a security guarantee.
+            </p>
+          </section>
+          <section id="section-6">
+            <h2>Local snapshots contain ciphertext only</h2>
+            <p>
+              The app and extension try to write encrypted .db ciphertext to browser OPFS after each
+              save, keeping 10 snapshots by default (configurable). Snapshots contain no plaintext
+              or passwords and require the master password used at that time to restore. Clearing
+              site data deletes them; they are not a substitute for independent backups. External
+              file changes stop saving and offer a copy or reload; cross-tab broadcasts are
+              coordination, not a security boundary.
+            </p>
+          </section>
+          <section id="section-7">
+            <h2>Security overview is computed in memory only</h2>
+            <p>
+              Weak passwords, reuse, password age and TOTP coverage are calculated in page memory
+              from decrypted entries and are never stored or uploaded. Batch labels, archiving and
+              trash changes behave like any edit and are written to the encrypted .db only after
+              saving.
+            </p>
+          </section>
+          <section id="section-8">
+            <h2>File association reads locally</h2>
+            <p>
+              PWA file_handlers, launchQueue and page drag-and-drop only read a .db file locally
+              after the user selects or drops it; nothing is uploaded. Installation, file
+              association and permissions are managed by the browser. External applications can
+              still read the source file concurrently, so this is not a substitute for independent
+              backups.
+            </p>
+          </section>
+          <section id="section-9">
+            <h2>Synced folders merge locally</h2>
+            <p>
+              When the .db lives in Syncthing, Nextcloud, OneDrive or iCloud Drive, your tool
+              performs the sync. On external changes ClearVault reads and decrypts locally with the
+              current session credential; merging requires the same format version and master
+              password, and the preview must still be saved to write. Conflicts resolve per entry by
+              timestamp and labels merge by name. Sync providers can still roll back or replace
+              files; keep independent backups.
+            </p>
+          </section>
+          <section id="section-10">
             <h2>Compatibility is not modern authenticated encryption</h2>
             <p>
               The compatible format uses PBKDF2-SHA1 with 10,000 iterations and AES-256-CBC over
@@ -108,7 +178,7 @@
               the format to AEAD.
             </p>
           </section>
-          <section id="section-5">
+          <section id="section-11">
             <h2>Saving, backups and recovery</h2>
             <p>
               Before writing, the app compares the original file fingerprint, backs up and verifies
@@ -118,16 +188,18 @@
               confirm the file on disk and reopen it to verify.
             </p>
           </section>
-          <section id="section-6">
+          <section id="section-12">
             <h2>The extension uses current-site access</h2>
             <p>
               The extension uses activeTab, scripting and sidePanel, with no global host permissions
-              or persistent content scripts. After a user action it fills only the selected
-              credentials into an exact matching HTTPS origin, without submitting. The destination
-              website can read a password filled into it; that is an inherent boundary of filling.
+              or persistent content scripts. After an explicit user action it fills only the
+              selected credentials or TOTP code into an exact matching HTTPS origin, without
+              submitting. Search, copy and new entries are handled locally in the unlocked sidebar;
+              copying writes the selected value to the system clipboard. The destination website can
+              read a password or code filled into it; that is an inherent boundary of filling.
             </p>
           </section>
-          <section id="section-7">
+          <section id="section-13">
             <h2>What remains outside the protection boundary</h2>
             <p>
               A compromised operating system, malicious browser or extension, access to unlocked
@@ -137,7 +209,7 @@
               audits.
             </p>
           </section>
-          <section id="section-8">
+          <section id="section-14">
             <h2>Audit status and reporting</h2>
             <p>
               Independent security auditing, code signing and browser store review have not been
@@ -154,9 +226,16 @@
               >How to open, edit and save a SafeInCloud DB file ↗</a
             ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
             ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
-            ><a href="/en/guides/import-passwords/">Import passwords from Chrome or Bitwarden ↗</a
+            ><a href="/en/guides/import-passwords/"
+              >Import passwords from another password manager ↗</a
+            ><a href="/en/guides/import-1password/">Import from 1Password into ClearVault ↗</a
+            ><a href="/en/guides/import-lastpass/">Import from LastPass into ClearVault ↗</a
+            ><a href="/en/guides/import-apple-passwords/"
+              >Import from Apple Passwords into ClearVault ↗</a
+            ><a href="/en/guides/import-generic-csv/">Import any CSV into ClearVault ↗</a
+            ><a href="/en/guides/sync-folder/">Sync a vault with your own folder ↗</a
             ><a href="/en/guides/browser-extension/"
-              >Extension guide: fill, update passwords and reload ↗</a
+              >Extension guide: fill, search, OTP and new entries ↗</a
             ><a href="/en/downloads/">Downloads &amp; source ↗</a>
           </section>
         </article>
@@ -174,7 +253,7 @@
       <p>An independent SafeInCloud-compatible tool · No account required</p>
       <nav>
         <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
-        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/en/privacy/">Privacy</a><a href="/en/downloads/">Downloads &amp; source</a
         ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
       </nav>
       <small

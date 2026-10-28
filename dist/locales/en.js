@@ -34,20 +34,8 @@ export default {
   解锁并继续未保存的修改: 'Unlock and continue unsaved changes',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'This session has unsaved changes. Unlock and save them before refreshing or closing the page.',
-  '上次确认的目录：{folder}': 'Last confirmed folder: {folder}',
-  所在目录尚未确认: 'Folder not yet confirmed',
-  确认所在目录: 'Confirm containing folder',
-  所选文件夹: 'Selected folder',
-  '记录已失效，请重新打开密码库': 'This history record is no longer available. Reopen the vault.',
-  '所选文件夹不包含此密码库，请重新选择':
-    'The selected folder does not contain this vault. Choose its containing folder.',
-  已确认密码库所在目录: 'Vault folder confirmed.',
-  '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。':
-    'Browsers do not expose the full local path. Use the folder icon to select a containing folder and verify its name and relative directory.',
-  '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。':
-    'Browsers do not expose the full local path. Check the containing folder in the system file picker when selecting the file again.',
-  '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Only file names, handles and folder labels you confirm are remembered, never master passwords or vault contents. The app and extension keep separate histories.',
+  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Only the last opened file name and handle are remembered, never master passwords or vault contents. The app and extension keep separate records.',
   从当前网页读取新密码: 'Read new password from this website',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
     'Reads the new-password fields on this website only after you click. Your entry changes only after confirmation.',
@@ -131,8 +119,8 @@ export default {
   '已重新加载文件，请输入主密码': 'File reloaded. Enter your master password.',
   '请先保存当前修改，再导入或重新加载文件':
     'Save your current changes before importing or reloading a file.',
-  '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。':
-    'Vaults are decrypted in memory only. Recent history stores only names, handles and folder labels you confirm and can be cleared anytime. Reopening still requires your master password.',
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
+    'Vaults are decrypted in memory only. Recent history stores only the last opened file name and handle and can be cleared anytime. Reopening still requires your master password.',
   '在 GitHub 查看源码': 'View source on GitHub',
   查看构建记录: 'View build history',
   核对线上版本: 'Verify this deployment',
@@ -493,4 +481,184 @@ export default {
   'ClearVault，本地优先的密码库与双重验证器。打开、管理和保存 SafeInCloud 数据库。':
     'ClearVault: a local-first password vault and authenticator. Open, manage and save SafeInCloud databases.',
   '。': '.',
+  显示: 'Show',
+  隐藏: 'Hide',
+  复制账号: 'Copy username',
+  填入验证码: 'Fill code',
+  '已添加条目，请保存数据库': 'Entry added. Save your vault.',
+  为此网站新建条目: 'Add an entry for this website',
+  更多操作: 'More actions',
+  保存为我的密码库: 'Save as my vault',
+  '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
+    'An encrypted copy was exported; the original file is not updated. Changes are still unsaved on this page.',
+  剪贴板自动清除: 'Clear clipboard automatically',
+  '{seconds} 秒': '{seconds} seconds',
+  '已复制到剪贴板，{seconds} 秒后自动清除': 'Copied to clipboard. Clears in {seconds} seconds.',
+  '复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。':
+    'After copying a username, password or code, ClearVault tries to clear the system clipboard after the selected delay. This can fail when the page loses focus.',
+  '无法识别唯一的验证码输入框，请手动填写':
+    'Could not identify a unique verification code field. Enter it manually.',
+  主密码强度: 'Master password strength',
+  太弱: 'Very weak',
+  弱: 'Weak',
+  一般: 'Fair',
+  强: 'Strong',
+  很强: 'Very strong',
+  '建议至少 12 个字符': 'Use at least 12 characters',
+  '混合大小写、数字和符号': 'Mix upper/lowercase letters, numbers and symbols',
+  '避免常见单词、重复或连续字符': 'Avoid common words, repeats or sequences',
+  '主密码无法找回，请务必妥善保管。': 'The master password cannot be recovered. Keep it safe.',
+  我确认主密码无法找回: 'I understand the master password cannot be recovered',
+  请确认主密码无法找回: 'Confirm that the master password cannot be recovered',
+  当前主密码: 'Current master password',
+  当前主密码不正确: 'The current master password is incorrect',
+  新主密码: 'New master password',
+  '创建后可在偏好设置下载恢复工具包。':
+    'After creating the vault, download a recovery kit in Preferences.',
+  恢复工具包: 'Recovery kit',
+  生成时间: 'Created',
+  密码库文件: 'Vault file',
+  '主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。':
+    'ClearVault cannot recover your master password. Write it here by hand and store it separately from your vault backups.',
+  备份位置: 'Backup location',
+  恢复步骤: 'Recovery steps',
+  '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
+    'Open ClearVault, choose Open .db vault and enter the master password.',
+  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
+    'This kit contains no passwords, TOTP secrets or vault contents. Keep it safe.',
+  '恢复工具包已下载，请打印并妥善保管': 'Recovery kit downloaded. Print and keep it safe.',
+  尚未保存的密码库: 'Unsaved vault',
+  命令模式: 'Command mode',
+  没有找到命令: 'No matching commands',
+  '输入 > 查看命令': 'Type > to see commands',
+  运行命令: 'Run command',
+  '{count} 个命令': '{count} commands',
+  '显示前 {count} 条': 'Showing the first {count}',
+  清除最近使用记录: 'Clear recent usage',
+  最近使用记录已清除: 'Recent usage cleared',
+  '显示更多（还有 {count} 条）': 'Show more ({count} remaining)',
+  本地加密快照: 'Local encrypted snapshots',
+  '保存在浏览器本地，加密且不会上传；清除站点数据会删除。':
+    'Stored locally in your browser, encrypted and never uploaded; clearing site data deletes them.',
+  保留数量: 'Number to keep',
+  查看本地快照: 'View local snapshots',
+  清除本地快照: 'Clear local snapshots',
+  '当前 {count} 份本地快照': '{count} local snapshots',
+  暂无本地快照: 'No local snapshots',
+  当前浏览器不支持本地快照: 'This browser does not support local snapshots',
+  '快照是加密的 .db 密文，恢复时需要当时的主密码。':
+    'Snapshots are encrypted .db ciphertext; restoring requires the master password used at that time.',
+  '这将删除当前密码库的本地加密快照，无法撤销。':
+    "This deletes the current vault's local encrypted snapshots and cannot be undone.",
+  清除: 'Clear',
+  '已清除 {count} 份本地快照': 'Cleared {count} local snapshots',
+  原文件已被其他应用修改: 'The original file was changed by another application',
+  '当前编辑仍在页面内。请选择“另存为副本”或重新加载外部版本，避免覆盖。':
+    'Your edits are still in this page. Save a copy or reload the external version instead of overwriting it.',
+  '保存会停止，避免覆盖外部版本。': 'Saving stops to avoid overwriting the external version.',
+  另存为副本: 'Save a copy',
+  保留当前编辑: 'Keep current edits',
+  '（不使用）': '(Not used)',
+  '通用 CSV（手动映射）': 'Generic CSV (manual mapping)',
+  '映射 CSV 字段': 'Map CSV columns',
+  '选择对应的列，未使用的列会忽略。':
+    'Choose the matching column for each field; unused columns are ignored.',
+  '请至少映射一个 CSV 字段': 'Map at least one CSV column',
+  '请至少映射条目名称、账号、密码、网址或备注中的一列':
+    'Map at least the title, username, password, URL or notes column',
+  '支持 Chrome、Bitwarden、1Password、LastPass、Apple Passwords 以及带表头的通用 CSV。':
+    'Supports Chrome, Bitwarden, 1Password, LastPass, Apple Passwords and generic CSV files with headers.',
+  '开始使用 ClearVault': 'Get started with ClearVault',
+  '完成 {done}/{total} 步': '{done} of {total} steps complete',
+  稍后: 'Later',
+  导入或新建第一条记录: 'Import or add your first entry',
+  安装浏览器扩展: 'Install the browser extension',
+  首次填充或复制验证码: 'Fill or copy a login or code once',
+  添加一个验证器: 'Add an authenticator',
+  保存并设置备份: 'Save and set up backups',
+  已完成: 'Done',
+  安全概览: 'Security overview',
+  弱密码: 'Weak passwords',
+  重复使用: 'Reused passwords',
+  长期未更新: 'Old passwords',
+  未启用两步验证: 'No TOTP',
+  '仅在本地根据解密后的条目计算，不上传密码。':
+    'Calculated locally from decrypted entries; passwords are never uploaded.',
+  '长度不足 12 个字符或强度过低的密码。':
+    'Passwords shorter than 12 characters or with low strength.',
+  '{entries} 个条目使用同一密码（{groups} 组）':
+    '{entries} entries share a password ({groups} groups)',
+  '超过一年没有修改的条目。': 'Entries not changed in over a year.',
+  '有密码但尚未添加 TOTP。': 'Entries with a password but no TOTP.',
+  '共 {count} 个条目，{withPassword} 个设置了密码。':
+    '{count} entries, {withPassword} with a password.',
+  安全概览筛选结果: 'Security filter results',
+  '本地安全筛选。': 'Local security filter.',
+  清除筛选: 'Clear filter',
+  批量选择: 'Select multiple',
+  '已选择 {count} 项': '{count} selected',
+  全选: 'Select all',
+  清除选择: 'Clear selection',
+  添加标签: 'Add label',
+  请先选择条目: 'Select at least one entry first',
+  '为选中的 {count} 个条目添加标签': 'Add a label to {count} selected entries',
+  选择标签: 'Choose a label',
+  或新建标签: 'Or create a label',
+  输入新标签名称: 'Enter a new label name',
+  请选择或新建标签: 'Choose or create a label',
+  '已为 {count} 个条目添加标签': 'Added a label to {count} entries',
+  '已归档 {count} 个条目': 'Archived {count} entries',
+  '已将 {count} 个条目移至回收站': 'Moved {count} entries to trash',
+  保存: 'Save',
+  删除: 'Delete',
+  重命名: 'Rename',
+  合并: 'Merge',
+  管理标签: 'Manage labels',
+  还没有标签: 'No labels yet',
+  重命名标签: 'Rename label',
+  合并到: 'Merge into',
+  标签已重命名: 'Label renamed',
+  标签已删除: 'Label deleted',
+  标签已合并: 'Labels merged',
+  '删除标签“{name}”？条目不会被删除，只会移除该标签。':
+    'Delete label “{name}”? Entries are not deleted; only this label is removed.',
+  '重命名、合并或删除标签；不会删除条目。':
+    'Rename, merge or delete labels; entries are not deleted.',
+  '安装后可离线打开，并在支持的浏览器中从文件管理器打开 .db。':
+    'After installing, ClearVault works offline and supported browsers can open .db files from the file manager.',
+  'Chrome / Edge 桌面：点击地址栏的安装图标，或打开浏览器菜单选择“安装 ClearVault”。':
+    'Chrome / Edge desktop: use the install icon in the address bar, or open the browser menu and choose Install ClearVault.',
+  'Android Chrome：打开浏览器菜单，选择“安装应用”或“添加到主屏幕”。':
+    'Android Chrome: open the browser menu and choose Install app or Add to Home screen.',
+  'iPhone / iPad Safari：点击分享按钮，选择“添加到主屏幕”。':
+    'iPhone / iPad Safari: tap Share and choose Add to Home Screen.',
+  'iOS Safari 不支持文件写回和浏览器扩展；请保留加密备份。':
+    'iOS Safari does not support file write-back or browser extensions; keep encrypted backups.',
+  '无需注册 · 无需上传文件 · 可拖放 .db': 'No account · No upload · Drop a .db file',
+  '已加载本地快照，请输入主密码': 'Loaded local snapshot. Enter the master password.',
+  '请先保存当前修改，再恢复本地快照': 'Save current changes before restoring a local snapshot.',
+  合并更改: 'Merge changes',
+  '外部文件已变化。可以先合并外部更改，或另存副本或重新加载。':
+    'The external file changed. Merge external changes, save a copy or reload.',
+  '保存会停止，避免覆盖外部版本。可合并外部更改。':
+    'Saving stops to avoid overwriting the external version. External changes can be merged.',
+  原文件没有新的外部更改: 'The original file has no new external changes.',
+  '外部文件版本不同，请重新打开并解锁后再合并':
+    'The external file uses a different format version. Reopen and unlock it before merging.',
+  合并外部更改: 'Merge external changes',
+  '外部文件已解锁并与当前编辑合并。请核对冲突后保存。':
+    'The external file is unlocked and merged with your current edits. Review conflicts before saving.',
+  '共合并 {count} 个条目，{conflicts} 个冲突。':
+    'Merged {count} entries with {conflicts} conflicts.',
+  本地: 'Local',
+  外部: 'External',
+  采用合并结果: 'Use merged result',
+  '已合并外部更改，请保存数据库': 'External changes merged. Save your vault.',
+  显示冲突内容: 'Show conflict contents',
+  是: 'Yes',
+  否: 'No',
+  条目状态: 'Entry status',
+  保留: 'Keep',
+  '冲突字段按较新的修改时间预选，可逐项更改。':
+    'Conflict fields default to the newer modification time; adjust each field as needed.',
 };

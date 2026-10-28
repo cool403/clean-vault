@@ -90,7 +90,7 @@ test('content conflict is detected even when size and modification time match', 
       name: 'vault.db',
       directory: directory(),
     }),
-    /原文件已/,
+    (error) => error.code === 'conflict' && /原文件已/.test(error.message),
   );
   assert.deepEqual(current.bytes(), Uint8Array.of(1, 2, 4));
 });

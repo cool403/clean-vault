@@ -132,3 +132,95 @@ test('quick search supports IME, keyboard selection, copying, errors, escape and
   );
   dom.window.close();
 });
+
+test('quick search orders by recency, copies OTP, runs commands and caps long lists', async () => {
+  const dom = new JSDOM('<button id="launcher">Open</button>', { url: 'http://localhost/' });
+  globalThis.document = dom.window.document;
+  dom.window.HTMLDialogElement.prototype.showModal = function () {
+    this.setAttribute('open', '');
+  };
+  dom.window.HTMLDialogElement.prototype.close = function () {
+    this.removeAttribute('open');
+  };
+  const entries = [
+    {
+      id: 'a',
+      title: 'Alpha',
+      subtitle: 'alice',
+      search: 'Alpha alice',
+      hasPassword: false,
+      hasOTP: true,
+      recent: 0,
+    },
+    { id: 'b', title: 'Beta', subtitle: 'bob', search: 'Beta bob', hasPassword: true, recent: 5 },
+  ];
+  let copiedOtp, ran;
+  const notifications = [];
+  const palette = createQuickSearch({
+    notify: (message) => notifications.push(message),
+    items: () => entries,
+    copyPassword: async () => {},
+    copyOTP: async (id) => {
+      copiedOtp = id;
+    },
+    openEntry: () => {},
+    lock: () => {},
+    commands: () => [{ label: 'Lock now', keywords: ['lock'], run: () => (ran = 'lock') }],
+  });
+  const input = () => document.querySelector('input');
+  const type = (value) => {
+    input().value = value;
+    input().dispatchEvent(new dom.window.InputEvent('input', { bubbles: true }));
+  };
+  const key = (name, options = {}) => {
+    const event = new dom.window.KeyboardEvent('keydown', {
+      key: name,
+      bubbles: true,
+      cancelable: true,
+      ...options,
+    });
+    input().dispatchEvent(event);
+  };
+  const tick = () => new Promise((resolve) => setImmediate(resolve));
+
+  palette.show();
+  assert.match(document.querySelector('[role=option]').textContent, /Beta/, 'recents sort first');
+  type('Alpha');
+  assert.equal(document.querySelectorAll('[role=option]').length, 1);
+  document.querySelector('[data-quick-otp]').click();
+  await tick();
+  assert.equal(copiedOtp, 'a');
+  assert.equal(notifications.at(-1), '已复制到剪贴板');
+
+  type('>');
+  assert.equal(document.querySelectorAll('[role=option]').length, 1);
+  assert.match(document.querySelector('[role=option]').textContent, /Lock now/);
+  key('Enter');
+  await tick();
+  assert.equal(ran, 'lock');
+  palette.close();
+
+  const many = Array.from({ length: 60 }, (_, index) => ({
+    id: String(index),
+    title: 'Item ' + String(index).padStart(2, '0'),
+    subtitle: '',
+    search: 'item ' + index,
+    hasPassword: true,
+    recent: 0,
+  }));
+  const capped = createQuickSearch({
+    notify: () => {},
+    items: () => many,
+    copyPassword: async () => {},
+    copyOTP: async () => {},
+    openEntry: () => {},
+    lock: () => {},
+    commands: [],
+  });
+  capped.show();
+  assert.equal(document.querySelectorAll('[role=option]').length, 50);
+  assert.match(document.querySelector('.quick-count').textContent, /60/);
+  assert.match(document.querySelector('.quick-count').textContent, /50/);
+  capped.close();
+  dom.window.close();
+});

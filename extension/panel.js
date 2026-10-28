@@ -1,4 +1,7 @@
 import { decryptDatabase, encryptDatabase } from './core/crypto.js';
+import { createClipboardGuard } from './core/clipboard.js';
+import { pinyinSearch } from './core/pinyin.js';
+import { createSnapshotStore, snapshotsSupported } from './core/snapshots.js';
 import {
   parseVault,
   serializeVault,
@@ -8,6 +11,9 @@ import {
   title,
   setField,
   touch,
+  newCard,
+  hasOTP,
+  children,
 } from './core/vault.js';
 import { t, getLocale, initializeLanguage, setLanguage, supportedLocales } from './core/i18n.js';
 import { fingerprint, readBytes, saveSafely } from './core/safe-save.js';
@@ -19,11 +25,33 @@ import {
 } from './core/recent-files.js';
 import { recentMarkup, createImportWizard, escapeHTML as escape } from './core/workflow-ui.js';
 import { applyImport } from './core/import-data.js';
+import { generatePassword } from './core/password-generator.js';
+import { parseOTP, totp } from './core/totp.js';
 import { matchesSite, loginOrigin } from './matching.js';
-import { fillLogin, readNewPassword } from './fill.js';
+import { fillLogin, readNewPassword, fillOTP } from './fill.js';
 
 const $ = (selector) => document.querySelector(selector);
+const IDLE_KEY = 'clearvault.extension.idle';
+const CLIPBOARD_KEY = 'clearvault.clipboardTimeout';
+const SNAPSHOT_KEY = 'clearvault.snapshotRetention';
 initializeLanguage();
+const clipboardGuard = createClipboardGuard();
+try {
+  const stored = globalThis.localStorage?.getItem(CLIPBOARD_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([0, 15, 30, 60].includes(saved)) clipboardGuard.setSeconds(saved);
+} catch {
+  /* Extension storage can be unavailable in private contexts. */
+}
+let snapshotRetention = 10;
+try {
+  const stored = globalThis.localStorage?.getItem(SNAPSHOT_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([5, 10, 20, 50].includes(saved)) snapshotRetention = saved;
+} catch {
+  /* Keep the default when extension storage is unavailable. */
+}
+const snapshotStore = createSnapshotStore({ retention: snapshotRetention });
 const recentFiles = createRecentFiles();
 let recentEntries = [],
   doc = null,
@@ -48,7 +76,11 @@ let recentEntries = [],
   lockPending = false,
   pendingLock = false,
   saveError = false,
-  selectingReload = false;
+  selectingReload = false,
+  currentTab = null,
+  currentOrigin = '',
+  currentFresh = true,
+  searchQuery = '';
 const strings = {
   local: '本地解密 · 按需填充',
   title: '你的密码，随手可用。',
@@ -102,7 +134,7 @@ function setBusy(value) {
   busy = value;
   document
     .querySelectorAll(
-      '#save, #save-copy, #reload, #import, #add-site, #lock, #open, #unlock-button',
+      '#new-entry, #save, #save-copy, #reload, #import, #recovery-kit, #snapshots, #clear-snapshots, #snapshot-retention, #add-site, #lock, #open, #unlock-button, #entry-search, #clipboard-timeout',
     )
     .forEach((button) => (button.disabled = value));
   $('#file').disabled = value;
@@ -122,6 +154,13 @@ function saveStatus() {
         : lastSaved
           ? t('已验证保存于 {time}', { time: new Date(lastSaved).toLocaleTimeString(getLocale()) })
           : t('密码库已解锁 · 修改后可保存为兼容的 .db 文件');
+  const save = $('#save');
+  if (save) {
+    const attention = Boolean(dirty || saveError);
+    save.textContent = busy ? t('处理中…') : attention ? t('保存更改') : t('保存数据库');
+    save.classList.toggle('primary', attention);
+    save.classList.toggle('secondary', !attention);
+  }
 }
 function closeDialog() {
   importer.reset();
@@ -161,11 +200,7 @@ async function refreshRecent() {
   );
   if (version !== epoch || previousDoc !== doc) return;
   recentEntries = entries;
-  $('#recent-files').innerHTML = recentMarkup(
-    display,
-    recentFiles.persistent,
-    typeof window.showDirectoryPicker === 'function',
-  );
+  $('#recent-files').innerHTML = recentMarkup(display, recentFiles.persistent);
 }
 async function remember() {
   const fileName = name,
@@ -241,6 +276,12 @@ async function lock() {
   $('#vault-name').textContent = '';
   $('#origin').textContent = '';
   $('#entries').replaceChildren();
+  currentTab = null;
+  currentOrigin = '';
+  currentFresh = true;
+  searchQuery = '';
+  $('#entry-search').value = '';
+  chrome.action?.setBadgeText?.({ text: '' });
   closeDialog();
   status('locked');
   if (snapshot) {
@@ -286,6 +327,404 @@ function liveCards() {
       )
     : [];
 }
+function passwordField(card) {
+  return fields(card).find((field) => fieldType(field) === 'password');
+}
+function accountText(card) {
+  return (
+    fields(card).find((field) => ['login', 'email'].includes(fieldType(field)))?.textContent || ''
+  );
+}
+function websites(card) {
+  return fields(card)
+    .filter((field) => fieldType(field) === 'website')
+    .map((field) => field.textContent.trim());
+}
+function cardMatches(card) {
+  return Boolean(currentOrigin && matchesSite(websites(card), currentOrigin));
+}
+function availableCards() {
+  return liveCards().filter((card) =>
+    fields(card).some((field) => fieldType(field) === 'password' || hasOTP(field)),
+  );
+}
+function labelNames() {
+  return new Map(
+    doc
+      ? children(doc.documentElement, 'label').map((label) => [
+          label.getAttribute('id'),
+          label.getAttribute('name') || '',
+        ])
+      : [],
+  );
+}
+function searchableText(card, labels) {
+  const text = [
+    title(card),
+    ...fields(card)
+      .filter(
+        (field) =>
+          !['password', 'secret', 'pin', 'binary', 'one_time_password'].includes(fieldType(field)),
+      )
+      .map((field) => field.textContent),
+    ...children(card, 'label_id')
+      .map((label) => labels.get(label.textContent))
+      .filter(Boolean),
+  ].join(' ');
+  return text.toLocaleLowerCase() + ' ' + pinyinSearch(text);
+}
+function visibleCards() {
+  const query = searchQuery.trim().toLocaleLowerCase();
+  const labels = labelNames();
+  let matching = availableCards();
+  if (query) {
+    matching = matching.filter((card) => searchableText(card, labels).includes(query));
+    matching.sort((a, b) => {
+      const left = title(a).toLocaleLowerCase(),
+        right = title(b).toLocaleLowerCase();
+      return (
+        Number(right.startsWith(query)) - Number(left.startsWith(query)) ||
+        left.localeCompare(right)
+      );
+    });
+  } else if (!showAll) {
+    matching = matching.filter(cardMatches);
+  }
+  return { query, matching };
+}
+async function copyText(value) {
+  if (!value) return;
+  try {
+    await clipboardGuard.write(value);
+    notify(
+      clipboardGuard.seconds
+        ? t('已复制到剪贴板，{seconds} 秒后自动清除', { seconds: clipboardGuard.seconds })
+        : t('已复制到剪贴板'),
+    );
+  } catch {
+    notify(t('复制失败，请检查浏览器剪贴板权限'));
+  }
+}
+async function restoreSnapshot(item) {
+  if (busy) return;
+  if (dirty) {
+    notify(t('请先保存当前修改，再恢复本地快照'));
+    return;
+  }
+  const bytes = await snapshotStore.read(item.name);
+  if (!bytes) throw new Error(t('当前浏览器不支持本地快照'));
+  const original = name;
+  if (doc) await lock();
+  encrypted = bytes;
+  handle = null;
+  recentId = null;
+  name = original.replace(/\.db$/i, '') + '-snapshot.db';
+  signature = await fingerprint(bytes);
+  lastSaved = null;
+  saveError = false;
+  dirty = false;
+  $('#password').value = '';
+  $('#selected-file').textContent = name;
+  $('#locked').hidden = false;
+  $('#unlocked').hidden = true;
+  $('#vault-name').textContent = '';
+  $('#origin').textContent = '';
+  $('#entries').replaceChildren();
+  closeDialog();
+  status('已加载本地快照，请输入主密码');
+  $('#password').focus();
+  void refreshRecent();
+}
+async function showSnapshots() {
+  if (!snapshotsSupported()) {
+    notify(t('当前浏览器不支持本地快照'));
+    return;
+  }
+  const list = await snapshotStore.list(name);
+  showDialog(
+    `<form id="snapshots-form">${heading(t('本地加密快照'), t('快照是加密的 .db 密文，恢复时需要当时的主密码。'))}<div class="backup-list">${list.length ? list.map((item, index) => `<button type="button" class="button secondary" data-snapshot-index="${index}">${escape(new Date(item.time).toLocaleString(getLocale()))}</button>`).join('') : `<p>${t('暂无本地快照')}</p>`}</div><div class="modal-footer"><button type="button" class="button primary" data-close>${t('关闭')}</button></div></form>`,
+  );
+  $('#modal')
+    .querySelectorAll('[data-snapshot-index]')
+    .forEach((button) => {
+      button.onclick = () =>
+        restoreSnapshot(list[Number(button.dataset.snapshotIndex)]).catch(fail);
+    });
+}
+function clearSnapshots() {
+  if (!snapshotsSupported()) {
+    notify(t('当前浏览器不支持本地快照'));
+    return;
+  }
+  showDialog(
+    `<form id="clear-snapshots-form">${heading(t('清除本地快照'), t('这将删除当前密码库的本地加密快照，无法撤销。'))}<p class="form-error" role="alert"></p><div class="modal-footer"><button type="button" class="button secondary" data-close>${t('取消')}</button><button type="submit" class="button danger">${t('清除')}</button></div></form>`,
+  );
+  const form = $('#clear-snapshots-form');
+  form.onsubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const count = await snapshotStore.clear(name);
+      closeDialog();
+      notify(t('已清除 {count} 份本地快照', { count }));
+    } catch (error) {
+      form.querySelector('.form-error').textContent = fileError(error);
+    }
+  };
+}
+function downloadRecoveryKit() {
+  const now = new Date();
+  const text = [
+    'ClearVault ' + t('恢复工具包'),
+    t('生成时间') + ': ' + now.toLocaleString(getLocale()),
+    t('密码库文件') + ': ' + (name || t('尚未保存的密码库')),
+    '',
+    t('主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。'),
+    t('主密码') + ': ______________________________',
+    t('备份位置') + ': ______________________________',
+    '',
+    t('恢复步骤') + ': ' + t('打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。'),
+    '',
+    t('本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。'),
+  ].join('\n');
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `clearvault-recovery-kit-${now.toISOString().slice(0, 10)}.txt`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  notify(t('恢复工具包已下载，请打印并妥善保管'));
+}
+async function otpCode(card, index) {
+  const field = fields(card)[index];
+  if (!field) return '';
+  let config;
+  try {
+    config = parseOTP(field.textContent);
+    return await totp(config, Date.now());
+  } catch {
+    return '';
+  } finally {
+    config?.secret.fill(0);
+  }
+}
+async function refreshCodes() {
+  if (!doc) return;
+  const version = epoch;
+  for (const code of document.querySelectorAll('[data-otp-card]')) {
+    if (version !== epoch) return;
+    const card = liveCards().find((item) => item.getAttribute('id') === code.dataset.otpCard);
+    const field = card && fields(card)[Number(code.dataset.otpIndex)];
+    if (!field) continue;
+    let config;
+    try {
+      config = parseOTP(field.textContent);
+      const now = Date.now();
+      const remaining = config.period - ((now / 1000) % config.period);
+      const counter = Math.floor(now / 1000 / config.period);
+      if (code.dataset.otpCounter !== String(counter) || !code.dataset.otpValue) {
+        const value = await totp(config, now);
+        if (version !== epoch || !code.isConnected) continue;
+        code.dataset.otpCounter = String(counter);
+        code.dataset.otpValue = value;
+        const middle = Math.ceil(value.length / 2);
+        code.textContent = value.slice(0, middle) + ' ' + value.slice(middle);
+      }
+      const countdown = code.closest('.entry-otp')?.querySelector('[data-otp-countdown]');
+      if (countdown) countdown.textContent = Math.ceil(remaining) + 's';
+      code.classList.toggle('expiring', remaining < 6);
+    } catch {
+      if (version === epoch && code.isConnected) {
+        code.textContent = t('密钥无效');
+        const countdown = code.closest('.entry-otp')?.querySelector('[data-otp-countdown]');
+        if (countdown) countdown.hidden = true;
+      }
+    } finally {
+      config?.secret.fill(0);
+    }
+  }
+}
+function updateBadge() {
+  const count = currentOrigin ? availableCards().filter(cardMatches).length : 0;
+  chrome.action?.setBadgeText?.({ text: count ? String(count) : '' });
+}
+function emptyState(query) {
+  const empty = document.createElement('div');
+  empty.className = 'entry-empty';
+  const heading = document.createElement('strong');
+  heading.textContent = t('没有找到相关条目');
+  const caption = document.createElement('small');
+  caption.textContent = query ? t('试试其他关键词') : text(currentOrigin ? 'none' : 'unsupported');
+  const create = document.createElement('button');
+  create.type = 'button';
+  create.className = 'button secondary';
+  create.textContent = currentOrigin ? t('为此网站新建条目') : t('新建条目');
+  create.onclick = () => newEntry();
+  empty.append(heading, caption, create);
+  if (!query && currentOrigin && liveCards().some((card) => passwordField(card)?.textContent)) {
+    const add = document.createElement('button');
+    add.type = 'button';
+    add.className = 'button secondary';
+    add.dataset.addCurrentSite = '';
+    add.textContent = t('添加网站地址');
+    add.onclick = () => addSite().catch(fail);
+    empty.append(add);
+  }
+  return empty;
+}
+function entryElement(card, version, request, tab, fresh) {
+  const item = document.createElement('article');
+  item.className = 'entry';
+  item.dataset.entryId = card.getAttribute('id');
+  const head = document.createElement('div');
+  head.className = 'entry-head';
+  const label = document.createElement('strong');
+  label.textContent = title(card);
+  const rawAccount = accountText(card);
+  const account = document.createElement('small');
+  account.textContent = rawAccount || t('暂无账号');
+  head.append(label, account);
+  item.append(head);
+  const matched = cardMatches(card);
+  const password = passwordField(card);
+  for (const field of fields(card).filter(hasOTP)) {
+    const index = fields(card).indexOf(field);
+    const row = document.createElement('div');
+    row.className = 'entry-otp';
+    const meta = document.createElement('div');
+    meta.className = 'otp-main';
+    const fieldLabel = document.createElement('small');
+    fieldLabel.textContent = field.getAttribute('name') || t('一次性验证码');
+    const code = document.createElement('span');
+    code.className = 'otp-code';
+    code.dataset.otpCard = card.getAttribute('id');
+    code.dataset.otpIndex = String(index);
+    code.textContent = '••• •••';
+    const countdown = document.createElement('span');
+    countdown.className = 'otp-countdown';
+    countdown.dataset.otpCountdown = '';
+    countdown.textContent = '30s';
+    meta.append(fieldLabel, code, countdown);
+    row.append(meta);
+    const copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'text-button';
+    copy.dataset.otpCopy = '';
+    copy.textContent = t('复制');
+    copy.title = t('复制动态验证码');
+    copy.disabled = !fresh;
+    copy.onclick = async () => {
+      if (!doc || busy || version !== epoch || request !== matchEpoch) return;
+      await copyText(await otpCode(card, index));
+    };
+    row.append(copy);
+    if (matched) {
+      const fill = document.createElement('button');
+      fill.type = 'button';
+      fill.className = 'text-button';
+      fill.dataset.otpFill = '';
+      fill.textContent = t('填入验证码');
+      fill.disabled = !fresh;
+      fill.onclick = () =>
+        fillOtp(card, tab, index, version, request).catch((error) => {
+          if (version === epoch) fail(error);
+        });
+      row.append(fill);
+    }
+    item.append(row);
+  }
+  const actions = document.createElement('div');
+  actions.className = 'entry-actions';
+  const fill = document.createElement('button');
+  fill.type = 'button';
+  fill.className = 'button primary';
+  fill.textContent = text('fill');
+  fill.disabled = !fresh || !matched || !password?.textContent;
+  fill.onclick = async () => {
+    checkIdle();
+    if (!doc || busy || version !== epoch || request !== matchEpoch) return;
+    fill.disabled = true;
+    try {
+      if (!(await freshFile())) return;
+      const [current] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (
+        !doc ||
+        busy ||
+        version !== epoch ||
+        request !== matchEpoch ||
+        current?.id !== tab.id ||
+        loginOrigin(current.url || '') !== currentOrigin
+      ) {
+        if (version === epoch) status('origin');
+        return;
+      }
+      const result = await chrome.scripting.executeScript({
+        target: { tabId: tab.id, frameIds: [0] },
+        world: 'ISOLATED',
+        func: fillLogin,
+        args: [currentOrigin, rawAccount, password.textContent],
+      });
+      if (version === epoch) status(result[0]?.result || 'error');
+    } catch (error) {
+      if (version === epoch) fail(error);
+    } finally {
+      fill.disabled = !fresh || !matched || !password?.textContent;
+    }
+  };
+  if (password?.textContent) actions.append(fill);
+  if (rawAccount) {
+    const copyUser = document.createElement('button');
+    copyUser.type = 'button';
+    copyUser.className = 'text-button';
+    copyUser.dataset.copyUsername = '';
+    copyUser.textContent = t('复制账号');
+    copyUser.disabled = !fresh;
+    copyUser.onclick = () => {
+      if (fresh) void copyText(rawAccount);
+    };
+    actions.append(copyUser);
+  }
+  if (password?.textContent) {
+    const copyPass = document.createElement('button');
+    copyPass.type = 'button';
+    copyPass.className = 'text-button';
+    copyPass.dataset.copyPassword = '';
+    copyPass.textContent = t('复制密码');
+    copyPass.disabled = !fresh;
+    copyPass.onclick = () => {
+      if (fresh) void copyText(password.textContent);
+    };
+    actions.append(copyPass);
+  }
+  if (password) {
+    const update = document.createElement('button');
+    update.type = 'button';
+    update.className = 'button secondary';
+    update.textContent = t('更新密码');
+    update.onclick = () => {
+      if (!busy && doc && version === epoch && request === matchEpoch) updatePassword(card, tab);
+    };
+    actions.append(update);
+  }
+  if (actions.childElementCount) item.append(actions);
+  return item;
+}
+function renderEntries() {
+  if (!doc) return;
+  const { query, matching } = visibleCards();
+  const entries = $('#entries');
+  entries.replaceChildren();
+  if (!matching.length) {
+    entries.append(emptyState(query));
+    if (currentFresh && !query && currentOrigin) status('none');
+    else if (currentFresh && query && statusMessage === 'none') status('');
+  } else {
+    if (currentFresh && currentOrigin && (query || statusMessage === 'none')) status('');
+    for (const card of matching)
+      entries.append(entryElement(card, epoch, matchEpoch, currentTab, currentFresh));
+  }
+  updateBadge();
+  void refreshCodes();
+}
 async function refresh() {
   checkIdle();
   const request = ++matchEpoch,
@@ -295,81 +734,98 @@ async function refresh() {
   if (!doc) return;
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (request !== matchEpoch || version !== epoch || !doc) return;
+  currentTab = tab || null;
   const origin = tab?.url && loginOrigin(tab.url);
-  $('#origin').textContent = origin || '';
+  currentOrigin = origin || '';
+  $('#origin').textContent = currentOrigin;
   status(origin ? '' : 'unsupported');
   const fresh = await freshFile();
   if (request !== matchEpoch || version !== epoch || !doc) return;
-  const matches = (card) =>
-    matchesSite(
-      fields(card)
-        .filter((field) => fieldType(field) === 'website')
-        .map((field) => field.textContent.trim()),
-      tab?.url || '',
-    );
-  const available = liveCards().filter((card) =>
-    fields(card).some((field) => fieldType(field) === 'password' && field.textContent),
-  );
-  const matching = available.filter((card) => showAll || matches(card));
-  if (!matching.length && origin && fresh) status('none');
-  for (const card of matching) {
-    const item = document.createElement('article');
-    item.className = 'entry';
-    const label = document.createElement('strong');
-    label.textContent = title(card);
-    const account = document.createElement('small');
-    account.textContent =
-      fields(card).find((field) => ['login', 'email'].includes(fieldType(field)))?.textContent ||
-      '';
-    const button = document.createElement('button');
-    button.className = 'button primary';
-    button.textContent = text('fill');
-    button.disabled = !fresh || !matches(card);
-    button.onclick = async () => {
-      checkIdle();
-      if (!doc || busy || version !== epoch || request !== matchEpoch) return;
-      button.disabled = true;
-      try {
-        if (!(await freshFile())) return;
-        const [current] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (
-          !doc ||
-          busy ||
-          version !== epoch ||
-          request !== matchEpoch ||
-          current?.id !== tab.id ||
-          loginOrigin(current.url || '') !== origin
-        ) {
-          if (version === epoch) status('origin');
-          return;
-        }
-        const password = fields(card).find((field) => fieldType(field) === 'password').textContent;
-        const result = await chrome.scripting.executeScript({
-          target: { tabId: tab.id, frameIds: [0] },
-          world: 'ISOLATED',
-          func: fillLogin,
-          args: [origin, account.textContent, password],
-        });
-        if (version === epoch) status(result[0]?.result || 'error');
-      } catch (error) {
-        if (version === epoch) fail(error);
-      } finally {
-        button.disabled = !fresh || !matches(card);
-      }
-    };
-    const update = document.createElement('button');
-    update.className = 'button secondary';
-    update.textContent = t('更新密码');
-    update.onclick = () => {
-      if (!busy && doc && version === epoch && request === matchEpoch) updatePassword(card, tab);
-    };
-    item.append(label, account, button, update);
-    $('#entries').append(item);
+  currentFresh = fresh;
+  renderEntries();
+}
+async function fillOtp(card, tab, index, version, request) {
+  if (!doc || busy || !tab || version !== epoch || request !== matchEpoch) return;
+  const code = await otpCode(card, index);
+  if (!code) {
+    notify(t('密钥无效'));
+    return;
   }
+  try {
+    if (!(await freshFile())) return;
+    const [current] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (
+      !doc ||
+      busy ||
+      version !== epoch ||
+      request !== matchEpoch ||
+      current?.id !== tab.id ||
+      loginOrigin(current.url || '') !== currentOrigin
+    ) {
+      if (version === epoch) status('origin');
+      return;
+    }
+    const result = await chrome.scripting.executeScript({
+      target: { tabId: tab.id, frameIds: [0] },
+      world: 'ISOLATED',
+      func: fillOTP,
+      args: [currentOrigin, code],
+    });
+    const outcome = result[0]?.result;
+    if (version !== epoch) return;
+    if (outcome === 'otp-filled') notify(t('已填充，请在网站上确认登录。'));
+    else if (outcome === 'origin') status('origin');
+    else notify(t('无法识别唯一的验证码输入框，请手动填写'));
+  } catch (error) {
+    if (version === epoch) fail(error);
+  }
+}
+function newEntry() {
+  if (!doc || busy) return;
+  const suggested =
+    currentTab?.title?.trim() || (currentOrigin ? new URL(currentOrigin).hostname : '');
+  showDialog(
+    `<form id="new-entry-form">${heading(t('新建条目'), t('把重要的信息，妥善收在一起。'))}<label class="form-label">${t('条目名称')}<input name="title" maxlength="200" required value="${escape(suggested)}"></label><label class="form-label">${t('账号')}<input name="username" autocomplete="off"></label><label class="form-label">${t('密码')}<div class="new-password-row"><input name="password" type="password" autocomplete="new-password"><button type="button" class="text-button" id="new-password-generate">${t('生成密码')}</button><button type="button" class="text-button" id="new-password-toggle" aria-label="${t('显示或隐藏内容')}">${t('显示')}</button></div></label><label class="form-label">${t('网站')}<input name="website" type="text" inputmode="url" value="${escape(currentOrigin)}"></label><p class="form-error" role="alert"></p><div class="modal-footer"><button type="button" class="button secondary" data-close>${t('取消')}</button><button type="submit" class="button primary">${t('保存条目')}</button></div></form>`,
+  );
+  const form = $('#new-entry-form');
+  $('#new-password-generate').onclick = () => {
+    form.elements.password.value = generatePassword();
+    form.elements.password.focus();
+  };
+  $('#new-password-toggle').onclick = () => {
+    const showing = form.elements.password.type === 'text';
+    form.elements.password.type = showing ? 'password' : 'text';
+    $('#new-password-toggle').textContent = t(showing ? '显示' : '隐藏');
+  };
+  form.onsubmit = (event) => {
+    event.preventDefault();
+    if (!doc || busy) return;
+    const card = newCard(doc);
+    card.setAttribute('title', form.elements.title.value.trim() || t('未命名条目'));
+    setField(card, t('账号'), form.elements.username.value, 'login');
+    setField(card, t('密码'), form.elements.password.value, 'password');
+    setField(card, t('网站'), form.elements.website.value.trim(), 'website');
+    doc.documentElement.append(card);
+    dirty = true;
+    const matchesCurrent =
+      currentOrigin && matchesSite([form.elements.website.value.trim()], currentOrigin);
+    if (!matchesCurrent) {
+      showAll = true;
+      $('#show-all').checked = true;
+    }
+    searchQuery = '';
+    $('#entry-search').value = '';
+    closeDialog();
+    saveStatus();
+    void refresh();
+    notify(t('已添加条目，请保存数据库'));
+  };
+  form.querySelector('[name=title]')?.select();
 }
 function updatePassword(card, tab) {
   const version = epoch;
   const passwords = fields(card).filter((entry) => fieldType(entry) === 'password');
+  if (!passwords.length) return;
   const origin = loginOrigin(tab?.url || '');
   const matched =
     origin &&
@@ -486,11 +942,13 @@ async function addSite() {
 }
 async function save(asCopy = false) {
   if (!doc || busy) return;
+  const shouldSnapshot = dirty;
   setBusy(true);
   saveStatus();
   try {
     let target = asCopy ? null : handle;
     if (!target && window.showSaveFilePicker)
+      // showSaveFilePicker resolves to one handle; showOpenFilePicker resolves to an array.
       target = await window.showSaveFilePicker({
         suggestedName: name || 'SafeInCloud.db',
         types: [
@@ -546,6 +1004,7 @@ async function save(asCopy = false) {
     encrypted = bytes;
     saveError = false;
     $('#vault-name').textContent = name;
+    if (shouldSnapshot) void snapshotStore.write(name, bytes, snapshotRetention).catch(() => {});
   } catch (error) {
     saveError = true;
     status('保存失败：', error);
@@ -621,6 +1080,18 @@ function localize() {
     .querySelectorAll('[data-t]')
     .forEach((element) => (element.textContent = t(element.dataset.t)));
   $('#language').value = getLocale();
+  $('#entry-search').placeholder = t('搜索条目、账号或标签…');
+  $('#idle')
+    .querySelectorAll('option')
+    .forEach((option) => {
+      option.textContent = option.value + ' ' + t('分钟');
+    });
+  $('#clipboard-timeout')
+    .querySelectorAll('option')
+    .forEach((option) => {
+      const seconds = Number(option.value);
+      option.textContent = seconds ? t('{seconds} 秒', { seconds }) : t('关闭');
+    });
   $('#status').textContent = text(statusMessage) + (statusError ? fileError(statusError) : '');
   $('#language').setAttribute('aria-label', t('选择语言'));
   if (doc) {
@@ -702,6 +1173,10 @@ $('#unlock').onsubmit = async (event) => {
 };
 $('#lock').onclick = () => lock();
 $('#refresh').onclick = () => refresh().catch(fail);
+$('#new-entry').onclick = () => newEntry();
+$('#recovery-kit').onclick = () => downloadRecoveryKit();
+$('#snapshots').onclick = () => showSnapshots().catch(fail);
+$('#clear-snapshots').onclick = () => clearSnapshots();
 $('#save').onclick = () => save();
 $('#save-copy').onclick = () => save(true);
 $('#reload').onclick = () => reload().catch(fail);
@@ -709,9 +1184,13 @@ $('#import').onclick = () => {
   if (doc && !busy) importer.open();
 };
 $('#add-site').onclick = () => addSite().catch(fail);
+$('#entry-search').addEventListener('input', () => {
+  searchQuery = $('#entry-search').value;
+  renderEntries();
+});
 $('#show-all').onchange = () => {
   showAll = $('#show-all').checked;
-  void refresh().catch(fail);
+  renderEntries();
 };
 document.addEventListener('click', async (event) => {
   if (event.target.closest('[data-close]')) closeDialog();
@@ -724,18 +1203,6 @@ document.addEventListener('click', async (event) => {
       notify(t('最近文件记录已清空'));
     }
     if (button.dataset.action === 'recent-session' && encrypted && !doc) $('#password').focus();
-    if (button.dataset.action === 'recent-directory') {
-      const entry = recentEntries.find((item) => item.id === button.dataset.id);
-      if (entry?.handle && window.showDirectoryPicker) {
-        setBusy(true);
-        const directory = await window.showDirectoryPicker({
-          mode: 'read',
-          id: 'clearvault-recent-directory',
-        });
-        await recentFiles.setDirectory(entry.id, directory);
-        notify(t('已确认密码库所在目录'));
-      }
-    }
     if (button.dataset.action === 'recent-open') {
       if (dirty) {
         notify(t('请先保存当前修改，再导入或重新加载文件'));
@@ -778,10 +1245,13 @@ for (const name of ['pointerdown', 'keydown'])
     },
     { passive: true },
   );
-setInterval(checkIdle, 1000);
+setInterval(() => {
+  checkIdle();
+  if (!document.hidden) void refreshCodes();
+}, 500);
 document.addEventListener('visibilitychange', () => {
   checkIdle();
-  if (document.hidden) void lock();
+  if (!document.hidden) void refreshCodes();
 });
 window.addEventListener('pagehide', () => {
   void lock();
@@ -791,11 +1261,52 @@ chrome.tabs.onUpdated.addListener((_id, change) => {
   if (change.status === 'complete' || change.url) refresh().catch(fail);
 });
 localize();
+chrome.action?.setBadgeBackgroundColor?.({ color: '#315ca0' });
 $('#language').innerHTML = supportedLocales
   .map((locale) => `<option value="${locale.code}">${locale.name}</option>`)
   .join('');
-$('#idle')
-  .querySelectorAll('option')
-  .forEach((option) => {
-    option.textContent = option.value + ' ' + t('分钟');
-  });
+$('#language').value = getLocale();
+try {
+  const saved = Number(localStorage.getItem(IDLE_KEY));
+  if ([1, 5, 15, 30].includes(saved)) $('#idle').value = String(saved);
+} catch {
+  /* Keep the default when extension storage is unavailable. */
+}
+$('#idle').onchange = () => {
+  try {
+    localStorage.setItem(IDLE_KEY, $('#idle').value);
+  } catch {
+    /* The selection still applies to this side panel session. */
+  }
+};
+try {
+  const stored = localStorage.getItem(CLIPBOARD_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([0, 15, 30, 60].includes(saved)) $('#clipboard-timeout').value = String(saved);
+} catch {
+  /* Keep the default when extension storage is unavailable. */
+}
+$('#clipboard-timeout').onchange = () => {
+  const seconds = Number($('#clipboard-timeout').value);
+  clipboardGuard.setSeconds(seconds);
+  try {
+    localStorage.setItem(CLIPBOARD_KEY, String(seconds));
+  } catch {
+    /* The selection still applies to this side panel session. */
+  }
+};
+try {
+  const stored = localStorage.getItem(SNAPSHOT_KEY);
+  const saved = stored === null || stored === undefined ? NaN : Number(stored);
+  if ([5, 10, 20, 50].includes(saved)) $('#snapshot-retention').value = String(saved);
+} catch {
+  /* Keep the default when extension storage is unavailable. */
+}
+$('#snapshot-retention').onchange = () => {
+  snapshotRetention = Number($('#snapshot-retention').value);
+  try {
+    localStorage.setItem(SNAPSHOT_KEY, String(snapshotRetention));
+  } catch {
+    /* The selection still applies to this side panel session. */
+  }
+};

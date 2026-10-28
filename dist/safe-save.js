@@ -2,6 +2,11 @@ import { t } from './i18n.js';
 // Browser handles have no stable cross-session file identity. Never prune a
 // different file's backups just because it shares the same name.
 const sessionBackups = new WeakMap();
+function conflict(message) {
+  const error = new Error(message);
+  error.code = 'conflict';
+  return error;
+}
 
 export async function fingerprint(bytes) {
   return [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))]
@@ -56,7 +61,7 @@ export async function saveSafely({
 }) {
   const original = await readBytes(handle);
   if (expectedHash && (await fingerprint(original)) !== expectedHash)
-    throw new Error(t('原文件已被其他应用修改，请在设置中另存为副本，避免覆盖'));
+    throw conflict(t('原文件已被其他应用修改，请在设置中另存为副本，避免覆盖'));
   let backup = null;
   let owned;
   if (directory && original.length) {
@@ -73,7 +78,7 @@ export async function saveSafely({
   // Recheck after asynchronous backup I/O. This narrows, but cannot remove,
   // the race with another application; browser APIs provide no cross-app CAS.
   if ((await fingerprint(await readBytes(handle))) !== (await fingerprint(original)))
-    throw new Error(t('原文件已被其他应用修改，请在设置中另存为副本，避免覆盖'));
+    throw conflict(t('原文件已被其他应用修改，请在设置中另存为副本，避免覆盖'));
   await writeVerified(handle, bytes);
   let retentionWarning = false;
   if (directory && backup) {

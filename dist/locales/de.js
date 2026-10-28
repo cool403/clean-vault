@@ -3,21 +3,8 @@ export default {
   解锁并继续未保存的修改: 'Entsperren und ungespeicherte Änderungen fortsetzen',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'Diese Sitzung enthält ungespeicherte Änderungen. Entsperren und speichern Sie diese, bevor Sie die Seite neu laden oder schließen.',
-  '上次确认的目录：{folder}': 'Zuletzt bestätigter Ordner: {folder}',
-  所在目录尚未确认: 'Ordner noch nicht bestätigt',
-  确认所在目录: 'Übergeordneten Ordner bestätigen',
-  所选文件夹: 'Ausgewählter Ordner',
-  '记录已失效，请重新打开密码库':
-    'Dieser Verlaufseintrag ist nicht mehr verfügbar. Öffnen Sie den Tresor erneut.',
-  '所选文件夹不包含此密码库，请重新选择':
-    'Der ausgewählte Ordner enthält diesen Tresor nicht. Wählen Sie den richtigen Ordner.',
-  已确认密码库所在目录: 'Tresorordner bestätigt.',
-  '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。':
-    'Browser geben den vollständigen lokalen Pfad nicht frei. Wählen Sie über das Ordnersymbol den übergeordneten Ordner aus, um Namen und relativen Pfad zu prüfen und zu merken.',
-  '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。':
-    'Browser geben den vollständigen lokalen Pfad nicht frei. Prüfen Sie den Ordner im Dateiauswahldialog, wenn Sie die Datei erneut auswählen.',
-  '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Gespeichert werden nur Dateinamen, Dateizugriffe und bestätigte Ordnerangaben, niemals Hauptpasswörter oder Tresorinhalte. App und Erweiterung führen getrennte Verläufe.',
+  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Gespeichert werden nur Name und Dateizugriff der zuletzt geöffneten Datei, niemals Hauptpasswörter oder Tresorinhalte. App und Erweiterung führen getrennte Verläufe.',
   从当前网页读取新密码: 'Neues Passwort von dieser Website lesen',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
     'Neue Passwortfelder dieser Website werden erst nach Ihrem Klick gelesen. Der Eintrag wird erst nach Ihrer Bestätigung geändert.',
@@ -105,8 +92,8 @@ export default {
   '已重新加载文件，请输入主密码': 'Datei neu geladen. Geben Sie Ihr Hauptpasswort ein.',
   '请先保存当前修改，再导入或重新加载文件':
     'Speichern Sie Ihre Änderungen, bevor Sie importieren oder eine Datei neu laden.',
-  '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。':
-    'Tresore werden nur im Arbeitsspeicher entschlüsselt. Im Verlauf stehen nur Namen, Dateizugriffe und bestätigte Ordnerangaben. Er lässt sich jederzeit löschen. Zum erneuten Öffnen ist weiterhin Ihr Hauptpasswort nötig.',
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
+    'Tresore werden nur im Arbeitsspeicher entschlüsselt. Der Verlauf speichert nur Name und Dateizugriff der zuletzt geöffneten Datei und kann jederzeit gelöscht werden. Zum erneuten Öffnen ist das Hauptpasswort erforderlich.',
   '在 GitHub 查看源码': 'Quellcode auf GitHub ansehen',
   查看构建记录: 'Build-Verlauf ansehen',
   核对线上版本: 'Diese Bereitstellung prüfen',
@@ -504,4 +491,190 @@ export default {
   你的私密空间: 'IHR PRIVATER BEREICH',
   '少一点担忧，多一点从容。': 'Weniger Sorgen. Mehr Klarheit.',
   '为你的数字生活，留一份安心。': 'Für ein entspanntes digitales Leben.',
+  显示: 'Anzeigen',
+  隐藏: 'Ausblenden',
+  复制账号: 'Benutzername kopieren',
+  填入验证码: 'Code einfügen',
+  '已添加条目，请保存数据库': 'Eintrag hinzugefügt. Speichern Sie Ihren Tresor.',
+  为此网站新建条目: 'Eintrag für diese Website anlegen',
+  更多操作: 'Weitere Aktionen',
+  保存为我的密码库: 'Als meinen Tresor speichern',
+  '已导出加密副本，原文件尚未更新；更改仍未保存，保留在当前页面内':
+    'Eine verschlüsselte Kopie wurde exportiert; die Originaldatei ist nicht aktualisiert. Änderungen sind weiterhin ungespeichert und bleiben auf dieser Seite.',
+  剪贴板自动清除: 'Zwischenablage automatisch löschen',
+  '{seconds} 秒': '{seconds} Sekunden',
+  '已复制到剪贴板，{seconds} 秒后自动清除':
+    'In die Zwischenablage kopiert. Wird in {seconds} Sekunden gelöscht.',
+  '复制账号、密码或验证码后，会尝试在设定时间后清空系统剪贴板；页面失去焦点时可能失败。':
+    'Nach dem Kopieren von Benutzername, Passwort oder Code wird versucht, die Zwischenablage nach der gewählten Zeit zu leeren; bei fehlendem Fensterfokus kann dies fehlschlagen.',
+  '无法识别唯一的验证码输入框，请手动填写':
+    'Kein eindeutiges Feld für den Bestätigungscode gefunden. Bitte manuell eingeben.',
+  主密码强度: 'Master-Passwort-Stärke',
+  太弱: 'Sehr schwach',
+  弱: 'Schwach',
+  一般: 'Mittel',
+  强: 'Stark',
+  很强: 'Sehr stark',
+  '建议至少 12 个字符': 'Verwenden Sie mindestens 12 Zeichen',
+  '混合大小写、数字和符号': 'Mischen Sie Groß-/Kleinschreibung, Zahlen und Symbole',
+  '避免常见单词、重复或连续字符': 'Vermeiden Sie häufige Wörter, Wiederholungen oder Folgen',
+  '主密码无法找回，请务必妥善保管。':
+    'Das Master-Passwort kann nicht wiederhergestellt werden. Bewahren Sie es sicher auf.',
+  我确认主密码无法找回:
+    'Ich verstehe, dass das Master-Passwort nicht wiederhergestellt werden kann',
+  请确认主密码无法找回:
+    'Bestätigen Sie, dass das Master-Passwort nicht wiederhergestellt werden kann',
+  当前主密码: 'Aktuelles Master-Passwort',
+  当前主密码不正确: 'Das aktuelle Master-Passwort ist falsch',
+  新主密码: 'Neues Master-Passwort',
+  '创建后可在偏好设置下载恢复工具包。':
+    'Nach dem Erstellen können Sie in den Einstellungen ein Wiederherstellungs-Kit herunterladen.',
+  恢复工具包: 'Wiederherstellungs-Kit',
+  生成时间: 'Erstellt',
+  密码库文件: 'Tresordatei',
+  '主密码无法由 ClearVault 找回。请在此处手写主密码，并与密码库备份分开保管。':
+    'ClearVault kann Ihr Master-Passwort nicht wiederherstellen. Schreiben Sie es hier von Hand auf und bewahren Sie es getrennt von Ihren Tresor-Backups auf.',
+  备份位置: 'Backup-Speicherort',
+  恢复步骤: 'Wiederherstellungsschritte',
+  '打开 ClearVault，选择“打开 .db 密码库”，再输入主密码解锁。':
+    'Öffnen Sie ClearVault, wählen Sie .db-Tresor öffnen und geben Sie das Master-Passwort ein.',
+  '本工具包不包含密码、TOTP 密钥或密码库内容。请妥善保管。':
+    'Dieses Kit enthält keine Passwörter, TOTP-Geheimnisse oder Tresorinhalte. Bewahren Sie es sicher auf.',
+  '恢复工具包已下载，请打印并妥善保管':
+    'Wiederherstellungs-Kit heruntergeladen. Drucken und sicher aufbewahren.',
+  尚未保存的密码库: 'Nicht gespeicherter Tresor',
+  命令模式: 'Befehlsmodus',
+  没有找到命令: 'Keine passenden Befehle',
+  '输入 > 查看命令': 'Geben Sie > ein, um Befehle zu sehen',
+  运行命令: 'Befehl ausführen',
+  '{count} 个命令': '{count} Befehle',
+  '显示前 {count} 条': 'Zeige die ersten {count}',
+  清除最近使用记录: 'Letzte Nutzung löschen',
+  最近使用记录已清除: 'Letzte Nutzung gelöscht',
+  '显示更多（还有 {count} 条）': 'Mehr anzeigen ({count} übrig)',
+  本地加密快照: 'Lokale verschlüsselte Snapshots',
+  '保存在浏览器本地，加密且不会上传；清除站点数据会删除。':
+    'Lokal im Browser gespeichert, verschlüsselt und nie hochgeladen; das Löschen der Website-Daten entfernt sie.',
+  保留数量: 'Anzahl behalten',
+  查看本地快照: 'Lokale Snapshots anzeigen',
+  清除本地快照: 'Lokale Snapshots löschen',
+  '当前 {count} 份本地快照': '{count} lokale Snapshots',
+  暂无本地快照: 'Keine lokalen Snapshots',
+  当前浏览器不支持本地快照: 'Dieser Browser unterstützt keine lokalen Snapshots',
+  '快照是加密的 .db 密文，恢复时需要当时的主密码。':
+    'Snapshots sind verschlüsselte .db-Dateien; zur Wiederherstellung ist das damalige Master-Passwort nötig.',
+  '这将删除当前密码库的本地加密快照，无法撤销。':
+    'Dadurch werden die lokalen verschlüsselten Snapshots dieses Tresors gelöscht; dies kann nicht rückgängig gemacht werden.',
+  清除: 'Löschen',
+  '已清除 {count} 份本地快照': '{count} lokale Snapshots gelöscht',
+  原文件已被其他应用修改: 'Die Originaldatei wurde von einer anderen Anwendung geändert',
+  '当前编辑仍在页面内。请选择“另存为副本”或重新加载外部版本，避免覆盖。':
+    'Ihre Änderungen sind noch auf dieser Seite. Speichern Sie eine Kopie oder laden Sie die externe Version neu, statt sie zu überschreiben.',
+  '保存会停止，避免覆盖外部版本。':
+    'Das Speichern wird gestoppt, um die externe Version nicht zu überschreiben.',
+  另存为副本: 'Als Kopie speichern',
+  保留当前编辑: 'Aktuelle Änderungen behalten',
+  '（不使用）': '(Nicht verwendet)',
+  '通用 CSV（手动映射）': 'Generisches CSV (manuelle Zuordnung)',
+  '映射 CSV 字段': 'CSV-Spalten zuordnen',
+  '选择对应的列，未使用的列会忽略。':
+    'Wählen Sie für jedes Feld die passende Spalte; ungenutzte Spalten werden ignoriert.',
+  '请至少映射一个 CSV 字段': 'Ordnen Sie mindestens eine CSV-Spalte zu',
+  '请至少映射条目名称、账号、密码、网址或备注中的一列':
+    'Ordnen Sie mindestens Titel, Benutzername, Passwort, URL oder Notizen zu',
+  '支持 Chrome、Bitwarden、1Password、LastPass、Apple Passwords 以及带表头的通用 CSV。':
+    'Unterstützt Chrome, Bitwarden, 1Password, LastPass, Apple Passwords und generische CSV-Dateien mit Kopfzeile.',
+  '开始使用 ClearVault': 'Erste Schritte mit ClearVault',
+  '完成 {done}/{total} 步': '{done} von {total} Schritten erledigt',
+  稍后: 'Später',
+  导入或新建第一条记录: 'Ersten Eintrag importieren oder anlegen',
+  安装浏览器扩展: 'Browsererweiterung installieren',
+  首次填充或复制验证码: 'Einmal einen Login oder Code ausfüllen oder kopieren',
+  添加一个验证器: 'Einen Authenticator hinzufügen',
+  保存并设置备份: 'Speichern und Backups einrichten',
+  已完成: 'Erledigt',
+  安全概览: 'Sicherheitsübersicht',
+  弱密码: 'Schwache Passwörter',
+  重复使用: 'Wiederverwendete Passwörter',
+  长期未更新: 'Alte Passwörter',
+  未启用两步验证: 'Kein TOTP',
+  '仅在本地根据解密后的条目计算，不上传密码。':
+    'Lokal aus entschlüsselten Einträgen berechnet; Passwörter werden nie hochgeladen.',
+  '长度不足 12 个字符或强度过低的密码。': 'Passwörter unter 12 Zeichen oder mit geringer Stärke.',
+  '{entries} 个条目使用同一密码（{groups} 组）':
+    '{entries} Einträge teilen ein Passwort ({groups} Gruppen)',
+  '超过一年没有修改的条目。': 'Einträge, die seit über einem Jahr nicht geändert wurden.',
+  '有密码但尚未添加 TOTP。': 'Einträge mit Passwort, aber ohne TOTP.',
+  '共 {count} 个条目，{withPassword} 个设置了密码。':
+    '{count} Einträge, {withPassword} mit Passwort.',
+  安全概览筛选结果: 'Ergebnisse des Sicherheitsfilters',
+  '本地安全筛选。': 'Lokaler Sicherheitsfilter.',
+  清除筛选: 'Filter löschen',
+  批量选择: 'Mehrfachauswahl',
+  '已选择 {count} 项': '{count} ausgewählt',
+  全选: 'Alle auswählen',
+  清除选择: 'Auswahl löschen',
+  添加标签: 'Label hinzufügen',
+  请先选择条目: 'Wählen Sie zuerst mindestens einen Eintrag aus',
+  '为选中的 {count} 个条目添加标签': '{count} ausgewählten Einträgen ein Label hinzufügen',
+  选择标签: 'Label auswählen',
+  或新建标签: 'Oder neues Label anlegen',
+  输入新标签名称: 'Neuen Labelnamen eingeben',
+  请选择或新建标签: 'Label auswählen oder anlegen',
+  '已为 {count} 个条目添加标签': '{count} Einträgen ein Label hinzugefügt',
+  '已归档 {count} 个条目': '{count} Einträge archiviert',
+  '已将 {count} 个条目移至回收站': '{count} Einträge in den Papierkorb verschoben',
+  保存: 'Speichern',
+  删除: 'Löschen',
+  重命名: 'Umbenennen',
+  合并: 'Zusammenführen',
+  管理标签: 'Labels verwalten',
+  还没有标签: 'Noch keine Labels',
+  重命名标签: 'Label umbenennen',
+  合并到: 'Zusammenführen in',
+  标签已重命名: 'Label umbenannt',
+  标签已删除: 'Label gelöscht',
+  标签已合并: 'Labels zusammengeführt',
+  '删除标签“{name}”？条目不会被删除，只会移除该标签。':
+    'Label „{name}“ löschen? Einträge werden nicht gelöscht; nur dieses Label wird entfernt.',
+  '重命名、合并或删除标签；不会删除条目。':
+    'Labels umbenennen, zusammenführen oder löschen; Einträge werden nicht gelöscht.',
+  '安装后可离线打开，并在支持的浏览器中从文件管理器打开 .db。':
+    'Nach der Installation funktioniert ClearVault offline, und unterstützte Browser können .db-Dateien aus dem Dateimanager öffnen.',
+  'Chrome / Edge 桌面：点击地址栏的安装图标，或打开浏览器菜单选择“安装 ClearVault”。':
+    'Chrome / Edge Desktop: Installationssymbol in der Adressleiste verwenden oder im Browsermenü „ClearVault installieren“ wählen.',
+  'Android Chrome：打开浏览器菜单，选择“安装应用”或“添加到主屏幕”。':
+    'Android Chrome: Browsermenü öffnen und „App installieren“ oder „Zum Startbildschirm hinzufügen“ wählen.',
+  'iPhone / iPad Safari：点击分享按钮，选择“添加到主屏幕”。':
+    'iPhone / iPad Safari: Teilen antippen und „Zum Home-Bildschirm“ wählen.',
+  'iOS Safari 不支持文件写回和浏览器扩展；请保留加密备份。':
+    'iOS Safari unterstützt kein Zurückschreiben von Dateien und keine Browsererweiterungen; behalten Sie verschlüsselte Backups.',
+  '无需注册 · 无需上传文件 · 可拖放 .db': 'Kein Konto · Kein Upload · .db-Datei ablegen',
+  '已加载本地快照，请输入主密码': 'Lokaler Snapshot geladen. Geben Sie das Master-Passwort ein.',
+  '请先保存当前修改，再恢复本地快照':
+    'Speichern Sie zuerst die aktuellen Änderungen, bevor Sie einen lokalen Snapshot wiederherstellen.',
+  合并更改: 'Änderungen zusammenführen',
+  '外部文件已变化。可以先合并外部更改，或另存副本或重新加载。':
+    'Die externe Datei wurde geändert. Sie können externe Änderungen zusammenführen, eine Kopie speichern oder neu laden.',
+  '保存会停止，避免覆盖外部版本。可合并外部更改。':
+    'Das Speichern wird gestoppt, um die externe Version nicht zu überschreiben. Externe Änderungen können zusammengeführt werden.',
+  原文件没有新的外部更改: 'Die Originaldatei hat keine neuen externen Änderungen.',
+  '外部文件版本不同，请重新打开并解锁后再合并':
+    'Die externe Datei verwendet eine andere Formatversion. Öffnen und entsperren Sie sie vor dem Zusammenführen.',
+  合并外部更改: 'Externe Änderungen zusammenführen',
+  '外部文件已解锁并与当前编辑合并。请核对冲突后保存。':
+    'Die externe Datei ist entsperrt und mit Ihren Änderungen zusammengeführt. Prüfen Sie Konflikte vor dem Speichern.',
+  '共合并 {count} 个条目，{conflicts} 个冲突。':
+    '{count} Einträge zusammengeführt, {conflicts} Konflikte.',
+  本地: 'Lokal',
+  外部: 'Extern',
+  采用合并结果: 'Zusammengeführtes Ergebnis verwenden',
+  '已合并外部更改，请保存数据库': 'Externe Änderungen zusammengeführt. Speichern Sie Ihren Tresor.',
+  显示冲突内容: 'Konfliktinhalte anzeigen',
+  是: 'Ja',
+  否: 'Nein',
+  条目状态: 'Eintragsstatus',
+  保留: 'Behalten',
+  '冲突字段按较新的修改时间预选，可逐项更改。':
+    'Konfliktfelder verwenden standardmäßig die neuere Änderungszeit; passen Sie jedes Feld an.',
 };

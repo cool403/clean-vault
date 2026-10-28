@@ -1286,3 +1286,363 @@ html[lang='ja'] .welcome-copy h1 {
     overflow-wrap: anywhere;
   }
 }
+
+.quick-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.quick-actions [data-quick-lock] {
+  margin-right: auto;
+}
+.quick-actions [data-quick-run] {
+  margin-left: auto;
+}
+.quick-actions [hidden] {
+  display: none !important;
+}
+
+.more-entries {
+  display: block;
+  width: auto;
+  margin: 14px auto;
+  padding-inline: 18px;
+}
+
+.conflict-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 12px 16px;
+  color: #6b241e;
+  background: #fff0ec;
+  border: 1.5px solid #922c25;
+  border-radius: 14px;
+}
+.conflict-banner > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.conflict-banner strong {
+  font-size: 13px;
+}
+.conflict-banner span {
+  font-size: 12px;
+}
+.conflict-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.onboarding-card {
+  margin: 0 0 14px;
+  padding: 14px 18px;
+  background: #e3ecff;
+  border: 1.5px solid #b0bfd8;
+  border-radius: 16px;
+}
+.onboarding-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.onboarding-head strong,
+.onboarding-head small {
+  display: block;
+}
+.onboarding-head small {
+  margin-top: 2px;
+  color: #31547f;
+  font-size: 12px;
+}
+.onboarding-progress {
+  height: 6px;
+  margin: 9px 0 10px;
+  overflow: hidden;
+  background: #c9d7ea;
+  border-radius: 99px;
+}
+.onboarding-progress i {
+  display: block;
+  height: 100%;
+  background: #315ca0;
+  border-radius: 99px;
+  transition: width 0.2s;
+}
+.onboarding-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.onboarding-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 13px;
+}
+.onboarding-manual {
+  display: flex;
+  flex: 1 1 220px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.onboarding-manual input {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  accent-color: #315ca0;
+}
+.onboarding-list li.done .onboarding-manual span {
+  color: #64635d;
+  text-decoration: line-through;
+}
+.onboarding-list li > small {
+  color: #31547f;
+  font-size: 12px;
+}
+.onboarding-list li > a {
+  color: #315ca0;
+  font-size: 12px;
+}
+.onboarding-list .text-button {
+  margin-left: auto;
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+.security-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  margin: 0;
+  padding: 14px;
+  color: var(--ink);
+  text-align: left;
+  background: #fffdf8;
+  border: 1.5px solid var(--line);
+  box-shadow: none;
+}
+.security-card:hover {
+  background: #e7edfa;
+}
+.security-card strong {
+  font-size: 13px;
+}
+.security-card b {
+  font-size: 28px;
+  line-height: 1.1;
+}
+.security-card small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.security-filter-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 7px 10px;
+  color: #31547f;
+  background: #e3ecff;
+  border: 1px solid #b0bfd8;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.security-filter-chip > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.security-filter-chip .text-button {
+  padding: 2px 4px;
+}
+
+.batch-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  color: #31547f;
+  background: #e3ecff;
+  border: 1px solid #b0bfd8;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.batch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+.batch-actions .text-button {
+  padding: 2px 4px;
+  font-size: 12px;
+}
+.batch-check {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 0 2px 0 0;
+  accent-color: #315ca0;
+}
+.entry-row.batch-selected {
+  background: #e3ecff;
+}
+
+.label-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.label-caption-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.label-manager {
+  display: grid;
+  gap: 2px;
+  margin: 10px 0;
+}
+.label-manage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.label-manage-row strong {
+  overflow-wrap: anywhere;
+}
+.label-manage-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+.label-manage-actions .text-button {
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.install-steps {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.conflict-list {
+  max-height: 220px;
+  margin: 10px 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+  border-block: 1px solid var(--line);
+}
+.conflict-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.conflict-list li:last-child {
+  border-bottom: 0;
+}
+.conflict-list strong {
+  overflow-wrap: anywhere;
+}
+.conflict-list small {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .topbar {
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .topbar .breadcrumb,
+  .topbar .profile {
+    display: none;
+  }
+  .top-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .top-actions .language-picker select {
+    max-width: 104px;
+  }
+  .shell {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+.merge-conflict {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.merge-conflict h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.merge-field {
+  margin: 10px 0;
+}
+.merge-field > strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.merge-options {
+  display: grid;
+  gap: 6px;
+}
+.merge-options label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 12px;
+}
+.merge-options input {
+  accent-color: #315ca0;
+}
+.merge-options code {
+  padding: 2px 5px;
+  color: var(--ink);
+  background: #f5f1e7;
+  border-radius: 6px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

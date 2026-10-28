@@ -51,8 +51,13 @@ test('sitemap contains only public canonical pages; robots preserves crawler res
     'http://www.sitemaps.org/schemas/sitemap/0.9',
   );
   const urls = [...dom.window.document.querySelectorAll('loc')].map((el) => el.textContent);
-  assert.equal(urls.length, 18);
-  assert.equal(new Set(urls).size, 18);
+  const guides = new JSDOM(
+    await readFile(new URL('../dist/guides/index.html', import.meta.url), 'utf8'),
+  );
+  const expected = 10 + guides.window.document.querySelectorAll('a.guide-card').length * 2;
+  guides.window.close();
+  assert.equal(urls.length, expected);
+  assert.equal(new Set(urls).size, expected);
   for (const path of [
     '/',
     '/downloads/',

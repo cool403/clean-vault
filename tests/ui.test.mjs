@@ -36,6 +36,7 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   const handle = {
     name: '测试密码库.db',
     getFile: async () => ({
+      name: '测试密码库.db',
       size: saved?.length || 0,
       lastModified: 1,
       arrayBuffer: async () => (saved || new Uint8Array()).slice().buffer,
@@ -149,7 +150,22 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   formValue('#password-form', 'password', 'synthetic-中文😀-2026');
   formValue('#password-form', 'confirm', 'synthetic-中文😀-2026');
   submit('#password-form');
+  assert.match(
+    document.querySelector('#password-error').textContent,
+    /确认主密码无法找回/,
+    'creating a vault requires acknowledging the unrecoverable master password',
+  );
+  document.querySelector('#password-form').elements.acknowledge.checked = true;
+  submit('#password-form');
   await waitFor(() => !!document.querySelector('[data-action=new]'));
+  assert.ok(document.querySelector('.onboarding-card'), 'a new vault shows the checklist');
+  const extensionStep = document.querySelector('[data-onboarding=extension]');
+  assert.ok(extensionStep);
+  extensionStep.checked = true;
+  extensionStep.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  assert.match(document.querySelector('.onboarding-head small').textContent, /1\/5/);
+  click('[data-action=onboarding-dismiss]');
+  assert.equal(document.querySelector('.onboarding-card'), null);
   // Empty OTP template fields must not imply a configured authenticator.
   click('[data-action=new]');
   formValue('#editor-form', 'title', '没有双重验证的条目');
@@ -260,6 +276,25 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
     }),
   );
   await waitFor(() => !!document.querySelector('[data-action=recent-session]'));
+  assert.ok(document.querySelector('[data-action=demo]'), 'a saved locked vault allows a demo');
+  click('[data-action=demo]');
+  click('[data-action=lock]');
+  await waitFor(() => !!document.querySelector('[data-action=recent-open]'));
+  click('[data-action=recent-open]');
+  await waitFor(() => !!document.querySelector('#password-form'));
+  click('#password-form .modal-footer [data-action=close-modal]');
+  assert.equal(document.querySelector('#modal').open, false);
+  assert.ok(
+    document.querySelector('[data-action=demo]'),
+    'cancelling a recent vault unlock keeps the demo button visible without refreshing',
+  );
+  await waitFor(() => !!document.querySelector('[data-action=recent-session]'));
+  click('[data-action=recent-session]');
+  document
+    .querySelector('#modal')
+    .dispatchEvent(new dom.window.Event('cancel', { cancelable: true }));
+  assert.equal(document.querySelector('#modal').open, false);
+  assert.ok(document.querySelector('[data-action=demo]'), 'Escape also keeps the demo available');
   assert.deepEqual(footerLinks(), [
     '/guides/',
     '/security/',
@@ -289,6 +324,19 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   document.activeElement.dispatchEvent(
     new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
   );
+  click('[data-action=settings]');
+  click('[data-action=change-master]');
+  const changeMasterForm = document.querySelector('#password-form');
+  assert.ok(
+    changeMasterForm.elements.current,
+    'changing the master password requires the current one',
+  );
+  changeMasterForm.elements.current.value = 'wrong';
+  changeMasterForm.elements.password.value = 'new-master-password-2026!';
+  changeMasterForm.elements.confirm.value = 'new-master-password-2026!';
+  submit('#password-form');
+  assert.match(document.querySelector('#password-error').textContent, /当前主密码不正确/);
+  click('[data-action=close-modal]');
   click('[data-action=delete]');
   click('[data-section=trash]');
   assert.ok(document.querySelector('[data-action=restore]'));
@@ -298,6 +346,11 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   // Dirty snapshots survive lock in encrypted memory without writing the file.
   click('[data-action=lock]');
   await waitFor(() => !!document.querySelector('[data-action=recent-session]'));
+  assert.equal(
+    document.querySelector('[data-action=demo]'),
+    null,
+    'a dirty locked vault cannot be replaced by the demo',
+  );
   assert.equal(document.querySelector('[data-action=unlock]'), null);
   assert.match(
     document.querySelector('[data-action=recent-session]').textContent,
@@ -320,8 +373,11 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   });
   click('[data-action=save]');
   await waitFor(() =>
-    document.querySelector('#toast').textContent.includes('原文件已被其他应用修改'),
+    document.querySelector('#modal').textContent.includes('原文件已被其他应用修改'),
   );
+  assert.ok(document.querySelector('.conflict-banner'));
+  assert.ok(document.querySelector('[data-action=merge-external]'));
+  click('[data-action=close-modal]');
   switchLanguage('en');
   assert.equal(
     document.querySelector('[data-section=all]').getAttribute('aria-label'),

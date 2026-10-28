@@ -203,22 +203,8 @@ test('app imports, saves and resumes its locked session through the recent vault
   await wait(() => document.querySelector('[data-action=import]'));
   assert.equal(document.querySelector('[data-section=all] small').textContent, '1');
   click('[data-action=settings]');
-  dom.window.showDirectoryPicker = async (options) => {
-    assert.equal(options.mode, 'read');
-    return {
-      name: 'Vaults',
-      resolve: async (source) => {
-        assert.equal(source, handle);
-        return ['Work', 'test.db'];
-      },
-    };
-  };
-  const beforeDirectory = bytes.slice();
-  click('[data-action=recent-directory]');
-  await wait(() =>
-    document.querySelector('.recent-directory')?.textContent.includes('Vaults/Work'),
-  );
-  assert.deepEqual(bytes, beforeDirectory, 'confirming a folder must not write the vault');
+  assert.equal(document.querySelector('[data-action=recent-directory]'), null);
+  assert.equal(document.querySelectorAll('.recent-row').length, 1);
   click('[data-action=recent-clear]');
   await wait(() => !document.querySelector('[data-action=recent-open]'));
   click('[data-action=close-modal]');
@@ -234,6 +220,7 @@ test('app imports, saves and resumes its locked session through the recent vault
   createForm.elements.name.value = 'Unsaved new vault';
   createForm.elements.password.value = password;
   createForm.elements.confirm.value = password;
+  createForm.elements.acknowledge.checked = true;
   submit('#password-form');
   await wait(() => document.querySelector('[data-action=new]'));
   click('[data-action=new]');

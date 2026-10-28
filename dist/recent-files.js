@@ -1,7 +1,7 @@
 import { t } from './i18n.js';
 
 export async function mergeRecentSession(entries, session) {
-  if (!session?.name) return entries;
+  if (!session?.name) return entries.slice(0, 1);
   let matched = entries.find((entry) => entry.id === session.id);
   if (!matched && session.handle) {
     for (const entry of entries) {
@@ -28,7 +28,7 @@ export async function mergeRecentSession(entries, session) {
     current: true,
     unsaved: Boolean(session.dirty),
   };
-  return [current, ...entries.filter((entry) => entry !== matched)];
+  return [current];
 }
 
 export async function allowFile(handle, mode = 'read') {
@@ -95,7 +95,16 @@ export function createRecentFiles(factory) {
   async function list() {
     const saved = await transaction('readonly', (store) => store.getAll());
     if (saved) memory = saved;
-    return [...memory].sort((left, right) => right.time - left.time).slice(0, 5);
+    const latest = [...memory].sort((left, right) => right.time - left.time).slice(0, 1);
+    const needsCleanup =
+      memory.length > 1 || latest.some((entry) => Object.hasOwn(entry, 'folder'));
+    memory = latest.map(({ id, name, handle, time }) => ({ id, name, handle, time }));
+    if (needsCleanup)
+      await transaction('readwrite', (store) => {
+        store.clear();
+        for (const entry of memory) store.put(entry);
+      });
+    return [...memory];
   }
   async function remember(name, handle = null) {
     const entries = await list();
@@ -119,28 +128,13 @@ export function createRecentFiles(factory) {
       handle,
       time: Math.max(Date.now(), ...entries.map((item) => item.time + 1)),
     };
-    if (previous?.folder) entry.folder = previous.folder;
-    memory = [entry, ...entries.filter((item) => item.id !== entry.id)].slice(0, 5);
+    memory = [entry];
     await transaction('readwrite', (store) => {
       store.put(entry);
       for (const item of entries)
         if (!memory.some((kept) => kept.id === item.id)) store.delete(item.id);
     });
     return entry;
-  }
-  async function setDirectory(id, directory) {
-    const entry = (await list()).find((item) => item.id === id);
-    if (!entry?.handle) throw new Error(t('记录已失效，请重新打开密码库'));
-    const relative = await directory.resolve(entry.handle);
-    if (!Array.isArray(relative) || !relative.length)
-      throw new Error(t('所选文件夹不包含此密码库，请重新选择'));
-    const updated = {
-      ...entry,
-      folder: [directory.name || t('所选文件夹'), ...relative.slice(0, -1)].join('/'),
-    };
-    memory = memory.map((item) => (item.id === id ? updated : item));
-    await transaction('readwrite', (store) => store.put(updated));
-    return updated;
   }
   async function remove(id) {
     await list();
@@ -154,7 +148,6 @@ export function createRecentFiles(factory) {
   return {
     list: () => serialize(list),
     remember: (name, handle) => serialize(() => remember(name, handle)),
-    setDirectory: (id, directory) => serialize(() => setDirectory(id, directory)),
     remove: (id) => serialize(() => remove(id)),
     clear: () => serialize(clear),
     get persistent() {

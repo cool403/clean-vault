@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="Map columns from any CSV with headers into ClearVault: title, account, password, URL, notes, tags, codes and favorites."
+    />
+    <meta name="theme-color" content="#f5f1e7" />
+    <title>Import any CSV into ClearVault · ClearVault</title>
+    <link rel="canonical" href="https://clear-vault.app/en/guides/import-generic-csv/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://clear-vault.app/guides/import-generic-csv/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://clear-vault.app/en/guides/import-generic-csv/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://clear-vault.app/guides/import-generic-csv/"
+    />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="stylesheet" href="/public.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ClearVault" />
+    <meta property="og:title" content="Import any CSV into ClearVault · ClearVault" />
+    <meta
+      property="og:description"
+      content="Map columns from any CSV with headers into ClearVault: title, account, password, URL, notes, tags, codes and favorites."
+    />
+    <meta property="og:url" content="https://clear-vault.app/en/guides/import-generic-csv/" />
+    <meta property="og:image" content="https://clear-vault.app/icon-512.png" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/en/"
+        ><img src="/icon.svg" width="30" height="30" alt="" />ClearVault<span>.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="/guides/import-generic-csv/" class="language">简体中文</a>
+      </nav>
+    </header>
+    <main id="main" class="article-page">
+      <div class="article-head">
+        <a href="/en/guides/" class="back">← All guides</a><span class="eyebrow">GUIDES</span>
+        <h1>Import any CSV into ClearVault</h1>
+        <p class="lead">
+          If another password manager or spreadsheet exports a plain CSV, choose Generic CSV (manual
+          mapping), assign each column and preview the import. The file is never uploaded.
+        </p>
+      </div>
+      <div class="reading-layout">
+        <aside class="toc" aria-label="On this page">
+          <strong>On this page</strong><a href="#section-1">1. Prepare the CSV</a
+          ><a href="#section-2">2. Select and map the file</a
+          ><a href="#section-3">3. Preview and duplicates</a
+          ><a href="#section-4">4. Save and clean up</a>
+        </aside>
+        <article class="prose">
+          <section id="section-1">
+            <h2>1. Prepare the CSV</h2>
+            <p>
+              The first row must contain column names; each following row is an entry. Column names
+              are flexible because you map them during import.
+            </p>
+          </section>
+          <section id="section-2">
+            <h2>2. Select and map the file</h2>
+            <p>
+              Open a .db in ClearVault, choose Import passwords → Generic CSV (manual mapping) and
+              select the file. Map title, username, password, URL, notes, tags, TOTP and favorite
+              columns; unused columns are ignored.
+            </p>
+          </section>
+          <section id="section-3">
+            <h2>3. Preview and duplicates</h2>
+            <p>
+              Preview shows new, duplicate and unsupported counts plus the first ten names and
+              accounts, never passwords. Identical entries are skipped; differing entries are kept
+              separately.
+            </p>
+          </section>
+          <section id="section-4">
+            <h2>4. Save and clean up</h2>
+            <p>
+              Confirm the import, choose Save database and reopen the .db to verify. The CSV is
+              plaintext; delete it after the encrypted save is verified.
+            </p>
+          </section>
+          <section class="related">
+            <h2>Keep reading</h2>
+            <a href="/en/guides/open-safeincloud-db/"
+              >How to open, edit and save a SafeInCloud DB file ↗</a
+            ><a href="/en/guides/safeincloud-linux/">Use a SafeInCloud database on Linux ↗</a
+            ><a href="/en/guides/totp/">Set up TOTP two-factor authentication codes ↗</a
+            ><a href="/en/guides/import-passwords/"
+              >Import passwords from another password manager ↗</a
+            ><a href="/en/guides/import-1password/">Import from 1Password into ClearVault ↗</a
+            ><a href="/en/guides/import-lastpass/">Import from LastPass into ClearVault ↗</a
+            ><a href="/en/guides/import-apple-passwords/"
+              >Import from Apple Passwords into ClearVault ↗</a
+            ><a href="/en/guides/sync-folder/">Sync a vault with your own folder ↗</a
+            ><a href="/en/guides/browser-extension/"
+              >Extension guide: fill, search, OTP and new entries ↗</a
+            ><a href="/en/security/">Security &amp; privacy ↗</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <section class="end-note">
+      <div>
+        <h2>Ready for a little more clarity?</h2>
+        <p>Try the demo, then test a copy of your database.</p>
+      </div>
+      <a href="/?lang=en" class="button">Open vault ↗</a>
+    </section>
+    <footer class="site-footer">
+      <div class="brand">ClearVault.</div>
+      <p>An independent SafeInCloud-compatible tool · No account required</p>
+      <nav>
+        <a href="/en/guides/">Guides</a><a href="/en/security/">Security &amp; privacy</a
+        ><a href="/en/privacy/">Privacy</a><a href="/en/downloads/">Downloads &amp; source</a
+        ><a href="https://ko-fi.com/lurefun">Support on Ko-fi ↗</a>
+      </nav>
+      <small
+        >© ClearVault · MIT · 0.4.4 · <a href="https://github.com/cool403/clean-vault">GitHub</a> ·
+        <a href="https://github.com/cool403/clean-vault/actions">Build history</a></small
+      >
+    </footer>
+  </body>
+</html>

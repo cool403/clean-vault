@@ -6,16 +6,28 @@
   <url><loc>https://clear-vault.app/en/downloads/</loc></url>
   <url><loc>https://clear-vault.app/en/guides/</loc></url>
   <url><loc>https://clear-vault.app/en/guides/browser-extension/</loc></url>
+  <url><loc>https://clear-vault.app/en/guides/import-1password/</loc></url>
+  <url><loc>https://clear-vault.app/en/guides/import-apple-passwords/</loc></url>
+  <url><loc>https://clear-vault.app/en/guides/import-generic-csv/</loc></url>
+  <url><loc>https://clear-vault.app/en/guides/import-lastpass/</loc></url>
   <url><loc>https://clear-vault.app/en/guides/import-passwords/</loc></url>
   <url><loc>https://clear-vault.app/en/guides/open-safeincloud-db/</loc></url>
   <url><loc>https://clear-vault.app/en/guides/safeincloud-linux/</loc></url>
+  <url><loc>https://clear-vault.app/en/guides/sync-folder/</loc></url>
   <url><loc>https://clear-vault.app/en/guides/totp/</loc></url>
+  <url><loc>https://clear-vault.app/en/privacy/</loc></url>
   <url><loc>https://clear-vault.app/en/security/</loc></url>
   <url><loc>https://clear-vault.app/guides/</loc></url>
   <url><loc>https://clear-vault.app/guides/browser-extension/</loc></url>
+  <url><loc>https://clear-vault.app/guides/import-1password/</loc></url>
+  <url><loc>https://clear-vault.app/guides/import-apple-passwords/</loc></url>
+  <url><loc>https://clear-vault.app/guides/import-generic-csv/</loc></url>
+  <url><loc>https://clear-vault.app/guides/import-lastpass/</loc></url>
   <url><loc>https://clear-vault.app/guides/import-passwords/</loc></url>
   <url><loc>https://clear-vault.app/guides/open-safeincloud-db/</loc></url>
   <url><loc>https://clear-vault.app/guides/safeincloud-linux/</loc></url>
+  <url><loc>https://clear-vault.app/guides/sync-folder/</loc></url>
   <url><loc>https://clear-vault.app/guides/totp/</loc></url>
+  <url><loc>https://clear-vault.app/privacy/</loc></url>
   <url><loc>https://clear-vault.app/security/</loc></url>
 </urlset>

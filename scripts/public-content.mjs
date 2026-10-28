@@ -27,7 +27,7 @@ export const articles = [
         ],
         [
           '4. 重新打开，确认保存结果',
-          '先保存，再锁定并重新打开数据库检查修改。首页“最近密码库”保留最近 5 个文件的名称和句柄，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持句柄时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。当前页面已选择的文件和锁定后的密码库统一显示在列表中，不再另设重新解锁入口；有未保存更改时，点击“解锁并继续未保存的修改”恢复当前加密副本。清空历史不会丢弃当前会话。可点击记录旁的文件夹图标“确认所在目录”，选择包含密码库的目录；应用核对后显示上次确认的文件夹名和相对目录。浏览器不提供完整绝对路径，文件移动后需重新确认。',
+          '先保存，再锁定并重新打开数据库检查修改。首页“最近密码库”保留上次打开的一个文件的名称和句柄，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持句柄时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。当前页面已选择的文件和锁定后的密码库统一显示在列表中，不再另设重新解锁入口；有未保存更改时，点击“解锁并继续未保存的修改”恢复当前加密副本。清空历史不会丢弃当前会话。',
         ],
         [
           '打不开文件时检查什么？',
@@ -60,7 +60,7 @@ export const articles = [
         ],
         [
           '4. Reopen to verify the result',
-          'Save, lock and reopen the database to verify changes. Recent vaults on the home screen remembers up to five file names and handles. Select one, grant access again if needed and enter your master password. If the file moved or handles are unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Selected files and locked vaults use this same list without a separate reopen link. Choose Unlock and continue unsaved changes to resume the current encrypted copy. Clearing history keeps this current session. Use the folder icon to confirm a containing directory. The app verifies membership and shows its last confirmed name and relative directory. Browsers do not expose a full absolute path; confirm again after moving files.',
+          'Save, lock and reopen the database to verify changes. Recent vaults on the home screen remembers only the last opened file name and handle. Select one, grant access again if needed and enter your master password. If the file moved or handles are unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Selected files and locked vaults use this same list without a separate reopen link. Choose Unlock and continue unsaved changes to resume the current encrypted copy. Clearing history keeps this current session.',
         ],
         [
           'If the file will not open',
@@ -197,23 +197,23 @@ articles.push(
   {
     slug: 'import-passwords',
     zh: {
-      title: '从 Chrome 或 Bitwarden 导入密码',
+      title: '从其他密码管理器导入密码',
       description:
-        '在网页和浏览器扩展中本地导入 Chrome CSV、Bitwarden CSV / JSON，预览重复条目并验证加密保存。',
+        '在网页和浏览器扩展中本地导入 Chrome、Bitwarden、1Password、LastPass、Apple Passwords 或通用 CSV，预览重复条目并验证加密保存。',
       intro:
-        '先打开或新建 ClearVault 密码库，再导入已有密码。网页与扩展共用相同的导入预览、字段对应和重复检测。',
+        '先打开或新建 ClearVault 密码库，再导入已有密码。网页与扩展共用相同的导入预览、字段映射和重复检测；通用 CSV 可以逐列指定含义。',
       sections: [
         [
           '1. 从原工具导出',
-          'Chrome：打开 Google 密码管理工具的设置，选择导出密码，按系统提示验证身份并保存 CSV。Bitwarden：在导出密码库中选择未加密 CSV 或 JSON，JSON 更适合保留多个网址与自定义字段。通行密钥不属于 Chrome 密码 CSV。本地导出文件可能包含明文密码，请妥善保管。',
+          'Chrome 从 Google 密码管理工具导出 CSV；Bitwarden 导出未加密 CSV 或 JSON；1Password 导出 CSV；LastPass 从账户设置导出 CSV；Apple Passwords 导出全部密码 CSV。通用 CSV 需要第一行为列名。导出文件可能包含明文密码，请妥善保管。',
         ],
         [
           '2. 选择来源并预览',
-          '解锁目标 .db 后，在网页顶栏、偏好设置或扩展中点击“导入密码”，选择 Chrome CSV、Bitwarden CSV 或 Bitwarden JSON，再选择文件并点击“预览导入”。文件最大 20 MB，一次最多 10000 个条目。预览展示新增、重复、不支持的数量及前 10 个条目的名称和账号，不展示密码。',
+          '解锁目标 .db 后，在网页顶栏、偏好设置或扩展中点击“导入密码”，选择来源并选择文件。内置来源直接预览；通用 CSV 先映射名称、账号、密码、网址、备注、标签、验证码和收藏。文件最大 20 MB，一次最多 10000 个条目。预览展示新增、重复、不支持的数量及前 10 个条目的名称和账号，不展示密码。',
         ],
         [
           '3. 核对字段与保留范围',
-          '名称对应条目名称，用户名对应账号，密码对应密码，网址对应网站，备注保留，Bitwarden 文件夹对应标签、收藏对应收藏。支持登录和安全笔记；JSON 支持多个网址、自定义文本、布尔值与隐藏字段。CSV 自定义字段整体保留为私密字段。不支持的验证码密钥原样保留为私密字段。卡片、身份等类型会计数跳过；附件、通行密钥与关联字段会提示未导入。Bitwarden 的网址匹配规则和再次验证策略不迁移，扩展始终按精确 HTTPS 来源匹配。',
+          '名称对应条目名称，用户名对应账号，密码对应密码，网址对应网站，文件夹或标签对应标签，备注和收藏保留。1Password / Apple 的 OTPAuth 会导入为 TOTP；1Password 多个标签分别创建；LastPass 的 http://sn 安全笔记按备注导入。支持 Bitwarden 登录、安全笔记、多个网址和自定义字段。不支持的验证码密钥原样保留为私密字段。卡片、身份、附件、通行密钥、归档标记和原产品网址匹配规则不迁移。',
         ],
         [
           '4. 确认并保存',
@@ -222,23 +222,23 @@ articles.push(
       ],
     },
     en: {
-      title: 'Import passwords from Chrome or Bitwarden',
+      title: 'Import passwords from another password manager',
       description:
-        'Import Chrome CSV and Bitwarden CSV / JSON locally in the app or extension, preview duplicates and verify your encrypted save.',
+        'Import Chrome, Bitwarden, 1Password, LastPass, Apple Passwords or mapped generic CSV locally in the app or extension, preview duplicates and verify your encrypted save.',
       intro:
-        'Open or create a ClearVault vault first. The app and extension share the same import preview, mapping and duplicate checks.',
+        'Open or create a ClearVault vault first. The app and extension share the import preview, field mapping and duplicate checks; generic CSV files can map each column explicitly.',
       sections: [
         [
           '1. Export from your previous tool',
-          'In Chrome, open Google Password Manager settings and export passwords as CSV, completing system authentication. In Bitwarden, export an unencrypted CSV or JSON file; JSON retains multiple URLs and typed custom fields more accurately. Chrome password CSV does not contain passkeys. Export files may contain plain text passwords: handle them carefully.',
+          'Chrome exports CSV from Google Password Manager; Bitwarden exports unencrypted CSV or JSON; 1Password exports CSV; LastPass exports CSV from account settings; Apple Passwords exports all passwords as CSV. Generic CSV files need a header row. Export files may contain plain text passwords: handle them carefully.',
         ],
         [
           '2. Select a source and preview',
-          'Unlock the destination .db and choose Import passwords in the app toolbar, preferences or extension. Select Chrome CSV, Bitwarden CSV or Bitwarden JSON, choose the file and preview. The limit is 20 MB and 10,000 entries per file. Preview shows new, duplicate and unsupported counts and the first ten names and accounts, without displaying passwords.',
+          'Unlock the destination .db and choose Import passwords in the app toolbar, preferences or extension. Select a source and file. Built-in sources preview directly; generic CSV first maps title, username, password, URL, notes, tags, TOTP and favorite columns. The limit is 20 MB and 10,000 entries per file. Preview shows new, duplicate and unsupported counts and the first ten names and accounts, without displaying passwords.',
         ],
         [
           '3. Check mapping and supported data',
-          'Names map to titles, usernames to accounts, URLs to website fields and folders to labels. Passwords, notes and favorites are retained. Login entries and secure notes are supported. JSON retains multiple URLs and custom text, boolean and hidden fields. CSV custom fields are kept together as a private field. Unsupported authenticator secrets are retained as private fields. Unsupported item types are counted and skipped; attachments, passkeys and linked fields show warnings. Bitwarden URI match rules and reprompt policies are not migrated; extension matching always uses exact HTTPS origins.',
+          'Names map to titles, usernames to accounts, URLs to website fields, and folders or tags to labels. Passwords, notes and favorites are retained. 1Password and Apple OTPAuth values become TOTP codes; multiple 1Password tags become separate labels; LastPass http://sn secure notes import as notes. Bitwarden login entries, secure notes, multiple URLs and custom fields are supported. Unsupported authenticator secrets are retained as private fields. Cards, identities, attachments, passkeys, archived flags and source URL-matching rules are not migrated.',
         ],
         [
           '4. Confirm and save',
@@ -248,25 +248,290 @@ articles.push(
     },
   },
   {
+    slug: 'import-1password',
+    zh: {
+      title: '从 1Password 导入到 ClearVault',
+      description:
+        '从 1Password 导出 CSV，在浏览器本地预览并导入 ClearVault。保留账号、密码、网址、备注、标签、收藏和 TOTP。',
+      intro:
+        '1Password 导出的 CSV 是未加密的明文文件。ClearVault 只在本地读取它，确认预览并加密保存密码库后，请妥善删除源文件。',
+      sections: [
+        [
+          '1. 在 1Password 中导出 CSV',
+          '在 1Password 8 的账户菜单或设置中选择导出，格式选择 CSV，并完成账户身份验证。旧版本可能只提供 1PIF 或 1PUX；当前导入向导支持 CSV。',
+        ],
+        [
+          '2. 在 ClearVault 中预览并导入',
+          '打开或新建一个 .db 密码库并解锁，点击“导入密码”，来源选择 1Password CSV，选择导出文件并预览。确认新增、重复和不支持的数量后导入，再点击“保存数据库”。',
+        ],
+        [
+          '3. 会保留哪些内容',
+          '名称、用户名、密码、网址、备注、标签、收藏和 OTPAuth 验证码会导入；多个标签会分别创建。附件、通行密钥、归档标记和 1Password 的网址匹配规则不会迁移。',
+        ],
+        [
+          '4. 核对并清理明文文件',
+          '导入后重新打开 .db 核对条目，确认加密保存成功，再删除 1Password 导出的 CSV。不要把真实 CSV、主密码或 OTP 密钥上传到公开 issue、网站或聊天工具。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import from 1Password into ClearVault',
+      description:
+        'Export a 1Password CSV, preview it locally in the browser and import it into ClearVault. Keep logins, notes, tags, favorites and TOTP codes.',
+      intro:
+        'A 1Password CSV export is unencrypted plaintext. ClearVault reads it locally; verify the preview, save the encrypted vault and then delete the source file.',
+      sections: [
+        [
+          '1. Export a CSV from 1Password',
+          'In 1Password 8, use the account menu or Settings to export, choose CSV and complete authentication. Older versions may offer only 1PIF or 1PUX; the current ClearVault wizard supports CSV.',
+        ],
+        [
+          '2. Preview and import in ClearVault',
+          'Open or create a .db vault and unlock it. Choose Import passwords, select 1Password CSV, pick the export and preview it. Review new, duplicate and unsupported counts, import, then choose Save database.',
+        ],
+        [
+          '3. What is preserved',
+          'Titles, usernames, passwords, URLs, notes, tags, favorites and OTPAuth codes are imported. Multiple tags become separate labels. Attachments, passkeys, archived flags and 1Password URL-matching rules are not migrated.',
+        ],
+        [
+          '4. Verify and remove the plaintext file',
+          'Reopen the .db to verify entries, confirm the encrypted save succeeded and then delete the 1Password CSV. Never upload a real CSV, master password or OTP secret to a public issue, website or chat.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'import-lastpass',
+    zh: {
+      title: '从 LastPass 导入到 ClearVault',
+      description:
+        '导出 LastPass CSV，在本地预览并导入 ClearVault。保留登录、备注、文件夹和收藏，安全笔记按备注导入。',
+      intro:
+        'LastPass 导出的 CSV 是未加密文件。导入过程不会上传它；完成加密保存和核对后请删除源文件。',
+      sections: [
+        [
+          '1. 从 LastPass 导出',
+          '打开 LastPass 账户设置中的高级选项，选择导出，输入主密码并确认导出 CSV。文件包含网址、用户名、密码、备注、名称、文件夹和收藏标记。',
+        ],
+        [
+          '2. 在 ClearVault 中导入',
+          '打开 .db 并解锁，选择“导入密码” → LastPass CSV，选择文件并预览。核对新增、重复和不支持的数量，确认后保存数据库。',
+        ],
+        [
+          '3. 安全笔记和文件夹',
+          'LastPass 用 http://sn 表示安全笔记；ClearVault 会把备注导入为条目备注，而不会创建虚假网站。文件夹会导入为标签，收藏标记保留。LastPass 附件、通行密钥和网址匹配规则不会迁移。',
+        ],
+        [
+          '4. 核对与清理',
+          '重新打开 .db 检查登录和安全笔记，确认加密保存成功后再删除 LastPass CSV。不要把真实导出文件或主密码发送给他人。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import from LastPass into ClearVault',
+      description:
+        'Export a LastPass CSV, preview it locally and import it into ClearVault. Keep logins, notes, folders and favorites; secure notes import as notes.',
+      intro:
+        'A LastPass CSV export is unencrypted. The import does not upload it; delete the source after verifying the encrypted save.',
+      sections: [
+        [
+          '1. Export from LastPass',
+          'Open LastPass account settings, choose Advanced Options and Export, enter the master password and confirm the CSV download. The file contains URLs, usernames, passwords, notes, names, folders and favorite flags.',
+        ],
+        [
+          '2. Import in ClearVault',
+          'Open and unlock a .db vault, choose Import passwords → LastPass CSV, select the file and preview. Review new, duplicate and unsupported counts, confirm and save the database.',
+        ],
+        [
+          '3. Secure notes and folders',
+          'LastPass uses http://sn for secure notes; ClearVault imports the note text without creating a fake website. Folders become labels and favorites are retained. LastPass attachments, passkeys and URL-matching rules are not migrated.',
+        ],
+        [
+          '4. Verify and clean up',
+          'Reopen the .db to check logins and secure notes, then delete the LastPass CSV after the encrypted save is verified. Never send a real export or master password to anyone.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'import-apple-passwords',
+    zh: {
+      title: '从 Apple Passwords 导入到 ClearVault',
+      description:
+        '从 Apple Passwords 导出 CSV，在本地导入 ClearVault。保留登录、备注和 OTPAuth 验证码，不上传导出文件。',
+      intro:
+        'Apple Passwords 的 CSV 导出是明文文件。ClearVault 在浏览器本地读取并预览，导入后请验证加密保存并删除源文件。',
+      sections: [
+        [
+          '1. 从 Apple Passwords 导出',
+          '在 macOS 15 / iOS 18 或更新版本的 Passwords App 中选择导出全部密码，完成系统身份验证并保存 CSV。不同系统版本的菜单名称可能略有差异。',
+        ],
+        [
+          '2. 在 ClearVault 中导入',
+          '打开 .db 并解锁，选择“导入密码” → Apple Passwords CSV，选择文件并预览。核对数量后确认导入，再保存数据库。',
+        ],
+        [
+          '3. 字段和验证码',
+          '标题、网址、用户名、密码、备注和 OTPAuth 会导入；OTPAuth 会生成 TOTP 验证码。附件、通行密钥和 Apple 的账户/设备绑定信息不会迁移。',
+        ],
+        [
+          '4. 删除明文导出',
+          '重新打开密码库核对结果，确认“已验证保存”后再删除 CSV。不要把真实导出、主密码或验证密钥上传到公开位置。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import from Apple Passwords into ClearVault',
+      description:
+        'Export a CSV from Apple Passwords and import it locally into ClearVault. Keep logins, notes and OTPAuth codes without uploading the export.',
+      intro:
+        'Apple Passwords CSV exports are plaintext. ClearVault reads and previews them locally; verify the encrypted save and delete the source afterwards.',
+      sections: [
+        [
+          '1. Export from Apple Passwords',
+          'In the Passwords app on macOS 15 / iOS 18 or later, choose Export All Passwords, complete system authentication and save the CSV. Menu names can differ slightly by OS version.',
+        ],
+        [
+          '2. Import in ClearVault',
+          'Open and unlock a .db vault, choose Import passwords → Apple Passwords CSV, select the file and preview. Confirm the counts, import and save the database.',
+        ],
+        [
+          '3. Fields and codes',
+          'Titles, URLs, usernames, passwords, notes and OTPAuth values are imported; OTPAuth creates TOTP codes. Attachments, passkeys and Apple account or device binding details are not migrated.',
+        ],
+        [
+          '4. Delete the plaintext export',
+          'Reopen the vault, verify the result and confirm the verified save, then delete the CSV. Never upload a real export, master password or OTP secret to a public location.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'import-generic-csv',
+    zh: {
+      title: '导入任意 CSV 到 ClearVault',
+      description:
+        '用字段映射把任意带表头的 CSV 导入 ClearVault，映射名称、账号、密码、网址、备注、标签、验证码和收藏。',
+      intro:
+        '如果其他密码管理器或自建表格导出的是普通 CSV，可以选择“通用 CSV（手动映射）”，逐列指定含义后预览导入。文件不会上传。',
+      sections: [
+        [
+          '1. 准备 CSV',
+          '确保第一行是列名，后续每行是一个条目。列名不需要固定；导入时会让你选择每一列对应什么字段。',
+        ],
+        [
+          '2. 选择文件并映射',
+          '在 ClearVault 中打开 .db，选择“导入密码” → 通用 CSV（手动映射），选择文件。为条目名称、账号、密码、网站、备注、标签、两步验证码和收藏选择对应列；未使用的列会忽略。',
+        ],
+        [
+          '3. 预览和重复检测',
+          '预览会显示新增、重复和不支持的数量，以及前 10 个名称和账号，不显示密码。完全相同的条目会跳过，内容不同的条目会分别保留。',
+        ],
+        [
+          '4. 保存与清理',
+          '确认导入后点击“保存数据库”，重新打开 .db 核对结果。CSV 是明文文件，验证加密保存后请删除。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Import any CSV into ClearVault',
+      description:
+        'Map columns from any CSV with headers into ClearVault: title, account, password, URL, notes, tags, codes and favorites.',
+      intro:
+        'If another password manager or spreadsheet exports a plain CSV, choose Generic CSV (manual mapping), assign each column and preview the import. The file is never uploaded.',
+      sections: [
+        [
+          '1. Prepare the CSV',
+          'The first row must contain column names; each following row is an entry. Column names are flexible because you map them during import.',
+        ],
+        [
+          '2. Select and map the file',
+          'Open a .db in ClearVault, choose Import passwords → Generic CSV (manual mapping) and select the file. Map title, username, password, URL, notes, tags, TOTP and favorite columns; unused columns are ignored.',
+        ],
+        [
+          '3. Preview and duplicates',
+          'Preview shows new, duplicate and unsupported counts plus the first ten names and accounts, never passwords. Identical entries are skipped; differing entries are kept separately.',
+        ],
+        [
+          '4. Save and clean up',
+          'Confirm the import, choose Save database and reopen the .db to verify. The CSV is plaintext; delete it after the encrypted save is verified.',
+        ],
+      ],
+    },
+  },
+  {
+    slug: 'sync-folder',
+    zh: {
+      title: '用自己的同步文件夹同步密码库',
+      description:
+        '把 ClearVault 的加密 .db 放进 Syncthing、Nextcloud、OneDrive 或 iCloud Drive，检测外部修改并在本地合并冲突。',
+      intro:
+        'ClearVault 不运营云同步服务。密码库始终是一个加密文件；你可以用自己信任的同步工具把它带到其他设备，并在出现外部修改时先合并、再保存。',
+      sections: [
+        [
+          '1. 把 .db 放进同步文件夹',
+          '选择 Syncthing、Nextcloud、OneDrive、iCloud Drive 或其他你信任的文件夹同步工具。先保留一份独立加密备份，再在网页端打开同步文件夹中的 .db 并解锁。',
+        ],
+        [
+          '2. 另一台设备修改后',
+          '回到 ClearVault 页面或尝试保存时，应用会检查原文件指纹并提示外部变化。点击“合并更改”会在本地读取外部文件，使用当前会话的主密码解密，并预览本地未保存编辑与外部版本的合并结果。',
+        ],
+        [
+          '3. 合并规则',
+          '双方修改不同条目时都保留；同一条目双方都修改时，冲突预览会列出标题、备注、回收站 / 归档 / 收藏状态和每个字段，按较新的修改时间预选本地或外部值，可逐项更改。一侧删除、另一侧修改时可选择保留或删除。标签按名称合并；未知 XML、附件和图片随选中的条目版本保留。确认预览后仍需点击“保存数据库”才写入文件。',
+        ],
+        [
+          '4. 边界',
+          '外部文件必须使用相同格式版本和主密码；密码不同或版本不同时无法合并。没有跨设备文件锁；字段级选择覆盖标题、备注、标记和普通字段，未知的数据库级 XML 只保留本地版本；同步工具仍可能回滚或替换文件。请保留独立备份，避免两台设备同时编辑。',
+        ],
+      ],
+    },
+    en: {
+      title: 'Sync a vault with your own folder',
+      description:
+        'Keep the encrypted ClearVault .db in Syncthing, Nextcloud, OneDrive or iCloud Drive, detect external changes and merge conflicts locally.',
+      intro:
+        'ClearVault does not run a cloud sync service. Your vault remains an encrypted file; use a sync tool you trust to move it between devices, then merge external changes before saving.',
+      sections: [
+        [
+          '1. Put the .db in a synced folder',
+          'Choose Syncthing, Nextcloud, OneDrive, iCloud Drive or another folder-sync tool you trust. Keep an independent encrypted backup first, then open and unlock the .db from that folder in the web app.',
+        ],
+        [
+          '2. After another device changes it',
+          'When you return to the page or try to save, ClearVault checks the original file fingerprint and reports external changes. Choose Merge changes to read and decrypt the external file locally with the current session master password, then preview the merge of unsaved local edits and the external version.',
+        ],
+        [
+          '3. Merge rules',
+          'Changes to different entries are both kept. When both sides change the same entry, the preview lists the title, notes, trash / archive / favorite flags and every field, preselects local or external values by the newer modification time, and lets you change each one. If one side deleted the entry and the other changed it, choose whether to keep or delete it. Labels merge by name; unknown XML, attachments and images travel with the chosen entry version. Confirming the preview still requires Save database to write the file.',
+        ],
+        [
+          '4. Boundaries',
+          'The external file must use the same format version and master password; different passwords or versions cannot merge. There is no cross-device file lock; field-level choices cover the title, notes, flags and regular fields, and unknown database-level XML is kept from the local side only. Sync tools can still roll back or replace files. Keep independent backups and avoid editing on two devices at once.',
+        ],
+      ],
+    },
+  },
+  {
     slug: 'browser-extension',
     zh: {
-      title: '扩展教程：填充、更新密码与重新加载',
+      title: '扩展教程：填充、搜索、OTP 与新建条目',
       description:
-        '了解 ClearVault Chrome / Edge 扩展的分步登录、多网址匹配、密码更新确认、加密保存和文件冲突处理。',
+        '了解 ClearVault Chrome / Edge 扩展的分步登录、搜索复制、TOTP 验证码、新建条目、多网址匹配、密码更新确认、加密保存和文件冲突处理。',
       intro:
-        '扩展在侧栏本地解锁 .db，并在你明确点击后操作当前网站。网页和扩展可以分别打开同一文件，使用前请核对保存状态。侧栏顶部可切换简体中文、English、Deutsch、日本語和 Español；语言选择与网页分别保存在本地，密码库内容保持原样。',
+        '扩展在侧栏本地解锁 .db，并在你明确点击后操作当前网站。解锁后可搜索所有条目、复制账号或密码、为当前网站新建条目，并复制或填入 TOTP 验证码。网页和扩展可以分别打开同一文件，使用前请核对保存状态。侧栏顶部可切换简体中文、English、Deutsch、日本語和 Español；语言选择与网页分别保存在本地，密码库内容保持原样。',
       sections: [
         [
           '1. 安装和打开',
-          '从下载页取得扩展 ZIP 并解压，在 Chrome / Edge 扩展管理页开启开发者模式并加载解压目录。更新扩展后点击重新加载扩展。打开目标 HTTPS 网站，点击工具栏扩展图标授权，选择 .db 或最近密码库，再输入主密码。最近记录最多 5 个，可移除或清空；它不保存密码和库内容。',
+          '从下载页取得扩展 ZIP 并解压，在 Chrome / Edge 扩展管理页开启开发者模式并加载解压目录。更新扩展后点击重新加载扩展。打开目标 HTTPS 网站，点击工具栏扩展图标授权，选择 .db 或最近密码库，再输入主密码。最近记录只保留上次打开的一个，可移除或清空；它不保存密码和库内容。',
         ],
         [
           '2. 填充和分步登录',
-          '核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。多个密码框、验证码框、新密码表单或不明确的输入框会拒绝填充。',
+          '核对当前网站和账号，点击“填充此账号”，然后自行提交。先用户名后密码的网站，第一步仅填唯一的用户名或邮箱框；在网站继续到密码页后再点击填充。若跳转到其他来源，先点击扩展图标授权。解锁后还可以搜索所有条目并复制账号或密码；点击“新建条目”会预填当前 HTTPS 来源，保存数据库后才写入文件。条目含 TOTP 时列表直接显示验证码：点击“复制”复制，点击“填入验证码”只填唯一、明确的验证码输入框。多个密码框、未明确点击的验证码框、新密码表单或不明确的输入框会拒绝填充。',
         ],
         [
           '3. 为同一账号添加网址',
-          '在新网站点击扩展图标，解锁后点击“添加网站地址”，核对展示的完整 HTTPS 来源并选择条目，确认后保存。也可在网页编辑器点击“添加网站地址”。每个网址单独精确匹配主机和端口，不自动扩展到其他子域。勾选“查看所有条目”可更新非当前网站条目，但不能向不匹配网站填充。',
+          '在新网站点击扩展图标，解锁后点击“添加网站地址”，核对展示的完整 HTTPS 来源并选择条目，确认后保存。也可在网页编辑器点击“添加网站地址”。每个网址单独精确匹配主机和端口，不自动扩展到其他子域。勾选“查看所有条目”或搜索可查看非当前网站条目；复制始终可用，但不能向不匹配网站填充。',
         ],
         [
           '4. 更新密码并确认',
@@ -274,28 +539,28 @@ articles.push(
         ],
         [
           '5. 保存、外部变化与锁定',
-          '点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏和空闲时锁定，未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
+          '点击“保存数据库”；首次覆盖前选择独立加密备份目录，写回前检查文件指纹并备份，写入后读回验证。扩展填充前检查已关联原文件，外部变化会停止填充：先将当前编辑另存副本，再重新加载文件并输入主密码。通过普通文件选择或不支持文件句柄时，需自行重新选择文件；下载只代表已发起导出。侧栏隐藏不会立即锁定；空闲达到所选的 1 / 5 / 15 / 30 分钟后锁定。复制账号、密码或验证码后默认 30 秒尝试清空剪贴板，可在“更多操作”中改为 15 / 60 秒或关闭。未保存修改加密暂存在当前侧栏内存；关闭、刷新或重载扩展仍会丢失，请先保存。',
         ],
       ],
     },
     en: {
-      title: 'Extension guide: fill, update passwords and reload',
+      title: 'Extension guide: fill, search, OTP and new entries',
       description:
-        'Use the ClearVault Chrome / Edge extension for multistep logins, multiple URLs, confirmed password updates and verified encrypted saves.',
+        'Use the ClearVault Chrome / Edge extension for multistep logins, search and copy, TOTP codes, new entries, multiple URLs, confirmed password updates and verified encrypted saves.',
       intro:
-        'The sidebar decrypts .db files locally and acts on the website after your explicit click. The app and extension open files separately: check save status before switching. Choose Chinese, English, German, Japanese or Spanish at the top of the sidebar. Language preferences are remembered locally, separately from the app, without translating vault contents.',
+        'The sidebar decrypts .db files locally and acts on the website after your explicit click. After unlocking, search all entries, copy usernames or passwords, create an entry for the current website, and copy or fill TOTP codes. The app and extension open files separately: check save status before switching. Choose Chinese, English, German, Japanese or Spanish at the top of the sidebar. Language preferences are remembered locally, separately from the app, without translating vault contents.',
       sections: [
         [
           '1. Install and open',
-          'Download and unpack the extension ZIP. Enable developer mode in Chrome / Edge extensions and load the unpacked directory. Reload the extension after updating it. On the target HTTPS website, click its toolbar icon to grant access, choose a .db file or recent vault and enter your master password. Up to five recent records can be removed or cleared; they contain no passwords or vault contents.',
+          'Download and unpack the extension ZIP. Enable developer mode in Chrome / Edge extensions and load the unpacked directory. Reload the extension after updating it. On the target HTTPS website, click its toolbar icon to grant access, choose a .db file or recent vault and enter your master password. The last opened vault record can be removed or cleared; it contains no passwords or vault contents.',
         ],
         [
           '2. Fill and multistep login',
-          'Check the website and account, click Fill this login and submit yourself. On username-first sites, only a unique username or email input is filled. Continue on the website, then click Fill again on the password page. If redirected to another origin, click the extension icon to grant access there. Ambiguous inputs, OTP inputs, multiple password fields and new-password forms are rejected.',
+          'Check the website and account, click Fill this login and submit yourself. On username-first sites, only a unique username or email input is filled. Continue on the website, then click Fill again on the password page. If redirected to another origin, click the extension icon to grant access there. After unlocking you can also search all entries and copy a username or password; New entry prefills the current HTTPS origin, and the entry is written only after Save database. Entries with TOTP show the current code: Copy copies it, and Fill code fills only a unique, explicit verification-code input. Ambiguous inputs, OTP inputs you did not explicitly click, multiple password fields and new-password forms are rejected.',
         ],
         [
           '3. Add another website',
-          'Grant access on the new website, unlock and choose Add website address. Check the full HTTPS origin, select an entry, confirm and save. The app editor also has an Add website address button. Each host and port is matched exactly; subdomains are not automatically included. Show all entries allows updating other entries, but filling remains disabled for nonmatching websites.',
+          'Grant access on the new website, unlock and choose Add website address. Check the full HTTPS origin, select an entry, confirm and save. The app editor also has an Add website address button. Each host and port is matched exactly; subdomains are not automatically included. Show all entries or search lets you view nonmatching entries; copying remains available, but filling stays disabled for nonmatching websites.',
         ],
         [
           '4. Confirm a password update',
@@ -303,7 +568,7 @@ articles.push(
         ],
         [
           '5. Save, reload and lock',
-          'Choose Save database and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing handle support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar or inactivity locks it; unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
+          'Choose Save database and select a separate encrypted backup directory before the first overwrite. The extension checks file fingerprints, backs up existing ciphertext and verifies writes. Before filling an associated file is checked for external changes; a change stops filling. Save your edits as a copy, reload and enter the master password. Ordinary file input or missing handle support requires selecting the file again. Downloads only confirm export was started. Hiding the sidebar does not lock immediately; the selected 1 / 5 / 15 / 30 minute idle timeout applies. After copying a username, password or code, ClearVault tries to clear the clipboard after 30 seconds by default; choose 15 / 60 seconds or off in More actions. Unsaved edits remain encrypted in current sidebar memory. Closing, refreshing or reloading the extension loses them, so save first.',
         ],
       ],
     },
@@ -328,7 +593,31 @@ export const security = {
       ],
       [
         '浏览器保存什么',
-        'localStorage 仅保存界面语言；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+        'localStorage 仅保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量、最近使用条目 ID/时间和新手清单完成状态等非敏感偏好与排序元数据；IndexedDB 仅保存上次打开的一个密码库的文件名、文件句柄、记录 ID、打开时间，不保存密码、条目或库内容，可随时移除或清空。OPFS 本地快照只保存加密的 .db 密文。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+      ],
+      [
+        '剪贴板清除是尽力而为',
+        '复制账号、密码或验证码会把明文写入系统剪贴板。应用默认在 30 秒后尝试写入空字符串，可在设置中改为 15 / 60 秒或关闭。窗口失焦、浏览器限制或页面关闭时清除可能失败；清除前其他本地应用仍可读取。共用设备应手动清空剪贴板或立即锁定。',
+      ],
+      [
+        '主密码无法找回',
+        '主密码不写入任何持久存储，ClearVault 不提供找回。创建新库或从演示库保存时会显示本地强度估算并要求确认无法找回；更改主密码需验证当前主密码。偏好设置或扩展“更多操作”可下载恢复工具包，其中只有填写空白和恢复步骤，不含密码、TOTP 密钥或密码库内容。强度估算是启发式提示，不是安全保证。',
+      ],
+      [
+        '本地快照只保存密文',
+        '网页和扩展每次保存后都会尝试把加密的 .db 密文写入浏览器 OPFS，默认保留 10 份，可配置。快照不含明文或密码，恢复时需要保存时的主密码；清除站点数据会删除，不能替代独立备份。外部文件变化时保存会停止并提示另存副本或重新加载；跨标签页广播用于协调，不是安全边界。',
+      ],
+      [
+        '安全概览只在内存中计算',
+        '弱密码、重复使用、密码年龄和 TOTP 覆盖都在解锁后的页面内存中根据解密条目计算，不写入存储或上传。批量标签、归档和回收站操作与普通编辑一样，只有保存后才写入加密 .db。',
+      ],
+      [
+        '文件关联只在本地读取',
+        'PWA 的 file_handlers、launchQueue 和页面拖放都只在用户选择或拖入 .db 后本地读取文件，不上传。安装、文件关联和权限由浏览器管理；外部应用仍可能同时读取源文件，不能替代独立备份。',
+      ],
+      [
+        '同步文件夹只在本地合并',
+        '把 .db 放进 Syncthing、Nextcloud、OneDrive 或 iCloud Drive 时，同步由你的工具完成。ClearVault 在检测到外部变化后本地读取并用当前会话内存中的凭据解密；只有格式版本和主密码一致时才合并，且确认预览后仍需保存才写入。冲突按条目时间戳选择，标签按名称合并；同步提供商仍可能回滚或替换文件，请保留独立备份。',
       ],
       [
         '加密兼容性不等于现代认证加密',
@@ -340,7 +629,7 @@ export const security = {
       ],
       [
         '扩展仅获得当前网站授权',
-        '扩展使用 activeTab、scripting、sidePanel，无全站主机权限或持久内容脚本。用户点击后才向精确匹配的 HTTPS 来源填充所选账号，不自动提交。目标网站能够读取填入它的密码；这属于填充的固有边界。',
+        '扩展使用 activeTab、scripting、sidePanel，无全站主机权限或持久内容脚本。用户明确点击后才向精确匹配的 HTTPS 来源填充所选账号或 TOTP 验证码，不自动提交。搜索、复制和新建条目在解锁后的侧栏内本地处理；复制会写入系统剪贴板。目标网站能够读取填入它的密码或验证码；这属于填充的固有边界。',
       ],
       [
         '仍无法保护的情况',
@@ -369,7 +658,31 @@ export const security = {
       ],
       [
         'What the browser stores',
-        'localStorage stores only the interface language. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
+        'localStorage stores only non-sensitive preferences and ordering metadata such as the interface language, auto-lock minutes, clipboard-clear delay, snapshot retention, recent entry IDs/times and getting-started checklist completion. IndexedDB stores only the last opened vault name, file handle, record ID and opening time, never passwords, entries or vault contents. OPFS local snapshots contain only encrypted .db ciphertext. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
+      ],
+      [
+        'Clipboard clearing is best effort',
+        'Copying a username, password or code writes plaintext to the system clipboard. ClearVault tries to write an empty value after 30 seconds by default; choose 15 / 60 seconds or off in settings. Clearing can fail when the window loses focus, the browser restricts access or the page closes; other local applications can read the clipboard before it is cleared. On shared devices, clear it manually or lock immediately.',
+      ],
+      [
+        'The master password cannot be recovered',
+        "The master password is not written to persistent storage and ClearVault cannot recover it. Creating a new vault or saving the demo as a real vault shows a local strength estimate and requires acknowledging this; changing the master password requires the current one. Preferences or the extension's More actions can download a recovery kit containing blank lines and recovery steps, never passwords, TOTP secrets or vault contents. The strength estimate is a heuristic, not a security guarantee.",
+      ],
+      [
+        'Local snapshots contain ciphertext only',
+        'The app and extension try to write encrypted .db ciphertext to browser OPFS after each save, keeping 10 snapshots by default (configurable). Snapshots contain no plaintext or passwords and require the master password used at that time to restore. Clearing site data deletes them; they are not a substitute for independent backups. External file changes stop saving and offer a copy or reload; cross-tab broadcasts are coordination, not a security boundary.',
+      ],
+      [
+        'Security overview is computed in memory only',
+        'Weak passwords, reuse, password age and TOTP coverage are calculated in page memory from decrypted entries and are never stored or uploaded. Batch labels, archiving and trash changes behave like any edit and are written to the encrypted .db only after saving.',
+      ],
+      [
+        'File association reads locally',
+        'PWA file_handlers, launchQueue and page drag-and-drop only read a .db file locally after the user selects or drops it; nothing is uploaded. Installation, file association and permissions are managed by the browser. External applications can still read the source file concurrently, so this is not a substitute for independent backups.',
+      ],
+      [
+        'Synced folders merge locally',
+        'When the .db lives in Syncthing, Nextcloud, OneDrive or iCloud Drive, your tool performs the sync. On external changes ClearVault reads and decrypts locally with the current session credential; merging requires the same format version and master password, and the preview must still be saved to write. Conflicts resolve per entry by timestamp and labels merge by name. Sync providers can still roll back or replace files; keep independent backups.',
       ],
       [
         'Compatibility is not modern authenticated encryption',
@@ -381,7 +694,7 @@ export const security = {
       ],
       [
         'The extension uses current-site access',
-        'The extension uses activeTab, scripting and sidePanel, with no global host permissions or persistent content scripts. After a user action it fills only the selected credentials into an exact matching HTTPS origin, without submitting. The destination website can read a password filled into it; that is an inherent boundary of filling.',
+        'The extension uses activeTab, scripting and sidePanel, with no global host permissions or persistent content scripts. After an explicit user action it fills only the selected credentials or TOTP code into an exact matching HTTPS origin, without submitting. Search, copy and new entries are handled locally in the unlocked sidebar; copying writes the selected value to the system clipboard. The destination website can read a password or code filled into it; that is an inherent boundary of filling.',
       ],
       [
         'What remains outside the protection boundary',
@@ -390,6 +703,74 @@ export const security = {
       [
         'Audit status and reporting',
         'Independent security auditing, code signing and browser store review have not been completed. No dedicated private vulnerability reporting channel is currently published. Never upload real vaults, master passwords, TOTP secrets or exploitable sensitive material to public issues or forms. Record the version, reproduction and impact with synthetic samples, then coordinate through a private channel confirmed by the maintainer.',
+      ],
+    ],
+  },
+};
+
+export const privacy = {
+  zh: {
+    title: '隐私政策',
+    description: 'ClearVault 如何处理密码库、主密码、本地存储、网络请求和浏览器扩展权限。',
+    intro:
+      'ClearVault 是本地优先的密码库与 TOTP 工具。本页说明应用和浏览器扩展处理哪些数据、保存在哪里、何时会产生网络请求，以及你如何删除本地记录。它不是独立安全审计的替代品。',
+    sections: [
+      [
+        '处理哪些数据',
+        '你选择的 SafeInCloud 兼容 .db 文件；解锁时输入的主密码；文件中的条目、备注、附件和 TOTP 密钥；界面语言、自动锁定、剪贴板清除、快照保留数量和新手清单等本地偏好；最近密码库的文件名、句柄、记录 ID、时间；用于排序的最近使用条目 ID 和时间；浏览器 OPFS 中的加密 .db 快照。',
+      ],
+      [
+        '数据保存在哪里',
+        '主密码、解密 XML 和 TOTP 密钥只在解锁期间保留在页面内存，不写入 localStorage、IndexedDB、OPFS 或扩展存储，也不上传。localStorage 只保存非敏感偏好；IndexedDB 只保存最近密码库元数据；OPFS 快照只包含加密 .db 密文；复制到系统剪贴板的内容按设定时间尝试清除，但其他本地应用在清除前仍可能读取。',
+      ],
+      [
+        '网络与分析',
+        '网页是静态 PWA，没有账号或服务器端密码库。公开托管的 Cloudflare Pages 站点保留平台 Web Analytics，平台可能向 HTML 注入统计脚本，但它不会收到密码库内容；自行托管包不包含这项注入。托管服务仍能看到访问 IP 和 HTTP 元数据。浏览器扩展的 CSP 设置 `connect-src none`，不发起网络请求，也不包含分析或远程代码。',
+      ],
+      [
+        '扩展权限',
+        '`activeTab` 只在你点击扩展图标后临时访问当前标签页；`scripting` 在明确点击后向精确匹配的 HTTPS 来源填入所选账号或验证码；`sidePanel` 提供解锁和选择条目的侧栏。扩展不申请全站主机权限、不持久运行内容脚本、不申请 `storage` 权限，也不自动提交表单。',
+      ],
+      [
+        '共享、保留与删除',
+        'ClearVault 不出售、出租或转让用户数据。密码库文件、导出的 CSV、恢复工具包和备份由你控制。可以移除单条或清空最近密码库记录、清除最近使用记录、清除本地加密快照，或清除站点数据。关闭页面会释放内存中的密码库；未保存修改不会写入文件。',
+      ],
+      [
+        '联系与变更',
+        '请通过仓库 issue 报告隐私或安全问题，不要上传真实密码库、主密码、TOTP 密钥或可直接利用的敏感材料。项目尚未完成独立安全审计。隐私相关变更会记录在仓库中；本页内容与扩展商店提交材料保持一致。',
+      ],
+    ],
+  },
+  en: {
+    title: 'Privacy policy',
+    description:
+      'How ClearVault handles vault files, master passwords, local storage, network requests and browser extension permissions.',
+    intro:
+      'ClearVault is a local-first password vault and TOTP tool. This page explains what data the app and browser extension handle, where it is stored, when network requests occur, and how to delete local records. It is not a substitute for an independent security audit.',
+    sections: [
+      [
+        'Data ClearVault handles',
+        'The SafeInCloud-compatible .db file you select; the master password entered to unlock it; entries, notes, attachments and TOTP secrets inside the file; local preferences such as interface language, auto-lock, clipboard clearing, snapshot retention and getting-started checklist state; the last opened vault file name, handle, record ID and time; recent entry IDs and times used for ordering; and encrypted .db snapshots in browser OPFS.',
+      ],
+      [
+        'Where data is stored',
+        'The master password, decrypted XML and TOTP secrets stay in page memory while unlocked. They are not written to localStorage, IndexedDB, OPFS or extension storage and are not uploaded. localStorage stores only non-sensitive preferences; IndexedDB stores recent-vault metadata; OPFS snapshots contain only encrypted .db ciphertext; clipboard contents are cleared after the configured delay on a best-effort basis, and other local applications may read them before clearing.',
+      ],
+      [
+        'Network and analytics',
+        'The web app is a static PWA with no account or server-side vault. The public Cloudflare Pages deployment retains platform Web Analytics, which may inject a hosting script into HTML but does not receive vault contents; self-hosted packages do not contain this injection. The host can still see visit IP addresses and HTTP metadata. The browser extension CSP sets `connect-src none`; it makes no network requests and contains no analytics or remote code.',
+      ],
+      [
+        'Extension permissions',
+        '`activeTab` grants temporary access to the current tab only after you click the extension icon; `scripting` fills the selected login or code into an exact matching HTTPS origin after an explicit click; `sidePanel` provides the unlock and entry-selection UI. The extension requests no global host permissions, persistent content scripts or `storage` permission, and never submits forms automatically.',
+      ],
+      [
+        'Sharing, retention and deletion',
+        'ClearVault does not sell, rent or transfer user data. You control the vault file, exported CSV files, recovery kits and backups. You can remove or clear recent-vault records, clear recent usage, clear local encrypted snapshots or clear site data. Closing the page releases the in-memory vault; unsaved edits are not written to the file.',
+      ],
+      [
+        'Contact and changes',
+        'Report privacy or security issues through the repository issue tracker without uploading real vaults, master passwords, TOTP secrets or directly exploitable sensitive material. No independent security audit has been completed. Privacy-related changes are recorded in the repository; this page is kept consistent with the extension store submission materials.',
       ],
     ],
   },

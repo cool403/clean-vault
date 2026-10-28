@@ -36,7 +36,6 @@
 }
 .recent-open strong,
 .recent-meta,
-.recent-directory,
 .recent-open small {
   max-width: 100%;
   overflow-wrap: anywhere;
@@ -53,16 +52,6 @@
   color: #66645f;
   font-weight: 400;
   font-size: 12px;
-}
-.recent-directory {
-  font-size: 12px;
-  font-weight: 400;
-  color: #315ca0;
-}
-.recent-directory-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 .recent-actions {
   display: flex;

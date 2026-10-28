@@ -22,7 +22,6 @@ function storage() {
         getAll: () => ({ result: [...data.values()] }),
         put: (entry) => {
           const keys = ['handle', 'id', 'name', 'time'];
-          if (Object.hasOwn(entry, 'folder')) keys.push('folder');
           assert.deepEqual(Object.keys(entry).sort(), keys.sort());
           data.set(entry.id, entry);
         },
@@ -44,7 +43,7 @@ function storage() {
   };
 }
 
-test('history persists names and handles only, deduplicates by handle and caps at five', async () => {
+test('history persists names and handles only, deduplicates by handle and keeps only the last opened vault', async () => {
   const factory = storage(),
     history = createRecentFiles(factory);
   const handle = { isSameEntry: async (other) => other === handle };
@@ -52,14 +51,15 @@ test('history persists names and handles only, deduplicates by handle and caps a
   await history.remember('renamed.db', handle);
   assert.equal((await history.list()).length, 1);
   await history.remember('renamed.db', { isSameEntry: async () => false });
-  assert.equal((await history.list()).length, 2);
+  assert.equal((await history.list()).length, 1);
   for (let index = 0; index < 7; index++) await history.remember(`file${index}.db`);
-  assert.equal(factory.data.size, 5);
+  assert.equal(factory.data.size, 1);
   const reopened = createRecentFiles(factory);
-  assert.equal((await reopened.list()).length, 5);
+  assert.equal((await reopened.list()).length, 1);
+  assert.equal((await reopened.list())[0].name, 'file6.db');
   const first = (await reopened.list())[0];
   await reopened.remove(first.id);
-  assert.equal((await reopened.list()).length, 4);
+  assert.equal((await reopened.list()).length, 0);
   await reopened.clear();
   assert.equal((await history.list()).length, 0);
 });
@@ -89,20 +89,20 @@ test('current sessions merge with verified file identities without changing pers
     { id: 'current', name: 'same.db', handle, folder: 'Vaults/Work', time: 1 },
   ];
   const merged = await mergeRecentSession(entries, { name: 'renamed.db', handle, dirty: true });
-  assert.equal(merged.length, 2);
+  assert.equal(merged.length, 1);
   assert.equal(merged[0].id, 'current');
   assert.equal(merged[0].name, 'renamed.db');
   assert.equal(merged[0].folder, 'Vaults/Work');
   assert.equal(merged[0].unsaved, true);
   assert.equal(entries[1].current, undefined);
   assert.equal(entries[1].name, 'same.db');
-  assert.equal((await mergeRecentSession(entries, { id: 'current', name: 'same.db' })).length, 2);
-  assert.equal(await mergeRecentSession(entries, null), entries);
+  assert.equal((await mergeRecentSession(entries, { id: 'current', name: 'same.db' })).length, 1);
+  assert.deepEqual(await mergeRecentSession(entries, null), entries.slice(0, 1));
 });
 
 test('unsaved and selected sessions remain accessible when recent history is empty or cleared', async () => {
   const merged = await mergeRecentSession([], { name: 'new.db', dirty: true });
-  const dom = new JSDOM(recentMarkup(merged, true, true));
+  const dom = new JSDOM(recentMarkup(merged, true));
   assert.equal(merged[0].ephemeral, true);
   assert.match(
     dom.window.document.querySelector('[data-action=recent-session]').textContent,
@@ -117,78 +117,60 @@ test('unsaved and selected sessions remain accessible when recent history is emp
   const sameName = [{ id: 'old', name: 'new.db', time: 1 }];
   assert.equal(
     (await mergeRecentSession(sameName, { name: 'new.db' })).length,
-    2,
+    1,
+    'only the current session is shown',
+  );
+  assert.equal(
+    (await mergeRecentSession(sameName, { name: 'new.db' }))[0].ephemeral,
+    true,
     'a name alone cannot prove file identity',
   );
   dom.window.close();
 });
 
-test('confirmed folders resolve the actual handle, persist as text and remain separate for same-name vaults', async () => {
-  const factory = storage(),
-    history = createRecentFiles(factory);
-  const first = { isSameEntry: async (other) => other === first };
-  const second = { isSameEntry: async (other) => other === second };
-  const entry = await history.remember('same.db', first);
-  const other = await history.remember('same.db', second);
-  await history.setDirectory(entry.id, {
-    name: 'Vaults',
-    resolve: async (handle) => {
-      assert.equal(handle, first);
-      return ['Work', 'same.db'];
-    },
+test('legacy history keeps the newest record and removes stored folder labels', async () => {
+  const factory = storage();
+  factory.data.set('old', { id: 'old', name: 'old.db', handle: null, time: 1 });
+  factory.data.set('latest', {
+    id: 'latest',
+    name: 'latest.db',
+    handle: {},
+    time: 2,
+    folder: 'Private/Work',
   });
-  assert.equal(factory.data.get(entry.id).folder, 'Vaults/Work');
-  assert.equal(factory.data.get(other.id).folder, undefined);
-  assert.equal(factory.data.get(entry.id).time, entry.time);
-  await history.remember('renamed.db', first);
-  assert.equal((await history.list()).find((item) => item.id === entry.id).folder, 'Vaults/Work');
-  const reopened = createRecentFiles(factory);
-  assert.equal((await reopened.list()).find((item) => item.id === entry.id).folder, 'Vaults/Work');
-  await assert.rejects(
-    history.setDirectory(entry.id, { name: 'Wrong', resolve: async () => null }),
-    /does not contain/,
+  const history = createRecentFiles(factory);
+  const entries = await history.list();
+  assert.deepEqual(
+    entries.map((entry) => entry.name),
+    ['latest.db'],
   );
-  assert.equal(factory.data.get(entry.id).folder, 'Vaults/Work');
-  await history.setDirectory(entry.id, { name: 'Parent', resolve: async () => ['renamed.db'] });
-  assert.equal(factory.data.get(entry.id).folder, 'Parent');
-  await history.remove(entry.id);
-  await assert.rejects(
-    history.setDirectory(entry.id, { resolve: async () => ['same.db'] }),
-    /no longer available/,
-  );
-  const withoutHandle = await history.remember('input.db');
-  await assert.rejects(history.setDirectory(withoutHandle.id, {}), /no longer available/);
+  assert.equal(factory.data.size, 1);
+  assert.equal(Object.hasOwn(factory.data.get('latest'), 'folder'), false);
+  assert.equal(history.setDirectory, undefined);
+  await history.remove('latest');
+  assert.deepEqual(await createRecentFiles(factory).list(), [], 'older history must not reappear');
 });
 
-test('recent rows show escaped folder labels and an explicit unavailable fallback', () => {
+test('recent markup displays a single escaped name without directory controls or labels', () => {
   const entries = [
     {
       id: 'first',
-      name: 'same.db',
+      name: '<img src=x onerror=alert(1)>.db',
       handle: {},
-      folder: 'Vaults/<img src=x onerror=alert(1)>',
-      time: 1,
+      folder: 'Private/Work',
+      time: 2,
     },
-    { id: 'second', name: 'same.db', handle: {}, time: 2 },
+    { id: 'second', name: 'older.db', handle: {}, time: 1 },
   ];
-  const dom = new JSDOM(recentMarkup(entries, true, true));
-  const rows = dom.window.document.querySelectorAll('.recent-row');
-  assert.equal(rows.length, 2);
-  assert.equal(
-    rows[0].querySelector('.recent-directory').textContent,
-    'Last confirmed folder: ' + entries[0].folder,
-  );
-  assert.equal(rows[0].querySelector('img'), null);
-  assert.equal(rows[1].querySelector('.recent-directory').textContent, 'Folder not yet confirmed');
-  assert.equal(dom.window.document.querySelectorAll('[data-action=recent-directory]').length, 2);
-  const unsupported = new JSDOM(recentMarkup([{ id: 'input', name: 'input.db', time: 1 }], false));
-  assert.equal(unsupported.window.document.querySelector('[data-action=recent-directory]'), null);
-  assert.match(
-    unsupported.window.document.querySelector('.recent-directory-help').textContent,
-    /system file picker/,
-  );
+  const dom = new JSDOM(recentMarkup(entries, true));
+  const document = dom.window.document;
+  assert.equal(document.querySelectorAll('.recent-row').length, 1);
+  assert.equal(document.querySelector('strong').textContent, entries[0].name);
+  assert.equal(document.querySelector('img'), null);
+  assert.equal(document.querySelector('[data-action=recent-directory]'), null);
+  assert.equal(document.querySelector('.recent-directory'), null);
+  assert.ok(!document.body.textContent.includes('Private/Work'));
   dom.window.close();
-  unsupported.window.close();
 });
 
 test('reopening requests permission only when needed and reports denied or missing files', async () => {
