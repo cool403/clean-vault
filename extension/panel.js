@@ -560,6 +560,15 @@ function emptyState(query) {
   create.textContent = currentOrigin ? t('为此网站新建条目') : t('新建条目');
   create.onclick = () => newEntry();
   empty.append(heading, caption, create);
+  if (!query && currentOrigin && liveCards().some((card) => passwordField(card)?.textContent)) {
+    const add = document.createElement('button');
+    add.type = 'button';
+    add.className = 'button secondary';
+    add.dataset.addCurrentSite = '';
+    add.textContent = t('添加网站地址');
+    add.onclick = () => addSite().catch(fail);
+    empty.append(add);
+  }
   return empty;
 }
 function entryElement(card, version, request, tab, fresh) {

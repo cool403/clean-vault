@@ -77,6 +77,109 @@ test('multistep login fills only a unique username and never submits or fills OT
   dom.window.close();
 });
 
+test('Google-style username and password steps ignore hidden decoys and emit focus/input/change/blur', () => {
+  const { dom, win, run } = page(
+    '<form><input type="text" name="identifier" id="identifierId" autocomplete="username">' +
+      '<input type="password" name="hiddenPassword" tabindex="-1" aria-hidden="true"></form>',
+    'https://accounts.google.com/v3/signin/identifier',
+  );
+  const user = win.document.querySelector('#identifierId');
+  const events = [];
+  for (const type of ['focus', 'input', 'change', 'blur']) {
+    user.addEventListener(type, (event) => events.push([type, event.composed]));
+  }
+  assert.equal(run('https://accounts.google.com', 'alice@gmail.com', 'secret'), 'username-filled');
+  assert.equal(user.value, 'alice@gmail.com');
+  assert.equal(win.document.querySelector('[name=hiddenPassword]').value, '');
+  assert.deepEqual(
+    events.map(([type]) => type),
+    ['focus', 'input', 'change', 'blur'],
+  );
+  assert.ok(events.find(([type, composed]) => type === 'input' && composed));
+  win.document.body.innerHTML =
+    '<form><input type="email" value="alice@gmail.com" hidden>' +
+    '<input type="password" name="Passwd" autocomplete="current-password"></form>';
+  assert.equal(run('https://accounts.google.com', 'alice@gmail.com', 'secret'), 'filled');
+  assert.equal(win.document.querySelector('[name=Passwd]').value, 'secret');
+  dom.window.close();
+});
+
+test('username selection ranks autocomplete tokens and supports explicit identifier names', () => {
+  const { dom, win, run } = page(
+    '<input type="email" name="newsletter"><form><input autocomplete="section-login username"></form>',
+  );
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'username-filled');
+  assert.equal(win.document.querySelector('[name=newsletter]').value, '');
+  assert.equal(win.document.querySelector('[autocomplete]').value, 'alice');
+  for (const name of ['identifier', 'loginId', 'email', 'username']) {
+    win.document.body.innerHTML = `<form><input name="${name}"></form>`;
+    assert.equal(run('https://example.com', 'alice', 'secret'), 'username-filled', name);
+  }
+  win.document.body.innerHTML = '<input name="search"><input name="postal-code">';
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'ambiguous');
+  win.document.body.innerHTML =
+    '<input autocomplete="section-login one-time-code" name="username">';
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'ambiguous');
+  dom.window.close();
+});
+
+test('hidden ancestors do not create multiple password candidates', () => {
+  const { dom, win, run } = page('');
+  for (const attribute of [
+    'hidden',
+    'inert',
+    'aria-hidden="true"',
+    'style="opacity:0"',
+    'style="display:none"',
+  ]) {
+    win.document.body.innerHTML = `<div ${attribute}><input type="password"></div><form><input type="password"></form>`;
+    win.getComputedStyle = (element) => ({
+      display: element.style.display || 'block',
+      visibility: 'visible',
+      opacity: element.style.opacity || '1',
+    });
+    assert.equal(run('https://example.com', 'alice', 'secret'), 'filled', attribute);
+    assert.equal(win.document.querySelector('div input').value, '');
+    assert.equal(win.document.querySelector('form input').value, 'secret');
+  }
+  dom.window.close();
+});
+
+test('rejects registration, ambiguous users, removed inputs and focus-triggered replacements', () => {
+  const { dom, win, run } = page('');
+  for (const markup of [
+    '<form><input autocomplete="username"><input autocomplete="section-signup new-password"></form>',
+    '<form><input type="password" autocomplete="section-signup new-password"></form>',
+    '<form><input type="password"><input type="password" autocomplete="new-password" hidden></form>',
+    '<form><input autocomplete="username"><input autocomplete="username"><input type="password"></form>',
+  ]) {
+    win.document.body.innerHTML = markup;
+    assert.equal(run('https://example.com', 'alice', 'secret'), 'ambiguous', markup);
+    assert.ok([...win.document.querySelectorAll('input')].every((input) => !input.value));
+  }
+  win.document.body.innerHTML =
+    '<form><input autocomplete="username"><input type="password"></form>';
+  const password = win.document.querySelector('[type=password]');
+  win.document.querySelector('[autocomplete]').addEventListener('input', () => password.remove());
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'origin');
+  assert.equal(password.value, '');
+  win.document.body.innerHTML = '<input type="password">';
+  const replaced = win.document.querySelector('input');
+  replaced.addEventListener('focus', () => replaced.remove());
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'ambiguous');
+  assert.equal(replaced.value, '');
+  dom.window.close();
+});
+
+test('fills an explicitly marked password after the website reveals it as text', () => {
+  const { dom, win, run } = page(
+    '<input type="text" autocomplete="section-login current-password">',
+  );
+  assert.equal(run('https://example.com', 'alice', 'secret'), 'filled');
+  assert.equal(win.document.querySelector('input').value, 'secret');
+  dom.window.close();
+});
+
 test('fills one explicit verification-code input without submitting or matching generic code fields', () => {
   const { dom, win } = page(
     '<form><input name="postal-code" inputmode="numeric"><input autocomplete="one-time-code" inputmode="numeric"><button>Verify</button></form>',

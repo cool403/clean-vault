@@ -4,6 +4,12 @@ export function fillLogin(expectedOrigin, username, password) {
   if (location.origin !== expectedOrigin || location.protocol !== 'https:' || window.top !== window)
     return 'origin';
   const visible = (input) => {
+    if (input.closest('[hidden], [inert], [aria-hidden="true"]')) return false;
+    for (let parent = input.parentElement; parent; parent = parent.parentElement) {
+      const style = getComputedStyle(parent);
+      if (style.display === 'none' || style.visibility !== 'visible' || Number(style.opacity) === 0)
+        return false;
+    }
     const style = getComputedStyle(input),
       rect = input.getBoundingClientRect();
     return (
@@ -17,52 +23,74 @@ export function fillLogin(expectedOrigin, username, password) {
       !input.closest('[inert]')
     );
   };
-  const passwords = [...document.querySelectorAll('input[type="password"]')].filter(visible);
+  const tokens = (input) => input.autocomplete.toLowerCase().split(/\s+/);
+  const has = (input, token) => tokens(input).includes(token);
+  const passwords = [...document.querySelectorAll('input')].filter(
+    (input) =>
+      (input.type === 'password' || (input.type === 'text' && has(input, 'current-password'))) &&
+      visible(input),
+  );
   const set = (input, value) => {
+    input.focus();
+    if (location.origin !== expectedOrigin || !input.isConnected || !visible(input)) return false;
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, value);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+    input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+    input.blur();
+    return input.isConnected && input.value === value;
+  };
+  const userScore = (input) => {
+    if (
+      !['text', 'email', 'tel'].includes(input.type) ||
+      !visible(input) ||
+      ['one-time-code', 'new-password', 'current-password'].some((token) => has(input, token))
+    )
+      return 0;
+    if (has(input, 'username')) return 3;
+    if (has(input, 'email') || input.type === 'email') return 2;
+    return /^(?:user(?:name)?|login(?:id)?|email|identifier(?:id)?|account)$/i.test(input.name) ||
+      /^(?:user(?:name)?|login(?:id)?|email|identifier(?:id)?|account)$/i.test(input.id)
+      ? 1
+      : 0;
+  };
+  const chooseUser = (inputs) => {
+    const ranked = inputs.map((input) => ({ input, score: userScore(input) }));
+    const best = Math.max(0, ...ranked.map(({ score }) => score));
+    const users = ranked.filter(({ score }) => score > 0 && score === best);
+    return users.length === 1 ? users[0].input : null;
   };
   if (!passwords.length) {
-    const users = [...document.querySelectorAll('input')].filter(
-      (input) =>
-        ['text', 'email'].includes(input.type) &&
-        visible(input) &&
-        (input.autocomplete === 'username' ||
-          input.autocomplete === 'email' ||
-          input.type === 'email'),
-    );
-    if (users.length !== 1 || !username) return 'ambiguous';
-    const field = users[0];
+    const field = chooseUser([...document.querySelectorAll('input')]);
+    if (!field || !username) return 'ambiguous';
     if (
       field.form &&
-      [...field.form.querySelectorAll('input')].some(
-        (input) => input.autocomplete === 'new-password',
-      )
+      [...field.form.querySelectorAll('input')].some((input) => has(input, 'new-password'))
     )
       return 'ambiguous';
-    set(field, username);
-    return 'username-filled';
+    return set(field, username) ? 'username-filled' : 'ambiguous';
   }
   if (
     passwords.length !== 1 ||
-    ['new-password', 'one-time-code'].includes(passwords[0].autocomplete)
+    ['new-password', 'one-time-code'].some((token) => has(passwords[0], token))
   )
     return 'ambiguous';
   const field = passwords[0],
     scope = field.form || document;
+  if ([...scope.querySelectorAll('input')].some((input) => has(input, 'new-password')))
+    return 'ambiguous';
   const users = [...scope.querySelectorAll('input')].filter(
     (input) =>
-      ['text', 'email'].includes(input.type) &&
+      ['text', 'email', 'tel'].includes(input.type) &&
       visible(input) &&
-      !['one-time-code', 'new-password'].includes(input.autocomplete) &&
+      !['one-time-code', 'new-password', 'current-password'].some((token) => has(input, token)) &&
       input.compareDocumentPosition(field) & Node.DOCUMENT_POSITION_FOLLOWING,
   );
-  const user = users.find((input) => input.autocomplete === 'username') || users.at(-1);
-  if (user && username) set(user, username);
+  const user =
+    chooseUser(users) || (users.length === 1 && userScore(users[0]) === 0 ? users[0] : null);
+  if (users.length && !user) return 'ambiguous';
+  if (user && username && !set(user, username)) return 'ambiguous';
   if (location.origin !== expectedOrigin || !field.isConnected) return 'origin';
-  set(field, password);
-  return 'filled';
+  return set(field, password) ? 'filled' : 'ambiguous';
 }
 
 export function fillOTP(expectedOrigin, code) {

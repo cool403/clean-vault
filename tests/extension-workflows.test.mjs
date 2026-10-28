@@ -164,7 +164,10 @@ test('extension updates/imports with confirmation, verifies backups, stops stale
   element('#password').value = password;
   await element('#unlock').onsubmit(event());
   current = { id: 5, url: 'https://accounts.example.com/login' };
-  await element('#add-site').onclick();
+  await element('#refresh').onclick();
+  assert.equal(document.querySelector('.entry .primary'), null);
+  await element('[data-add-current-site]').onclick();
+  assert.match(element('#add-site-form').textContent, /https:\/\/accounts.example.com/);
   await element('#add-site-form').onsubmit(event());
   await wait(() => document.querySelector('.entry .primary'));
   assert.equal(element('.entry .primary').disabled, false);

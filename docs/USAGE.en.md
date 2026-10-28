@@ -69,6 +69,8 @@ Install as described in [self-hosting](SELF-HOSTING.en.md). Reload the extension
 3. For another website using the same account, authorize it, choose Add website address, check the full origin, select the entry, confirm and save. The app editor also has Add website address. Hosts, subdomains and ports are matched exactly, without automatic scope expansion.
 4. Show all entries lets you update other entries; filling stays disabled for nonmatching websites. Multiple password fields, OTP inputs you did not explicitly click, new-password forms and iframes are not filled automatically.
 
+For Gmail, the sign-in page is at `https://accounts.google.com`. An entry containing only `https://mail.google.com` or `https://gmail.com` will not match. Click the extension icon on Google's sign-in page to authorize it. If no exact match appears, choose Add website address, select your existing Gmail entry and save. Fill the username, click Google's Next button yourself, then click Fill this login again once the password field appears.
+
 After unlocking you can also:
 
 - Search all entries by name, account, website or label. Search results can copy a username or password; filling stays disabled for nonmatching websites.
