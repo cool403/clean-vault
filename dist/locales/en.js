@@ -34,20 +34,8 @@ export default {
   解锁并继续未保存的修改: 'Unlock and continue unsaved changes',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'This session has unsaved changes. Unlock and save them before refreshing or closing the page.',
-  '上次确认的目录：{folder}': 'Last confirmed folder: {folder}',
-  所在目录尚未确认: 'Folder not yet confirmed',
-  确认所在目录: 'Confirm containing folder',
-  所选文件夹: 'Selected folder',
-  '记录已失效，请重新打开密码库': 'This history record is no longer available. Reopen the vault.',
-  '所选文件夹不包含此密码库，请重新选择':
-    'The selected folder does not contain this vault. Choose its containing folder.',
-  已确认密码库所在目录: 'Vault folder confirmed.',
-  '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。':
-    'Browsers do not expose the full local path. Use the folder icon to select a containing folder and verify its name and relative directory.',
-  '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。':
-    'Browsers do not expose the full local path. Check the containing folder in the system file picker when selecting the file again.',
-  '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Only file names, handles and folder labels you confirm are remembered, never master passwords or vault contents. The app and extension keep separate histories.',
+  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Only the last opened file name and handle are remembered, never master passwords or vault contents. The app and extension keep separate records.',
   从当前网页读取新密码: 'Read new password from this website',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
     'Reads the new-password fields on this website only after you click. Your entry changes only after confirmation.',
@@ -131,8 +119,8 @@ export default {
   '已重新加载文件，请输入主密码': 'File reloaded. Enter your master password.',
   '请先保存当前修改，再导入或重新加载文件':
     'Save your current changes before importing or reloading a file.',
-  '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。':
-    'Vaults are decrypted in memory only. Recent history stores only names, handles and folder labels you confirm and can be cleared anytime. Reopening still requires your master password.',
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
+    'Vaults are decrypted in memory only. Recent history stores only the last opened file name and handle and can be cleared anytime. Reopening still requires your master password.',
   '在 GitHub 查看源码': 'View source on GitHub',
   查看构建记录: 'View build history',
   核对线上版本: 'Verify this deployment',

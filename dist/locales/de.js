@@ -3,21 +3,8 @@ export default {
   解锁并继续未保存的修改: 'Entsperren und ungespeicherte Änderungen fortsetzen',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'Diese Sitzung enthält ungespeicherte Änderungen. Entsperren und speichern Sie diese, bevor Sie die Seite neu laden oder schließen.',
-  '上次确认的目录：{folder}': 'Zuletzt bestätigter Ordner: {folder}',
-  所在目录尚未确认: 'Ordner noch nicht bestätigt',
-  确认所在目录: 'Übergeordneten Ordner bestätigen',
-  所选文件夹: 'Ausgewählter Ordner',
-  '记录已失效，请重新打开密码库':
-    'Dieser Verlaufseintrag ist nicht mehr verfügbar. Öffnen Sie den Tresor erneut.',
-  '所选文件夹不包含此密码库，请重新选择':
-    'Der ausgewählte Ordner enthält diesen Tresor nicht. Wählen Sie den richtigen Ordner.',
-  已确认密码库所在目录: 'Tresorordner bestätigt.',
-  '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。':
-    'Browser geben den vollständigen lokalen Pfad nicht frei. Wählen Sie über das Ordnersymbol den übergeordneten Ordner aus, um Namen und relativen Pfad zu prüfen und zu merken.',
-  '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。':
-    'Browser geben den vollständigen lokalen Pfad nicht frei. Prüfen Sie den Ordner im Dateiauswahldialog, wenn Sie die Datei erneut auswählen.',
-  '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Gespeichert werden nur Dateinamen, Dateizugriffe und bestätigte Ordnerangaben, niemals Hauptpasswörter oder Tresorinhalte. App und Erweiterung führen getrennte Verläufe.',
+  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Gespeichert werden nur Name und Dateizugriff der zuletzt geöffneten Datei, niemals Hauptpasswörter oder Tresorinhalte. App und Erweiterung führen getrennte Verläufe.',
   从当前网页读取新密码: 'Neues Passwort von dieser Website lesen',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
     'Neue Passwortfelder dieser Website werden erst nach Ihrem Klick gelesen. Der Eintrag wird erst nach Ihrer Bestätigung geändert.',
@@ -105,8 +92,8 @@ export default {
   '已重新加载文件，请输入主密码': 'Datei neu geladen. Geben Sie Ihr Hauptpasswort ein.',
   '请先保存当前修改，再导入或重新加载文件':
     'Speichern Sie Ihre Änderungen, bevor Sie importieren oder eine Datei neu laden.',
-  '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。':
-    'Tresore werden nur im Arbeitsspeicher entschlüsselt. Im Verlauf stehen nur Namen, Dateizugriffe und bestätigte Ordnerangaben. Er lässt sich jederzeit löschen. Zum erneuten Öffnen ist weiterhin Ihr Hauptpasswort nötig.',
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
+    'Tresore werden nur im Arbeitsspeicher entschlüsselt. Der Verlauf speichert nur Name und Dateizugriff der zuletzt geöffneten Datei und kann jederzeit gelöscht werden. Zum erneuten Öffnen ist das Hauptpasswort erforderlich.',
   '在 GitHub 查看源码': 'Quellcode auf GitHub ansehen',
   查看构建记录: 'Build-Verlauf ansehen',
   核对线上版本: 'Diese Bereitstellung prüfen',

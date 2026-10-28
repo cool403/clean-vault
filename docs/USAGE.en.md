@@ -34,13 +34,11 @@ Installed Chromium PWAs can open `.db` files from the system file manager, and `
 
 ## Recent vaults
 
-After successfully unlocking or saving a file, the app or extension remembers up to five recent vaults. Records contain only file names, handles, record IDs, times and folder text labels you confirm, never master passwords, entries or vault contents. The app and extension keep separate histories.
+After successfully unlocking or saving a file, the app or extension remembers only the last opened vault. Records contain only the file name, handle, record ID and time, never master passwords, entries or vault contents. The app and extension keep separate histories.
 
 Use history on the app home screen, in preferences or on the extension lock screen. Grant file access again if requested, then enter the master password. Moved or deleted files must be selected again. Ordinary file input supplies no reusable handle and is marked accordingly. Unavailable storage falls back to current page session history.
 
-Selected files and locked vaults now use this same list, without a separate reopen link. The current session merges with its history record and shows Unlock current session, or Unlock and continue unsaved changes when edits are pending. It resumes the encrypted copy in this page instead of reopening a disk file. A file not yet unlocked or a new unsaved vault appears as a temporary entry, which may be shown in addition to the five stored records. Clearing history keeps the current encrypted session. Refreshing or closing still loses unsaved edits.
-
-Browsers do not expose complete local absolute paths. When directory selection and a reusable file handle are available, use the folder icon to Confirm containing folder and select a directory containing that vault with read-only access. The app checks that it actually contains the file, then displays Last confirmed folder, such as `Documents/Passwords`: `Documents` is the chosen folder name and `Passwords` is a relative subdirectory. A wrong folder is rejected; cancellation keeps the record unchanged. Directory handles are not stored and other files in the folder are not read. Confirm again after moving files: this label is historical, not a live absolute path. With ordinary file input or unsupported directory selection, verify the location in the system file picker.
+Selected files and locked vaults now use this same list, without a separate reopen link. The current session merges with its history record and shows Unlock current session, or Unlock and continue unsaved changes when edits are pending. It resumes the encrypted copy in this page instead of reopening a disk file. A file not yet unlocked or a new unsaved vault appears as a temporary entry, which replaces the stored record in the display so only one entry is shown. Clearing history keeps the current encrypted session. Refreshing or closing still loses unsaved edits.
 
 Remove individual records or clear history. This removes shortcuts only, not files on disk. History is not a backup and does not save edits.
 

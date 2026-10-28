@@ -27,7 +27,7 @@ export const articles = [
         ],
         [
           '4. 重新打开，确认保存结果',
-          '先保存，再锁定并重新打开数据库检查修改。首页“最近密码库”保留最近 5 个文件的名称和句柄，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持句柄时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。当前页面已选择的文件和锁定后的密码库统一显示在列表中，不再另设重新解锁入口；有未保存更改时，点击“解锁并继续未保存的修改”恢复当前加密副本。清空历史不会丢弃当前会话。可点击记录旁的文件夹图标“确认所在目录”，选择包含密码库的目录；应用核对后显示上次确认的文件夹名和相对目录。浏览器不提供完整绝对路径，文件移动后需重新确认。',
+          '先保存，再锁定并重新打开数据库检查修改。首页“最近密码库”保留上次打开的一个文件的名称和句柄，点击后重新授权并输入主密码。文件移动、权限失效或浏览器不支持句柄时，重新选择文件。可移除单条或清空记录；网页和扩展记录相互独立。刷新、关闭页面会丢失未保存内容，最近记录不是备份。当前页面已选择的文件和锁定后的密码库统一显示在列表中，不再另设重新解锁入口；有未保存更改时，点击“解锁并继续未保存的修改”恢复当前加密副本。清空历史不会丢弃当前会话。',
         ],
         [
           '打不开文件时检查什么？',
@@ -60,7 +60,7 @@ export const articles = [
         ],
         [
           '4. Reopen to verify the result',
-          'Save, lock and reopen the database to verify changes. Recent vaults on the home screen remembers up to five file names and handles. Select one, grant access again if needed and enter your master password. If the file moved or handles are unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Selected files and locked vaults use this same list without a separate reopen link. Choose Unlock and continue unsaved changes to resume the current encrypted copy. Clearing history keeps this current session. Use the folder icon to confirm a containing directory. The app verifies membership and shows its last confirmed name and relative directory. Browsers do not expose a full absolute path; confirm again after moving files.',
+          'Save, lock and reopen the database to verify changes. Recent vaults on the home screen remembers only the last opened file name and handle. Select one, grant access again if needed and enter your master password. If the file moved or handles are unsupported, select it again. Remove individual records or clear history anytime. The app and extension have separate histories. Closing or refreshing loses unsaved edits; recent history is not a backup. Selected files and locked vaults use this same list without a separate reopen link. Choose Unlock and continue unsaved changes to resume the current encrypted copy. Clearing history keeps this current session.',
         ],
         [
           'If the file will not open',
@@ -523,7 +523,7 @@ articles.push(
       sections: [
         [
           '1. 安装和打开',
-          '从下载页取得扩展 ZIP 并解压，在 Chrome / Edge 扩展管理页开启开发者模式并加载解压目录。更新扩展后点击重新加载扩展。打开目标 HTTPS 网站，点击工具栏扩展图标授权，选择 .db 或最近密码库，再输入主密码。最近记录最多 5 个，可移除或清空；它不保存密码和库内容。',
+          '从下载页取得扩展 ZIP 并解压，在 Chrome / Edge 扩展管理页开启开发者模式并加载解压目录。更新扩展后点击重新加载扩展。打开目标 HTTPS 网站，点击工具栏扩展图标授权，选择 .db 或最近密码库，再输入主密码。最近记录只保留上次打开的一个，可移除或清空；它不保存密码和库内容。',
         ],
         [
           '2. 填充和分步登录',
@@ -552,7 +552,7 @@ articles.push(
       sections: [
         [
           '1. Install and open',
-          'Download and unpack the extension ZIP. Enable developer mode in Chrome / Edge extensions and load the unpacked directory. Reload the extension after updating it. On the target HTTPS website, click its toolbar icon to grant access, choose a .db file or recent vault and enter your master password. Up to five recent records can be removed or cleared; they contain no passwords or vault contents.',
+          'Download and unpack the extension ZIP. Enable developer mode in Chrome / Edge extensions and load the unpacked directory. Reload the extension after updating it. On the target HTTPS website, click its toolbar icon to grant access, choose a .db file or recent vault and enter your master password. The last opened vault record can be removed or cleared; it contains no passwords or vault contents.',
         ],
         [
           '2. Fill and multistep login',
@@ -593,7 +593,7 @@ export const security = {
       ],
       [
         '浏览器保存什么',
-        'localStorage 仅保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量、最近使用条目 ID/时间和新手清单完成状态等非敏感偏好与排序元数据；IndexedDB 仅保存最近 5 个密码库的文件名、文件句柄、记录 ID、打开时间和可选目录文字标记，不保存密码、条目或库内容，可随时移除或清空。OPFS 本地快照只保存加密的 .db 密文。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
+        'localStorage 仅保存界面语言、自动锁定分钟数、剪贴板清除时间、快照保留数量、最近使用条目 ID/时间和新手清单完成状态等非敏感偏好与排序元数据；IndexedDB 仅保存上次打开的一个密码库的文件名、文件句柄、记录 ID、打开时间，不保存密码、条目或库内容，可随时移除或清空。OPFS 本地快照只保存加密的 .db 密文。网页与扩展存储相互独立，受浏览器授权和存储清理影响。Service Worker 只缓存应用资源；备份目录和保留设置仅在当前会话有效。关闭页面不等于已保存。',
       ],
       [
         '剪贴板清除是尽力而为',
@@ -658,7 +658,7 @@ export const security = {
       ],
       [
         'What the browser stores',
-        'localStorage stores only non-sensitive preferences and ordering metadata such as the interface language, auto-lock minutes, clipboard-clear delay, snapshot retention, recent entry IDs/times and getting-started checklist completion. IndexedDB stores up to five recent vault names, file handles, record IDs, opening times and optional confirmed folder labels, never passwords, entries or vault contents. OPFS local snapshots contain only encrypted .db ciphertext. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
+        'localStorage stores only non-sensitive preferences and ordering metadata such as the interface language, auto-lock minutes, clipboard-clear delay, snapshot retention, recent entry IDs/times and getting-started checklist completion. IndexedDB stores only the last opened vault name, file handle, record ID and opening time, never passwords, entries or vault contents. OPFS local snapshots contain only encrypted .db ciphertext. Remove or clear history anytime. The app and extension have separate storage, subject to browser permissions and storage clearing. The Service Worker caches app resources only; backup directory access and retention settings last for the current session. Closing a page does not save changes.',
       ],
       [
         'Clipboard clearing is best effort',
@@ -717,7 +717,7 @@ export const privacy = {
     sections: [
       [
         '处理哪些数据',
-        '你选择的 SafeInCloud 兼容 .db 文件；解锁时输入的主密码；文件中的条目、备注、附件和 TOTP 密钥；界面语言、自动锁定、剪贴板清除、快照保留数量和新手清单等本地偏好；最近密码库的文件名、句柄、记录 ID、时间和可选目录文字标记；用于排序的最近使用条目 ID 和时间；浏览器 OPFS 中的加密 .db 快照。',
+        '你选择的 SafeInCloud 兼容 .db 文件；解锁时输入的主密码；文件中的条目、备注、附件和 TOTP 密钥；界面语言、自动锁定、剪贴板清除、快照保留数量和新手清单等本地偏好；最近密码库的文件名、句柄、记录 ID、时间；用于排序的最近使用条目 ID 和时间；浏览器 OPFS 中的加密 .db 快照。',
       ],
       [
         '数据保存在哪里',
@@ -750,7 +750,7 @@ export const privacy = {
     sections: [
       [
         'Data ClearVault handles',
-        'The SafeInCloud-compatible .db file you select; the master password entered to unlock it; entries, notes, attachments and TOTP secrets inside the file; local preferences such as interface language, auto-lock, clipboard clearing, snapshot retention and getting-started checklist state; recent-vault file names, handles, record IDs, times and optional folder text labels; recent entry IDs and times used for ordering; and encrypted .db snapshots in browser OPFS.',
+        'The SafeInCloud-compatible .db file you select; the master password entered to unlock it; entries, notes, attachments and TOTP secrets inside the file; local preferences such as interface language, auto-lock, clipboard clearing, snapshot retention and getting-started checklist state; the last opened vault file name, handle, record ID and time; recent entry IDs and times used for ordering; and encrypted .db snapshots in browser OPFS.',
       ],
       [
         'Where data is stored',

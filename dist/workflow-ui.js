@@ -7,32 +7,23 @@ export const escapeHTML = (value) =>
     (character) =>
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character],
   );
-export function recentMarkup(entries, persistent, canChooseDirectory = false) {
+export function recentMarkup(entries, persistent) {
+  entries = entries.slice(0, 1);
   const rows = entries
     .map((entry) => {
-      const folder = entry.folder
-        ? t('上次确认的目录：{folder}', { folder: entry.folder })
-        : t('所在目录尚未确认');
-      const locate =
-        canChooseDirectory && entry.handle && !entry.ephemeral
-          ? `<button type="button" class="icon-button recent-directory-button" data-action="recent-directory" data-id="${escapeHTML(entry.id)}" aria-label="${t('确认所在目录')}" title="${t('确认所在目录')}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5h6l2 2h10v13H3z"/></svg></button>`
-          : '';
       const status = entry.current
         ? t(entry.unsaved ? '解锁并继续未保存的修改' : '解锁当前会话')
         : t(entry.handle ? '重新打开并解锁' : '需要重新选择文件');
       const remove = entry.ephemeral
         ? ''
         : `<button type="button" class="icon-button" data-action="recent-remove" data-id="${escapeHTML(entry.id)}" aria-label="${t('移除记录')}">×</button>`;
-      return `<div class="recent-row"><button type="button" class="button secondary recent-open" data-action="${entry.current ? 'recent-session' : 'recent-open'}" data-id="${escapeHTML(entry.id)}"><strong>${escapeHTML(entry.name)}</strong><span class="recent-meta"><span class="recent-directory">${escapeHTML(folder)}</span><small>${status} · ${new Date(entry.time).toLocaleDateString(getLocale())}</small></span></button>${locate || remove ? `<div class="recent-actions">${locate}${remove}</div>` : ''}</div>`;
+      return `<div class="recent-row"><button type="button" class="button secondary recent-open" data-action="${entry.current ? 'recent-session' : 'recent-open'}" data-id="${escapeHTML(entry.id)}"><strong>${escapeHTML(entry.name)}</strong><span class="recent-meta"><small>${status} · ${new Date(entry.time).toLocaleDateString(getLocale())}</small></span></button>${remove ? `<div class="recent-actions">${remove}</div>` : ''}</div>`;
     })
     .join('');
-  const directoryHelp = entries.length
-    ? `<p class="form-help recent-directory-help">${t(canChooseDirectory && entries.some((entry) => entry.handle && !entry.ephemeral) ? '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。' : '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。')}</p>`
-    : '';
   const unsaved = entries.some((entry) => entry.current && entry.unsaved)
     ? `<p class="workflow-notice">${t('当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。')}</p>`
     : '';
-  return `<section class="recent-files" aria-label="${t('最近密码库')}"><div class="workflow-heading"><h3>${t('最近密码库')}</h3>${entries.some((entry) => !entry.ephemeral) ? `<button type="button" class="text-button" data-action="recent-clear">${t('清空记录')}</button>` : ''}</div><p class="form-help">${t(persistent ? '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。' : '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。')}</p>${rows || `<p class="form-help">${t('打开或保存密码库后，会在这里显示。')}</p>`}${unsaved}${directoryHelp}</section>`;
+  return `<section class="recent-files" aria-label="${t('最近密码库')}"><div class="workflow-heading"><h3>${t('最近密码库')}</h3>${entries.some((entry) => !entry.ephemeral) ? `<button type="button" class="text-button" data-action="recent-clear">${t('清空记录')}</button>` : ''}</div><p class="form-help">${t(persistent ? '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。' : '当前浏览器无法持久保存文件记录，记录仅在当前页面有效。')}</p>${rows || `<p class="form-help">${t('打开或保存密码库后，会在这里显示。')}</p>`}${unsaved}</section>`;
 }
 
 export function createImportWizard({ dialog, getDoc, show, close, commit }) {

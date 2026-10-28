@@ -3,20 +3,8 @@ export default {
   解锁并继续未保存的修改: 'Desbloquear y continuar con los cambios sin guardar',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
     'Esta sesión tiene cambios sin guardar. Desbloquéela y guárdelos antes de recargar o cerrar la página.',
-  '上次确认的目录：{folder}': 'Última carpeta confirmada: {folder}',
-  所在目录尚未确认: 'Carpeta aún sin confirmar',
-  确认所在目录: 'Confirmar carpeta contenedora',
-  所选文件夹: 'Carpeta seleccionada',
-  '记录已失效，请重新打开密码库': 'Este registro ya no está disponible. Vuelva a abrir la bóveda.',
-  '所选文件夹不包含此密码库，请重新选择':
-    'La carpeta seleccionada no contiene esta bóveda. Elija la carpeta que la contiene.',
-  已确认密码库所在目录: 'Carpeta de la bóveda confirmada.',
-  '浏览器不提供完整本地路径。点击文件夹图标选择包含密码库的目录，核对并记录文件夹名及相对目录。':
-    'El navegador no proporciona la ruta local completa. Use el icono de carpeta para elegir la carpeta contenedora y verificar su nombre y ruta relativa.',
-  '浏览器不提供完整本地路径。重新选择文件时请在系统文件窗口中核对所在目录。':
-    'El navegador no proporciona la ruta local completa. Compruebe la carpeta en el selector de archivos al volver a elegir el archivo.',
-  '仅记住文件名称、句柄和你确认的目录标记，不保存主密码或密码库内容。网页与扩展分别保留记录。':
-    'Solo se recuerdan nombres, identificadores de acceso a archivos y carpetas confirmadas, nunca contraseñas maestras ni contenido de la bóveda. La aplicación y la extensión mantienen historiales separados.',
+  '仅记住上次打开的文件名称和句柄，不保存主密码或密码库内容。网页与扩展分别保留记录。':
+    'Solo se recuerdan el nombre y el identificador del último archivo abierto, nunca contraseñas maestras ni contenido de la bóveda. La aplicación y la extensión mantienen registros separados.',
   从当前网页读取新密码: 'Leer la nueva contraseña de este sitio',
   '仅在点击后读取当前网站的新密码输入框；确认后才更新条目。':
     'Los campos de nueva contraseña solo se leen al hacer clic. La entrada cambia únicamente tras su confirmación.',
@@ -102,8 +90,8 @@ export default {
   '已重新加载文件，请输入主密码': 'Archivo recargado. Introduzca la contraseña maestra.',
   '请先保存当前修改，再导入或重新加载文件':
     'Guarde los cambios actuales antes de importar o recargar un archivo.',
-  '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。':
-    'Las bóvedas solo se descifran en memoria. El historial guarda nombres, identificadores de acceso y carpetas confirmadas; puede borrarlo cuando quiera. Para volver a abrir se requiere la contraseña maestra.',
+  '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。':
+    'Las bóvedas solo se descifran en memoria. El historial guarda solo el nombre y el identificador del último archivo abierto y puede borrarse en cualquier momento. Para volver a abrirlo se requiere la contraseña maestra.',
   '在 GitHub 查看源码': 'Ver código en GitHub',
   查看构建记录: 'Ver historial de compilaciones',
   核对线上版本: 'Verificar esta versión publicada',

@@ -200,11 +200,7 @@ async function refreshRecent() {
   );
   if (version !== epoch || previousDoc !== doc) return;
   recentEntries = entries;
-  $('#recent-files').innerHTML = recentMarkup(
-    display,
-    recentFiles.persistent,
-    typeof window.showDirectoryPicker === 'function',
-  );
+  $('#recent-files').innerHTML = recentMarkup(display, recentFiles.persistent);
 }
 async function remember() {
   const fileName = name,
@@ -1198,18 +1194,6 @@ document.addEventListener('click', async (event) => {
       notify(t('最近文件记录已清空'));
     }
     if (button.dataset.action === 'recent-session' && encrypted && !doc) $('#password').focus();
-    if (button.dataset.action === 'recent-directory') {
-      const entry = recentEntries.find((item) => item.id === button.dataset.id);
-      if (entry?.handle && window.showDirectoryPicker) {
-        setBusy(true);
-        const directory = await window.showDirectoryPicker({
-          mode: 'read',
-          id: 'clearvault-recent-directory',
-        });
-        await recentFiles.setDirectory(entry.id, directory);
-        notify(t('已确认密码库所在目录'));
-      }
-    }
     if (button.dataset.action === 'recent-open') {
       if (dirty) {
         notify(t('请先保存当前修改，再导入或重新加载文件'));

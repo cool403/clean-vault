@@ -157,19 +157,9 @@ test('extension updates/imports with confirmation, verifies backups, stops stale
   assert.ok(!result.xml.includes('hash="old"'));
   result.credential.fill(0);
   await element('#lock').onclick();
-  await wait(() => document.querySelector('[data-action=recent-directory]'));
-  dom.window.showDirectoryPicker = async (options) => {
-    assert.equal(options.mode, 'read');
-    return {
-      name: 'Vaults',
-      resolve: async (source) => {
-        assert.equal(source, file);
-        return ['Work', 'synthetic.db'];
-      },
-    };
-  };
-  element('[data-action=recent-directory]').click();
-  await wait(() => element('.recent-directory').textContent.includes('Vaults/Work'));
+  await wait(() => document.querySelector('[data-action=recent-session]'));
+  assert.equal(document.querySelector('[data-action=recent-directory]'), null);
+  assert.equal(document.querySelectorAll('.recent-row').length, 1);
   await wait(() => !element('#unlock-button').disabled);
   element('#password').value = password;
   await element('#unlock').onsubmit(event());

@@ -420,12 +420,7 @@ async function refreshRecent() {
   if (generation !== state.generation || doc !== state.doc) return;
   recentEntries = entries;
   const container = document.querySelector('#recent-files');
-  if (container)
-    container.innerHTML = recentMarkup(
-      display,
-      recentFiles.persistent,
-      typeof window.showDirectoryPicker === 'function',
-    );
+  if (container) container.innerHTML = recentMarkup(display, recentFiles.persistent);
 }
 async function rememberFile() {
   const name = state.name,
@@ -1854,7 +1849,7 @@ function settings() {
   const note = modal.querySelector('.settings-note p');
   if (note)
     note.textContent = t(
-      '密码库只在内存中解密。最近文件记录只保存名称、句柄和你确认的目录标记，可随时清空；重新打开仍需主密码。',
+      '密码库只在内存中解密。最近文件记录只保存上次打开的文件名称和句柄，可随时清空；重新打开仍需主密码。',
     );
   modal
     .querySelector('.settings-buttons')
@@ -1866,7 +1861,7 @@ function settings() {
     .querySelector('.modal-footer')
     ?.insertAdjacentHTML(
       'beforebegin',
-      `<div id="recent-files">${recentMarkup(recentEntries, recentFiles.persistent, typeof window.showDirectoryPicker === 'function')}</div>`,
+      `<div id="recent-files">${recentMarkup(recentEntries, recentFiles.persistent)}</div>`,
     );
   const snapshotStatus = modal.querySelector('#snapshot-status');
   if (snapshotStatus) {
@@ -1899,22 +1894,6 @@ async function action(name, target) {
     case 'recent-session':
       if (state.encrypted && !state.doc) showPassword('unlock');
       break;
-    case 'recent-directory': {
-      const entry = recentEntries.find((item) => item.id === target.dataset.id);
-      if (!entry?.handle || !window.showDirectoryPicker) break;
-      try {
-        const directory = await window.showDirectoryPicker({
-          mode: 'read',
-          id: 'clearvault-recent-directory',
-        });
-        await recentFiles.setDirectory(entry.id, directory);
-        await refreshRecent();
-        toast(t('已确认密码库所在目录'));
-      } catch (error) {
-        if (error.name !== 'AbortError') throw error;
-      }
-      break;
-    }
     case 'recent-remove':
       await recentFiles.remove(target.dataset.id);
       await refreshRecent();
