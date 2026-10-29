@@ -115,11 +115,29 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   };
   const footerLinks = () =>
     [...document.querySelectorAll('.welcome-links a')].map((a) => new URL(a.href).pathname);
-  assert.deepEqual(footerLinks(), ['/guides/', '/security/', '/en/', '/downloads/']);
+  assert.deepEqual(footerLinks(), [
+    '/guides/',
+    '/security/',
+    '/en/',
+    '/downloads/',
+    new URL(buildInfo.repository).pathname,
+  ]);
   window.dispatchEvent(new dom.window.Event('beforeinstallprompt', { cancelable: true }));
-  assert.deepEqual(footerLinks(), ['/guides/', '/security/', '/en/', '/downloads/']);
+  assert.deepEqual(footerLinks(), [
+    '/guides/',
+    '/security/',
+    '/en/',
+    '/downloads/',
+    new URL(buildInfo.repository).pathname,
+  ]);
   switchLanguage('en');
-  assert.deepEqual(footerLinks(), ['/en/guides/', '/en/security/', '/en/', '/en/downloads/']);
+  assert.deepEqual(footerLinks(), [
+    '/en/guides/',
+    '/en/security/',
+    '/en/',
+    '/en/downloads/',
+    new URL(buildInfo.repository).pathname,
+  ]);
   assert.equal(document.documentElement.lang, 'en');
   assert.equal(document.querySelector('[data-action=open]').textContent, 'Open .db vault');
   for (const [code, label] of [
@@ -284,7 +302,13 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
     .dispatchEvent(new dom.window.Event('cancel', { cancelable: true }));
   assert.equal(document.querySelector('#modal').open, false);
   assert.ok(document.querySelector('[data-action=demo]'), 'Escape also keeps the demo available');
-  assert.deepEqual(footerLinks(), ['/guides/', '/security/', '/en/', '/downloads/']);
+  assert.deepEqual(footerLinks(), [
+    '/guides/',
+    '/security/',
+    '/en/',
+    '/downloads/',
+    new URL(buildInfo.repository).pathname,
+  ]);
   assert.equal(
     document.querySelector('#quick-search-modal'),
     null,

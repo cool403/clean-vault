@@ -123,7 +123,6 @@ export default {
   当前会话保留备份数量: 'Copias que conservar por sesión',
   '仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。':
     'Solo se eliminan las copias sobrantes creadas para este archivo en esta página. Se conservan las de otros archivos y sesiones. Copie las copias a otro dispositivo y compruebe las descargas.',
-  插件与源码: 'Extensión y código fuente',
   下载与源代码: 'Descargas y código fuente',
   '版本 {version} · 本地优先，自由保管。': 'Versión {version} · Local, bajo su control.',
   浏览器扩展: 'Extensión del navegador',

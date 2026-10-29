@@ -1106,7 +1106,7 @@ function formatDate(stamp) {
 function welcomeNavigation() {
   const english = getLocale() !== 'zh-CN';
   const prefix = english ? '/en' : '';
-  return `<nav class="welcome-links" aria-label="${t('帮助与资源')}"><a href="${prefix}/guides/">${t('使用指南')}</a><a href="${prefix}/security/">${t('安全与隐私')}</a><a href="/en/" lang="en">${t('英文网站')}</a><a href="${prefix}/downloads/">${t('插件与源码')}</a></nav>`;
+  return `<nav class="welcome-links" aria-label="${t('帮助与资源')}"><a href="${prefix}/guides/">${t('使用指南')}</a><a href="${prefix}/security/">${t('安全与隐私')}</a><a href="/en/" lang="en">${t('英文网站')}</a><a href="${prefix}/downloads/">${t('下载与源代码')}</a><a href="${buildInfo.repository || './downloads/'}" target="_blank" rel="noopener noreferrer">GitHub · MIT ↗</a></nav>`;
 }
 function renderWelcome() {
   app.innerHTML = html`<div class="welcome"><header class="welcome-header"><a class="brand" href="./"><img src="./icon.svg" alt="" width="29" height="29"><span>ClearVault<span class="brand-dot">.</span></span></a><div class="welcome-header-actions"><span class="privacy-pill"><i></i> 你的设备，你的密码库</span>${state.install ? button('install', t('安装应用'), 'install', 'button secondary') : ''}</div></header>

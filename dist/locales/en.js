@@ -155,7 +155,6 @@ export default {
   '仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。':
     'Only excess backups created for this source file in this page are removed. Other sources and earlier sessions are kept. Copy backups to a separate device and confirm downloads.',
 
-  插件与源码: 'Extension and source',
   下载与源代码: 'Downloads and source',
   '版本 {version} · 本地优先，自由保管。': 'Version {version} · Local first. Yours to keep.',
   浏览器扩展: 'Browser extension',

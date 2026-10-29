@@ -125,7 +125,6 @@ export default {
   当前会话保留备份数量: 'Aufbewahrte Backups pro Sitzung',
   '仅清理当前页面为当前源文件创建的超额备份，同名库与旧会话备份保留。备份请另存独立设备；下载需确认成功。':
     'Entfernt werden nur überzählige Backups dieser Quelldatei aus dieser Seite. Andere Quellen und frühere Sitzungen bleiben erhalten. Kopieren Sie Backups auf ein separates Gerät und prüfen Sie Downloads.',
-  插件与源码: 'Erweiterung und Quellcode',
   下载与源代码: 'Downloads und Quellcode',
   '版本 {version} · 本地优先，自由保管。':
     'Version {version} · Lokal gespeichert, selbst verwaltet.',
