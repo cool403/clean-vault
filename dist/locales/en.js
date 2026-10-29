@@ -1,4 +1,6 @@
 export default {
+  'Chrome 扩展已上架 Chrome 应用商店。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
+    'The Chrome extension is available in the Chrome Web Store. It supports local saves with backups; Firefox, passkeys and iframe filling are unsupported.',
   '本地解密 · 按需填充': 'Local decryption · Fill on request',
   '你的密码，随手可用。': 'Your passwords, close at hand.',
   '点击当前网站的扩展图标授权，再选择账号填充。':
@@ -166,8 +168,6 @@ export default {
   安装扩展: 'Install the extension',
   '解压扩展包，在 Chrome 或 Edge 的扩展管理页面启用开发者模式，然后选择“加载已解压的扩展程序”。点击目标网站的工具栏扩展图标，再打开密码库。':
     'Extract the extension ZIP. Enable Developer mode in Chrome or Edge extension settings and choose Load unpacked. Click the toolbar extension icon on your target website, then open your vault.',
-  '此版本未在浏览器商店上架。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
-    'This version is not listed in browser stores. It supports local saves with backups; Firefox, passkeys and iframe filling are unsupported.',
   自行部署: 'Self-host',
   '先执行 npm ci 和 npm run release，再将 release/web 目录部署到 HTTPS 静态托管，或按 docs/SELF-HOSTING.md 使用 Docker。开发扩展执行 npm run build:extension，验证正式产物执行 npm run test:release。':
     'Run npm ci and npm run release, then serve the readable release/web directory on HTTPS static hosting, or use Docker as described in docs/SELF-HOSTING.en.md. Build the development extension with npm run build:extension and verify production artifacts with npm run test:release.',

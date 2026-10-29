@@ -1,4 +1,6 @@
 export default {
+  'Chrome 扩展已上架 Chrome 应用商店。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
+    'Chrome 拡張機能は Chrome ウェブストアで公開されています。バックアップ付きのローカル保存に対応し、Firefox、パスキー、iframe への入力には非対応です。',
   解锁当前会话: '現在のセッションをロック解除',
   解锁并继续未保存的修改: 'ロックを解除して未保存の変更を続ける',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
@@ -139,8 +141,6 @@ export default {
   安装扩展: '拡張機能をインストール',
   '解压扩展包，在 Chrome 或 Edge 的扩展管理页面启用开发者模式，然后选择“加载已解压的扩展程序”。点击目标网站的工具栏扩展图标，再打开密码库。':
     '拡張機能の ZIP を展開します。Chrome または Edge の拡張機能管理でデベロッパーモードを有効にし、「パッケージ化されていない拡張機能を読み込む」を選択します。対象サイトでツールバーの拡張機能アイコンをクリックし、保管庫を開きます。',
-  '此版本未在浏览器商店上架。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
-    'このバージョンはブラウザーストアでは公開していません。バックアップ付きローカル保存に対応していますが、Firefox、パスキー、iframe 内の入力には非対応です。',
   自行部署: 'セルフホスト',
   '先执行 npm ci 和 npm run release，再将 release/web 目录部署到 HTTPS 静态托管，或按 docs/SELF-HOSTING.md 使用 Docker。开发扩展执行 npm run build:extension，验证正式产物执行 npm run test:release。':
     'npm ci と npm run release を実行し、release/web を HTTPS 静的ホスティングで配信するか、docs/SELF-HOSTING.en.md に従って Docker を使用します。拡張機能の開発用ビルドは npm run build:extension、製品版の検証は npm run test:release を実行します。',

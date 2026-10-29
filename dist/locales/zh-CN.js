@@ -1,4 +1,6 @@
 export default {
+  'Chrome 扩展已上架 Chrome 应用商店。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
+    'Chrome 扩展已上架 Chrome 应用商店。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。',
   '本地解密 · 按需填充': '本地解密 · 按需填充',
   '你的密码，随手可用。': '你的密码，随手可用。',
   '点击当前网站的扩展图标授权，再选择账号填充。': '点击当前网站的扩展图标授权，再选择账号填充。',
@@ -152,8 +154,6 @@ export default {
   安装扩展: '安装扩展',
   '解压扩展包，在 Chrome 或 Edge 的扩展管理页面启用开发者模式，然后选择“加载已解压的扩展程序”。点击目标网站的工具栏扩展图标，再打开密码库。':
     '解压扩展包，在 Chrome 或 Edge 的扩展管理页面启用开发者模式，然后选择“加载已解压的扩展程序”。点击目标网站的工具栏扩展图标，再打开密码库。',
-  '此版本未在浏览器商店上架。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
-    '此版本未在浏览器商店上架。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。',
   自行部署: '自行部署',
   '先执行 npm ci 和 npm run release，再将 release/web 目录部署到 HTTPS 静态托管，或按 docs/SELF-HOSTING.md 使用 Docker。开发扩展执行 npm run build:extension，验证正式产物执行 npm run test:release。':
     '先执行 npm ci 和 npm run release，再将 release/web 目录部署到 HTTPS 静态托管，或按 docs/SELF-HOSTING.md 使用 Docker。开发扩展执行 npm run build:extension，验证正式产物执行 npm run test:release。',
