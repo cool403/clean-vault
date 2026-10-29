@@ -1516,12 +1516,13 @@ function showEditor(card = null, addOTP = false) {
       'beforeend',
       button('qr-import', t('导入二维码图片'), 'upload', 'text-button'),
     );
-  modal
-    .querySelector('.add-field-actions')
-    ?.insertAdjacentHTML(
-      'beforeend',
-      button('add-website', t('添加网站地址'), 'plus', 'text-button'),
-    );
+  if (card)
+    modal
+      .querySelector('.add-field-actions')
+      ?.insertAdjacentHTML(
+        'beforeend',
+        button('add-website', t('添加网站地址'), 'plus', 'text-button'),
+      );
   editorDirty = false;
   const form = $('#editor-form');
   form?.addEventListener('input', () => {
