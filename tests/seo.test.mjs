@@ -33,12 +33,8 @@ test('public HTML is readable before JavaScript and declares canonical URLs', as
       assert.match(doc.querySelector('#app').textContent, /SafeInCloud/);
       assert.equal(doc.querySelector('a[href="./downloads/"]').href, `${origin}/downloads/`);
     } else {
-      const { version } = JSON.parse(
-        await readFile(new URL('../extension/manifest.json', import.meta.url)),
-      );
-      assert.equal(doc.querySelectorAll('a[download]').length, 1);
-      for (const link of doc.querySelectorAll('a[download]'))
-        assert.ok(link.href.includes(`clearvault-${version}-`));
+      assert.equal(doc.querySelectorAll('a[download]').length, 0);
+      assert.ok(doc.querySelector('a[href^="https://chromewebstore.google.com/"]'));
     }
     dom.window.close();
   }
