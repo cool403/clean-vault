@@ -1,4 +1,6 @@
 export default {
+  'Chrome 扩展已上架 Chrome 应用商店。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
+    'La extensión de Chrome está disponible en Chrome Web Store. Admite guardado local con copias de seguridad; Firefox, passkeys y el rellenado de iframes no son compatibles.',
   解锁当前会话: 'Desbloquear sesión actual',
   解锁并继续未保存的修改: 'Desbloquear y continuar con los cambios sin guardar',
   '当前会话有未保存的更改，解锁后请先保存；刷新或关闭页面会丢失。':
@@ -134,8 +136,6 @@ export default {
   安装扩展: 'Instalar la extensión',
   '解压扩展包，在 Chrome 或 Edge 的扩展管理页面启用开发者模式，然后选择“加载已解压的扩展程序”。点击目标网站的工具栏扩展图标，再打开密码库。':
     'Extraiga el ZIP. Active el modo de desarrollador en Chrome o Edge y elija «Cargar descomprimida». Pulse el icono de la extensión en el sitio de destino y abra la bóveda.',
-  '此版本未在浏览器商店上架。支持带备份的本地保存，不支持 Firefox、Passkey 或 iframe 填充。':
-    'Esta versión no está en las tiendas de extensiones. Admite guardado local con copias; no admite Firefox, claves de acceso ni rellenado en iframes.',
   自行部署: 'Alojamiento propio',
   '先执行 npm ci 和 npm run release，再将 release/web 目录部署到 HTTPS 静态托管，或按 docs/SELF-HOSTING.md 使用 Docker。开发扩展执行 npm run build:extension，验证正式产物执行 npm run test:release。':
     'Ejecute npm ci y npm run release y publique release/web en un alojamiento estático HTTPS, o use Docker siguiendo docs/SELF-HOSTING.en.md. Compile la extensión con npm run build:extension y verifique los artefactos con npm run test:release.',

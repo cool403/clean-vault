@@ -80,7 +80,7 @@ Editing preserves unknown XML, attachments, images and history. Binary fields ar
 
 Compatibility requires PBKDF2-SHA1 and AES-CBC without body authentication. Browsers cannot guarantee cross-application transaction locks or provable memory erasure. Keep independent encrypted backups and avoid editing a file in two apps at once. Unsaved edits are retained encrypted in page memory while locked; closing or refreshing loses them. Downloading a copy cannot confirm the original file was updated.
 
-No independent security audit has been completed. The extension is not listed in browser stores. Start with synthetic data and a copy of your vault. See [SECURITY.md](SECURITY.md) for design limitations and vulnerability reporting, and the [privacy policy](https://clear-vault.app/privacy/) for data handling.
+No independent security audit has been completed. The Chrome extension is available in the [Chrome Web Store](https://chromewebstore.google.com/detail/pdokjilndibdneiefigknhclkbheikkk). Start with synthetic data and a copy of your vault. See [SECURITY.md](SECURITY.md) for design limitations and vulnerability reporting, and the [privacy policy](https://clear-vault.app/privacy/) for data handling.
 
 ## GitHub Actions → Cloudflare
 
@@ -97,7 +97,7 @@ You can also store the secrets in the `production` Environment. Never commit tok
 
 ## Extension and self-hosting
 
-Run `npm run build:extension`. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. Reload after updating. On the target website, click the icon and open your `.db` or a recent vault. Search all entries, copy usernames/passwords, create an entry for the current website, and copy or fill TOTP codes. New websites need authorization. External changes stop filling: save edits as a copy, reload the file and unlock. Hiding the sidebar no longer locks immediately; the selected idle timeout applies.
+Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/pdokjilndibdneiefigknhclkbheikkk), or run `npm run build:extension` for manual installation. Enable Developer mode in Chrome / Edge's extension manager and load `extension/`, or unpack and load the distributed extension ZIP. Reload after updating. On the target website, click the icon and open your `.db` or a recent vault. Search all entries, copy usernames/passwords, create an entry for the current website, and copy or fill TOTP codes. New websites need authorization. External changes stop filling: save edits as a copy, reload the file and unlock. Hiding the sidebar no longer locks immediately; the selected idle timeout applies.
 
 See the [usage guide](docs/USAGE.en.md) for recent files, imports, multistep filling, multiple URLs, password updates and saving. Matching public guides are generated at `/en/guides/import-passwords/`, `/en/guides/import-1password/`, `/en/guides/import-lastpass/`, `/en/guides/import-apple-passwords/`, `/en/guides/import-generic-csv/`, `/en/guides/sync-folder/` and `/en/guides/browser-extension/`.
 

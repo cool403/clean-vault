@@ -92,7 +92,7 @@ export const articles = [
         ],
         [
           '可选：浏览器扩展',
-          '下载页提供 Chrome / Edge 扩展压缩包，尚未上架商店。解压加载后，在目标网站点击扩展授权，再打开最近密码库或选择文件并解锁。支持分步登录、为同一条目添加多个精确 HTTPS 地址、确认更新密码和导入。修改后点击保存密码库，覆盖前自动备份并验证。文件外部变化时先另存编辑结果，再重新加载并解锁。不支持 Firefox、iframe 或 Passkey，不自动提交表单。',
+          'Chrome 扩展已上架 Chrome 应用商店，下载页提供商店入口与 Chrome / Edge 扩展备用压缩包。解压加载后，在目标网站点击扩展授权，再打开最近密码库或选择文件并解锁。支持分步登录、为同一条目添加多个精确 HTTPS 地址、确认更新密码和导入。修改后点击保存密码库，覆盖前自动备份并验证。文件外部变化时先另存编辑结果，再重新加载并解锁。不支持 Firefox、iframe 或 Passkey，不自动提交表单。',
         ],
         [
           '多设备使用时如何避免冲突',
@@ -121,7 +121,7 @@ export const articles = [
         ],
         [
           'Optional browser extension',
-          'Download and unpack the Chrome / Edge extension; it is not listed in browser stores. Click its icon on the target website, reopen a recent vault or choose a file, then unlock. It supports multistep login, multiple explicitly added HTTPS origins, confirmed password updates and imports. Save changes with verified backups before overwriting. If the file changes externally, save your edits as a copy, then reload and unlock. Firefox, iframe and Passkey filling are unsupported. Forms are never submitted automatically.',
+          'Install the Chrome extension from the Chrome Web Store link on the downloads page, or download and unpack the Chrome / Edge extension ZIP. Click its icon on the target website, reopen a recent vault or choose a file, then unlock. It supports multistep login, multiple explicitly added HTTPS origins, confirmed password updates and imports. Save changes with verified backups before overwriting. If the file changes externally, save your edits as a copy, then reload and unlock. Firefox, iframe and Passkey filling are unsupported. Forms are never submitted automatically.',
         ],
         [
           'Avoid conflicts across devices',

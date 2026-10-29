@@ -80,7 +80,7 @@ npm run test:release
 
 格式兼容沿用 PBKDF2-SHA1 和 AES-CBC，没有正文认证。浏览器无法提供跨应用事务锁或可证明的内存擦除，请保留独立加密备份并避免同时编辑。锁定时未保存修改仅加密保留在本页内存，刷新或关闭仍会丢失；下载导出无法确认原文件已更新。
 
-尚未经过独立安全审计，扩展尚未在浏览器商店上架。请先用合成数据和密码库副本验证。详细边界和漏洞报告方式见 [SECURITY.md](SECURITY.md)，数据处理说明见[隐私政策](https://clear-vault.app/privacy/)。
+尚未经过独立安全审计，Chrome 扩展已在 [Chrome 应用商店](https://chromewebstore.google.com/detail/pdokjilndibdneiefigknhclkbheikkk) 上架。请先用合成数据和密码库副本验证。详细边界和漏洞报告方式见 [SECURITY.md](SECURITY.md)，数据处理说明见[隐私政策](https://clear-vault.app/privacy/)。
 
 ## GitHub Actions → Cloudflare
 
@@ -97,7 +97,7 @@ npm run test:release
 
 ## 扩展与自托管
 
-运行 `npm run build:extension`，在 Chrome / Edge 扩展管理页面开启开发者模式，加载 `extension/`；也可下载扩展 ZIP 并解压加载。更新后在扩展管理页重新加载。目标网站点击扩展图标后打开 `.db` 或最近密码库，可搜索所有条目、复制账号/密码、为当前网站新建条目，并在条目含 TOTP 时复制或填入验证码。新网站需重新授权；PWA 修改原文件后，扩展在填充前检测变化并停止填充，先另存未保存编辑，再点击“重新加载文件”并解锁。侧栏隐藏不再立即锁定，默认按所选空闲时间锁定。
+推荐从 [Chrome 应用商店](https://chromewebstore.google.com/detail/pdokjilndibdneiefigknhclkbheikkk) 安装。手动安装：运行 `npm run build:extension`，在 Chrome / Edge 扩展管理页面开启开发者模式，加载 `extension/`；也可下载扩展 ZIP 并解压加载。更新后在扩展管理页重新加载。目标网站点击扩展图标后打开 `.db` 或最近密码库，可搜索所有条目、复制账号/密码、为当前网站新建条目，并在条目含 TOTP 时复制或填入验证码。新网站需重新授权；PWA 修改原文件后，扩展在填充前检测变化并停止填充，先另存未保存编辑，再点击“重新加载文件”并解锁。侧栏隐藏不再立即锁定，默认按所选空闲时间锁定。
 
 完整步骤见 [导入教程](docs/USAGE.md)（[English](docs/USAGE.en.md)），涵盖最近文件、导入、分步填充、多网址、密码更新与保存。公开教程由同一源码生成：`/guides/import-passwords/`、`/guides/import-1password/`、`/guides/import-lastpass/`、`/guides/import-apple-passwords/`、`/guides/import-generic-csv/`、`/guides/sync-folder/`、`/guides/browser-extension/` 及对应英文页面。
 
