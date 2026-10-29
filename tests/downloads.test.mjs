@@ -3,8 +3,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
-// 验证下载目录页按语言展示并正确定位安装包，避免页面与同名目录的路径冲突。
-test('download directory page localizes and resolves packages without HTML/directory collision', async () => {
+// 验证下载页按语言展示，并统一通过 Chrome Web Store 安装扩展。
+test('download directory page localizes and directs extension installs to Chrome Web Store', async () => {
   const dom = new JSDOM(
     await readFile(new URL('../dist/downloads/index.html', import.meta.url), 'utf8'),
     { url: 'https://example.test/downloads/' },
@@ -18,14 +18,10 @@ test('download directory page localizes and resolves packages without HTML/direc
   assert.equal(document.querySelector('h1').textContent, 'Downloads and source');
   assert.equal(document.querySelector('script').src, 'https://example.test/downloads.js');
   assert.equal(
-    document.querySelector('a[download]').href,
-    `https://example.test/downloads/clearvault-${buildInfo.version}-extension.zip`,
-  );
-  assert.equal(
     document.querySelector('a.button').href,
     'https://chromewebstore.google.com/detail/pdokjilndibdneiefigknhclkbheikkk',
   );
-  assert.equal(document.querySelectorAll('a[download]').length, 1);
+  assert.equal(document.querySelectorAll('a[download]').length, 0);
   assert.equal(document.querySelector('a[href$="-source.zip"]'), null);
   assert.ok([...document.querySelectorAll('a')].some((anchor) => anchor.href === buildInfo.source));
   assert.match(document.body.textContent, /Production code stays readable/);
@@ -49,7 +45,7 @@ test('download directory page localizes and resolves packages without HTML/direc
     document.querySelector('a.button').href,
     'https://chromewebstore.google.com/detail/pdokjilndibdneiefigknhclkbheikkk',
   );
-  assert.equal(document.querySelectorAll('a[download]').length, 1);
+  assert.equal(document.querySelectorAll('a[download]').length, 0);
   assert.equal(document.querySelector('a[href$="-source.zip"]'), null);
   dom.window.close();
 });

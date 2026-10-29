@@ -24,7 +24,7 @@ test('every public page has static content, reciprocal languages and working loc
     const doc = dom.window.document;
     assert.equal(doc.querySelector('link[rel=canonical]').href, url);
     if (new URL(url).pathname.includes('/downloads/')) {
-      assert.equal(doc.querySelectorAll('a[download]').length, 1, url);
+      assert.equal(doc.querySelectorAll('a[download]').length, 0, url);
       assert.equal(doc.querySelector('a[href$="-source.zip"]'), null, url);
       assert.ok(
         [...doc.querySelectorAll('a')].some((anchor) =>
