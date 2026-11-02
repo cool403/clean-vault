@@ -480,6 +480,7 @@ export default {
   '文件只在本地解密。仅在点击填充时向当前网站提供所选账号，不自动提交。导入或更新后请保存；关闭侧栏会丢失未保存修改。':
     'Los archivos se descifran localmente. Solo al pulsar Rellenar se proporciona la cuenta elegida al sitio, sin enviarla automáticamente. Guarde las importaciones y cambios; al cerrar el panel se pierden los cambios sin guardar.',
   帮助与资源: 'Ayuda y recursos',
+  支持作者: '☕ Apoyar en Ko-fi',
   使用指南: 'Guías',
   安全与隐私: 'Seguridad y privacidad',
   英文网站: 'Sitio web en inglés',

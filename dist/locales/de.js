@@ -485,6 +485,7 @@ export default {
   '文件只在本地解密。仅在点击填充时向当前网站提供所选账号，不自动提交。导入或更新后请保存；关闭侧栏会丢失未保存修改。':
     'Dateien werden lokal entschlüsselt. Nur beim Klick auf Ausfüllen wird das gewählte Konto an die Website übergeben, ohne automatische Anmeldung. Speichern Sie nach Importen oder Änderungen; beim Schließen gehen ungespeicherte Änderungen verloren.',
   帮助与资源: 'Hilfe und Ressourcen',
+  支持作者: '☕ Auf Ko-fi unterstützen',
   使用指南: 'Anleitungen',
   安全与隐私: 'Sicherheit und Datenschutz',
   英文网站: 'Website auf Englisch',

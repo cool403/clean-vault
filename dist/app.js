@@ -6,7 +6,7 @@ import { createSnapshotStore, snapshotsSupported } from './snapshots.js';
 import { mergeVaults } from './merge.js';
 import { t, html, getLocale, initializeLanguage, setLanguage, supportedLocales } from './i18n.js';
 import { buildInfo } from './build-info.js';
-import { mountSupportLinks } from './support.js';
+import { mountSupportLinks, supportLinkHtml } from './support.js';
 import { createRecentFiles, mergeRecentSession, allowFile, fileError } from './recent-files.js';
 import { recentMarkup, createImportWizard } from './workflow-ui.js';
 import { applyImport } from './import-data.js';
@@ -344,7 +344,9 @@ function languagePicker() {
 function mountLanguagePickers() {
   document
     .querySelectorAll('.welcome-header-actions')
-    .forEach((container) => container.insertAdjacentHTML('afterbegin', languagePicker()));
+    .forEach((container) =>
+      container.insertAdjacentHTML('afterbegin', supportLinkHtml() + languagePicker()),
+    );
   mountSupportLinks();
 }
 const paths = {

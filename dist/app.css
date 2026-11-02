@@ -2268,6 +2268,10 @@ html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .generator-rules lab
   .welcome-header-actions .language-picker select {
     max-width: 105px;
   }
+  .welcome-header-actions .support-link {
+    padding: 6px 9px;
+    font-size: 10px;
+  }
   html:is([lang='en'], [lang='de'], [lang='ja'], [lang='es']) .page-heading h1 {
     font-size: 22px;
   }
@@ -3820,8 +3824,7 @@ dialog:has(> #editor-form) {
     padding: 14px 20px max(22px, env(safe-area-inset-bottom));
   }
 }
-.welcome-footer .support-link,
-.page-footer .support-link {
+.support-link {
   display: inline-flex;
   align-items: center;
   padding: 7px 12px;
