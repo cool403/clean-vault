@@ -115,6 +115,11 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   };
   const footerLinks = () =>
     [...document.querySelectorAll('.welcome-links a')].map((a) => new URL(a.href).pathname);
+  const headerSupport = () => document.querySelector('.welcome-header-actions .support-link');
+  assert.equal(headerSupport().href, 'https://ko-fi.com/lurefun');
+  assert.equal(headerSupport(), document.querySelector('.welcome-header-actions > :first-child'));
+  assert.equal(headerSupport().nextElementSibling, document.querySelector('.language-picker'));
+  assert.equal(headerSupport().textContent, '☕ 支持作者');
   assert.deepEqual(footerLinks(), [
     '/guides/',
     '/security/',
@@ -140,16 +145,18 @@ test('UI create -> add/edit OTP -> save .db -> lock -> unlock -> trash/restore',
   ]);
   assert.equal(document.documentElement.lang, 'en');
   assert.equal(document.querySelector('[data-action=open]').textContent, 'Open .db vault');
-  for (const [code, label] of [
-    ['de', '.db-Tresor öffnen'],
-    ['ja', '.db 保管庫を開く'],
-    ['es', 'Abrir bóveda .db'],
+  assert.equal(headerSupport().textContent, '☕ Support on Ko-fi');
+  for (const [code, label, supportLabel] of [
+    ['de', '.db-Tresor öffnen', '☕ Auf Ko-fi unterstützen'],
+    ['ja', '.db 保管庫を開く', '☕ Ko-fi で支援'],
+    ['es', 'Abrir bóveda .db', '☕ Apoyar en Ko-fi'],
   ]) {
     switchLanguage(code);
     assert.equal(document.documentElement.lang, code);
     assert.equal(document.querySelector('[data-action=open]').textContent, label);
     assert.equal(document.querySelectorAll('[data-language] option').length, 5);
     assert.ok(document.querySelector('.welcome-links a[href="/en/guides/"]'));
+    assert.equal(headerSupport().textContent, supportLabel);
   }
   switchLanguage('zh-CN');
   click('[data-action=create]');

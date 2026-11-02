@@ -17,6 +17,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 .brand {
   font-size: 24px;
@@ -198,6 +199,9 @@ select:focus-visible {
   font-weight: 700;
   white-space: nowrap;
 }
+header .support-link {
+  margin-left: auto;
+}
 .support-link:hover {
   background: #ffd0c2;
 }
@@ -212,11 +216,6 @@ footer > p {
   grid-column: 1/-1;
   grid-row: 2;
   margin: 0;
-}
-footer > .support-link {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: end;
 }
 
 .brand {

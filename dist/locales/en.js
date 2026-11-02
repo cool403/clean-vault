@@ -24,6 +24,7 @@ export default {
   '文件只在本地解密。仅在点击填充时向当前网站提供所选账号，不自动提交。导入或更新后请保存；关闭侧栏会丢失未保存修改。':
     'Files are decrypted locally. Only an explicit Fill shares the selected login with the website, without submitting. Save imports and updates; closing the panel loses unsaved changes.',
   帮助与资源: 'Helpful links',
+  支持作者: '☕ Support on Ko-fi',
   使用指南: 'Guides',
   安全与隐私: 'Security & privacy',
   英文网站: 'English website',

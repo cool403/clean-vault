@@ -17,6 +17,10 @@ test('download directory page localizes and directs extension installs to Chrome
   await import('../dist/downloads.js');
   assert.equal(document.querySelector('h1').textContent, 'Downloads and source');
   assert.equal(document.querySelector('script').src, 'https://example.test/downloads.js');
+  const headerSupport = document.querySelector('#downloads header .support-link');
+  assert.equal(headerSupport.href, 'https://ko-fi.com/lurefun');
+  assert.equal(headerSupport.nextElementSibling, document.querySelector('#language'));
+  assert.equal(headerSupport.textContent, '☕ Support on Ko-fi');
   assert.equal(
     document.querySelector('a.button').href,
     'https://chromewebstore.google.com/detail/pdokjilndibdneiefigknhclkbheikkk',
@@ -25,16 +29,20 @@ test('download directory page localizes and directs extension installs to Chrome
   assert.equal(document.querySelector('a[href$="-source.zip"]'), null);
   assert.ok([...document.querySelectorAll('a')].some((anchor) => anchor.href === buildInfo.source));
   assert.match(document.body.textContent, /Production code stays readable/);
-  for (const [code, title] of [
-    ['de', 'Downloads und Quellcode'],
-    ['ja', 'ダウンロードとソースコード'],
-    ['es', 'Descargas y código fuente'],
+  for (const [code, title, supportLabel] of [
+    ['de', 'Downloads und Quellcode', '☕ Auf Ko-fi unterstützen'],
+    ['ja', 'ダウンロードとソースコード', '☕ Ko-fi で支援'],
+    ['es', 'Descargas y código fuente', '☕ Apoyar en Ko-fi'],
   ]) {
     const language = document.querySelector('select');
     language.value = code;
     language.onchange({ target: language });
     assert.equal(document.querySelector('h1').textContent, title);
     assert.equal(document.querySelectorAll('select option').length, 5);
+    assert.equal(
+      document.querySelector('#downloads header .support-link').textContent,
+      supportLabel,
+    );
   }
   const picker = document.querySelector('select');
   picker.value = 'zh-CN';
