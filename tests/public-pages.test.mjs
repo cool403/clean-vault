@@ -65,11 +65,13 @@ test('every public page has static content, reciprocal languages and working loc
       new URL(url).pathname.includes('/guides/') ||
       new URL(url).pathname.includes('/security/')
     ) {
+      const scripts = [...doc.querySelectorAll('script')];
+      assert.equal(scripts.length, 1, 'Public documentation must not load application JavaScript');
       assert.equal(
-        doc.querySelectorAll('script').length,
-        0,
-        'Public documentation must not need JavaScript',
+        scripts[0].src,
+        'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8611933048044412',
       );
+      assert.equal(scripts[0].hasAttribute('async'), true);
       assert.ok(
         !doc.querySelector('input, textarea'),
         'No collection forms on public documentation',
