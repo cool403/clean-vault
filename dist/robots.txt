@@ -1,140 +1,20 @@
-# Public SEO pages only. All unlisted crawlers are denied.
-User-agent: Googlebot
-User-agent: Google-InspectionTool
-User-agent: bingbot
-User-agent: Baiduspider
-User-agent: DuckDuckBot
-User-agent: Applebot
-User-agent: Sogou web spider
-User-agent: YandexBot
-User-agent: 360Spider
-User-agent: Slurp
-Disallow: /
-Allow: /$
-Allow: /?lang=zh-CN$
-Allow: /?lang=en$
-Allow: /?lang=de$
-Allow: /?lang=ja$
-Allow: /?lang=es$
-Allow: /index.html$
-Allow: /sitemap.xml$
-Allow: /downloads$
-Allow: /downloads/$
-Allow: /downloads/index.html$
-
-# BEGIN PUBLIC PAGES
-Allow: /en/$
-Allow: /en/index.html$
-Allow: /en/downloads/$
-Allow: /en/downloads/index.html$
-Allow: /en/guides/$
-Allow: /en/guides/index.html$
-Allow: /en/guides/browser-extension/$
-Allow: /en/guides/browser-extension/index.html$
-Allow: /en/guides/import-1password/$
-Allow: /en/guides/import-1password/index.html$
-Allow: /en/guides/import-apple-passwords/$
-Allow: /en/guides/import-apple-passwords/index.html$
-Allow: /en/guides/import-generic-csv/$
-Allow: /en/guides/import-generic-csv/index.html$
-Allow: /en/guides/import-lastpass/$
-Allow: /en/guides/import-lastpass/index.html$
-Allow: /en/guides/import-passwords/$
-Allow: /en/guides/import-passwords/index.html$
-Allow: /en/guides/open-safeincloud-db/$
-Allow: /en/guides/open-safeincloud-db/index.html$
-Allow: /en/guides/safeincloud-linux/$
-Allow: /en/guides/safeincloud-linux/index.html$
-Allow: /en/guides/sync-folder/$
-Allow: /en/guides/sync-folder/index.html$
-Allow: /en/guides/totp/$
-Allow: /en/guides/totp/index.html$
-Allow: /en/privacy/$
-Allow: /en/privacy/index.html$
-Allow: /en/security/$
-Allow: /en/security/index.html$
-Allow: /guides/$
-Allow: /guides/index.html$
-Allow: /guides/browser-extension/$
-Allow: /guides/browser-extension/index.html$
-Allow: /guides/import-1password/$
-Allow: /guides/import-1password/index.html$
-Allow: /guides/import-apple-passwords/$
-Allow: /guides/import-apple-passwords/index.html$
-Allow: /guides/import-generic-csv/$
-Allow: /guides/import-generic-csv/index.html$
-Allow: /guides/import-lastpass/$
-Allow: /guides/import-lastpass/index.html$
-Allow: /guides/import-passwords/$
-Allow: /guides/import-passwords/index.html$
-Allow: /guides/open-safeincloud-db/$
-Allow: /guides/open-safeincloud-db/index.html$
-Allow: /guides/safeincloud-linux/$
-Allow: /guides/safeincloud-linux/index.html$
-Allow: /guides/sync-folder/$
-Allow: /guides/sync-folder/index.html$
-Allow: /guides/totp/$
-Allow: /guides/totp/index.html$
-Allow: /privacy/$
-Allow: /privacy/index.html$
-Allow: /security/$
-Allow: /security/index.html$
-Allow: /public.css$
-# END PUBLIC PAGES
-
-# Local resources required to render the public pages.
-Allow: /app.js$
-Allow: /quick-search.js$
-Allow: /recent-files.js$
-Allow: /import-data.js$
-Allow: /workflow-ui.js$
-Allow: /workflow.css$
-Allow: /crypto.js$
-Allow: /downloads.css$
-Allow: /downloads.js$
-Allow: /i18n.js$
-Allow: /icon-128.png$
-Allow: /icon-16.png$
-Allow: /icon-192.png$
-Allow: /icon-32.png$
-Allow: /icon-48.png$
-Allow: /icon-512.png$
-Allow: /icon.svg$
-Allow: /locales/en.js$
-Allow: /locales/zh-CN.js$
-Allow: /locales/de.js$
-Allow: /locales/ja.js$
-Allow: /locales/es.js$
-Allow: /manifest.en.webmanifest$
-Allow: /manifest.de.webmanifest$
-Allow: /manifest.ja.webmanifest$
-Allow: /manifest.es.webmanifest$
-Allow: /manifest.webmanifest$
-Allow: /password-generator.js$
-Allow: /safe-save.js$
-Allow: /app.css$
-Allow: /support.js$
-Allow: /sw.js$
-Allow: /totp.js$
-Allow: /vault.js$
-Allow: /vendor/jsQR.js$
-Allow: /icon.svg?v=21$
-
-# Brand images used by Google Search. All other paths remain denied.
-User-agent: Googlebot-Image
-Disallow: /
-Allow: /icon-192.png$
-Allow: /icon-512.png$
-
-# AdSense verification and ad-serving crawlers may access public site content.
-User-agent: Mediapartners-Google
-Allow: /
-
-User-agent: Google-Display-Ads-Bot
-Allow: /
-
-# Includes AI crawlers, bulk scrapers and SEO audit crawlers.
+# Search engines and readers are welcome. This file is allow-by-default, so a
+# page is crawlable as soon as it is published.
 User-agent: *
+Allow: /
+
+# AI training and bulk-scraping crawlers are asked to stay out. These tokens are
+# separate from search indexing: Googlebot, bingbot, Baiduspider and DuckDuckBot
+# all fall through to the rule above.
+User-agent: GPTBot
+User-agent: CCBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bytespider
+User-agent: Amazonbot
+User-agent: meta-externalagent
+User-agent: PerplexityBot
 Disallow: /
 
 Sitemap: https://clear-vault.app/sitemap.xml

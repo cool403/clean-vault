@@ -1,10 +1,14 @@
+# AdSense needs its own hosts and injects inline script, so this default policy is the
+# ad-capable one. The vault page (index.html) and the download page carry a stricter CSP
+# meta of their own, and several policies intersect, so those pages never inherit the ad
+# permissions granted here.
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Cache-Control: no-cache
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://*.googlesyndication.com https://adservice.google.com https://*.doubleclick.net https://*.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com; connect-src 'self' https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com; frame-ancestors 'none'
 
 # Keep the default Pages host and deployment previews out of search results.
 https://clearvault-safeincloud.pages.dev/*
