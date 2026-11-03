@@ -160,7 +160,10 @@ for (const [file, zh, en] of [
   if (file === 'downloads/index.html')
     html = html.replace(/clearvault-[\d.]+-extension\.zip/g, `clearvault-${version}-extension.zip`);
   html = html.replace(/\s*<link[^>]*rel="alternate"[^>]*\/>/g, '');
-  html = html.replace('</head>', alternates(zh, en) + '</head>');
+  html = html.replace(
+    '</head>',
+    alternates(zh, en) + (file === 'index.html' ? adsense : '') + '</head>',
+  );
   await writeFile(url, await format(html, { parser: 'html', printWidth: 100 }));
 }
 const urls = [...new Set(routes)].sort();
@@ -169,6 +172,13 @@ await writeFile(new URL('sitemap.xml', dist), xml);
 const robotsFile = new URL('robots.txt', dist);
 let robots = await readFile(robotsFile, 'utf8');
 robots = robots.replace(/# BEGIN PUBLIC PAGES[\s\S]*?# END PUBLIC PAGES\n?/g, '');
+robots = robots.replace(
+  '# Includes AI crawlers, bulk scrapers and SEO audit crawlers.',
+  '# AdSense verification and ad-serving crawlers may access public site content.\n' +
+    'User-agent: Mediapartners-Google\nAllow: /\n\n' +
+    'User-agent: Google-Display-Ads-Bot\nAllow: /\n\n' +
+    '# Includes AI crawlers, bulk scrapers and SEO audit crawlers.',
+);
 const rules =
   '# BEGIN PUBLIC PAGES\n' +
   urls

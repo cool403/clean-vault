@@ -126,6 +126,13 @@ Disallow: /
 Allow: /icon-192.png$
 Allow: /icon-512.png$
 
+# AdSense verification and ad-serving crawlers may access public site content.
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Google-Display-Ads-Bot
+Allow: /
+
 # Includes AI crawlers, bulk scrapers and SEO audit crawlers.
 User-agent: *
 Disallow: /
