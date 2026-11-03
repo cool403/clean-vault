@@ -40,8 +40,8 @@ test('public HTML is readable before JavaScript and declares canonical URLs', as
   }
 });
 
-// 验证站点地图仅收录公开规范页面，robots 文件保留爬虫访问限制。
-test('sitemap contains only public canonical pages; robots preserves crawler restrictions', async () => {
+// 验证站点地图仅收录公开规范页面，robots 默认放行而不是依赖白名单。
+test('sitemap lists only public canonical pages; robots stays allow-by-default', async () => {
   const xml = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8');
   const dom = new JSDOM(xml, { contentType: 'application/xml' });
   assert.equal(
@@ -67,22 +67,37 @@ test('sitemap contains only public canonical pages; robots preserves crawler res
     '/en/security/',
   ])
     assert.ok(urls.includes(origin + path), path);
+  // robots.txt 采用默认放行：新页面不能依赖白名单条目，重要的搜索引擎也不能出现在禁止组里。
   const robots = await readFile(new URL('../dist/robots.txt', import.meta.url), 'utf8');
-  const google = robots.split('User-agent: *')[0];
-  assert.match(google, /User-agent: Googlebot/);
-  assert.match(google, /User-agent: Google-InspectionTool/);
-  assert.match(google, /^Allow: \/\$$/m);
-  assert.match(google, /^Allow: \/downloads\/\$$/m);
-  assert.match(google, /^Allow: \/sitemap\.xml\$$/m);
-  assert.match(google, /^Disallow: \/$/m);
-  assert.match(robots, /User-agent: \*\s+Disallow: \//);
+  assert.match(robots, /^User-agent: \*\nAllow: \/$/m);
+  assert.equal(robots.match(/^Disallow:.*$/gm).length, 1, 'only the AI crawler group blocks');
+  assert.ok(!/User-agent: (Googlebot|bingbot|Baiduspider|DuckDuckBot)/.test(robots));
+  assert.ok(!robots.includes('BEGIN PUBLIC PAGES'));
+  assert.equal(robots.match(/^Sitemap: .+$/gm).length, 1);
   assert.ok(robots.includes(`Sitemap: ${origin}/sitemap.xml`));
-  for (const url of urls) assert.ok(google.includes(`Allow: ${new URL(url).pathname}$`), url);
-  const imageRules = robots.split('User-agent: Googlebot-Image\n')[1].split('User-agent: *')[0];
-  assert.match(imageRules, /^Disallow: \/$/m);
-  assert.match(imageRules, /^Allow: \/icon-192\.png\$$/m);
-  assert.match(imageRules, /^Allow: \/icon-512\.png\$$/m);
+  assert.match(robots, /User-agent: GPTBot/);
+  for (const el of dom.window.document.querySelectorAll('lastmod'))
+    assert.match(el.textContent, /^\d{4}-\d{2}-\d{2}$/);
   dom.window.close();
+});
+
+// 验证广告权限只来自响应头，密码库与下载页面用更严格的 meta 与之取交集。
+test('ad hosts are granted site-wide but never on the vault page', async () => {
+  const headers = await readFile(new URL('../dist/_headers', import.meta.url), 'utf8');
+  const header = headers.match(/^\s*Content-Security-Policy: (.+)$/m)?.[1] || '';
+  assert.match(header, /https:\/\/pagead2\.googlesyndication\.com/);
+  assert.match(header, /frame-src[^;]*doubleclick/);
+
+  for (const file of ['index.html', 'downloads/index.html']) {
+    const dom = new JSDOM(await readFile(new URL(`../dist/${file}`, import.meta.url), 'utf8'));
+    const doc = dom.window.document;
+    const meta = doc.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content || '';
+    assert.ok(meta, `${file} keeps its own CSP`);
+    assert.doesNotMatch(meta, /googlesyndication|doubleclick|google\.com/, file);
+    assert.doesNotMatch(meta, /script-src[^;]*'unsafe-inline'/, file);
+    assert.equal(doc.querySelectorAll('script[src*="googlesyndication"], iframe').length, 0, file);
+    dom.window.close();
+  }
 });
 
 // 验证 noindex 响应头仅作用于默认 Pages 域名及其预览域名。

@@ -7,6 +7,9 @@ release/
 extension/core/
 dist/downloads/*
 !dist/downloads/index.html
+# IndexNow key files are generated per deployment and never committed.
+dist/*.txt
+!dist/robots.txt
 *.db
 *.bak
 

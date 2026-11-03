@@ -10,6 +10,7 @@
     "release": "node scripts/release.mjs",
     "pretest": "node scripts/build-public-pages.mjs && node scripts/build-extension.mjs",
     "build:public": "node scripts/build-public-pages.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:release": "node scripts/release.mjs && node scripts/check-release.mjs",

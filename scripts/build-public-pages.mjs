@@ -1,4 +1,6 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { format } from 'prettier';
 import { articles, privacy, security } from './public-content.mjs';
 import { buildInfo } from './project.mjs';
@@ -21,6 +23,30 @@ const workflowURL =
 
 const dist = new URL('../dist/', import.meta.url);
 const origin = 'https://clear-vault.app';
+// Generated from scratch on every build. An allowlist keyed to path suffixes meant a new
+// page stayed invisible until someone remembered to add an Allow line, and crawlers that
+// do not implement `$` (or that were not named at all) inherited a blanket Disallow.
+const robots = `# Search engines and readers are welcome. This file is allow-by-default, so a
+# page is crawlable as soon as it is published.
+User-agent: *
+Allow: /
+
+# AI training and bulk-scraping crawlers are asked to stay out. These tokens are
+# separate from search indexing: Googlebot, bingbot, Baiduspider and DuckDuckBot
+# all fall through to the rule above.
+User-agent: GPTBot
+User-agent: CCBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bytespider
+User-agent: Amazonbot
+User-agent: meta-externalagent
+User-agent: PerplexityBot
+Disallow: /
+
+Sitemap: ${origin}/sitemap.xml
+`;
 const adsense =
   '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8611933048044412" crossorigin="anonymous"></script>';
 const { version } = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));
@@ -160,32 +186,34 @@ for (const [file, zh, en] of [
   if (file === 'downloads/index.html')
     html = html.replace(/clearvault-[\d.]+-extension\.zip/g, `clearvault-${version}-extension.zip`);
   html = html.replace(/\s*<link[^>]*rel="alternate"[^>]*\/>/g, '');
-  html = html.replace(
-    '</head>',
-    alternates(zh, en) + (file === 'index.html' ? adsense : '') + '</head>',
-  );
+  // The vault and download pages carry their own strict CSP meta, so no ad code is added
+  // here; ads belong to the generated documentation pages only. Injecting on every build
+  // also duplicated the tag, because nothing removed the previous copy first.
+  html = html.replace(/\s*<script\b[^>]*googlesyndication[^>]*>\s*<\/script>/g, '');
+  html = html.replace('</head>', alternates(zh, en) + '</head>');
   await writeFile(url, await format(html, { parser: 'html', printWidth: 100 }));
 }
 const urls = [...new Set(routes)].sort();
-const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((r) => `  <url><loc>${origin}${r}</loc></url>`).join('\n')}\n</urlset>\n`;
+// A stable date beats a fresh timestamp: it comes from the commit being built, so repeated
+// builds of the same revision stay byte-identical.
+const lastmod = (() => {
+  const epoch = Number(process.env.SOURCE_DATE_EPOCH);
+  if (Number.isFinite(epoch) && epoch > 0) return new Date(epoch * 1000).toISOString().slice(0, 10);
+  try {
+    const date = execFileSync('git', ['log', '-1', '--format=%cs'], {
+      cwd: fileURLToPath(new URL('..', import.meta.url)),
+      encoding: 'utf8',
+    }).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
+  } catch (error) {
+    // Building outside a Git checkout: say so instead of inventing a timestamp.
+    console.warn(`sitemap: no commit date available (${error.code || error.message})`);
+  }
+  return '';
+})();
+const entry = (route) =>
+  `  <url><loc>${origin}${route}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`;
+const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(entry).join('\n')}\n</urlset>\n`;
 await writeFile(new URL('sitemap.xml', dist), xml);
-const robotsFile = new URL('robots.txt', dist);
-let robots = await readFile(robotsFile, 'utf8');
-robots = robots.replace(/# BEGIN PUBLIC PAGES[\s\S]*?# END PUBLIC PAGES\n?/g, '');
-robots = robots.replace(
-  '# Includes AI crawlers, bulk scrapers and SEO audit crawlers.',
-  '# AdSense verification and ad-serving crawlers may access public site content.\n' +
-    'User-agent: Mediapartners-Google\nAllow: /\n\n' +
-    'User-agent: Google-Display-Ads-Bot\nAllow: /\n\n' +
-    '# Includes AI crawlers, bulk scrapers and SEO audit crawlers.',
-);
-const rules =
-  '# BEGIN PUBLIC PAGES\n' +
-  urls
-    .filter((r) => !['/', '/downloads/'].includes(r))
-    .map((r) => `Allow: ${r}$\nAllow: ${r}index.html$`)
-    .join('\n') +
-  '\nAllow: /public.css$\n# END PUBLIC PAGES\n';
-robots = robots.replace('# Local resources required', rules + '\n# Local resources required');
-await writeFile(robotsFile, robots.replace(/\n{3,}/g, '\n\n'));
+await writeFile(new URL('robots.txt', dist), robots);
 console.log(`Built ${urls.length} public canonical pages with reciprocal language alternates.`);
